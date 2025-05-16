@@ -327,12 +327,14 @@ class text(plot):
         self,
         text: str,
         color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
+        bgcolor: ArrayLike | None = None,          # float[3] (rgb 0 to 1)
     ):
         lines = text.splitlines()
         height = len(lines)
         width = max(len(line) for line in lines)
         array = [
-            [colorchar(c, color) for c in line] + [BLANK] * (width - len(line))
+            [colorchar(c, color, bgcolor) for c in line]
+            + [BLANK] * (width - len(line))
             for line in lines
         ]
         super().__init__(array=array)
