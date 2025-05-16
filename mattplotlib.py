@@ -1,40 +1,113 @@
 """
-A quick and ditry implementation of a unicode-based plotting library for
-displaying images in the terminal. Useful for visualising gridworlds, such as
-mazes.
-```
-
-See documentation for more advanced usage.
+Dead-simple terminal plotting library by matt.
 """
 
+import os
+from typing import Callable
 import numpy as np
+from numpy.typing import ArrayLike
 import einops
 
 
-# # # PLOT BASE CLASS
+# # # 
+# COLOURED CHARACTER UTILITY CLASS
+
+
+class colorchar:
+    """
+    Class representing a possibly-coloured character. Provides methods for
+    converting to a string, for use in rendering.
+    """
+    def __init__(
+        self,
+        character: str = " ",
+        fgcolor: ArrayLike | None = None, # float[3] (rgb 0 to 1)
+        bgcolor: ArrayLike | None = None, # float[3] (rgb 0 to 1)
+    ):
+        self.c = character
+        if fgcolor is not None:
+            self.fg = np.asarray(fgcolor)
+        else:
+            self.fg = None
+        if bgcolor is not None:
+            self.bg = np.asarray(bgcolor)
+        else:
+            self.bg = None
+
+    def __str__(self) -> str:
+        """
+        If necessary, issue ANSI control codes that switch the color into the
+        given fg and bg colors. Then print the character. Then, if necessary,
+        switch back to default mode.
+        """
+        # needs fg?
+        if self.fg is not None:
+            fgr, fgg, fgb = (255 * self.fg).astype(np.uint8)
+            fgcode = f"\033[38;2;{fgr};{fgg};{fgb}m"
+        else:
+            fgcode = ""
+        # needs bg?
+        if self.bg is not None:
+            bgr, bgg, bgb = (255 * self.bg).astype(np.uint8)
+            bgcode = f"\033[48;2;{bgr};{bgg};{bgb}m"
+        else:
+            bgcode = ""
+        # needs reset?
+        if self.fg is not None or self.bg is not None:
+            rcode = "\033[0m"
+        else:
+            rcode = ""
+        return f"{fgcode}{bgcode}{self.c}{rcode}"
+
+    def __bool__(self):
+        return bool(
+            self.c.strip()
+            or self.fg is not None
+            or self.bg is not None
+        )
+
+
+BLANK = colorchar(character=" ")
+
+
+# # # 
+# PLOT BASE CLASS
 
 
 class plot:
     """
-    Abstract base class for an ANSI plot that renders to a specified height
-    and width.
+    Base class representing a 2d character array as a list of lines.
+    Provides methods for converting to a string, along with operations
+    for horizontal (|), vertical (^), and distal (&) stacking.
+
+    TODO: Derive height and width from internal character array.
     """
-    def __init__(self, height, width, lines):
-        self.height = height
-        self.width = width
-        self.lines = lines
+    def __init__(self, array: list[colorchar]):
+        self.array = array
 
-    def __str__(self):
-        return "\n".join(self.lines)
+    @property
+    def height(self):
+        return len(self.array)
 
-    def __and__(self, other):
+    @property
+    def width(self):
+        return len(self.array[0])
+
+    def __str__(self) -> str:
+        return "\n".join(["".join([str(c) for c in l]) for l in self.array])
+
+    def __or__(self, other):
         return hstack(self, other)
 
     def __xor__(self, other):
         return vstack(self, other)
+    
+    def __and__(self, other):
+        return dstack(self, other)
 
 
-# # # PLOT CLASSES
+# # # 
+# DATA PLOTTING CLASSES
 
 
 class image(plot):
@@ -42,15 +115,23 @@ class image(plot):
     Render a small image using a grid of unicode half-characters with
     different foreground and background colours to represent pairs of
     pixels.
+
+    TODO: document input and colormap formats.
     """
-    def __init__(self, im, colormap=None):
+    def __init__(
+        self,
+        im,
+        colormap=None,
+    ):
+        # preprocessing: all inputs become float[h, w, rgb] with even h, w
         im = np.asarray(im)
-        # convert to RGB
         if len(im.shape) == 2 and colormap is None:
-            im = einops.repeat(im, 'h w -> h w 3') # uniform colorization
+            # greyscale or indexed and no colormap -> uniform colourisation
+            im = einops.repeat(im, 'h w -> h w 3')
         elif colormap is not None:
-            im = colormap(im) # colormap: h w bw -> h w [r g b]
-        # pad to even height (and width, latter not strictly necessary)
+            # indexed, greyscale, or rgb and compatible colormap -> mapped rgb
+            im = colormap(im)
+        # pad to even height and width (width is not strictly necessary)
         im = np.pad(
             array=im,
             pad_width=(
@@ -61,17 +142,101 @@ class image(plot):
             mode='constant',
             constant_values=0.,
         )
-        # stack to fg/bg
-        im = einops.rearrange(im, '(h h2) w c -> h w h2 c', h2=2)
-        # render the image as a plot object
+
+        # processing: stack into fg/bg format
+        stacked = einops.rearrange(im, '(h fgbg) w c -> h w fgbg c', fgbg=2)
+
+        # render the image lines as unicode strings with ansi color codes
+        array = [
+            [colorchar("▀", fg, bg) for fg, bg in row]
+            for row in stacked
+        ]
+
+        # form a plot object
+        super().__init__(array)
+
+    def __repr__(self):
+        return f"image(height={self.height}, width={self.width})"
+
+
+class fimage(image):
+    """
+    Heatmap representing the image of a 2d function over a square. Inputs:
+
+    * F : float[batch, 2] -> float[batch]
+        The (vectorised) function to plot. The input should be a batch of
+        (x, y) vectors. The output should be a batch of scalars f(x, y).
+    * xrange : (float, float)
+        Lower and upper bounds on the x values to pass into the function.
+    * yrange : (float, float)
+        Lower and upper bounds on the y values to pass into the function.
+    * width : int
+        The number of grid squares along the x axis. This will also become the
+        width of the plot.
+    * height : int
+        The number of grid squares along the y axis. This will become double
+        the height of the plot in lines (since the result is an image plot with
+        two pixels per line).
+    * zrange : optional (float, float)
+        Expected lower and upper bounds on the f(x, y) values. Used for
+        determining the bounds of the colour scale. By default, the minimum and
+        maximum output over the grid are used.
+    * colormap : optional colormap (e.g. mp.viridis)
+        By default, the output will be in greyscale, with black corresponding
+        to zrange[0] and white corresponding to zrange[1]. You can choose a
+        different colormap (e.g. mp.reds, mp.viridis, etc.) here.
+    * endpoints : bool (default: False)
+        If true, endpoints are included from the linspaced inputs, and so the
+        grid elements in each corner will represent the different combinations
+        of xrange/yrange.
+        If false (default), the endpoints are excluded, so the lower bounds are
+        met but the upper bounds are not, meaning each grid square color shows
+        the value of the function precisely at its lower left corner.
+    """
+    def __init__(
+        self,
+        F: Callable[[ArrayLike], ArrayLike], # TODO: vectorise herein?
+        xrange: tuple[float, float],
+        yrange: tuple[float, float],
+        width: int,
+        height: int,
+        zrange: tuple[float, float] | None = None,
+        colormap: Callable | None = None,
+        endpoints: bool = False,
+    ):
+        # create a meshgrid with the required format and shape
+        X, Y = np.meshgrid(
+            np.linspace(*xrange, num=width, endpoint=endpoints),
+            np.linspace(*yrange, num=height, endpoint=endpoints),
+        ) # float[h, w] (x2)
+        Y = Y[::-1] # correct Y direction for image plotting
+        XY = einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')
+
+        # sample the function
+        Z = F(XY)
+
+        # create the image array
+        zgrid = einops.rearrange(Z, '(h w) -> h w', h=height, w=width)
+        if zrange is None:
+            zrange = (zgrid.min(), zgrid.max() + 1e-6)
+        zgrid_norm = (zgrid - zrange[0]) / (zrange[1] - zrange[0])
+
+        # create the image plot itself
         super().__init__(
-            height=im.shape[0],
-            width=im.shape[1],
-            lines=[
-                "".join([_color("▀", fg=fg, bg=bg) for fg, bg in row])
-                for row in im
-            ],
+            im=zgrid_norm,
+            colormap=colormap,
         )
+        self.name = F.__name__
+        self.xrange = xrange
+        self.yrange = yrange
+        self.zrange = zrange
+        
+    def __repr__(self):
+        return ("fimage("
+                f"f={self.name}, "
+                f"input=[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]"
+                f"x[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]"
+        ")")
 
 
 class scatter(plot):
@@ -80,33 +245,47 @@ class scatter(plot):
     """
     def __init__(
         self,
-        data,
-        xrange=None,
-        yrange=None,
-        width=30,
-        height=10,
-        color=None,
+        data: ArrayLike, # float[n, 2]
+        height: int = 10,
+        width: int = 30,
+        yrange: tuple[float, float] | None = None,
+        xrange: tuple[float, float] | None = None,
+        color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
+        check_bounds: bool = False,
     ):
-        data = np.asarray(data) # todo: enforce shape for empty
-        # determine sensible bounds
+        # preprocess and check shape
+        data = np.asarray(data)
+        n, _2 = data.shape
+        assert _2 == 2
+
+        # shortcut if no data
+        if n == 0:
+            array = [[BLANK] * width] * height
+            super().__init__(array)
+            self.xrange = xrange
+            self.yrange = yrange
+            self.num_points = len(data)
+            return
+        
+        # determine data bounds
         xmin, ymin = data.min(axis=0)
         xmax, ymax = data.max(axis=0)
         if xrange is None:
             xrange = (xmin, xmax)
         else:
-            if xmin < xrange[0] or xmax > xrange[1]:
-                print("warning: points out of x range will be clipped")
             xmin, xmax = xrange
         if yrange is None:
             yrange = (ymin, ymax)
         else:
-            if ymin < yrange[0] or ymax > yrange[1]:
-                print("warning: points out of y range will be clipped")
             ymin, ymax = yrange
+        # optional check
+        if check_bounds:
+            out_x = xmin < xrange[0] or xmax > xrange[1]
+            out_y = ymin < yrange[0] or ymax > yrange[1]
+            if out_x or out_y:
+                raise ValueError("Scatter points out of range")
         
-        # converting float coordinates into data and character matrices
-        
-        # form the data grid
+        # quantise 2d float coordinates to data grid
         dots, *_bins = np.histogram2d(
             x=data[:,0],
             y=data[:,1],
@@ -116,41 +295,113 @@ class scatter(plot):
         dots = dots.T     # we want y first
         dots = dots[::-1] # correct y for top-down drawing
         
-        # draw onto a grid of braille dots
-        grid = [[" " for _ in range(width)] for _ in range(height)]
-        bgrid = _braille_encode(dots > 0)
+        # render data grid as a grid of braille characters
+        array = [[BLANK for _ in range(width)] for _ in range(height)]
+        bgrid = braille_encode(dots > 0)
         for i in range(height):
             for j in range(width):
                 if bgrid[i, j]:
-                    grid[i][j] = _color(chr(0x2800+bgrid[i, j]), fg=color)
+                    braille_char = chr(0x2800+bgrid[i, j])
+                    array[i][j] = colorchar(braille_char, color)
+        super().__init__(array)
+        self.xrange = xrange
+        self.yrange = yrange
+        self.num_points = len(data)
 
-        # render as lines
-        super().__init__(
-            height=height,
-            width=width,
-            lines=["".join(row) for row in grid],
+    def __repr__(self):
+        return (
+            f"scatter(height={self.height}, width={self.width}, "
+            f"data=<{self.num_points} points on "
+            f"[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]x"
+            f"[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]>)"
         )
-        
-        # # are axes present?
-        # if xmin <= 0 <= xmax:
-        #     x0 = _discretize((0-xmin)/(xmax-xmin), n=width)
-        # else:
-        #     x0 = None
-        # if ymin <= 0 <= ymax:
-        #     y0 = _discretize((ymax-0)/(ymax-ymin), n=height) # sign-corrected
-        # else:
-        #     y0 = None
-
-        # # draw axes onto grid (if applicable)
-        # if x0 is not None:
-        #     for i in range(height): grid[i][x0] = '│'
-        # if y0 is not None:
-        #     grid[y0] = ['─' for _ in range(width)]
-        # if x0 is not None and y0 is not None:
-        #     grid[y0][x0] = '┼'
 
 
-# # # ARRANGEMENT
+class text(plot):
+    """
+    One or more lines of ASCII text.
+    TODO: allow alignment and resizing.
+    TODO: account for non-printable and wide characters.
+    """
+    def __init__(
+        self,
+        text: str,
+        color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
+    ):
+        lines = text.splitlines()
+        height = len(lines)
+        width = max(len(line) for line in lines)
+        array = [
+            [colorchar(c, color) for c in line] + [BLANK] * (width - len(line))
+            for line in lines
+        ]
+        super().__init__(array=array)
+        if height > 1 or width > 8:
+            self.preview = lines[0][:5] + "..."
+        else:
+            self.preview = lines[0][:8]
+
+    def __repr__(self):
+        return (
+            f"text(height={self.height}, width={self.width}, "
+            f"text={self.preview!r})"
+        )
+
+
+class progress(plot):
+    """
+    A progress bar.
+    """
+    def __init__(
+        self,
+        progress: float,
+        width: int = 40,
+        color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
+    ):
+        progress = np.clip(progress, 0., 1.)
+        # construct label
+        label = f"{progress:4.0%}"
+        label_chars = [colorchar(c) for c in label]
+        # construct bar
+        bar_width = width - 2 - len(label)
+        fill_width = bar_width * progress
+        bar_chars = [colorchar("█", color)] * int(fill_width)
+        marginal_width = int(8 * (fill_width % 1))
+        if marginal_width > 0:
+            bar_chars.append(colorchar(
+                    [None, "▏", "▎", "▍", "▌", "▋", "▊", "▉"][marginal_width],
+                    color,
+            ))
+        bar_chars.extend(
+            [BLANK] * (bar_width - len(bar_chars))
+        )
+        # put it together
+        array = [
+            [*label_chars, colorchar("["), *bar_chars, colorchar("]")]
+        ]
+        super().__init__(
+            array=array,
+        )
+        self.progress = progress
+
+    def __repr__(self):
+        return f"progress({self.progress:%})"
+
+
+# # # 
+# ARRANGEMENT CLASSES
+
+
+class blank(plot):
+    """
+    A rectangle of blank space.
+    """
+    def __init__(self, height: int, width: int):
+        array = [[BLANK] * width] * height
+        super().__init__(array)
+
+    def __repr__(self):
+        return f"blank(height={self.height}, width={self.width})"
 
 
 class hstack(plot):
@@ -160,19 +411,21 @@ class hstack(plot):
     def __init__(self, *plots):
         height = max(p.height for p in plots)
         width = sum(p.width for p in plots)
-        lines = [
-            "".join([
-                p.lines[i] if i < p.height else p.width * " "
-                for p in plots
-            ])
-            for i in range(height)
-        ]
-        super().__init__(
-            height=height,
-            width=width,
-            lines=lines,
-        )
+        # build array left to right one plot at a time
+        array = [[] for _ in range(height)]
+        for p in plots:
+            for i in range(p.height):
+                array[i].extend(p.array[i])
+            for i in range(p.height, height):
+                array[i].extend([BLANK] * p.width)
+        super().__init__(array)
         self.plots = plots
+
+    def __repr__(self):
+        return (
+            f"hstack(height={self.height}, width={self.width}, "
+            f"plots={self.plots!r})"
+        )
 
 
 class vstack(plot):
@@ -182,13 +435,43 @@ class vstack(plot):
     def __init__(self, *plots):
         height = sum(p.height for p in plots)
         width = max(p.width for p in plots)
-        lines = [l + " " * (width - p.width) for p in plots for l in p.lines]
-        super().__init__(
-            height=height,
-            width=width,
-            lines=lines,
-        )
+        # build the array top to bottom one plot at a time
+        array = []
+        for p in plots:
+            for row in p.array:
+                array.append(row + [BLANK] * (width - p.width))
+        super().__init__(array)
         self.plots = plots
+
+    def __repr__(self):
+        return (
+            f"vstack(height={self.height}, width={self.width}, "
+            f"plots={self.plots!r})"
+        )
+
+
+class dstack(plot):
+    """
+    Distally arrange a group of plots.
+    """
+    def __init__(self, *plots):
+        height = max(p.height for p in plots)
+        width = max(p.width for p in plots)
+        # build the array front to back one plot at a time
+        array = [ [BLANK for _ in range(width) ] for _ in range(height) ]
+        for p in plots:
+            for i, line in enumerate(p.array):
+                for j, c in enumerate(line):
+                    if c:
+                        array[i][j] = c
+        super().__init__(array)
+        self.plots = plots
+
+    def __repr__(self):
+        return (
+            f"dstack(height={self.height}, width={self.width}, "
+            f"plots={self.plots!r})"
+        )
 
 
 class wrap(plot):
@@ -199,38 +482,257 @@ class wrap(plot):
         cell_height = max(p.height for p in plots)
         cell_width = max(p.width for p in plots)
         if cols is None:
-            cols = 80 // cell_width
+            cols = max(1, os.get_terminal_size()[0] // cell_width)
         # wrap list of plots into groups, of length `cols` (except last)
         wrapped_plots = []
         for i, plot in enumerate(plots):
             if i % cols == 0:
                 wrapped_plots.append([])
             wrapped_plots[-1].append(plot)
-        # combine functionality of hstack/vstack
-        lines = [
-            "".join([
-                p.lines[i] + " " * (cell_width - p.width)
-                if i < p.height else " " * cell_width
-                for p in group
-            ])
-            for group in wrapped_plots
-            for i in range(cell_height)
-        ]
+        # build the array left/right, top/down, one plot at a time
+        array = []
+        for group in wrapped_plots:
+            row = [[] for _ in range(cell_height)]
+            for p in group:
+                for i in range(p.height):
+                    row[i].extend(p.array[i])
+                    row[i].extend([BLANK] * (cell_width - p.width))
+                for i in range(p.height, cell_height):
+                    row[i].extend([BLANK] * cell_width)
+            array.extend(row)
+        # correction for the final row
+        if len(group) < cols:
+            buffer = [BLANK] * cell_width * (cols - len(group))
+            for i in range(cell_height):
+                array[-cell_height+i].extend(buffer)
         # done!
-        super().__init__(
-            height=len(lines),
-            width=min(len(plots), cols) * cell_width,
-            lines=lines,
+        super().__init__(array)
+        self.plots = plots
+
+    def __repr__(self):
+        return (
+            f"wrap(height={self.height}, width={self.width}, "
+            f"plots={self.plots!r})"
         )
-        self.wrapped_plots = wrapped_plots
 
 
-# # # COLOR SCHEMES
+class border(plot):
+    """
+    Put a unicode border around a plot.
+    """
+    class Style:
+        LIGHT  = "─│┌┐└┘"
+        HEAVY  = "━┃┏┓┗┛"
+        DOUBLE = "═║╔╗╚╝"
+        BLANK  = "      "
+        ROUND  = "─│╭╮╰╯"
+        BUMPER = "─│▛▜▙▟"
+
+    def __init__(
+        self,
+        plot: plot,
+        style: Style | None = None,
+        color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
+    ):
+        if style is None:
+            style = self.Style.ROUND
+        array = [
+            # top row
+            [
+                colorchar(style[2], color),
+                *[colorchar(style[0], color)] * plot.width,
+                colorchar(style[3], color),
+            ],
+            # middle rows
+            *[
+                [
+                    colorchar(style[1], color),
+                    *row,
+                    colorchar(style[1], color),
+                ]
+                for row in plot.array
+            ],
+            # bottom row
+            [
+                colorchar(style[4], color),
+                *[colorchar(style[0], color)] * plot.width,
+                colorchar(style[5], color),
+            ],
+        ]
+        super().__init__(array)
+        self.style = style[2]
+        self.plot = plot
+    
+    def __repr__(self):
+        return f"border(style={self.style!r}, plot={self.plot!r})"
+
+
+class center(plot):
+    """
+    Put blank space around a plot.
+    """
+    def __init__(
+        self,
+        plot: plot,
+        height: int | None = None,
+        width: int | None = None,
+    ):
+        height = plot.height if height is None else max(height, plot.height)
+        width = plot.width if width is None else max(width, plot.width)
+        def _center(inner_size, outer_size):
+            diff = outer_size - inner_size
+            left = diff // 2
+            right = left + (diff % 2)
+            return left, right
+        left, right = _center(plot.width, width)
+        above, below = _center(plot.height, height)
+        array = (
+            [[BLANK] * width] * above
+            + [
+                [BLANK] * left + row + [BLANK] * right for row in plot.array
+            ]
+            + [[BLANK] * width] * below
+        )
+        super().__init__(array)
+        self.plot = plot
+    
+    def __repr__(self):
+        return (
+            f"center(height={self.height}, width={self.width}, "
+            f"plot={self.plot!r})"
+        )
+
+
+# # # 
+# COLORMAPS
+
+
+def reds(x):
+    """
+    Red colormap. Simply embeds greyscale value into red channel.
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3))
+    rgb[..., 0] = x
+    return rgb
+
+
+def greens(x):
+    """
+    Green colormap. Simply embeds greyscale value into green channel.
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3))
+    rgb[..., 1] = x
+    return rgb
+
+
+def blues(x):
+    """
+    Blue colormap. Simply embeds greyscale value into blue channel.
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3))
+    rgb[..., 2] = x
+    return rgb
+
+
+def yellows(x):
+    """
+    Yellow colormap. Simply embeds greyscale value into red and green
+    channels.
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3))
+    rgb[..., 0] = x
+    rgb[..., 1] = x
+    return rgb
+
+
+def magentas(x):
+    """
+    Magenta colormap. Simply embeds greyscale value into red and blue
+    channels.
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3))
+    rgb[..., 0] = x
+    rgb[..., 2] = x
+    return rgb
+
+
+def cyans(x):
+    """
+    Cyan colormap. Simply embeds greyscale value into green and blue
+    channels.
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3))
+    rgb[..., 1] = x
+    rgb[..., 2] = x
+    return rgb
+
+
+def cool(x):
+    """
+    Cool colormap. Embeds greyscale value into interpolating between cyan and
+    magenta.
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3))
+    rgb[..., 0] = x
+    rgb[..., 1] = 1-x
+    rgb[..., 2] = 1
+    return rgb
+
+
+def rainbow(x):
+    """
+    Rainbow colormap. Effectively embeds greyscale values as hue in HSV color
+    space.
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3))
+    # map [0, 1] into (i, r) coordinates where
+    # * i is in {0, 1, 2, 3, 4, 5}, and
+    # * r is in [0, 1].
+    t = 6 * x
+    i = t.astype(int) % 6
+    r = t % 1
+    # for each i, project t into the appropriate colour channels
+    # i = 0 (red to red+green)
+    i0 = (i == 0)
+    rgb[i0, 0] = 1.
+    rgb[i0, 1] = r[i0]
+    # i = 1 (red+green to green)
+    i1 = (i == 1)
+    rgb[i1, 0] = 1. - r[i1]
+    rgb[i1, 1] = 1.
+    # i = 2 (green to green+blue)
+    i2 = (i == 2)
+    rgb[i2, 1] = 1.
+    rgb[i2, 2] = r[i2]
+    # i = 3 (green+blue to blue)
+    i3 = (i == 3)
+    rgb[i3, 1] = 1. - r[i3]
+    rgb[i3, 2] = 1.
+    # i = 4 (blue to blue+red)
+    i4 = (i == 4)
+    rgb[i4, 2] = 1.
+    rgb[i4, 0] = r[i4]
+    # i = 5 (blue+red to red)
+    i5 = (i == 5)
+    rgb[i5, 2] = 1. - r[i5]
+    rgb[i5, 0] = 1.
+    # done
+    return rgb
 
 
 def viridis(x):
     """
-    https://youtu.be/xAoljeRJ3lU
+    Viridis colormap.
+
+    Details: https://youtu.be/xAoljeRJ3lU
     """
     return np.array([
         [.267,.004,.329],[.268,.009,.335],[.269,.014,.341],[.271,.019,.347],
@@ -297,12 +799,14 @@ def viridis(x):
         [.886,.892,.095],[.896,.893,.096],[.906,.894,.098],[.916,.896,.100],
         [.926,.897,.104],[.935,.898,.108],[.945,.899,.112],[.955,.901,.118],
         [.964,.902,.123],[.974,.903,.130],[.983,.904,.136],[.993,.906,.143],
-    ])[_discretize(x,256)]
+    ])[(np.clip(x, 0., 1.) * (255)).astype(int)]
 
 
 def sweetie16(x):
     """
-    https://lospec.com/palette-list/sweetie-16
+    Sweetie-16 colour palette.
+
+    Details: https://lospec.com/palette-list/sweetie-16
     """
     return np.array([
         [.101,.109,.172],[.364,.152,.364],[.694,.243,.325],[.937,.490,.341],
@@ -312,34 +816,25 @@ def sweetie16(x):
     ])[x]
 
 
-# # # UTILITIES
-
-
-def _discretize(x, n=256):
+def pico8(x):
     """
-    float[0,1] x -> int8 i
+    PICO-8 colour palette.
+
+    Details: https://pico-8.fandom.com/wiki/Palette
     """
-    return (np.clip(x, 0., 1.) * (n-1)).astype(int)
+    return (np.array([
+        [  0,   0,   0], [ 29,  43,  83], [126,  37,  83], [  0, 135,  81],
+        [171,  82,  54], [ 95,  87,  79], [194, 195, 199], [255, 241, 232],
+        [255,   0,  77], [255, 163,   0], [255, 236,  39], [  0, 228,  54],
+        [ 41, 173, 255], [131, 118, 156], [255, 119, 168], [255, 204, 170],
+    ]) / 255)[x]
 
 
-def _color(s, fg=None, bg=None):
-    color_code = _color_code(fg, bg)
-    reset_code = "\033[0m" if fg is not None or bg is not None else ""
-    return f"{color_code}{s}{reset_code}"
+# # # 
+# UNICODE HELPER FUNCTIONS
 
 
-def _color_code(fg=None, bg=None):
-    fg_code = f'\033[38;{_color_encode(fg)}m' if fg is not None else ""
-    bg_code = f'\033[48;{_color_encode(bg)}m' if bg is not None else ""
-    return f"{fg_code}{bg_code}"
-
-
-def _color_encode(c):
-    r, g, b = int(255 * c[0]), int(255 * c[1]), int(255 * c[2])
-    return f"2;{r};{g};{b}"
-
-
-def _braille_encode(a):
+def braille_encode(a):
     """
     Turns a HxW array of booleans into a (H//4)x(W//2) array of braille
     binary codes (suitable for specifying unicode codepoints, just add
@@ -352,11 +847,11 @@ def _braille_encode(a):
                     6-o o-7                  7 6  5 3 1  4 2 0
     """
     r = einops.rearrange(a, '(h h4) (w w2) -> (h4 w2) h w', h4=4, w2=2)
-    b = ( r[0]      | r[1] << 3 
+    b = (
+          r[0]      | r[1] << 3 
         | r[2] << 1 | r[3] << 4 
         | r[4] << 2 | r[5] << 5 
         | r[6] << 6 | r[7] << 7
-        )
+    )
     return b
-
-
+        
