@@ -1,6 +1,6 @@
 import numpy as np
 import einops
-import mattplotlib as mp
+import matthewplotlib as mp
 
 image_data = """
     deeeeeefeffffeccddeeeedeeeeeeeee eeeeeeffffec9755777a9abdeeeeeeee
@@ -22,11 +22,11 @@ image_data = """
 """.strip().split()
 image = np.asarray([[int(a,base=16) for a in row] for row in image_data])
 
-print(
-    mp.image(image / 15)
-    ^ mp.image(image / 15, colormap=mp.viridis)
-    | mp.image(1 - image / 15, colormap=mp.cool)
-    ^ mp.image(image / 15, colormap=mp.magentas)
-    | mp.image(image // 4 + 8, colormap=mp.sweetie16)
-    ^ mp.image(image // 4, colormap=mp.sweetie16)
-)
+print(mp.wrap(
+    mp.image(image / 15),
+    mp.image(image / 15, colormap=mp.viridis),
+    mp.image(1 - image / 15, colormap=mp.cool),
+    mp.image(image / 15, colormap=mp.magentas),
+    mp.image(image // 4 + 8, colormap=mp.sweetie16),
+    mp.image(image // 4, colormap=mp.sweetie16),
+))

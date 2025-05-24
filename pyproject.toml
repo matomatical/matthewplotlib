@@ -1,5 +1,5 @@
 [project]
-name = "mattplotlib"
+name = "matthewplotlib"
 version = "0.0.0"
 authors = [
     { name="Matthew Farrugia-Roberts", email="matthew@far.in.net" },
@@ -19,12 +19,12 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/matomatical/mattplotlib"
-Issues = "https://github.com/matomatical/mattplotlib/issues"
+Homepage = "https://github.com/matomatical/matthewplotlib"
+Issues = "https://github.com/matomatical/matthewplotlib/issues"
 
 [build-system]
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [tool.flit.module]
-name = "mattplotlib"
+name = "matthewplotlib"

@@ -1,5 +1,5 @@
-matt's plotting library (mattplotlib)
-=====================================
+Matthew's plotting library (matthewplotlib)
+===========================================
 
 A Python plotting library that isn't painful.
 
@@ -32,12 +32,16 @@ Installation
 Install:
 
 ```
-pip install git+https://github.com/matomatical/mattplotlib.git
+pip install git+https://github.com/matomatical/matthewplotlib.git
 ```
+
+Quickstart
+----------
 
 Import:
 
 ```
-import mattplotlib as mp
-import numpy as np # required for some of the examples in this readme
+import matthewplotlib as mp
 ```
+
+TODO: Demos. For now, see the examples.

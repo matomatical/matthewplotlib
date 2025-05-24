@@ -1,7 +1,7 @@
 import numpy as np
 import sklearn.decomposition # pip install scikit-learn
 
-import mattplotlib as mp
+import matthewplotlib as mp
 
 
 DIMENSION = 10_000

@@ -2,7 +2,7 @@
 GitHub-inspired calendar visualisation.
 """
 
-import mattplotlib as mp
+import matthewplotlib as mp
 import calendar
 import datetime
 

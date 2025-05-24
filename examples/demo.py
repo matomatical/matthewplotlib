@@ -1,5 +1,5 @@
 import numpy as np
-import mattplotlib as mp
+import matthewplotlib as mp
 
 size = 14
 u = np.random.rand(size**2).reshape(size,size)
