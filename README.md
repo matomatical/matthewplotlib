@@ -5,6 +5,8 @@ A Python plotting library that isn't painful.
 
 Work in progress.
 
+[](screenshot.png)
+
 Contents:
 
 * Image plots
@@ -44,4 +46,4 @@ Import:
 import matthewplotlib as mp
 ```
 
-TODO: Demos. For now, see the examples.
+TODO: Demos. For now, see the examples folder.

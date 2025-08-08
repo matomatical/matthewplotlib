@@ -14,8 +14,12 @@ classifiers = [
 
 requires-python = ">=3.10"
 dependencies = [
+    # core
     "numpy",
     "einops",
+    # for image rendering
+    "Pillow",
+    "unscii",
 ]
 
 [project.urls]

@@ -106,7 +106,11 @@ def main():
             month = 1
 
     plot = mp.wrap(*month_plots)
+    
+    print("printing plot...")
     print(plot)
+    print("saving to 'out.png'...")
+    plot.saveimg('out.png')
 
 
 if __name__ == "__main__":

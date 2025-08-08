@@ -22,11 +22,16 @@ image_data = """
 """.strip().split()
 image = np.asarray([[int(a,base=16) for a in row] for row in image_data])
 
-print(mp.wrap(
+plot = mp.wrap(
     mp.image(image / 15),
     mp.image(image / 15, colormap=mp.viridis),
     mp.image(1 - image / 15, colormap=mp.cool),
     mp.image(image / 15, colormap=mp.magentas),
     mp.image(image // 4 + 8, colormap=mp.sweetie16),
     mp.image(image // 4, colormap=mp.sweetie16),
-))
+)
+
+print("printing plot...")
+print(plot)
+print("saving to 'out.png'...")
+plot.saveimg('out.png')

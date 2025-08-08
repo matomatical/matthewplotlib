@@ -7,6 +7,8 @@ from typing import Callable
 import numpy as np
 from numpy.typing import ArrayLike
 import einops
+from PIL import Image
+import unscii
 
 
 # # # 
@@ -34,6 +36,7 @@ class colorchar:
         else:
             self.bg = None
 
+
     def __str__(self) -> str:
         """
         If necessary, issue ANSI control codes that switch the color into the
@@ -59,6 +62,29 @@ class colorchar:
             rcode = ""
         return f"{fgcode}{bgcode}{self.c}{rcode}"
 
+
+    def to_rgb_array(self) -> ArrayLike: # u8[16,8,3]
+        # bitmap
+        char = FONT_UNSCII_16.get_char(self.c)
+        rows = np.array(char, dtype=np.uint8).reshape(16, 1)
+        bits = np.unpackbits(rows, axis=1, bitorder='big').astype(bool)
+        # -> b[16, 8]
+        
+        # rgb array
+        if self.fg is not None:
+            fg = (255 * self.fg).astype(np.uint8)
+        else:
+            fg = np.array([255, 255, 255], dtype=np.uint8)
+        if self.bg is not None:
+            bg = (255 * self.bg).astype(np.uint8)
+        else:
+            bg = np.array([0, 0, 0], dtype=np.uint8)
+        img = np.where(bits[..., np.newaxis], fg, bg)
+        # -> u8[16,8,3]
+
+        return img
+
+    
     def __bool__(self):
         return bool(
             self.c.strip()
@@ -79,8 +105,6 @@ class plot:
     Base class representing a 2d character array as a list of lines.
     Provides methods for converting to a string, along with operations
     for horizontal (|), vertical (^), and distal (&) stacking.
-
-    TODO: Derive height and width from internal character array.
     """
     def __init__(self, array: list[colorchar]):
         self.array = array
@@ -95,6 +119,13 @@ class plot:
 
     def __str__(self) -> str:
         return "\n".join(["".join([str(c) for c in l]) for l in self.array])
+
+    def saveimg(self, filename: str, scale_factor: int = 1):
+        tiles = np.asarray([[c.to_rgb_array() for c in l] for l in self.array])
+        # -> u8[H, W, 16, 8, 3]
+        stacked = einops.rearrange(tiles, 'H W h w rgb -> (H h) (W w) rgb')
+        image = Image.fromarray(stacked, mode='RGB')
+        image.save(filename)
 
     def __or__(self, other):
         return hstack(self, other)
@@ -856,4 +887,9 @@ def braille_encode(a):
         | r[6] << 6 | r[7] << 7
     )
     return b
-        
+
+
+# # # 
+# FONT STUFF
+
+FONT_UNSCII_16 = unscii.UnsciiFont("unscii_16")
