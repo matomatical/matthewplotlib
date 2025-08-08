@@ -5,7 +5,7 @@ A Python plotting library that isn't painful.
 
 Work in progress.
 
-[](screenshot.png)
+![](screenshot.png)
 
 Contents:
 
