@@ -1,12 +1,16 @@
 """
-Dead-simple terminal plotting library by matt.
+Dead-simple terminal plotting library by matthew.
 """
 
+import math
 import os
 from typing import Callable
+
 import numpy as np
 from numpy.typing import ArrayLike
 import einops
+import hilbert as _hilbert
+
 from PIL import Image
 import unscii
 
@@ -345,6 +349,62 @@ class scatter(plot):
             f"data=<{self.num_points} points on "
             f"[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]x"
             f"[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]>)"
+        )
+
+
+class hilbert(plot):
+    """
+    Render a list of bools long a hilbert curve using a grid of braille unicode
+    characters.
+    """
+    def __init__(
+        self,
+        data: ArrayLike,                    # bool[N]
+        dotcolor: ArrayLike | None = None,  # float[3] (rgb 0 to 1)
+        bgcolor: ArrayLike | None = None,   # float[3] (rgb 0 to 1)
+        nullcolor: ArrayLike | None = None, # float[3] (rgb 0 to 1)
+    ):
+        # preprocess and compute grid shape
+        data = np.asarray(data)
+        N, = data.shape
+        n = max(2, ((N-1).bit_length() + 1) // 2)
+
+        # compute grid positions for each data element
+        on = _hilbert.decode(
+            hilberts=data.nonzero()[0],
+            num_dims=2,
+            num_bits=n,
+        )
+
+        # make empty dot matrix 2d float coordinates to data grid
+        dots = np.zeros((2**n,2**n), dtype=bool)
+        dots[on[:,1], on[:,0]] = True
+        
+        # render data grid as a grid of braille characters
+        width = int(2 ** (n-1))
+        height = int(2 ** (n-2))
+        null = colorchar(" ", bgcolor=nullcolor)
+        array = [[null for _ in range(width)] for _ in range(height)]
+        bgrid = braille_encode(dots)
+        for i in range(height):
+            for j in range(width):
+                if bgrid[i, j]:
+                    braille_char = chr(0x2800+bgrid[i, j])
+                    array[i][j] = colorchar(
+                        character=braille_char,
+                        fgcolor=dotcolor,
+                        bgcolor=bgcolor,
+                    )
+        super().__init__(array)
+        self.num_points = len(on)
+        self.all_points = len(data)
+        self.n = n
+
+    def __repr__(self):
+        return (
+            f"hilbert(height={self.height}, width={self.width}, "
+            f"data=<{self.num_points} points out of {self.all_points} "
+            f"on a {2**self.n} x {2**self.n} grid>"
         )
 
 

@@ -17,6 +17,7 @@ dependencies = [
     # core
     "numpy",
     "einops",
+    "numpy-hilbert-curve",
     # for image rendering
     "Pillow",
     "unscii",

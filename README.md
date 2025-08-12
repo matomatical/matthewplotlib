@@ -11,17 +11,19 @@ Contents:
 
 * Image plots
 * Scatter plots
-* Progress bar
+* Hilbert curves
+* Progress bars
 * Text boxes
 * Arranging plots
 * Various colour maps
+* Export to image
 
 TODO:
 
-* axes and labels
-* many more plot types
-* animated plots
-* many more things
+* Histograms and bar charts
+* Axes and labels
+* Animated plots
+* Many more things...
 
 Similar:
 
@@ -46,4 +48,6 @@ Import:
 import matthewplotlib as mp
 ```
 
-TODO: Demos. For now, see the examples folder.
+Demos:
+
+TODO (for now, see the examples folder).
