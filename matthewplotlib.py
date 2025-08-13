@@ -76,11 +76,11 @@ class colorchar:
         
         # rgb array
         if self.fg is not None:
-            fg = 255 * np.array([*self.fg,  1], dtype=np.uint8)
+            fg = np.array([*(255*self.fg), 255], dtype=np.uint8)
         else:
             fg = np.array([255, 255, 255, 255], dtype=np.uint8)
         if self.bg is not None:
-            bg = 255 * np.array([*self.bg,  1], dtype=np.uint8)
+            bg = np.array([*(255*self.bg), 255], dtype=np.uint8)
         else:
             bg = np.array([  0,   0,   0,   0], dtype=np.uint8)
         img = np.where(bits[..., np.newaxis], fg, bg)
