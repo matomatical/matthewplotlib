@@ -67,7 +67,7 @@ class colorchar:
         return f"{fgcode}{bgcode}{self.c}{rcode}"
 
 
-    def to_rgb_array(self) -> ArrayLike: # u8[16,8,3]
+    def to_rgba_array(self) -> ArrayLike: # u8[16,8,4]
         # bitmap
         char = FONT_UNSCII_16.get_char(self.c)
         rows = np.array(char, dtype=np.uint8).reshape(16, 1)
@@ -76,15 +76,15 @@ class colorchar:
         
         # rgb array
         if self.fg is not None:
-            fg = (255 * self.fg).astype(np.uint8)
+            fg = 255 * np.array([*self.fg,  1], dtype=np.uint8)
         else:
-            fg = np.array([255, 255, 255], dtype=np.uint8)
+            fg = np.array([255, 255, 255, 255], dtype=np.uint8)
         if self.bg is not None:
-            bg = (255 * self.bg).astype(np.uint8)
+            bg = 255 * np.array([*self.bg,  1], dtype=np.uint8)
         else:
-            bg = np.array([0, 0, 0], dtype=np.uint8)
+            bg = np.array([  0,   0,   0,   0], dtype=np.uint8)
         img = np.where(bits[..., np.newaxis], fg, bg)
-        # -> u8[16,8,3]
+        # -> u8[16,8,4]
 
         return img
 
@@ -125,10 +125,10 @@ class plot:
         return "\n".join(["".join([str(c) for c in l]) for l in self.array])
 
     def saveimg(self, filename: str, scale_factor: int = 1):
-        tiles = np.asarray([[c.to_rgb_array() for c in l] for l in self.array])
-        # -> u8[H, W, 16, 8, 3]
-        stacked = einops.rearrange(tiles, 'H W h w rgb -> (H h) (W w) rgb')
-        image = Image.fromarray(stacked, mode='RGB')
+        tiles = np.asarray([[c.to_rgba_array() for c in l] for l in self.array])
+        # -> u8[H, W, 16, 8, 4]
+        stacked = einops.rearrange(tiles, 'H W h w rgba -> (H h) (W w) rgba')
+        image = Image.fromarray(stacked, mode='RGBA')
         image.save(filename)
 
     def __or__(self, other):
