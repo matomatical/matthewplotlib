@@ -370,34 +370,38 @@ class hilbert(plot):
         n = max(2, ((N-1).bit_length() + 1) // 2)
 
         # compute grid positions for each data element
-        on = _hilbert.decode(
-            hilberts=data.nonzero()[0],
+        all_coords = _hilbert.decode(
+            hilberts=np.arange(N),
             num_dims=2,
             num_bits=n,
         )
+        lit_coords = all_coords[data]
 
-        # make empty dot matrix 2d float coordinates to data grid
-        dots = np.zeros((2**n,2**n), dtype=bool)
-        dots[on[:,1], on[:,0]] = True
+        # make empty dot matrix
+        all_grid = np.zeros((2**n,2**n), dtype=bool)
+        all_grid[all_coords[:,1], all_coords[:,0]] = True
+        lit_grid = np.zeros((2**n,2**n), dtype=bool)
+        lit_grid[lit_coords[:,1], lit_coords[:,0]] = True
         
         # render data grid as a grid of braille characters
         width = int(2 ** (n-1))
         height = int(2 ** (n-2))
         null = colorchar(" ", bgcolor=nullcolor)
         array = [[null for _ in range(width)] for _ in range(height)]
-        bgrid = braille_encode(dots)
+        bg_grid = braille_encode(all_grid)
+        fg_grid = braille_encode(lit_grid)
         for i in range(height):
             for j in range(width):
-                if bgrid[i, j]:
-                    braille_char = chr(0x2800+bgrid[i, j])
+                if bg_grid[i, j]:
+                    braille_char = chr(0x2800+fg_grid[i, j])
                     array[i][j] = colorchar(
                         character=braille_char,
                         fgcolor=dotcolor,
                         bgcolor=bgcolor,
                     )
         super().__init__(array)
-        self.num_points = len(on)
-        self.all_points = len(data)
+        self.num_points = len(lit_coords)
+        self.all_points = N
         self.n = n
 
     def __repr__(self):
