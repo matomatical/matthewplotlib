@@ -6,7 +6,6 @@ N = 15565
 
 data = np.random.binomial(1, p=np.linspace(0,1,N))
 data = data.astype(bool)
-print(data.shape)
 plot = mp.hilbert(
     data=data,
     dotcolor=(1,1,1),
