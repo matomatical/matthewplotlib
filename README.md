@@ -3,11 +3,11 @@ Matthew's plotting library (matthewplotlib)
 
 A Python plotting library that isn't painful.
 
-Work in progress.
+Perpetual work in progress.
 
 ![](screenshot.png)
 
-Contents:
+Features:
 
 * Image plots
 * Scatter plots
@@ -22,13 +22,13 @@ TODO:
 
 * Histograms and bar charts
 * Axes and labels
+
+Wishlist:
+
 * Animated plots
-* Many more things...
-
-Similar:
-
-* https://github.com/tammoippen/plotille
-* more...
+* 3d visualisation
+* Project coordinates onto world map with braille background, different
+  projections, including 3d rotation
 
 Installation
 ------------
@@ -51,3 +51,20 @@ import matthewplotlib as mp
 Demos:
 
 TODO (for now, see the examples folder).
+
+Related work
+------------
+
+Python terminal plotting
+
+* https://github.com/tammoippen/plotille
+* more...
+
+Julia terminal plotting
+
+* ...
+
+Other
+
+* GNU plot?
+
