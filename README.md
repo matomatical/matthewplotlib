@@ -1,7 +1,20 @@
 Matthew's plotting library (matthewplotlib)
 ===========================================
 
-A Python plotting library that isn't painful.
+A Python plotting library that aspires to *not be painful.*
+
+*Status:* Work in progress. See [roadmap](#roadmap). Currently, still generally
+painful, due to lack of documentation and lack of common plot types. However,
+for personal use, I'm finding it delightful.
+
+Key features:
+
+* Unicode-based rendering of scatter plots, small images, heatmaps, and more.
+* Rendering plots to the terminal just by calling `print(plot)` (no GUI mess).
+* Plots are just expressions. Compose complex plots with horizontal (`|`) and
+  vertical (`^`) stacking operations.
+* If you absolutely need plots outside the terminal, you can render them to PNG
+  using a pixel font.
 
 ![](examples/lissajous.png)
 
@@ -65,8 +78,8 @@ See [examples/](examples/) folder. Highlights:
 * [lissajous.py](examples/lissajous.py) showing scatterplots and basic plot
   arrangement.
 * [image.py](examples/image.py) showing heatmaps and some colourmaps.
-* [calendar_heatmap.py](calendar_heatmap.py) showing how to construct a custom
-  plot.
+* [calendar_heatmap.py](examples/calendar_heatmap.py) showing how to construct
+  a custom plot, in this case colouring the cells of a calendar.
 * [teapot.py](examples/teapot.py) showing how to use scatter plots to render a
   3d point cloud, and animations.
 
@@ -111,15 +124,15 @@ Rendering:
 
 Advanced plot types:
 
-* [x] Calendar plots.
+* [ ] Calendar heatmap plots (see calendar heatmap example for now).
 * [ ] 3d scatter plots (see teapot example for now).
 * [ ] Non-square hilbert curves and 3d hilbert curves.
-* [ ] World maps (markers on a braille background, different 2d and 3d
-  projections).
+* [ ] World maps, 2d projection.
+* [ ] World maps, 3d globe.
 
 Advanced plot arrangement:
 
-* [ ] More support for animated plots (see teapot example for now).
+* [ ] Better support for animated plots, including differential rendering.
 * [ ] Scatter plots with multiple colours.
 * [ ] Line plots with multiple colours.
 
@@ -133,10 +146,26 @@ Repository:
 
 * [x] Set up project, installable via git.
 * [x] A simple example for the quick-start guide.
-* [ ] Detailed docstrings for everything (at least everything user-facing).
-* [ ] Generate a static site with browsable HTML documentation.
+* [ ] Static site with generated HTML documentation.
 * [ ] Version numbering and changelog.
 * [ ] List on PyPI.
+
+Other code improvements:
+
+* [ ] Detailed docstrings for everything (at least everything user-facing).
+* [ ] Split up monolithic file into a small number of modules.
+* [ ] Comprehensive type annotations.
+* [ ] Robust input validation.
+* [ ] Error handling.
+* [ ] Tests.
+
+Example ideas:
+
+* [x] Calendar heatmap (inspired by GitHub daily contributions tracker).
+* [x] 3d point clouds.
+* [ ] Simple machine learning experiment, loss curves and progress bars.
+* [ ] Simple gridworld rollout visualiser for reinforcement learning.
+* [ ] CPU/RAM visualiser.
 
 Related work
 ------------
