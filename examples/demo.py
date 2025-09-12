@@ -41,7 +41,7 @@ plot = (
         width=46,
         xrange=(-5, +5),
         yrange=(-4, +4),
-        color=(0,1,0)
+        color=(0.,1.,0.),
     ), style=mp.border.Style.ROUND)
 )
 print(repr(plot))
