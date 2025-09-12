@@ -11,19 +11,20 @@ Perpetual work in progress.
 
 Features:
 
-* Image plots
-* Scatter plots
-* Hilbert curves
-* Progress bars
-* Text boxes
-* Arranging plots
-* Various colour maps
-* Export to image
+* Image plots.
+* Scatter plots.
+* Hilbert curves.
+* Progress bars.
+* Text boxes.
+* Arranging plots.
+* Various colour maps.
+* Export to image.
 
 TODO:
 
-* Histograms and bar charts
-* Axes and labels
+* Histograms and bar charts.
+* Axes and labels.
+* Use u8 for colours throughout.
 
 Wishlist:
 
@@ -57,16 +58,22 @@ TODO (for now, see the examples folder).
 Related work
 ------------
 
-Python terminal plotting
+Terminal plotting in Python
 
-* https://github.com/tammoippen/plotille
-* more...
+* Plotille: https://github.com/tammoippen/plotille
+* Termgraph: https://github.com/sgeisler/termgraph
+* Termplot: https://github.com/justnoise/termplot
 
-Julia terminal plotting
+Braille art
 
-* ...
+* Drawille (Python): https://github.com/asciimoo/drawille
+* Rsille (Rust): https://github.com/nidhoggfgg/rsille
+* Drawille (Lua): https://github.com/asciimoo/lua-drawille
+* Drawille (NodeJS): https://github.com/madbence/node-drawille
+* Python repo documents ports to various other languages
 
-Other
+Terminal plotting in other languages
 
-* GNU plot?
+* Julia https://github.com/sunetos/TextPlots.jl
+* GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.html
 

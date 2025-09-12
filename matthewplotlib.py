@@ -2,9 +2,10 @@
 Dead-simple terminal plotting library by matthew.
 """
 
+import dataclasses
 import math
 import os
-from typing import Callable
+from typing import Callable, Self
 
 import numpy as np
 from numpy.typing import ArrayLike
@@ -16,88 +17,96 @@ import unscii
 
 
 # # # 
-# COLOURED CHARACTER UTILITY CLASS
+# UTILITY CLASSES
 
 
-class colorchar:
+@dataclasses.dataclass(frozen=True)
+class Color:
     """
-    Class representing a possibly-coloured character. Provides methods for
-    converting to a string, for use in rendering.
+    A color triple.
     """
-    def __init__(
-        self,
-        character: str = " ",
-        fgcolor: ArrayLike | None = None, # float[3] (rgb 0 to 1)
-        bgcolor: ArrayLike | None = None, # float[3] (rgb 0 to 1)
-    ):
-        self.c = character
-        if fgcolor is not None:
-            self.fg = np.asarray(fgcolor)
-        else:
-            self.fg = None
-        if bgcolor is not None:
-            self.bg = np.asarray(bgcolor)
-        else:
-            self.bg = None
+    r: int
+    g: int
+    b: int
 
 
-    def __str__(self) -> str:
-        """
-        If necessary, issue ANSI control codes that switch the color into the
-        given fg and bg colors. Then print the character. Then, if necessary,
-        switch back to default mode.
-        """
-        # needs fg?
-        if self.fg is not None:
-            fgr, fgg, fgb = (255 * self.fg).astype(np.uint8)
-            fgcode = f"\033[38;2;{fgr};{fgg};{fgb}m"
-        else:
-            fgcode = ""
-        # needs bg?
-        if self.bg is not None:
-            bgr, bgg, bgb = (255 * self.bg).astype(np.uint8)
-            bgcode = f"\033[48;2;{bgr};{bgg};{bgb}m"
-        else:
-            bgcode = ""
-        # needs reset?
-        if self.fg is not None or self.bg is not None:
-            rcode = "\033[0m"
-        else:
-            rcode = ""
-        return f"{fgcode}{bgcode}{self.c}{rcode}"
-
-
-    def to_rgba_array(self) -> ArrayLike: # u8[16,8,4]
-        # bitmap
-        char = FONT_UNSCII_16.get_char(self.c)
-        rows = np.array(char, dtype=np.uint8).reshape(16, 1)
-        bits = np.unpackbits(rows, axis=1, bitorder='big').astype(bool)
-        # -> b[16, 8]
-        
-        # rgb array
-        if self.fg is not None:
-            fg = np.array([*(255*self.fg), 255], dtype=np.uint8)
-        else:
-            fg = np.array([255, 255, 255, 255], dtype=np.uint8)
-        if self.bg is not None:
-            bg = np.array([*(255*self.bg), 255], dtype=np.uint8)
-        else:
-            bg = np.array([  0,   0,   0,   0], dtype=np.uint8)
-        img = np.where(bits[..., np.newaxis], fg, bg)
-        # -> u8[16,8,4]
-
-        return img
+    @staticmethod
+    def from_floats(rgb: np.ndarray) -> Self:
+        return Color(*(255*np.clip(rgb, 0., 1.)).astype(np.uint8))
 
     
+    def __iter__(self) -> iter:
+        return iter((self.r, self.g, self.b))
+
+
+@dataclasses.dataclass(frozen=True)
+class Char:
+    """
+    A single possibly-coloured character.
+    """
+    c: str = " "
+    fg: Color | None = None
+    bg: Color | None = None
+    
     def __bool__(self):
+        """
+        False if the character is blank and colourless.
+        """
         return bool(
             self.c.strip()
-            or self.fg is not None
+            # or self.fg is not None # fg not used for whitespace
             or self.bg is not None
         )
 
 
-BLANK = colorchar(character=" ")
+BLANK = Char(c=" ", fg=None, bg=None)
+
+
+# # # 
+# Rendering characters
+
+
+def to_ansi_str(char: Char) -> str:
+    """
+    If necessary, wrap a Char in ANSI control codes that switch the color into
+    the given fg and bg colors; plus a control code to switch back to default
+    mode.
+    """
+    ansi_controls = []
+    if char.fg is not None:
+        ansi_controls.extend([38, 2, *char.fg])
+    if char.bg is not None:
+        ansi_controls.extend([48, 2, *char.bg])
+    if ansi_controls:
+        return f"\033[{";".join(map(str, ansi_controls))}m{char.c}\033[0m"
+    else:
+        return char.c
+
+
+def to_rgba_array(char: Char) -> ArrayLike: # u8[16,8,4]
+    """
+    Convert a Char to a small RGBA image patch, with the specified foreground
+    color (or white) and background color (or a transparent background).
+    """
+    # bitmap : b[16, 8]
+    rows = np.array(FONT_UNSCII_16.get_char(char.c), dtype=np.uint8)
+    bits = np.unpackbits(rows[:,None], axis=1, bitorder='big').astype(bool)
+    
+    # colors
+    if char.fg is not None:
+        fg = np.array([*char.fg, 255], dtype=np.uint8)
+    else:
+        fg = np.array([255, 255, 255, 255], dtype=np.uint8)
+    if char.bg is not None:
+        bg = np.array([*char.bg, 255], dtype=np.uint8)
+    else:
+        bg = np.array([0, 0, 0, 0], dtype=np.uint8)
+
+
+    # rgb array : u8[16,8,4]
+    img = np.where(bits[..., np.newaxis], fg, bg)
+
+    return img
 
 
 # # # 
@@ -110,7 +119,7 @@ class plot:
     Provides methods for converting to a string, along with operations
     for horizontal (|), vertical (^), and distal (&) stacking.
     """
-    def __init__(self, array: list[colorchar]):
+    def __init__(self, array: list[Char]):
         self.array = array
 
     @property
@@ -122,10 +131,10 @@ class plot:
         return len(self.array[0])
 
     def __str__(self) -> str:
-        return "\n".join(["".join([str(c) for c in l]) for l in self.array])
+        return "\n".join(["".join([to_ansi_str(c) for c in l]) for l in self.array])
 
     def saveimg(self, filename: str, scale_factor: int = 1):
-        tiles = np.asarray([[c.to_rgba_array() for c in l] for l in self.array])
+        tiles = np.asarray([[to_rgba_array(c) for c in l] for l in self.array])
         # -> u8[H, W, 16, 8, 4]
         stacked = einops.rearrange(tiles, 'H W h w rgba -> (H h) (W w) rgba')
         image = Image.fromarray(stacked, mode='RGBA')
@@ -183,12 +192,16 @@ class image(plot):
 
         # render the image lines as unicode strings with ansi color codes
         array = [
-            [colorchar("▀", fg, bg) for fg, bg in row]
+            [
+                Char("▀", Color.from_floats(fg), Color.from_floats(bg))
+                for fg, bg in row
+            ]
             for row in stacked
         ]
 
         # form a plot object
         super().__init__(array)
+
 
     def __repr__(self):
         return f"image(height={self.height}, width={self.width})"
@@ -292,6 +305,7 @@ class scatter(plot):
         data = np.asarray(data)
         n, _2 = data.shape
         assert _2 == 2
+        color = Color.from_floats(color) if color is not None else None
 
         # shortcut if no data
         if n == 0:
@@ -337,7 +351,7 @@ class scatter(plot):
             for j in range(width):
                 if bgrid[i, j]:
                     braille_char = chr(0x2800+bgrid[i, j])
-                    array[i][j] = colorchar(braille_char, color)
+                    array[i][j] = Char(braille_char, fg=color)
         super().__init__(array)
         self.xrange = xrange
         self.yrange = yrange
@@ -368,6 +382,9 @@ class hilbert(plot):
         data = np.asarray(data)
         N, = data.shape
         n = max(2, ((N-1).bit_length() + 1) // 2)
+        dotcolor = Color.from_floats(dotcolor) if color is not None else None
+        bgcolor = Color.from_floats(bgcolor) if color is not None else None
+        nullcolor = Color.from_floats(nullcolor) if color is not None else None
 
         # compute grid positions for each data element
         all_coords = _hilbert.decode(
@@ -386,7 +403,7 @@ class hilbert(plot):
         # render data grid as a grid of braille characters
         width = int(2 ** (n-1))
         height = int(2 ** (n-2))
-        null = colorchar(" ", bgcolor=nullcolor)
+        null = Char(" ", bg=nullcolor)
         array = [[null for _ in range(width)] for _ in range(height)]
         bg_grid = braille_encode(all_grid)
         fg_grid = braille_encode(lit_grid)
@@ -394,7 +411,7 @@ class hilbert(plot):
             for j in range(width):
                 if bg_grid[i, j]:
                     braille_char = chr(0x2800+fg_grid[i, j])
-                    array[i][j] = colorchar(
+                    array[i][j] = Char(
                         character=braille_char,
                         fgcolor=dotcolor,
                         bgcolor=bgcolor,
@@ -424,11 +441,13 @@ class text(plot):
         color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
         bgcolor: ArrayLike | None = None,          # float[3] (rgb 0 to 1)
     ):
+        color = Color.from_floats(color) if color is not None else None
+        bgcolor = Color.from_floats(bgcolor) if color is not None else None
         lines = text.splitlines()
         height = len(lines)
         width = max(len(line) for line in lines)
         array = [
-            [colorchar(c, color, bgcolor) for c in line]
+            [Char(c, fg=color, bg=bgcolor) for c in line]
             + [BLANK] * (width - len(line))
             for line in lines
         ]
@@ -458,14 +477,14 @@ class progress(plot):
         progress = np.clip(progress, 0., 1.)
         # construct label
         label = f"{progress:4.0%}"
-        label_chars = [colorchar(c) for c in label]
+        label_chars = [Char(c) for c in label]
         # construct bar
         bar_width = width - 2 - len(label)
         fill_width = bar_width * progress
-        bar_chars = [colorchar("█", color)] * int(fill_width)
+        bar_chars = [Char("█", fg=color)] * int(fill_width)
         marginal_width = int(8 * (fill_width % 1))
         if marginal_width > 0:
-            bar_chars.append(colorchar(
+            bar_chars.append(Char(
                     [None, "▏", "▎", "▍", "▌", "▋", "▊", "▉"][marginal_width],
                     color,
             ))
@@ -474,7 +493,7 @@ class progress(plot):
         )
         # put it together
         array = [
-            [*label_chars, colorchar("["), *bar_chars, colorchar("]")]
+            [*label_chars, Char("["), *bar_chars, Char("]")]
         ]
         super().__init__(
             array=array,
@@ -631,29 +650,31 @@ class border(plot):
         style: Style | None = None,
         color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
     ):
+        if color is not None:
+            color = Color.from_floats(color)
         if style is None:
             style = self.Style.ROUND
         array = [
             # top row
             [
-                colorchar(style[2], color),
-                *[colorchar(style[0], color)] * plot.width,
-                colorchar(style[3], color),
+                Char(style[2], fg=color),
+                *[Char(style[0], fg=color)] * plot.width,
+                Char(style[3], fg=color),
             ],
             # middle rows
             *[
                 [
-                    colorchar(style[1], color),
+                    Char(style[1], fg=color),
                     *row,
-                    colorchar(style[1], color),
+                    Char(style[1], fg=color),
                 ]
                 for row in plot.array
             ],
             # bottom row
             [
-                colorchar(style[4], color),
-                *[colorchar(style[0], color)] * plot.width,
-                colorchar(style[5], color),
+                Char(style[4], fg=color),
+                *[Char(style[0], fg=color)] * plot.width,
+                Char(style[5], fg=color),
             ],
         ]
         super().__init__(array)
@@ -830,6 +851,7 @@ def viridis(x):
     Viridis colormap.
 
     Details: https://youtu.be/xAoljeRJ3lU
+    TODO: Get all the maps from https://github.com/BIDS/colormap/blob/master/colormaps.py
     """
     return np.array([
         [.267,.004,.329],[.268,.009,.335],[.269,.014,.341],[.271,.019,.347],
