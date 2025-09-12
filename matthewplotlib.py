@@ -1,5 +1,9 @@
 """
-Dead-simple terminal plotting library by matthew.
+Matthew's plotting library (matthewplotlib).
+
+A python plotting library that isn't painful.
+
+See https://github.com/matomatical/matthewplotlib
 """
 
 import dataclasses
@@ -69,10 +73,10 @@ class Color:
             color_ = np.asarray(color)
             if color_.shape == (3,):
                 if np.issubdtype(color_.dtype, np.floating):
-                    rgb = (255*np.clip(color_, 0., 1.)).astype(np.uint8)
+                    rgb = (255*np.clip(color_, 0., 1.)).astype(int)
                     return Color(*rgb)
                 if np.issubdtype(color_.dtype, np.integer):
-                    rgb = np.clip(color_, 0, 255).astype(np.uint8)
+                    rgb = np.clip(color_, 0, 255).astype(int)
                     return Color(*rgb)
         
         raise ValueError(f"invalid color {color!r}")
@@ -101,9 +105,9 @@ class Char:
     
     def __bool__(self):
         """
-        False if the character is blank and colourless.
+        False if the character is blank.
         """
-        return bool(self.c.strip() or self.bg is not None)
+        return bool(self.c != " " or self.bg is not None)
 
 
 BLANK = Char(c=" ", fg=None, bg=None)
@@ -396,7 +400,7 @@ class scatter(plot):
         bgrid = braille_encode(dots > 0)
         for i in range(height):
             for j in range(width):
-                if bgrid[i, j]:
+                if bgrid[i, j] > 0x2800:
                     braille_char = chr(bgrid[i, j])
                     array[i][j] = Char(braille_char, fg=color)
         super().__init__(array)
