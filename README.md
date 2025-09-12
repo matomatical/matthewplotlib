@@ -5,20 +5,32 @@ A Python plotting library that aspires to *not be painful.*
 
 *Status:* Work in progress. See [roadmap](#roadmap). Currently, still generally
 painful, due to lack of documentation and lack of common plot types. However,
-for personal use, I'm finding it delightful.
+for personal use, I'm already finding its limited functionality delightful.
 
 Key features:
 
-* Unicode-based rendering of scatter plots, small images, heatmaps, and more.
-* Rendering plots to the terminal just by calling `print(plot)` (no GUI mess).
+* Colourful unicode-based rendering of scatter plots, small images, heatmaps,
+  and more.
+
+* Rendering plots to the terminal with `print(plot)` (no GUI windows to
+  manage).
+
 * Plots are just expressions. Compose complex plots with horizontal (`|`) and
   vertical (`^`) stacking operations.
+
 * If you absolutely need plots outside the terminal, you can render them to PNG
   using a pixel font.
 
-![](examples/lissajous.png)
+Some eye-candy:
 
-![](examples/teapot.gif)
+<table>
+<tbody>
+  <tr>
+    <td><img src="examples/lissajous.png" height="256px"></td>
+    <td><img src="examples/teapot.gif" height="256px"></td>
+  </tr>
+</tbody>
+</table>
 
 Quickstart
 ----------
@@ -133,8 +145,9 @@ Advanced plot types:
 Advanced plot arrangement:
 
 * [ ] Better support for animated plots, including differential rendering.
-* [ ] Scatter plots with multiple colours.
-* [ ] Line plots with multiple colours.
+* [ ] Single scatter plot with multiple point clouds.
+* [ ] Single line plot with multiple lines.
+* [ ] Clean way to sync config between multiple plots.
 
 Advanced rendering:
 
