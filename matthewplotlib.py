@@ -20,6 +20,9 @@ import unscii
 # UTILITY CLASSES
 
 
+ColorLike = str | np.ndarray | tuple[int, int, int] | tuple[float, float, float] | None
+
+
 @dataclasses.dataclass(frozen=True)
 class Color:
     """
@@ -30,14 +33,65 @@ class Color:
     b: int
 
 
-    @staticmethod
-    def from_floats(rgb: np.ndarray) -> Self:
-        return Color(*(255*np.clip(rgb, 0., 1.)).astype(np.uint8))
-
-    
     def __iter__(self) -> iter:
         return iter((self.r, self.g, self.b))
 
+
+    @staticmethod
+    def parse(color: ColorLike) -> Self | None:
+        """
+        Accept and standardise RGB triples in various formats.
+        """
+        if color is None:
+            return None
+
+        if isinstance(color, str):
+            if color.startswith("#") and len(color) == 4:
+                return Color(
+                    r=17*int(color[1], base=16),
+                    g=17*int(color[2], base=16),
+                    b=17*int(color[3], base=16),
+                )
+            if color.startswith("#") and len(color) == 7:
+                return Color(
+                    r=int(color[1:3], base=16),
+                    g=int(color[3:5], base=16),
+                    b=int(color[5:7], base=16),
+                )
+            KNOWN_COLORS = {
+                "black":    Color(  0,   0,   0),
+                "red":      Color(255,   0,   0),
+                "green":    Color(  0, 255,   0),
+                "blue":     Color(  0,   0, 255),
+                "cyan":     Color(  0, 255, 255),
+                "magenta":  Color(255,   0, 255),
+                "yellow":   Color(255, 255,   0),
+                "white":    Color(255, 255, 255),
+            }
+            if color.lower() in KNOWN_COLORS:
+                return KNOWN_COLORS[color.lower()]
+            raise ValueError(f"invalid color string {color!r}")
+
+        if isinstance(color, np.ndarray):
+            if issubclass(color.dtype, float):
+                rgb = (255*np.clip(color, 0., 1.)).astype(np.uint8)
+                return Color(*rgb)
+            if issubclass(color.dtype, np.integer):
+                rgb = np.clip(color, 0, 255)
+                return Color(*rgb)
+            raise ValueError(f"invalid color array {color!r}")
+            
+        if isinstance(color, tuple):
+            if len(color) == 3:
+                types = {type(x) for x in color}
+                if types == {int}:
+                    rgb = (255*np.clip(color, 0., 1.)).astype(np.uint8)
+                    return Color(*rgb)
+                if types == {float}:
+                    rgb = np.clip(color, 0, 255)
+                    return Color(*rgb)
+            raise ValueError(f"invalid color tuple {color!r}")
+    
 
 @dataclasses.dataclass(frozen=True)
 class Char:
@@ -52,11 +106,7 @@ class Char:
         """
         False if the character is blank and colourless.
         """
-        return bool(
-            self.c.strip()
-            # or self.fg is not None # fg not used for whitespace
-            or self.bg is not None
-        )
+        return bool(self.c.strip() or self.bg is not None)
 
 
 BLANK = Char(c=" ", fg=None, bg=None)
@@ -83,7 +133,7 @@ def to_ansi_str(char: Char) -> str:
         return char.c
 
 
-def to_rgba_array(char: Char) -> ArrayLike: # u8[16,8,4]
+def to_rgba_array(char: Char) -> np.ndarray: # u8[16,8,4]
     """
     Convert a Char to a small RGBA image patch, with the specified foreground
     color (or white) and background color (or a transparent background).
@@ -193,7 +243,7 @@ class image(plot):
         # render the image lines as unicode strings with ansi color codes
         array = [
             [
-                Char("▀", Color.from_floats(fg), Color.from_floats(bg))
+                Char("▀", Color.parse(fg), Color.parse(bg))
                 for fg, bg in row
             ]
             for row in stacked
@@ -298,14 +348,14 @@ class scatter(plot):
         width: int = 30,
         yrange: tuple[float, float] | None = None,
         xrange: tuple[float, float] | None = None,
-        color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
+        color: ColorLike = None,            # float[3] (rgb 0 to 1)
         check_bounds: bool = False,
     ):
         # preprocess and check shape
         data = np.asarray(data)
         n, _2 = data.shape
         assert _2 == 2
-        color = Color.from_floats(color) if color is not None else None
+        color = Color.parse(color)
 
         # shortcut if no data
         if n == 0:
@@ -374,17 +424,17 @@ class hilbert(plot):
     def __init__(
         self,
         data: ArrayLike,                    # bool[N]
-        dotcolor: ArrayLike | None = None,  # float[3] (rgb 0 to 1)
-        bgcolor: ArrayLike | None = None,   # float[3] (rgb 0 to 1)
-        nullcolor: ArrayLike | None = None, # float[3] (rgb 0 to 1)
+        dotcolor: ColorLike = None,  # float[3] (rgb 0 to 1)
+        bgcolor: ColorLike = None,   # float[3] (rgb 0 to 1)
+        nullcolor: ColorLike = None, # float[3] (rgb 0 to 1)
     ):
         # preprocess and compute grid shape
         data = np.asarray(data)
         N, = data.shape
         n = max(2, ((N-1).bit_length() + 1) // 2)
-        dotcolor = Color.from_floats(dotcolor) if color is not None else None
-        bgcolor = Color.from_floats(bgcolor) if color is not None else None
-        nullcolor = Color.from_floats(nullcolor) if color is not None else None
+        dotcolor = Color.parse(dotcolor)
+        bgcolor = Color.parse(bgcolor)
+        nullcolor = Color.parse(nullcolor)
 
         # compute grid positions for each data element
         all_coords = _hilbert.decode(
@@ -438,11 +488,11 @@ class text(plot):
     def __init__(
         self,
         text: str,
-        color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
-        bgcolor: ArrayLike | None = None,          # float[3] (rgb 0 to 1)
+        color: ColorLike = None,
+        bgcolor: ColorLike = None,
     ):
-        color = Color.from_floats(color) if color is not None else None
-        bgcolor = Color.from_floats(bgcolor) if color is not None else None
+        color = Color.parse(color)
+        bgcolor = Color.parse(bgcolor)
         lines = text.splitlines()
         height = len(lines)
         width = max(len(line) for line in lines)
@@ -472,7 +522,7 @@ class progress(plot):
         self,
         progress: float,
         width: int = 40,
-        color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
+        color: ColorLike = None,            # float[3] (rgb 0 to 1)
     ):
         progress = np.clip(progress, 0., 1.)
         # construct label
@@ -648,10 +698,10 @@ class border(plot):
         self,
         plot: plot,
         style: Style | None = None,
-        color: ArrayLike | None = None,            # float[3] (rgb 0 to 1)
+        color: ColorLike = None,            # float[3] (rgb 0 to 1)
     ):
         if color is not None:
-            color = Color.from_floats(color)
+            color = Color.parse(color)
         if style is None:
             style = self.Style.ROUND
         array = [
