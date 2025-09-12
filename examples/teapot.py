@@ -20,7 +20,7 @@ ORBIT_SPEED = .75 # radians per second
 def main():
     xyz = TEAPOT
     start_time = time.time()
-    first_time = True
+    plot = None
     while True:
         # sweep camera
         p = camera_pos(time.time() - start_time)
@@ -33,6 +33,8 @@ def main():
         xy = xyz_cam[0:2, :] / xyz_cam[2, :]
         
         # plot
+        if plot:
+            print(~plot, end="")
         plot = mp.scatter(
             data=xy.T,
             xrange=(-1,1),
@@ -40,11 +42,7 @@ def main():
             height=HEIGHT,
             width=WIDTH,
         )
-        if first_time:
-            print(plot)
-            first_time = False
-        else:
-            print(f"\x1b[{plot.height}A{plot}")
+        print(plot)
 
         time.sleep(1/FPS)
 
