@@ -90,7 +90,7 @@ def main():
                     continue
                 day_plots.append(mp.text(
                     COUNT_DAY,
-                    color=mp.cool(1-norm_data[date]),
+                    color=mp.cyber(1-norm_data[date]),
                     bgcolor=(0,0,0),
                 ))
             week_plots.append(mp.hstack(*day_plots))

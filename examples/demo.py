@@ -25,7 +25,7 @@ plot = (
             mp.text("uniform:")  ^ mp.image(u, colormap=mp.yellows),
             style=mp.border.Style.ROUND,
         ) | mp.border(
-            mp.text("identity:") ^ mp.image(i, colormap=mp.cool),
+            mp.text("identity:") ^ mp.image(i, colormap=mp.cyber),
             style=mp.border.Style.BLANK,
         ) | mp.border(
             mp.text("gaussian:") ^ mp.image(g, colormap=mp.cyans),

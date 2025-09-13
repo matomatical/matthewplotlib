@@ -21,16 +21,26 @@ import unscii
 
 
 # # # 
-# UTILITY CLASSES
+# TYPES
 
 
 ColorLike = (
     str
-    | np.ndarray # float[3] (0 to 1) or int[3] (0 to 255)
+    | np.ndarray # float[3] (0 to 1) or uint8[3] (0 to 255)
     | tuple[int, int, int]
     | tuple[float, float, float]
     | None
 )
+
+
+ColorMap = (
+    Callable[[ArrayLike], np.ndarray]   # float[...] -> uint8[...,3]
+    | Callable[[ArrayLike], np.ndarray] # int[...] -> uint8[...,3]
+)
+
+
+# # # 
+# UTILITY CLASSES
 
 
 @dataclasses.dataclass(frozen=True)
@@ -119,9 +129,39 @@ BLANK = Char(c=" ", fg=None, bg=None)
 
 class plot:
     """
-    Base class representing a 2d character array as a list of lines.
-    Provides methods for converting to a string, along with operations
-    for horizontal (|), vertical (^), and distal (&) stacking.
+    Abstract base class for all plot objects.
+
+    A plot is essentially a 2D grid of `Char` objects. This class provides the
+    core functionality for rendering and composing plots. Not typically
+    instantiated directly, but it's useful to know its properties and methods.
+
+    Properties:
+
+    * height : int
+        The height of the plot in character lines.
+    * width : int
+        The width of the plot in character columns.
+
+    Methods:
+
+    * renderstr() -> str
+        Returns a string representation of the plot with ANSI color codes,
+        ready to be printed to a compatible terminal.
+    * clearstr() -> str
+        Returns control characters that will clear the plot from the
+        terminal after it has been printed.
+    * saveimg(filename: str)
+        Renders the plot to an image file (e.g., "plot.png") using a
+        pixel font.
+
+    Operators:
+    
+    * `str(plot)`: Shortcut for `plot.renderstr()`. This means you can render
+       the plot just by calling `print(plot)`.
+    * `~plot`: Shortcut for `plot.clearstr()`. Useful for animations.
+    * `plot1 | plot2`: Horizontally stacks plots (see `hstack`).
+    * `plot1 ^ plot2`: Vertically stacks plots (see `vstack`).
+    * `plot1 & plot2`: Overlays plots (see `dstack`).
     """
     def __init__(self, array: list[list[Char]]):
         self.array = array
@@ -157,7 +197,7 @@ class plot:
     
     def saveimg(self, filename: str, scale_factor: int = 1):
         tiles = np.asarray([[to_rgba_array(c) for c in l] for l in self.array])
-        # -> u8[H, W, 16, 8, 4]
+        # -> uint8[H, W, 16, 8, 4]
         stacked = einops.rearrange(tiles, 'H W h w rgba -> (H h) (W w) rgba')
         image = Image.fromarray(stacked, mode='RGBA')
         image.save(filename)
@@ -205,18 +245,42 @@ class plot:
 
 class image(plot):
     """
-    Render a small image using a grid of unicode half-characters with
-    different foreground and background colours to represent pairs of
-    pixels.
+    Render a small image using a grid of unicode half-block characters.
 
-    TODO: document input and colormap formats.
+    Represents an image by mapping pairs of vertically adjacent pixels to the
+    foreground and background colors of a single character cell (this
+    effectively doubles the vertical resolution in the terminal).
+
+    Inputs:
+
+    * im : float[h,w,3] | int[h,w,3] | float[h,w] | int[h,w] | ArrayLike
+        The image data. It can be in any of the following formats:
+        * `float[h,w,3]`: A 2D array of RGB triples of floats in range [0,1].
+        * `int[h,w,3]`: A 2D array of RGB triples of ints in range [0,255].
+        * `float[h,w]`: A 2D array of scalars in the range [0,1]. If no
+          colormap is provided, values are treated as greyscale (uniform
+          colorisation). If a continuous colormap is provided, values are
+          mapped to RGB values.
+        * `int[h,w]`: A 2D array of scalars. If no colormap is provided,
+          values should be in the range [0,255], they are treated as greyscale
+          (uniform colorisation). If a discrete colormap is provided, values
+          should be in range as indices for the colormap, they will be mapped
+          to RGB triples as such.
+          
+    * colormap : optional ColorMap
+        Function mapping (batches of) scalars to (batches of) RGB triples.
+        Examples are provided by this library, such as:
+        * continuous colormaps like `viridis : float[...] -> uint8[...,3]`, and
+        * discrete colormaps like `pico8 : int[...] -> uint8[...,3]`.
+        If `im` has no RGB dimension, it is transformed to a grid of RGB
+        triples using one of these colormaps.
     """
     def __init__(
         self,
-        im,
-        colormap=None,
+        im: ArrayLike, # float[h,w] | float[h,w,rgb] | int[h,w] | int[h,w,rgb]
+        colormap: ColorMap = None,
     ):
-        # preprocessing: all inputs become float[h, w, rgb] with even h, w
+        # preprocessing: all inputs become float[h, w, rgb] with even h
         im = np.asarray(im)
         if len(im.shape) == 2 and colormap is None:
             # greyscale or indexed and no colormap -> uniform colourisation
@@ -291,7 +355,7 @@ class fimage(image):
     """
     def __init__(
         self,
-        F: Callable[[ArrayLike], ArrayLike], # TODO: vectorise herein?
+        F: Callable[[ArrayLike], ArrayLike], # TODO: auto vectorise
         xrange: tuple[float, float],
         yrange: tuple[float, float],
         width: int,
@@ -339,8 +403,34 @@ class fimage(image):
 
 
 class scatter(plot):
-    """
+"""
     Render a scatterplot using a grid of braille unicode characters.
+
+    Each character cell in the plot corresponds to a 2x4 grid of sub-pixels,
+    represented by braille dots.
+
+    Inputs:
+
+    * data : float[n, 2]
+        An array of n 2D points to plot. Each row is an (x, y) coordinate.
+    * height : int (default: 10)
+        The height of the plot in rows. The effective pixel height will be 4 *
+        height.
+    * width : int (default: 30)
+        The width of the plot in characters. The effective pixel width will be
+        2 * width.
+    * yrange : optional (float, float)
+        The y-axis limits `(ymin, ymax)`. If not provided, the limits are
+        inferred from the min and max y-values in the data.
+    * xrange : optional (float, float)
+        The x-axis limits `(xmin, xmax)`. If not provided, the limits are
+        inferred from the min and max x-values in the data.
+    * color : optional ColorLike
+        The color of the plotted points (see `Color.parse`). Defaults to the
+        terminal's default foreground color.
+    * check_bounds : bool (default: False)
+        If True, raises a `ValueError` if any data points fall outside the
+        specified `xrange` or `yrange`.
     """
     def __init__(
         self,
@@ -349,7 +439,7 @@ class scatter(plot):
         width: int = 30,
         yrange: tuple[float, float] | None = None,
         xrange: tuple[float, float] | None = None,
-        color: ColorLike = None,            # float[3] (rgb 0 to 1)
+        color: ColorLike = None,
         check_bounds: bool = False,
     ):
         # preprocess and check shape
@@ -419,15 +509,37 @@ class scatter(plot):
 
 class hilbert(plot):
     """
-    Render a list of bools long a hilbert curve using a grid of braille unicode
-    characters.
+    Visualize a 1D boolean array along a 2D Hilbert curve.
+
+    Maps a 1D sequence of data points to a 2D grid using a space-filling
+    Hilbert curve, which helps preserve locality. The curve is rendered using
+    braille unicode characters for increased resolution.
+
+    Inputs:
+
+    * data : bool[N]
+        A 1D array of booleans. The length `N` determines the order of the
+        Hilbert curve required to fit all points. True values are rendered as
+        dots, and False values are rendered as blank spaces.
+    * dotcolor : optional ColorLike
+        The foreground color used for dots (points along the curve where `data`
+        is `True`). Defaults to the terminal's default foreground color.
+    * bgcolor : optional ColorLike
+        The background color for the entire path of the Hilbert curve (points
+        along the curve where `data` is `False`, plus possibly some extra
+        points if the curve does not exactly fit the last character cell).
+        Defaults to a transparent background.
+    * nullcolor : optional ColorLike
+        The background color for the grid area not occupied by the curve. This
+        is relevant for non-square-power-of-2 data lengths. Defaults to a
+        transparent background.
     """
     def __init__(
         self,
-        data: ArrayLike,                    # bool[N]
-        dotcolor: ColorLike = None,  # float[3] (rgb 0 to 1)
-        bgcolor: ColorLike = None,   # float[3] (rgb 0 to 1)
-        nullcolor: ColorLike = None, # float[3] (rgb 0 to 1)
+        data: ArrayLike, # bool[N]
+        dotcolor: ColorLike = None,
+        bgcolor: ColorLike = None,
+        nullcolor: ColorLike = None,
     ):
         # preprocess and compute grid shape
         data = np.asarray(data)
@@ -482,9 +594,28 @@ class hilbert(plot):
 
 class text(plot):
     """
-    One or more lines of ASCII text.
-    TODO: allow alignment and resizing.
-    TODO: account for non-printable and wide characters.
+    A plot object containing one or more lines of text.
+
+    This class wraps a string in the plot interface, allowing it to be
+    composed with other plot objects. It handles multi-line strings by
+    splitting them at newline characters.
+
+    Inputs:
+
+    * text : str
+        The text to be displayed. Newline characters (`\n`) will create
+        separate lines in the plot.
+    * color : optional ColorLike
+        The foreground color of the text. Defaults to the terminal's default
+        foreground color.
+    * bgcolor : optional ColorLike
+        The background color for the text. Defaults to a transparent
+        background.
+    
+    TODO:
+
+    * Allow alignment and resizing.
+    * Account for non-printable and wide characters.
     """
     def __init__(
         self,
@@ -517,13 +648,29 @@ class text(plot):
 
 class progress(plot):
     """
-    A progress bar.
+    A single-line progress bar.
+
+    Displays a progress bar with a percentage label. The bar is rendered using
+    block element characters to show fractional progress with finer granularity
+    than a single character.
+
+    Inputs:
+
+    * progress : float
+        The progress to display, as a float between 0.0 and 1.0. Values outside
+        this range will be clipped.
+    * width : int (default: 40)
+        The total width of the progress bar plot in character columns,
+        including the label and brackets.
+    * color : optional ColorLike
+        The color of the filled portion of the progress bar. Defaults to the
+        terminal's default foreground color.
     """
     def __init__(
         self,
         progress: float,
         width: int = 40,
-        color: ColorLike = None,            # float[3] (rgb 0 to 1)
+        color: ColorLike = None,
     ):
         progress = np.clip(progress, 0., 1.)
         # construct label
@@ -560,10 +707,23 @@ class progress(plot):
 
 
 class blank(plot):
+     """
+    Creates a rectangular plot composed entirely of blank space.
+
+    Useful for adding padding or aligning items in a complex layout.
+
+    Inputs:
+
+    * height : optional int
+        The height of the blank area in character rows. Default 1.
+    * width : optional int
+        The width of the blank area in character columns. Default 1.
     """
-    A rectangle of blank space.
-    """
-    def __init__(self, height: int, width: int):
+    def __init__(
+        self,
+        height: int = 1,
+        width: int = 1,
+    ):
         array = [[BLANK] * width] * height
         super().__init__(array)
 
@@ -573,9 +733,20 @@ class blank(plot):
 
 class hstack(plot):
     """
-    Horizontally arrange a group of plots.
+    Horizontally arrange one or more plots side-by-side.
+
+    If the plots have different heights, the shorter plots will be padded with
+    blank space at the bottom to match the height of the tallest plot.
+
+    Inputs:
+
+    * *plots : plot
+        A sequence of plot objects to be horizontally stacked.
     """
-    def __init__(self, *plots):
+    def __init__(
+        self,
+        *plots: plot,
+    ):
         height = max(p.height for p in plots)
         width = sum(p.width for p in plots)
         # build array left to right one plot at a time
@@ -597,9 +768,20 @@ class hstack(plot):
 
 class vstack(plot):
     """
-    Vertically arrange a group of plots.
+    Vertically arrange one or more plots, one above the other.
+
+    If the plots have different widths, the narrower plots will be padded with
+    blank space on the right to match the width of the widest plot.
+
+    Inputs:
+
+    * *plots : plot
+        A sequence of plot objects to be vertically stacked.
     """
-    def __init__(self, *plots):
+    def __init__(
+        self,
+        *plots: plot,
+    ):
         height = sum(p.height for p in plots)
         width = max(p.width for p in plots)
         # build the array top to bottom one plot at a time
@@ -619,9 +801,22 @@ class vstack(plot):
 
 class dstack(plot):
     """
-    Distally arrange a group of plots.
+    Overlay one or more plots on top of each other.
+
+    The plots are layered in the order they are given, with later plots in the
+    sequence drawn on top of earlier ones. The final size of the plot is
+    determined by the maximum width and height among all input plots. Non-blank
+    characters from upper layers will obscure characters from lower layers.
+
+    Inputs:
+
+    * *plots : plot
+        A sequence of plot objects to be overlaid.
     """
-    def __init__(self, *plots):
+    def __init__(
+        self,
+        *plots: plot,
+    ):
         height = max(p.height for p in plots)
         width = max(p.width for p in plots)
         # build the array front to back one plot at a time
@@ -643,9 +838,26 @@ class dstack(plot):
 
 class wrap(plot):
     """
-    Horizontally and vertically arrange a group of plots.
+    Arrange a sequence of plots into a grid.
+
+    The plots are arranged from left to right, wrapping to a new line when
+    the specified number of columns is reached. All cells in the grid are
+    padded to the size of the largest plot in the sequence.
+
+    Inputs:
+
+    * *plots : plot
+        A sequence of plot objects to be arranged in a grid.
+    * cols : optional int
+        The number of columns in the grid. If not provided, it is automatically
+        determined based on the terminal width and the width of the largest
+        plot.
     """
-    def __init__(self, *plots, cols=None):
+    def __init__(
+        self,
+        *plots: plot,
+        cols: int = None,
+    ):
         cell_height = max(p.height for p in plots)
         cell_width = max(p.width for p in plots)
         if cols is None:
@@ -685,9 +897,45 @@ class wrap(plot):
 
 class border(plot):
     """
-    Put a unicode border around a plot.
+    Add a border around a plot using box-drawing characters.
+
+    Inputs:
+
+    * plot : plot
+        The plot object to be enclosed by the border.
+    * style : optional Style (default: Style.ROUND)
+        The style of the border. Predefined styles are available in
+        `border.Style`.
+    * color : optional ColorLike
+        The color of the border characters. Defaults to the terminal's
+        default foreground color.
     """
     class Style:
+        """
+        An enum-like class defining preset styles for the `border` plot.
+
+        Each style is a string of six characters representing the border
+        elements in the following order: horizontal, vertical, top-left,
+        top-right, bottom-left, and bottom-right.
+
+        Available Styles:
+
+        * `LIGHT`: A standard, single-line border.
+        * `HEAVY`: A thicker, bold border.
+        * `DOUBLE`: A double-line border.
+        * `BLANK`: An invisible border, useful for adding padding around a
+          plot while maintaining layout alignment.
+        * `ROUND`: A single-line border with rounded corners.
+        * `BUMPER`: A single-line border with corners made of blocks.
+
+        Demo:
+
+        ```
+        ┌──────┐ ┏━━━━━━┓ ╔══════╗         ╭──────╮ ▛──────▜
+        │LIGHT │ ┃HEAVY ┃ ║DOUBLE║  BLANK  │ROUND │ │BUMPER│
+        └──────┘ ┗━━━━━━┛ ╚══════╝         ╰──────╯ ▙──────▟
+        ```
+        """
         LIGHT  = "─│┌┐└┘"
         HEAVY  = "━┃┏┓┗┛"
         DOUBLE = "═║╔╗╚╝"
@@ -695,11 +943,12 @@ class border(plot):
         ROUND  = "─│╭╮╰╯"
         BUMPER = "─│▛▜▙▟"
 
+
     def __init__(
         self,
         plot: plot,
         style: Style | None = None,
-        color: ColorLike = None,            # float[3] (rgb 0 to 1)
+        color: ColorLike = None,
     ):
         if color is not None:
             color = Color.parse(color)
@@ -738,7 +987,22 @@ class border(plot):
 
 class center(plot):
     """
-    Put blank space around a plot.
+    Pad a plot with blank space to center it within a larger area.
+
+    If the specified `height` or `width` is smaller than the plot's dimensions,
+    the larger dimension is used, effectively preventing the plot from being
+    cropped.
+
+    Inputs:
+
+    * plot : plot
+        The plot object to be centered.
+    * height : optional int
+        The target height of the new padded plot. If not provided, it defaults
+        to the original plot's height (no vertical padding).
+    * width : optional int
+        The target width of the new padded plot. If not provided, it defaults
+        to the original plot's width (no horizontal padding).
     """
     def __init__(
         self,
@@ -773,95 +1037,110 @@ class center(plot):
 
 
 # # # 
-# COLORMAPS
+# CONTINUOUS COLORMAPS
 
 
-def reds(x):
+def reds(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
     Red colormap. Simply embeds greyscale value into red channel.
     """
     x = np.asarray(x)
-    rgb = np.zeros((*x.shape, 3))
-    rgb[..., 0] = x
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
+    rgb[..., 0] = 255 * x
     return rgb
 
 
-def greens(x):
+def greens(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
     Green colormap. Simply embeds greyscale value into green channel.
     """
     x = np.asarray(x)
-    rgb = np.zeros((*x.shape, 3))
-    rgb[..., 1] = x
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
+    rgb[..., 1] = 255 * x
     return rgb
 
 
-def blues(x):
+def blues(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
     Blue colormap. Simply embeds greyscale value into blue channel.
     """
     x = np.asarray(x)
-    rgb = np.zeros((*x.shape, 3))
-    rgb[..., 2] = x
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
+    rgb[..., 2] = 255 * x
     return rgb
 
 
-def yellows(x):
+def yellows(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
-    Yellow colormap. Simply embeds greyscale value into red and green
-    channels.
+    Yellow colormap. Simply embeds greyscale value into red and green channels.
     """
     x = np.asarray(x)
-    rgb = np.zeros((*x.shape, 3))
-    rgb[..., 0] = x
-    rgb[..., 1] = x
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
+    rgb[..., 0] = 255 * x
+    rgb[..., 1] = 255 * x
     return rgb
 
 
-def magentas(x):
+def magentas(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
     Magenta colormap. Simply embeds greyscale value into red and blue
     channels.
     """
     x = np.asarray(x)
-    rgb = np.zeros((*x.shape, 3))
-    rgb[..., 0] = x
-    rgb[..., 2] = x
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
+    rgb[..., 0] = 255 * x
+    rgb[..., 2] = 255 * x
     return rgb
 
 
-def cyans(x):
+def cyans(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
     Cyan colormap. Simply embeds greyscale value into green and blue
     channels.
     """
     x = np.asarray(x)
-    rgb = np.zeros((*x.shape, 3))
-    rgb[..., 1] = x
-    rgb[..., 2] = x
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
+    rgb[..., 1] = 255 * x
+    rgb[..., 2] = 255 * x
     return rgb
 
 
-def cool(x):
+def cyber(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
-    Cool colormap. Embeds greyscale value into interpolating between cyan and
+    Cyberpunk colormap. Uses greyscale value to interpolate between cyan and
     magenta.
     """
     x = np.asarray(x)
-    rgb = np.zeros((*x.shape, 3))
-    rgb[..., 0] = x
-    rgb[..., 1] = 1-x
-    rgb[..., 2] = 1
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
+    rgb[..., 0] = 255 * x
+    rgb[..., 1] = 255 * (1-x)
+    rgb[..., 2] = 255
     return rgb
 
 
-def rainbow(x):
+def rainbow(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
     Rainbow colormap. Effectively embeds greyscale values as hue in HSV color
     space.
     """
     x = np.asarray(x)
-    rgb = np.zeros((*x.shape, 3))
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
     # map [0, 1] into (i, r) coordinates where
     # * i is in {0, 1, 2, 3, 4, 5}, and
     # * r is in [0, 1].
@@ -871,134 +1150,35 @@ def rainbow(x):
     # for each i, project t into the appropriate colour channels
     # i = 0 (red to red+green)
     i0 = (i == 0)
-    rgb[i0, 0] = 1.
-    rgb[i0, 1] = r[i0]
+    rgb[i0, 0] = 255
+    rgb[i0, 1] = 255 * r[i0]
     # i = 1 (red+green to green)
     i1 = (i == 1)
-    rgb[i1, 0] = 1. - r[i1]
-    rgb[i1, 1] = 1.
+    rgb[i1, 0] = 255 - 255 * r[i1]
+    rgb[i1, 1] = 255
     # i = 2 (green to green+blue)
     i2 = (i == 2)
-    rgb[i2, 1] = 1.
-    rgb[i2, 2] = r[i2]
+    rgb[i2, 1] = 255
+    rgb[i2, 2] = 255 * r[i2]
     # i = 3 (green+blue to blue)
     i3 = (i == 3)
-    rgb[i3, 1] = 1. - r[i3]
-    rgb[i3, 2] = 1.
+    rgb[i3, 1] = 255 - 255 * r[i3]
+    rgb[i3, 2] = 255
     # i = 4 (blue to blue+red)
     i4 = (i == 4)
-    rgb[i4, 2] = 1.
-    rgb[i4, 0] = r[i4]
+    rgb[i4, 2] = 255
+    rgb[i4, 0] = 255 * r[i4]
     # i = 5 (blue+red to red)
     i5 = (i == 5)
-    rgb[i5, 2] = 1. - r[i5]
-    rgb[i5, 0] = 1.
+    rgb[i5, 2] = 255 - 255 * r[i5]
+    rgb[i5, 0] = 255
     # done
     return rgb
 
 
-def sweetie16(x):
-    """
-    Sweetie-16 colour palette by GrafxKid (see
-    https://lospec.com/palette-list/sweetie-16).
-    """
-    return np.array([
-        [ 26,  28,  44], [ 93,  39,  93], [177,  62,  83], [239, 125,  87],
-        [255, 205, 117], [167, 240, 112], [ 56, 183, 100], [ 37, 113, 121],
-        [ 41,  54, 111], [ 59,  93, 201], [ 65, 166, 246], [115, 239, 247],
-        [244, 244, 244], [148, 176, 194], [ 86, 108, 134], [ 51,  60,  87],
-    ])[x]
-
-
-def pico8(x):
-    """
-    PICO-8 colour palette (see https://pico-8.fandom.com/wiki/Palette).
-    """
-    return np.array([
-        [  0,   0,   0], [ 29,  43,  83], [126,  37,  83], [  0, 135,  81],
-        [171,  82,  54], [ 95,  87,  79], [194, 195, 199], [255, 241, 232],
-        [255,   0,  77], [255, 163,   0], [255, 236,  39], [  0, 228,  54],
-        [ 41, 173, 255], [131, 118, 156], [255, 119, 168], [255, 204, 170],
-    ])[x]
-
-
-def viridis(x):
-    """
-    Viridis colormap by Nathaniel J. Smith, Stefan van der Walt, and Eric
-    Firing (see https://bids.github.io/colormap/).
-
-    Discretised to 256 8-bit colours.
-    """
-    VIRIDIS = np.array([
-        [ 68,   1,  84], [ 68,   2,  85], [ 68,   3,  87], [ 69,   5,  88],
-        [ 69,   6,  90], [ 69,   8,  91], [ 70,   9,  92], [ 70,  11,  94],
-        [ 70,  12,  95], [ 70,  14,  97], [ 71,  15,  98], [ 71,  17,  99],
-        [ 71,  18, 101], [ 71,  20, 102], [ 71,  21, 103], [ 71,  22, 105],
-        [ 71,  24, 106], [ 72,  25, 107], [ 72,  26, 108], [ 72,  28, 110],
-        [ 72,  29, 111], [ 72,  30, 112], [ 72,  32, 113], [ 72,  33, 114],
-        [ 72,  34, 115], [ 72,  35, 116], [ 71,  37, 117], [ 71,  38, 118],
-        [ 71,  39, 119], [ 71,  40, 120], [ 71,  42, 121], [ 71,  43, 122],
-        [ 71,  44, 123], [ 70,  45, 124], [ 70,  47, 124], [ 70,  48, 125],
-        [ 70,  49, 126], [ 69,  50, 127], [ 69,  52, 127], [ 69,  53, 128],
-        [ 69,  54, 129], [ 68,  55, 129], [ 68,  57, 130], [ 67,  58, 131],
-        [ 67,  59, 131], [ 67,  60, 132], [ 66,  61, 132], [ 66,  62, 133],
-        [ 66,  64, 133], [ 65,  65, 134], [ 65,  66, 134], [ 64,  67, 135],
-        [ 64,  68, 135], [ 63,  69, 135], [ 63,  71, 136], [ 62,  72, 136],
-        [ 62,  73, 137], [ 61,  74, 137], [ 61,  75, 137], [ 61,  76, 137],
-        [ 60,  77, 138], [ 60,  78, 138], [ 59,  80, 138], [ 59,  81, 138],
-        [ 58,  82, 139], [ 58,  83, 139], [ 57,  84, 139], [ 57,  85, 139],
-        [ 56,  86, 139], [ 56,  87, 140], [ 55,  88, 140], [ 55,  89, 140],
-        [ 54,  90, 140], [ 54,  91, 140], [ 53,  92, 140], [ 53,  93, 140],
-        [ 52,  94, 141], [ 52,  95, 141], [ 51,  96, 141], [ 51,  97, 141],
-        [ 50,  98, 141], [ 50,  99, 141], [ 49, 100, 141], [ 49, 101, 141],
-        [ 49, 102, 141], [ 48, 103, 141], [ 48, 104, 141], [ 47, 105, 141],
-        [ 47, 106, 141], [ 46, 107, 142], [ 46, 108, 142], [ 46, 109, 142],
-        [ 45, 110, 142], [ 45, 111, 142], [ 44, 112, 142], [ 44, 113, 142],
-        [ 44, 114, 142], [ 43, 115, 142], [ 43, 116, 142], [ 42, 117, 142],
-        [ 42, 118, 142], [ 42, 119, 142], [ 41, 120, 142], [ 41, 121, 142],
-        [ 40, 122, 142], [ 40, 122, 142], [ 40, 123, 142], [ 39, 124, 142],
-        [ 39, 125, 142], [ 39, 126, 142], [ 38, 127, 142], [ 38, 128, 142],
-        [ 38, 129, 142], [ 37, 130, 142], [ 37, 131, 141], [ 36, 132, 141],
-        [ 36, 133, 141], [ 36, 134, 141], [ 35, 135, 141], [ 35, 136, 141],
-        [ 35, 137, 141], [ 34, 137, 141], [ 34, 138, 141], [ 34, 139, 141],
-        [ 33, 140, 141], [ 33, 141, 140], [ 33, 142, 140], [ 32, 143, 140],
-        [ 32, 144, 140], [ 32, 145, 140], [ 31, 146, 140], [ 31, 147, 139],
-        [ 31, 148, 139], [ 31, 149, 139], [ 31, 150, 139], [ 30, 151, 138],
-        [ 30, 152, 138], [ 30, 153, 138], [ 30, 153, 138], [ 30, 154, 137],
-        [ 30, 155, 137], [ 30, 156, 137], [ 30, 157, 136], [ 30, 158, 136],
-        [ 30, 159, 136], [ 30, 160, 135], [ 31, 161, 135], [ 31, 162, 134],
-        [ 31, 163, 134], [ 32, 164, 133], [ 32, 165, 133], [ 33, 166, 133],
-        [ 33, 167, 132], [ 34, 167, 132], [ 35, 168, 131], [ 35, 169, 130],
-        [ 36, 170, 130], [ 37, 171, 129], [ 38, 172, 129], [ 39, 173, 128],
-        [ 40, 174, 127], [ 41, 175, 127], [ 42, 176, 126], [ 43, 177, 125],
-        [ 44, 177, 125], [ 46, 178, 124], [ 47, 179, 123], [ 48, 180, 122],
-        [ 50, 181, 122], [ 51, 182, 121], [ 53, 183, 120], [ 54, 184, 119],
-        [ 56, 185, 118], [ 57, 185, 118], [ 59, 186, 117], [ 61, 187, 116],
-        [ 62, 188, 115], [ 64, 189, 114], [ 66, 190, 113], [ 68, 190, 112],
-        [ 69, 191, 111], [ 71, 192, 110], [ 73, 193, 109], [ 75, 194, 108],
-        [ 77, 194, 107], [ 79, 195, 105], [ 81, 196, 104], [ 83, 197, 103],
-        [ 85, 198, 102], [ 87, 198, 101], [ 89, 199, 100], [ 91, 200,  98],
-        [ 94, 201,  97], [ 96, 201,  96], [ 98, 202,  95], [100, 203,  93],
-        [103, 204,  92], [105, 204,  91], [107, 205,  89], [109, 206,  88],
-        [112, 206,  86], [114, 207,  85], [116, 208,  84], [119, 208,  82],
-        [121, 209,  81], [124, 210,  79], [126, 210,  78], [129, 211,  76],
-        [131, 211,  75], [134, 212,  73], [136, 213,  71], [139, 213,  70],
-        [141, 214,  68], [144, 214,  67], [146, 215,  65], [149, 215,  63],
-        [151, 216,  62], [154, 216,  60], [157, 217,  58], [159, 217,  56],
-        [162, 218,  55], [165, 218,  53], [167, 219,  51], [170, 219,  50],
-        [173, 220,  48], [175, 220,  46], [178, 221,  44], [181, 221,  43],
-        [183, 221,  41], [186, 222,  39], [189, 222,  38], [191, 223,  36],
-        [194, 223,  34], [197, 223,  33], [199, 224,  31], [202, 224,  30],
-        [205, 224,  29], [207, 225,  28], [210, 225,  27], [212, 225,  26],
-        [215, 226,  25], [218, 226,  24], [220, 226,  24], [223, 227,  24],
-        [225, 227,  24], [228, 227,  24], [231, 228,  25], [233, 228,  25],
-        [236, 228,  26], [238, 229,  27], [241, 229,  28], [243, 229,  30],
-        [246, 230,  31], [248, 230,  33], [250, 230,  34], [253, 231,  36],
-    ])
-    return VIRIDIS[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
-
-
-def magma(x):
+def magma(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
     Magma colormap by Nathaniel J. Smith and Stefan van der Walt (see
     https://bids.github.io/colormap/).
@@ -1074,7 +1254,9 @@ def magma(x):
     return MAGMA[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
 
 
-def inferno(x):
+def inferno(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
     Inferno colormap by Nathaniel J. Smith and Stefan van der Walt (see
     https://bids.github.io/colormap/).
@@ -1150,7 +1332,9 @@ def inferno(x):
     return INFERNO[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
 
 
-def plasma(x):
+def plasma(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
     """
     Plasma colormap by Nathaniel J. Smith and Stefan van der Walt (see
     https://bids.github.io/colormap/).
@@ -1226,6 +1410,121 @@ def plasma(x):
     return PLASMA[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
 
 
+def viridis(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Viridis colormap by Nathaniel J. Smith, Stefan van der Walt, and Eric
+    Firing (see https://bids.github.io/colormap/).
+
+    Discretised to 256 8-bit colours.
+    """
+    VIRIDIS = np.array([
+        [ 68,   1,  84], [ 68,   2,  85], [ 68,   3,  87], [ 69,   5,  88],
+        [ 69,   6,  90], [ 69,   8,  91], [ 70,   9,  92], [ 70,  11,  94],
+        [ 70,  12,  95], [ 70,  14,  97], [ 71,  15,  98], [ 71,  17,  99],
+        [ 71,  18, 101], [ 71,  20, 102], [ 71,  21, 103], [ 71,  22, 105],
+        [ 71,  24, 106], [ 72,  25, 107], [ 72,  26, 108], [ 72,  28, 110],
+        [ 72,  29, 111], [ 72,  30, 112], [ 72,  32, 113], [ 72,  33, 114],
+        [ 72,  34, 115], [ 72,  35, 116], [ 71,  37, 117], [ 71,  38, 118],
+        [ 71,  39, 119], [ 71,  40, 120], [ 71,  42, 121], [ 71,  43, 122],
+        [ 71,  44, 123], [ 70,  45, 124], [ 70,  47, 124], [ 70,  48, 125],
+        [ 70,  49, 126], [ 69,  50, 127], [ 69,  52, 127], [ 69,  53, 128],
+        [ 69,  54, 129], [ 68,  55, 129], [ 68,  57, 130], [ 67,  58, 131],
+        [ 67,  59, 131], [ 67,  60, 132], [ 66,  61, 132], [ 66,  62, 133],
+        [ 66,  64, 133], [ 65,  65, 134], [ 65,  66, 134], [ 64,  67, 135],
+        [ 64,  68, 135], [ 63,  69, 135], [ 63,  71, 136], [ 62,  72, 136],
+        [ 62,  73, 137], [ 61,  74, 137], [ 61,  75, 137], [ 61,  76, 137],
+        [ 60,  77, 138], [ 60,  78, 138], [ 59,  80, 138], [ 59,  81, 138],
+        [ 58,  82, 139], [ 58,  83, 139], [ 57,  84, 139], [ 57,  85, 139],
+        [ 56,  86, 139], [ 56,  87, 140], [ 55,  88, 140], [ 55,  89, 140],
+        [ 54,  90, 140], [ 54,  91, 140], [ 53,  92, 140], [ 53,  93, 140],
+        [ 52,  94, 141], [ 52,  95, 141], [ 51,  96, 141], [ 51,  97, 141],
+        [ 50,  98, 141], [ 50,  99, 141], [ 49, 100, 141], [ 49, 101, 141],
+        [ 49, 102, 141], [ 48, 103, 141], [ 48, 104, 141], [ 47, 105, 141],
+        [ 47, 106, 141], [ 46, 107, 142], [ 46, 108, 142], [ 46, 109, 142],
+        [ 45, 110, 142], [ 45, 111, 142], [ 44, 112, 142], [ 44, 113, 142],
+        [ 44, 114, 142], [ 43, 115, 142], [ 43, 116, 142], [ 42, 117, 142],
+        [ 42, 118, 142], [ 42, 119, 142], [ 41, 120, 142], [ 41, 121, 142],
+        [ 40, 122, 142], [ 40, 122, 142], [ 40, 123, 142], [ 39, 124, 142],
+        [ 39, 125, 142], [ 39, 126, 142], [ 38, 127, 142], [ 38, 128, 142],
+        [ 38, 129, 142], [ 37, 130, 142], [ 37, 131, 141], [ 36, 132, 141],
+        [ 36, 133, 141], [ 36, 134, 141], [ 35, 135, 141], [ 35, 136, 141],
+        [ 35, 137, 141], [ 34, 137, 141], [ 34, 138, 141], [ 34, 139, 141],
+        [ 33, 140, 141], [ 33, 141, 140], [ 33, 142, 140], [ 32, 143, 140],
+        [ 32, 144, 140], [ 32, 145, 140], [ 31, 146, 140], [ 31, 147, 139],
+        [ 31, 148, 139], [ 31, 149, 139], [ 31, 150, 139], [ 30, 151, 138],
+        [ 30, 152, 138], [ 30, 153, 138], [ 30, 153, 138], [ 30, 154, 137],
+        [ 30, 155, 137], [ 30, 156, 137], [ 30, 157, 136], [ 30, 158, 136],
+        [ 30, 159, 136], [ 30, 160, 135], [ 31, 161, 135], [ 31, 162, 134],
+        [ 31, 163, 134], [ 32, 164, 133], [ 32, 165, 133], [ 33, 166, 133],
+        [ 33, 167, 132], [ 34, 167, 132], [ 35, 168, 131], [ 35, 169, 130],
+        [ 36, 170, 130], [ 37, 171, 129], [ 38, 172, 129], [ 39, 173, 128],
+        [ 40, 174, 127], [ 41, 175, 127], [ 42, 176, 126], [ 43, 177, 125],
+        [ 44, 177, 125], [ 46, 178, 124], [ 47, 179, 123], [ 48, 180, 122],
+        [ 50, 181, 122], [ 51, 182, 121], [ 53, 183, 120], [ 54, 184, 119],
+        [ 56, 185, 118], [ 57, 185, 118], [ 59, 186, 117], [ 61, 187, 116],
+        [ 62, 188, 115], [ 64, 189, 114], [ 66, 190, 113], [ 68, 190, 112],
+        [ 69, 191, 111], [ 71, 192, 110], [ 73, 193, 109], [ 75, 194, 108],
+        [ 77, 194, 107], [ 79, 195, 105], [ 81, 196, 104], [ 83, 197, 103],
+        [ 85, 198, 102], [ 87, 198, 101], [ 89, 199, 100], [ 91, 200,  98],
+        [ 94, 201,  97], [ 96, 201,  96], [ 98, 202,  95], [100, 203,  93],
+        [103, 204,  92], [105, 204,  91], [107, 205,  89], [109, 206,  88],
+        [112, 206,  86], [114, 207,  85], [116, 208,  84], [119, 208,  82],
+        [121, 209,  81], [124, 210,  79], [126, 210,  78], [129, 211,  76],
+        [131, 211,  75], [134, 212,  73], [136, 213,  71], [139, 213,  70],
+        [141, 214,  68], [144, 214,  67], [146, 215,  65], [149, 215,  63],
+        [151, 216,  62], [154, 216,  60], [157, 217,  58], [159, 217,  56],
+        [162, 218,  55], [165, 218,  53], [167, 219,  51], [170, 219,  50],
+        [173, 220,  48], [175, 220,  46], [178, 221,  44], [181, 221,  43],
+        [183, 221,  41], [186, 222,  39], [189, 222,  38], [191, 223,  36],
+        [194, 223,  34], [197, 223,  33], [199, 224,  31], [202, 224,  30],
+        [205, 224,  29], [207, 225,  28], [210, 225,  27], [212, 225,  26],
+        [215, 226,  25], [218, 226,  24], [220, 226,  24], [223, 227,  24],
+        [225, 227,  24], [228, 227,  24], [231, 228,  25], [233, 228,  25],
+        [236, 228,  26], [238, 229,  27], [241, 229,  28], [243, 229,  30],
+        [246, 230,  31], [248, 230,  33], [250, 230,  34], [253, 231,  36],
+    ])
+    return VIRIDIS[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
+
+
+# # # 
+# DISCRETE COLORMAPS
+
+
+def sweetie16(
+    x: ArrayLike    # int[...]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Sweetie-16 colour palette by GrafxKid (see
+    https://lospec.com/palette-list/sweetie-16).
+
+    Input should be an array of indices in the range [0,15].
+    """
+    return np.array([
+        [ 26,  28,  44], [ 93,  39,  93], [177,  62,  83], [239, 125,  87],
+        [255, 205, 117], [167, 240, 112], [ 56, 183, 100], [ 37, 113, 121],
+        [ 41,  54, 111], [ 59,  93, 201], [ 65, 166, 246], [115, 239, 247],
+        [244, 244, 244], [148, 176, 194], [ 86, 108, 134], [ 51,  60,  87],
+    ])[x]
+
+
+def pico8(
+    x: ArrayLike    # int[...]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    PICO-8 colour palette (see https://pico-8.fandom.com/wiki/Palette).
+    
+    Input should be an array of indices in the range [0,15].
+    """
+    return np.array([
+        [  0,   0,   0], [ 29,  43,  83], [126,  37,  83], [  0, 135,  81],
+        [171,  82,  54], [ 95,  87,  79], [194, 195, 199], [255, 241, 232],
+        [255,   0,  77], [255, 163,   0], [255, 236,  39], [  0, 228,  54],
+        [ 41, 173, 255], [131, 118, 156], [255, 119, 168], [255, 204, 170],
+    ])[x]
+
+
 # # # 
 # BRAILLE HELPER FUNCTIONS
 
@@ -1294,7 +1593,7 @@ def braille_encode(a: ArrayLike) -> np.ndarray:
 
 
 # # # 
-# RENDERING HELPER FUNCTIONS
+# ANSI RENDERING HELP
 
 
 def to_ansi_str(char: Char) -> str:
@@ -1314,7 +1613,11 @@ def to_ansi_str(char: Char) -> str:
         return char.c
 
 
-def to_rgba_array(char: Char) -> np.ndarray: # u8[16,8,4]
+# # # 
+# PNG RENDERING HELP
+
+
+def to_rgba_array(char: Char) -> np.ndarray: # uint8[16,8,4]
     """
     Convert a Char to a small RGBA image patch, with the specified foreground
     color (or white) and background color (or a transparent background).
@@ -1333,15 +1636,12 @@ def to_rgba_array(char: Char) -> np.ndarray: # u8[16,8,4]
     else:
         bg = np.array([0, 0, 0, 0], dtype=np.uint8)
 
-    # rgb array : u8[16,8,4]
+    # rgb array : uint8[16,8,4]
     img = np.where(bits[..., np.newaxis], fg, bg)
 
     return img
 
 
-# # # 
-# FONT STUFF
-
-
 FONT_UNSCII_16 = unscii.UnsciiFont("unscii_16")
+
 

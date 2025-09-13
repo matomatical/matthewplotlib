@@ -16,10 +16,17 @@ Key features:
   manage).
 
 * Plots are just expressions. Compose complex plots with horizontal (`|`) and
-  vertical (`^`) stacking operations.
+  vertical (`^`) stacking operations, as in
+    `subplots = (plotA | plotB) ^ (plotC | plotD)`.
 
 * If you absolutely need plots outside the terminal, you can render them to PNG
   using a pixel font.
+
+Key missing features (so far):
+
+* Line plots, bar charts, histograms still to be implemented.
+* Scatter plots don't have visible axes, ticks, ticklabels, or axis labels yet.
+* 
 
 Some eye-candy:
 
@@ -28,6 +35,7 @@ Some eye-candy:
   <tr>
     <td><img src="examples/lissajous.png" height="256px"></td>
     <td><img src="examples/teapot.gif" height="256px"></td>
+    <td><img src="examples/colormaps.png" height="256px"></td>
   </tr>
 </tbody>
 </table>
@@ -89,9 +97,13 @@ See [examples/](examples/) folder. Highlights:
 
 * [lissajous.py](examples/lissajous.py) showing scatterplots and basic plot
   arrangement.
-* [image.py](examples/image.py) showing heatmaps and some colourmaps.
+
+* [colormaps.py](examples/colormaps.py) showing off the different available
+  colormaps more advanced plot arrangement.
+
 * [calendar_heatmap.py](examples/calendar_heatmap.py) showing how to construct
   a custom plot, in this case colouring the cells of a calendar.
+
 * [teapot.py](examples/teapot.py) showing how to use scatter plots to render a
   3d point cloud, and animations.
 
@@ -103,7 +115,6 @@ Basic plot types:
 * [x] Image plots / matrix heatmaps.
 * [x] Function heatmap plots.
 * [x] Scatter plots.
-* [ ] Coloured scatter plots.
 * [x] Hilbert curves.
 * [ ] Line plots.
 * [x] Progress bars.
@@ -114,7 +125,7 @@ Basic plot furnishings:
 
 * [x] Basic text boxes.
 * [x] Borders.
-* [ ] Ticks and labels (API needs thought).
+* [ ] Axis ticks and tick labels for scatter plots (API needs some thought).
 
 Basic plot arrangement:
 
@@ -127,7 +138,8 @@ Styling plots with colors:
 * [x] Basic colormaps.
 * [x] BIDS colormaps.
 * [x] Rainbow colormap.
-* [x] Categorical colour palettes.
+* [x] Cyberpunk colormap.
+* [x] Discrete colour palettes.
 
 Rendering:
 
@@ -136,24 +148,35 @@ Rendering:
 
 Advanced plot types:
 
-* [ ] Calendar heatmap plots (see calendar heatmap example for now).
-* [ ] 3d scatter plots (see teapot example for now).
+* [ ] Scatter plots with different colours.
+* [ ] Less dense (non-braille) scatter plots with different markers.
+* [ ] Multiple point clouds or lines on a single scatter/line plot.
+* [ ] 3d scatter plots (see [teapot example](examples/teapot.py) for now).
 * [ ] Non-square hilbert curves and 3d hilbert curves.
+* [ ] Calendar heatmap plots (see calendar heatmap example for now).
 * [ ] World maps, 2d projection.
 * [ ] World maps, 3d globe.
 
 Advanced plot arrangement:
 
-* [ ] Better support for animated plots, including differential rendering.
-* [ ] Single scatter plot with multiple point clouds.
-* [ ] Single line plot with multiple lines.
-* [ ] Clean way to sync config between multiple plots.
+* [ ] Better support for animated plots (API needs thought)
+* [ ] Better performance for animated plots (differential rendering).
+* [ ] Cleaner way to share config/axes between multiple plots.
 
 Advanced rendering:
 
 * [ ] Export animations to gifs.
 * [ ] Render plots to SVG (keep console aesthetic).
 * [ ] Render plots to PDF (keep console aesthetic).
+
+Other code improvements:
+
+* [x] Detailed docstrings for everything user-facing.
+* [ ] Split up monolithic file into a small number of modules.
+* [ ] Comprehensive type annotations.
+* [ ] Robust input validation.
+* [ ] Error handling.
+* [ ] Tests.
 
 Repository:
 
@@ -162,15 +185,6 @@ Repository:
 * [ ] Static site with generated HTML documentation.
 * [ ] Version numbering and changelog.
 * [ ] List on PyPI.
-
-Other code improvements:
-
-* [ ] Detailed docstrings for everything (at least everything user-facing).
-* [ ] Split up monolithic file into a small number of modules.
-* [ ] Comprehensive type annotations.
-* [ ] Robust input validation.
-* [ ] Error handling.
-* [ ] Tests.
 
 Example ideas:
 
