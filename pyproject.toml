@@ -1,6 +1,6 @@
 [project]
 name = "matthewplotlib"
-version = "0.0.0"
+version = "0.1.0"
 authors = [
     { name="Matthew Farrugia-Roberts", email="matthew@far.in.net" },
 ]
@@ -8,6 +8,8 @@ description = "A Python plotting library that isn't painful."
 readme = "README.md"
 classifiers = [
     "Private :: Do Not Upload",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Development Status :: 3 - Alpha",
     "Programming Language :: Python :: 3",
     "Intended Audience :: Science/Research",
 ]
