@@ -14,5 +14,5 @@ plot = mp.hilbert(
 
 print("printing plot...")
 print(plot)
-print("saving to 'examples/hilbert_curve.png'...")
-plot.saveimg('examples/hilbert_curve.png')
+print("saving to 'images/hilbert_curve.png'...")
+plot.saveimg('images/hilbert_curve.png')

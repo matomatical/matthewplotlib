@@ -33,5 +33,3 @@ plot = mp.wrap(
 
 print("printing plot...")
 print(plot)
-print("saving to 'examples/image.png'...")
-plot.saveimg('examples/image.png')

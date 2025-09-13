@@ -45,5 +45,5 @@ plot = (
 )
 print(repr(plot))
 print(plot)
-print("saving to 'examples/demo.png'...")
-plot.saveimg('examples/demo.png')
+print("saving to 'images/demo.png'...")
+plot.saveimg('images/demo.png')

@@ -38,9 +38,9 @@ Some eye-candy:
 <table>
 <tbody>
   <tr>
-    <td><img src="examples/lissajous.png" height="256px"></td>
-    <td><img src="examples/teapot.gif" height="256px"></td>
-    <td><img src="examples/colormaps.png" height="256px"></td>
+    <td><img src="images/lissajous.png" height="256px"></td>
+    <td><img src="images/teapot.gif" height="256px"></td>
+    <td><img src="images/colormaps.png" height="256px"></td>
   </tr>
 </tbody>
 </table>
@@ -87,13 +87,13 @@ Print to terminal:
 ```python
 print(plot)
 ```
-![](examples/quickstart-screenshot.png)
+![](images/quickstart-screenshot.png)
 
 Export to PNG image:
 ```python
-plot.saveimg("examples/quickstart.png")
+plot.saveimg("images/quickstart.png")
 ```
-![](examples/quickstart.png)
+![](images/quickstart.png)
 
 
 Other examples

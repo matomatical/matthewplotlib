@@ -36,4 +36,4 @@ print(plot)
 ╰──────────────────────────────────────────────────────────────────────────────╯
 """
 
-plot.saveimg("examples/quickstart.png")
+plot.saveimg("images/quickstart.png")
