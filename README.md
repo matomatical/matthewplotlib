@@ -192,11 +192,16 @@ More plot types:
 * [ ] Calendar heatmap plots (see calendar heatmap example for now).
 * [ ] World maps, 2d projection.
 * [ ] World maps, 3d globe.
+* [ ] Candlestick plots.
 
 Advanced plot arrangement:
 
 * [ ] Better support for animated plots (API needs thought).
 * [ ] Cleaner way to share config/axes between multiple plots.
+
+Advanced furnishings:
+
+* [ ] Axis transformations (e.g. logarithmic scale).
 
 Advanced rendering:
 
@@ -220,22 +225,27 @@ Backend improvements:
 Related work
 ------------
 
-Terminal plotting in Python
+Matthewplotlib aspires to similar levels of functionality as the following, but
+with a stand-out interface.
 
+Terminal plotting in Python:
+
+* Plotext: https://github.com/piccolomo/plotext
 * Plotille: https://github.com/tammoippen/plotille
 * Termgraph: https://github.com/sgeisler/termgraph
 * Termplot: https://github.com/justnoise/termplot
 
-Braille art
+Terminal plotting in other languages:
+
+* Julia https://github.com/JuliaPlots/UnicodePlots.jl
+* Julia again https://github.com/sunetos/TextPlots.jl
+* C++ https://github.com/fbbdev/plot
+* GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.html
+
+Braille art:
 
 * Drawille (Python): https://github.com/asciimoo/drawille
 * Rsille (Rust): https://github.com/nidhoggfgg/rsille
 * Drawille (Lua): https://github.com/asciimoo/lua-drawille
 * Drawille (NodeJS): https://github.com/madbence/node-drawille
 * Python repo documents ports to various other languages
-
-Terminal plotting in other languages
-
-* Julia https://github.com/sunetos/TextPlots.jl
-* GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.html
-
