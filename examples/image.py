@@ -22,9 +22,6 @@ image_data = """
 """.strip().split()
 image = np.asarray([[int(a,base=16) for a in row] for row in image_data])
 
-
-print(image // 4)
-
 plot = mp.wrap(
     mp.image(image / 15),
     mp.image(image / 15, colormap=mp.viridis),
@@ -36,5 +33,5 @@ plot = mp.wrap(
 
 print("printing plot...")
 print(plot)
-print("saving to 'out.png'...")
-plot.saveimg('out.png')
+print("saving to 'examples/image.png'...")
+plot.saveimg('examples/image.png')

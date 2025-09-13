@@ -1,5 +1,5 @@
 import numpy as np
-import matthewplotlib as mp
+import matthewplotlib.core as mpc
 
 dots = np.array([
     [0,1,0,1,1,0,1,1,0,1,0,0,1,1,0,1,1,0,1,1,0,1,1,0],
@@ -18,7 +18,7 @@ dots = np.array([
 print("dot patterns")
 print(dots.astype(int))
 
-braille_codepoints = mp.braille_encode(dots)
+braille_codepoints = mpc.braille_encode(dots)
 print("braille codepoints")
 print(braille_codepoints)
 

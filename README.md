@@ -3,9 +3,10 @@ Matthew's plotting library (matthewplotlib)
 
 A Python plotting library that aspires to *not be painful.*
 
-*Status:* Work in progress. See [roadmap](#roadmap). Currently, still generally
-painful, due to lack of documentation and lack of common plot types. However,
-for personal use, I'm already finding its limited functionality delightful.
+*Status:* Work in progress. See [roadmap](#roadmap-to-version-1). Currently,
+still generally painful, due to lack of generated documentation and lack of
+common plot types. However, for personal use, I'm already finding what limited
+functionality it does have delightful.
 
 Key features:
 
@@ -22,11 +23,15 @@ Key features:
 * If you absolutely need plots outside the terminal, you can render them to PNG
   using a pixel font.
 
-Key missing features (so far):
+Key missing features (so far, see [roadmap]):
 
 * Line plots, bar charts, histograms still to be implemented.
+
 * Scatter plots don't have visible axes, ticks, ticklabels, or axis labels yet.
-* 
+
+* No HTML documentation.
+
+* Not a lot of input validation, error handling, or testing.
 
 Some eye-candy:
 
@@ -90,6 +95,7 @@ plot.saveimg("examples/quickstart.png")
 ```
 ![](examples/quickstart.png)
 
+
 Other examples
 --------------
 
@@ -102,13 +108,23 @@ See [examples/](examples/) folder. Highlights:
   colormaps more advanced plot arrangement.
 
 * [calendar_heatmap.py](examples/calendar_heatmap.py) showing how to construct
-  a custom plot, in this case colouring the cells of a calendar.
+  a custom plot, in this case colouring the cells of a calendar (inspired by
+  GitHub issues tracker).
 
 * [teapot.py](examples/teapot.py) showing how to use scatter plots to render a
   3d point cloud, and animations.
 
-Roadmap
--------
+Ideas for future examples:
+
+* Simple machine learning experiment, loss curves and progress bars.
+
+* Simple gridworld rollout visualiser for reinforcement learning.
+
+* CPU/RAM usage visualiser.
+
+
+Roadmap to version 1
+--------------------
 
 Basic plot types:
 
@@ -146,7 +162,27 @@ Rendering:
 * [x] Render to string / terminal with ANSI control codes.
 * [x] Export to image with pixel font.
 
-Advanced plot types:
+Basic code improvements:
+
+* [x] Detailed docstrings for everything user-facing.
+* [x] Split up monolithic file into a small number of modules.
+* [x] Comprehensive type annotations, static type checking with mypy.
+* [ ] Robust input validation and error handling.
+* [ ] Tests.
+
+Repository:
+
+* [x] Set up project, installable via git.
+* [x] A simple example for the quick-start guide.
+* [x] Version numbering and changelog.
+* [ ] Static site with generated HTML documentation.
+* [ ] List on PyPI.
+
+
+Advanced features roadmap
+-------------------------
+
+More plot types:
 
 * [ ] Scatter plots with different colours.
 * [ ] Less dense (non-braille) scatter plots with different markers.
@@ -159,8 +195,7 @@ Advanced plot types:
 
 Advanced plot arrangement:
 
-* [ ] Better support for animated plots (API needs thought)
-* [ ] Better performance for animated plots (differential rendering).
+* [ ] Better support for animated plots (API needs thought).
 * [ ] Cleaner way to share config/axes between multiple plots.
 
 Advanced rendering:
@@ -169,30 +204,18 @@ Advanced rendering:
 * [ ] Render plots to SVG (keep console aesthetic).
 * [ ] Render plots to PDF (keep console aesthetic).
 
-Other code improvements:
+Backend improvements:
 
-* [x] Detailed docstrings for everything user-facing.
-* [ ] Split up monolithic file into a small number of modules.
-* [ ] Comprehensive type annotations.
-* [ ] Robust input validation.
-* [ ] Error handling.
-* [ ] Tests.
+* [ ] Upgrade Char backend to use arrays of codepoints and colors (think
+  PyTrees from JAX to replace the current nested lists of dataclasses).
+* [ ] Vectorised composition operations.
+* [ ] Vectorised bitmap rendering.
+* [ ] Faster and more intelligent ANSI rendering (only include necessary
+  control codes and resets, e.g., if several characters in a row use the same
+  colours).
+* [ ] Faster animated plot redraws (e.g., differential rendering with shortcut
+  `-`).
 
-Repository:
-
-* [x] Set up project, installable via git.
-* [x] A simple example for the quick-start guide.
-* [ ] Static site with generated HTML documentation.
-* [ ] Version numbering and changelog.
-* [ ] List on PyPI.
-
-Example ideas:
-
-* [x] Calendar heatmap (inspired by GitHub daily contributions tracker).
-* [x] 3d point clouds.
-* [ ] Simple machine learning experiment, loss curves and progress bars.
-* [ ] Simple gridworld rollout visualiser for reinforcement learning.
-* [ ] CPU/RAM visualiser.
 
 Related work
 ------------

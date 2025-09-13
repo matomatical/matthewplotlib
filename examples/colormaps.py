@@ -53,6 +53,6 @@ plot = (
 print("rendering plot...")
 print(plot)
 
-print("saving plot...")
+print("saving plot to examples/colormaps.png ...")
 plot.saveimg("examples/colormaps.png")
 

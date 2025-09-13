@@ -39,5 +39,5 @@ plot = (
 
 print("printing plot...")
 print(plot)
-print("saving to 'out.png'...")
-plot.saveimg('out.png')
+print("saving plot to examples/lissajous.png...")
+plot.saveimg('examples/lissajous.png')

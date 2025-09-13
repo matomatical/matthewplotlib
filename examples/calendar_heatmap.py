@@ -109,8 +109,8 @@ def main():
     
     print("printing plot...")
     print(plot)
-    print("saving to 'out.png'...")
-    plot.saveimg('out.png')
+    print("saving to 'examples/calendar_heatmap.png'...")
+    plot.saveimg('examples/calendar_heatmap.png')
 
 
 if __name__ == "__main__":
