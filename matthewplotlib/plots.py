@@ -68,12 +68,17 @@ class plot:
     Methods:
 
     * renderstr() -> str
+
         Returns a string representation of the plot with ANSI color codes,
         ready to be printed to a compatible terminal.
+    
     * clearstr() -> str
+    
         Returns control characters that will clear the plot from the
         terminal after it has been printed.
+    
     * saveimg(filename: str)
+        
         Renders the plot to an image file (e.g., "plot.png") using a
         pixel font.
 
@@ -81,9 +86,13 @@ class plot:
     
     * `str(plot)`: Shortcut for `plot.renderstr()`. This means you can render
        the plot just by calling `print(plot)`.
+    
     * `~plot`: Shortcut for `plot.clearstr()`. Useful for animations.
+    
     * `plot1 | plot2`: Horizontally stacks plots (see `hstack`).
+    
     * `plot1 ^ plot2`: Vertically stacks plots (see `vstack`).
+    
     * `plot1 & plot2`: Overlays plots (see `dstack`).
     """
     def __init__(self, array: list[list[Char]]):
@@ -219,6 +228,7 @@ class image(plot):
     Inputs:
 
     * im : float[h,w,3] | int[h,w,3] | float[h,w] | int[h,w] | ArrayLike
+    
         The image data. It can be in any of the following formats:
         * `float[h,w,3]`: A 2D array of RGB triples of floats in range [0,1].
         * `int[h,w,3]`: A 2D array of RGB triples of ints in range [0,255].
@@ -233,6 +243,7 @@ class image(plot):
           to RGB triples as such.
           
     * colormap : optional ColorMap
+        
         Function mapping (batches of) scalars to (batches of) RGB triples.
         Examples are provided by this library, such as:
         * continuous colormaps like `viridis : float[...] -> uint8[...,3]`, and
@@ -286,34 +297,52 @@ class image(plot):
 
 class fimage(image):
     """
-    Heatmap representing the image of a 2d function over a square. Inputs:
+    Heatmap representing the image of a 2d function over a square.
+
+    Inputs:
 
     * F : float[batch, 2] -> float[batch]
+        
         The (vectorised) function to plot. The input should be a batch of
         (x, y) vectors. The output should be a batch of scalars f(x, y).
+    
     * xrange : (float, float)
+        
         Lower and upper bounds on the x values to pass into the function.
+    
     * yrange : (float, float)
+        
         Lower and upper bounds on the y values to pass into the function.
+    
     * width : int
+        
         The number of grid squares along the x axis. This will also become the
         width of the plot.
+    
     * height : int
+        
         The number of grid squares along the y axis. This will become double
         the height of the plot in lines (since the result is an image plot with
         two pixels per line).
+    
     * zrange : optional (float, float)
+        
         Expected lower and upper bounds on the f(x, y) values. Used for
         determining the bounds of the colour scale. By default, the minimum and
         maximum output over the grid are used.
+    
     * colormap : optional colormap (e.g. mp.viridis)
+        
         By default, the output will be in greyscale, with black corresponding
         to zrange[0] and white corresponding to zrange[1]. You can choose a
         different colormap (e.g. mp.reds, mp.viridis, etc.) here.
+    
     * endpoints : bool (default: False)
+        
         If true, endpoints are included from the linspaced inputs, and so the
         grid elements in each corner will represent the different combinations
         of xrange/yrange.
+        
         If false (default), the endpoints are excluded, so the lower bounds are
         met but the upper bounds are not, meaning each grid square color shows
         the value of the function precisely at its lower left corner.
@@ -377,23 +406,36 @@ class scatter(plot):
     Inputs:
 
     * data : float[n, 2]
+        
         An array of n 2D points to plot. Each row is an (x, y) coordinate.
+    
     * height : int (default: 10)
+        
         The height of the plot in rows. The effective pixel height will be 4 *
         height.
+    
     * width : int (default: 30)
+        
         The width of the plot in characters. The effective pixel width will be
         2 * width.
+    
     * yrange : optional (float, float)
+        
         The y-axis limits `(ymin, ymax)`. If not provided, the limits are
         inferred from the min and max y-values in the data.
+    
     * xrange : optional (float, float)
+        
         The x-axis limits `(xmin, xmax)`. If not provided, the limits are
         inferred from the min and max x-values in the data.
+    
     * color : optional ColorLike
+        
         The color of the plotted points (see `Color.parse`). Defaults to the
         terminal's default foreground color.
+    
     * check_bounds : bool (default: False)
+        
         If True, raises a `ValueError` if any data points fall outside the
         specified `xrange` or `yrange`.
     """
@@ -483,18 +525,25 @@ class hilbert(plot):
     Inputs:
 
     * data : bool[N]
+        
         A 1D array of booleans. The length `N` determines the order of the
         Hilbert curve required to fit all points. True values are rendered as
         dots, and False values are rendered as blank spaces.
+    
     * dotcolor : optional ColorLike
+        
         The foreground color used for dots (points along the curve where `data`
         is `True`). Defaults to the terminal's default foreground color.
+    
     * bgcolor : optional ColorLike
+        
         The background color for the entire path of the Hilbert curve (points
         along the curve where `data` is `False`, plus possibly some extra
         points if the curve does not exactly fit the last character cell).
         Defaults to a transparent background.
+    
     * nullcolor : optional ColorLike
+        
         The background color for the grid area not occupied by the curve. This
         is relevant for non-square-power-of-2 data lengths. Defaults to a
         transparent background.
@@ -568,12 +617,17 @@ class progress(plot):
     Inputs:
 
     * progress : float
+        
         The progress to display, as a float between 0.0 and 1.0. Values outside
         this range will be clipped.
+    
     * width : int (default: 40)
+        
         The total width of the progress bar plot in character columns,
         including the label and brackets.
+    
     * color : optional ColorLike
+        
         The color of the filled portion of the progress bar. Defaults to the
         terminal's default foreground color.
     """
@@ -630,18 +684,24 @@ class text(plot):
     Inputs:
 
     * text : str
+        
         The text to be displayed. Newline characters (`\n`) will create
         separate lines in the plot.
+    
     * color : optional ColorLike
+        
         The foreground color of the text. Defaults to the terminal's default
         foreground color.
+    
     * bgcolor : optional ColorLike
+        
         The background color for the text. Defaults to a transparent
         background.
     
     TODO:
 
     * Allow alignment and resizing.
+    
     * Account for non-printable and wide characters.
     """
     def __init__(
@@ -680,12 +740,18 @@ class border(plot):
 
     Inputs:
 
+    
     * plot : plot
+        
         The plot object to be enclosed by the border.
+    
     * style : optional Style (default: Style.ROUND)
+        
         The style of the border. Predefined styles are available in
         `border.Style`.
+    
     * color : optional ColorLike
+        
         The color of the border characters. Defaults to the terminal's
         default foreground color.
     """
@@ -805,6 +871,7 @@ class hstack(plot):
     Inputs:
 
     * *plots : plot
+        
         A sequence of plot objects to be horizontally stacked.
     """
     def __init__(
@@ -840,6 +907,7 @@ class vstack(plot):
     Inputs:
 
     * *plots : plot
+        
         A sequence of plot objects to be vertically stacked.
     """
     def __init__(
@@ -875,6 +943,7 @@ class dstack(plot):
     Inputs:
 
     * *plots : plot
+        
         A sequence of plot objects to be overlaid.
     """
     def __init__(
@@ -911,8 +980,11 @@ class wrap(plot):
     Inputs:
 
     * *plots : plot
+        
         A sequence of plot objects to be arranged in a grid.
+    
     * cols : optional int
+        
         The number of columns in the grid. If not provided, it is automatically
         determined based on the terminal width and the width of the largest
         plot.
@@ -970,11 +1042,16 @@ class center(plot):
     Inputs:
 
     * plot : plot
+    
         The plot object to be centered.
+    
     * height : optional int
+        
         The target height of the new padded plot. If not provided, it defaults
         to the original plot's height (no vertical padding).
+    
     * width : optional int
+        
         The target width of the new padded plot. If not provided, it defaults
         to the original plot's width (no horizontal padding).
     """

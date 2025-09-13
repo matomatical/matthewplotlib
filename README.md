@@ -132,10 +132,10 @@ Basic plot types:
 * [x] Function heatmap plots.
 * [x] Scatter plots.
 * [x] Hilbert curves.
-* [ ] Line plots.
 * [x] Progress bars.
 * [ ] Bar charts and column charts.
 * [ ] Histograms.
+* [ ] Line plots.
 
 Basic plot furnishings:
 

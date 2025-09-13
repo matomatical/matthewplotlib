@@ -59,7 +59,8 @@ class Color:
     @staticmethod
     def parse(color: ColorLike | None) -> Color | None:
         """
-        Accept and standardise RGB triples in various formats.
+        Accept and standardise RGB triples in various formats. See module-level
+        documentation for a description of the possible formats.
         """
         if color is None:
             return None
