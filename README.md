@@ -23,13 +23,13 @@ Key features:
 * If you absolutely need plots outside the terminal, you can render them to PNG
   using a pixel font.
 
-Key missing features (so far, see [roadmap]):
+Key missing features (so far, see [roadmap](#roadmap)):
 
 * Line plots, bar charts, histograms still to be implemented.
 
 * Scatter plots don't have visible axes, ticks, ticklabels, or axis labels yet.
 
-* No HTML documentation.
+* No HTML documentation (but see WIP [REFERENCE.md](REFERNECE.md)).
 
 * Not a lot of input validation, error handling, or testing.
 
@@ -164,20 +164,25 @@ Rendering:
 
 Basic code improvements:
 
-* [x] Detailed docstrings for everything user-facing.
 * [x] Split up monolithic file into a small number of modules.
 * [x] Comprehensive type annotations, static type checking with mypy.
 * [ ] Robust input validation and error handling.
 * [ ] Tests.
+
+Documentation:
+
+* [x] Minimal docstrings for everything user-facing.
+* [x] Quick start guide.
+* [ ] Complete docstrings for modules, constants, etc.
+* [x] Simple generated markdown documentation on GitHub.
+* [ ] Simple generated HTML/CSS documentation, hosted on web.
 
 Repository:
 
 * [x] Set up project, installable via git.
 * [x] A simple example for the quick-start guide.
 * [x] Version numbering and changelog.
-* [ ] Static site with generated HTML documentation.
 * [ ] List on PyPI.
-
 
 Advanced features roadmap
 -------------------------
@@ -193,6 +198,9 @@ More plot types:
 * [ ] World maps, 2d projection.
 * [ ] World maps, 3d globe.
 * [ ] Candlestick plots.
+* [ ] Error bars on line plots.
+* [ ] Fill plots.
+* [ ] Box plots.
 
 Advanced plot arrangement:
 
@@ -209,7 +217,7 @@ Advanced rendering:
 * [ ] Render plots to SVG (keep console aesthetic).
 * [ ] Render plots to PDF (keep console aesthetic).
 
-Backend improvements:
+Back end improvements:
 
 * [ ] Upgrade Char backend to use arrays of codepoints and colors (think
   PyTrees from JAX to replace the current nested lists of dataclasses).
@@ -221,12 +229,20 @@ Backend improvements:
 * [ ] Faster animated plot redraws (e.g., differential rendering with shortcut
   `-`).
 
+More elaborate documentation:
+
+* [ ] Tutorials and recipes.
+* [ ] Freeze documentation with each version.
+* [x] Links to source code from within documentation.
+* [ ] Links to mentioned functions/classes/methods/types within documentation
+  (automatically linked to relevant release).
+* [ ] Documentation search.
 
 Related work
 ------------
 
-Matthewplotlib aspires to similar levels of functionality as the following, but
-with a stand-out interface.
+Matthewplotlib aspires to achieve a similar levels of functionality as covered
+by the following projects.
 
 Terminal plotting in Python:
 

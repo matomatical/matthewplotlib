@@ -651,9 +651,13 @@ class blank(plot):
     Inputs:
 
     * height : optional int
-        The height of the blank area in character rows. Default 1.
+
+      The height of the blank area in character rows. Default 1.
+    
     * width : optional int
-        The width of the blank area in character columns. Default 1.
+
+      The width of the blank area in character columns. Default 1.
+
     """
     def __init__(
         self,

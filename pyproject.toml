@@ -32,6 +32,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "mypy",
+  "tyro",
+]
+examples = [
+  "scikit-learn",
 ]
 
 [project.urls]
