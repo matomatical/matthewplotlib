@@ -29,7 +29,7 @@ Key missing features (so far, see [roadmap](#roadmap)):
 
 * Scatter plots don't have visible axes, ticks, ticklabels, or axis labels yet.
 
-* No HTML documentation (but see WIP [REFERENCE.md](REFERNECE.md)).
+* No HTML documentation (but see WIP [REFERENCE.md](REFERENCE.md)).
 
 * Not a lot of input validation, error handling, or testing.
 

@@ -1,5 +1,12 @@
-REFERENCE.md: generate_docs.py
-	python generate_docs.py matthewplotlib/*.py > REFERENCE.md
+REFERENCE.md: generate_docs.py $(wildcard matthewplotlib/*.py)
+	python generate_docs.py \
+		matthewplotlib/__init__.py \
+		matthewplotlib/plots.py \
+		matthewplotlib/colors.py \
+		matthewplotlib/colormaps.py \
+		matthewplotlib/core.py \
+		matthewplotlib/unscii16.py \
+	> $@
 
 
 copy:

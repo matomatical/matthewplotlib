@@ -13,250 +13,6 @@ A python plotting library that isn't painful.
 
 See https://github.com/matomatical/matthewplotlib
 
-## module matthewplotlib.colormaps
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py)]
-
-### function matthewplotlib.colormaps.reds
-
-#### reds(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L30)]
-
-Red colormap. Simply embeds greyscale value into red channel.
-
-### function matthewplotlib.colormaps.greens
-
-#### greens(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L42)]
-
-Green colormap. Simply embeds greyscale value into green channel.
-
-### function matthewplotlib.colormaps.blues
-
-#### blues(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L54)]
-
-Blue colormap. Simply embeds greyscale value into blue channel.
-
-### function matthewplotlib.colormaps.yellows
-
-#### yellows(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L66)]
-
-Yellow colormap. Simply embeds greyscale value into red and green channels.
-
-### function matthewplotlib.colormaps.magentas
-
-#### magentas(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L79)]
-
-Magenta colormap. Simply embeds greyscale value into red and blue
-channels.
-
-### function matthewplotlib.colormaps.cyans
-
-#### cyans(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L93)]
-
-Cyan colormap. Simply embeds greyscale value into green and blue
-channels.
-
-### function matthewplotlib.colormaps.cyber
-
-#### cyber(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L111)]
-
-Cyberpunk colormap. Uses greyscale value to interpolate between cyan and
-magenta.
-
-### function matthewplotlib.colormaps.rainbow
-
-#### rainbow(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L126)]
-
-Rainbow colormap. Effectively embeds greyscale values as hue in HSV color
-space.
-
-### function matthewplotlib.colormaps.magma
-
-#### magma(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L174)]
-
-Magma colormap by Nathaniel J. Smith and Stefan van der Walt (see
-https://bids.github.io/colormap/).
-
-Discretised to 256 8-bit colours.
-
-### function matthewplotlib.colormaps.inferno
-
-#### inferno(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L252)]
-
-Inferno colormap by Nathaniel J. Smith and Stefan van der Walt (see
-https://bids.github.io/colormap/).
-
-Discretised to 256 8-bit colours.
-
-### function matthewplotlib.colormaps.plasma
-
-#### plasma(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L330)]
-
-Plasma colormap by Nathaniel J. Smith and Stefan van der Walt (see
-https://bids.github.io/colormap/).
-
-Discretised to 256 8-bit colours.
-
-### function matthewplotlib.colormaps.viridis
-
-#### viridis(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L408)]
-
-Viridis colormap by Nathaniel J. Smith, Stefan van der Walt, and Eric
-Firing (see https://bids.github.io/colormap/).
-
-Discretised to 256 8-bit colours.
-
-### function matthewplotlib.colormaps.sweetie16
-
-#### sweetie16(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L490)]
-
-Sweetie-16 colour palette by GrafxKid (see
-https://lospec.com/palette-list/sweetie-16).
-
-Input should be an array of indices in the range [0,15].
-
-### function matthewplotlib.colormaps.pico8
-
-#### pico8(x: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L508)]
-
-PICO-8 colour palette (see https://pico-8.fandom.com/wiki/Palette).
-
-Input should be an array of indices in the range [0,15].
-
-## module matthewplotlib.colors
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py)]
-
-### class matthewplotlib.colors.Color
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L17)]
-
-An RGB color triple.
-
-### method matthewplotlib.colors.Color.\_\_iter\_\_
-
-#### \_\_iter\_\_() -> Iterator[int]
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L26)]
-
-### method matthewplotlib.colors.Color.parse
-
-#### parse(color: ColorLike) -> Color | None
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L31)]
-
-Accept and standardise RGB triples in various formats.
-
-## module matthewplotlib.core
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py)]
-
-### class matthewplotlib.core.Char
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L16)]
-
-A single possibly-coloured character. Plots are assembled from characters
-like these.
-
-### method matthewplotlib.core.Char.\_\_bool\_\_
-
-#### \_\_bool\_\_()
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L26)]
-
-True if the character has visible content, false if it is blank.
-
-### method matthewplotlib.core.Char.to\_ansi\_str
-
-#### to\_ansi\_str(self: Self) -> str
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L33)]
-
-If necessary, wrap a Char in ANSI control codes that switch the color into
-the given fg and bg colors; plus a control code to switch back to default
-mode.
-
-### method matthewplotlib.core.Char.to\_rgba\_array
-
-#### to\_rgba\_array(self: Self) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L50)]
-
-Convert a Char to a small RGBA image patch, with the specified foreground
-color (or white) and background color (or a transparent background).
-
-### function matthewplotlib.core.braille\_encode
-
-#### braille\_encode(a: ArrayLike) -> np.ndarray
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L92)]
-
-Turns a HxW array of booleans into a (H//4)x(W//2) array of braille
-binary codes.
-
-Inputs:
-
-* 
-
-Here is a visual explanation of this function:
-
-```
-Start with an array with height divisible by 4, width divisible by 2:
-    ____
-   [1  0] 0  1  0  1  1  1  1  0  1  0  0  0  0  1  0  0  0  0  0  1  1  0
-   [1  0] 0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
- .-[1  0] 0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
- | [1__0] 0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
- |  1  1  1  1  0  1  1  1  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
- |  1  0  0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
- |  1  0  0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
- |  1  0  0  1  0  1  1  1  1  0  1  1  1  1  0  1  1  1  1  0  0  1  1  0
- |
- | take each 4x2 subarray and ...
- |                                                               braille
- | identify the 4x2 bits with the                                unicode
- | eight numbered braille dots:                                  start pt
- |                                                               |
- |  (dot 1) 1 0 (dot 4)     convert to                           v
- `> (dot 2) 1 0 (dot 5) -----------------> 0 b 0 1 0 0 0 1 1 1 + 0x2800 -.
-    (dot 3) 1 0 (dot 6)    braille code        | | | | | | | |           |
-    (dot 7) 1 0 (dot 8)                    dot 8 7 6 5 4 3 2 1           |
-                                                                         |
-  convert the braille code to a unicode character and collate into array |
- .-----------------------------------------------------------------------'
- |  '''
- `->⡇⢸⢸⠉⠁⡇⠀⢸⠀⠀⡎⢱  (Note: this function returns codepoints, use `chr()`
-    ⡏⢹⢸⣉⡁⣇⣀⢸⣀⡀⢇⡸  to convert these into braille characters for printing.)
-    '''
-```
-
 ## module matthewplotlib.plots
 
 [[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py)]
@@ -831,6 +587,250 @@ Inputs:
 #### \_\_repr\_\_()
 
 [[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L970)]
+
+## module matthewplotlib.colors
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py)]
+
+### class matthewplotlib.colors.Color
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L17)]
+
+An RGB color triple.
+
+### method matthewplotlib.colors.Color.\_\_iter\_\_
+
+#### \_\_iter\_\_() -> Iterator[int]
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L26)]
+
+### method matthewplotlib.colors.Color.parse
+
+#### parse(color: ColorLike) -> Color | None
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L31)]
+
+Accept and standardise RGB triples in various formats.
+
+## module matthewplotlib.colormaps
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py)]
+
+### function matthewplotlib.colormaps.reds
+
+#### reds(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L30)]
+
+Red colormap. Simply embeds greyscale value into red channel.
+
+### function matthewplotlib.colormaps.greens
+
+#### greens(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L42)]
+
+Green colormap. Simply embeds greyscale value into green channel.
+
+### function matthewplotlib.colormaps.blues
+
+#### blues(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L54)]
+
+Blue colormap. Simply embeds greyscale value into blue channel.
+
+### function matthewplotlib.colormaps.yellows
+
+#### yellows(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L66)]
+
+Yellow colormap. Simply embeds greyscale value into red and green channels.
+
+### function matthewplotlib.colormaps.magentas
+
+#### magentas(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L79)]
+
+Magenta colormap. Simply embeds greyscale value into red and blue
+channels.
+
+### function matthewplotlib.colormaps.cyans
+
+#### cyans(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L93)]
+
+Cyan colormap. Simply embeds greyscale value into green and blue
+channels.
+
+### function matthewplotlib.colormaps.cyber
+
+#### cyber(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L111)]
+
+Cyberpunk colormap. Uses greyscale value to interpolate between cyan and
+magenta.
+
+### function matthewplotlib.colormaps.rainbow
+
+#### rainbow(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L126)]
+
+Rainbow colormap. Effectively embeds greyscale values as hue in HSV color
+space.
+
+### function matthewplotlib.colormaps.magma
+
+#### magma(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L174)]
+
+Magma colormap by Nathaniel J. Smith and Stefan van der Walt (see
+https://bids.github.io/colormap/).
+
+Discretised to 256 8-bit colours.
+
+### function matthewplotlib.colormaps.inferno
+
+#### inferno(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L252)]
+
+Inferno colormap by Nathaniel J. Smith and Stefan van der Walt (see
+https://bids.github.io/colormap/).
+
+Discretised to 256 8-bit colours.
+
+### function matthewplotlib.colormaps.plasma
+
+#### plasma(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L330)]
+
+Plasma colormap by Nathaniel J. Smith and Stefan van der Walt (see
+https://bids.github.io/colormap/).
+
+Discretised to 256 8-bit colours.
+
+### function matthewplotlib.colormaps.viridis
+
+#### viridis(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L408)]
+
+Viridis colormap by Nathaniel J. Smith, Stefan van der Walt, and Eric
+Firing (see https://bids.github.io/colormap/).
+
+Discretised to 256 8-bit colours.
+
+### function matthewplotlib.colormaps.sweetie16
+
+#### sweetie16(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L490)]
+
+Sweetie-16 colour palette by GrafxKid (see
+https://lospec.com/palette-list/sweetie-16).
+
+Input should be an array of indices in the range [0,15].
+
+### function matthewplotlib.colormaps.pico8
+
+#### pico8(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L508)]
+
+PICO-8 colour palette (see https://pico-8.fandom.com/wiki/Palette).
+
+Input should be an array of indices in the range [0,15].
+
+## module matthewplotlib.core
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py)]
+
+### class matthewplotlib.core.Char
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L16)]
+
+A single possibly-coloured character. Plots are assembled from characters
+like these.
+
+### method matthewplotlib.core.Char.\_\_bool\_\_
+
+#### \_\_bool\_\_()
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L26)]
+
+True if the character has visible content, false if it is blank.
+
+### method matthewplotlib.core.Char.to\_ansi\_str
+
+#### to\_ansi\_str(self: Self) -> str
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L33)]
+
+If necessary, wrap a Char in ANSI control codes that switch the color into
+the given fg and bg colors; plus a control code to switch back to default
+mode.
+
+### method matthewplotlib.core.Char.to\_rgba\_array
+
+#### to\_rgba\_array(self: Self) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L50)]
+
+Convert a Char to a small RGBA image patch, with the specified foreground
+color (or white) and background color (or a transparent background).
+
+### function matthewplotlib.core.braille\_encode
+
+#### braille\_encode(a: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L92)]
+
+Turns a HxW array of booleans into a (H//4)x(W//2) array of braille
+binary codes.
+
+Inputs:
+
+* 
+
+Here is a visual explanation of this function:
+
+```
+Start with an array with height divisible by 4, width divisible by 2:
+    ____
+   [1  0] 0  1  0  1  1  1  1  0  1  0  0  0  0  1  0  0  0  0  0  1  1  0
+   [1  0] 0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ .-[1  0] 0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ | [1__0] 0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ |  1  1  1  1  0  1  1  1  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ |  1  0  0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ |  1  0  0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ |  1  0  0  1  0  1  1  1  1  0  1  1  1  1  0  1  1  1  1  0  0  1  1  0
+ |
+ | take each 4x2 subarray and ...
+ |                                                               braille
+ | identify the 4x2 bits with the                                unicode
+ | eight numbered braille dots:                                  start pt
+ |                                                               |
+ |  (dot 1) 1 0 (dot 4)     convert to                           v
+ `> (dot 2) 1 0 (dot 5) -----------------> 0 b 0 1 0 0 0 1 1 1 + 0x2800 -.
+    (dot 3) 1 0 (dot 6)    braille code        | | | | | | | |           |
+    (dot 7) 1 0 (dot 8)                    dot 8 7 6 5 4 3 2 1           |
+                                                                         |
+  convert the braille code to a unicode character and collate into array |
+ .-----------------------------------------------------------------------'
+ |  '''
+ `->⡇⢸⢸⠉⠁⡇⠀⢸⠀⠀⡎⢱  (Note: this function returns codepoints, use `chr()`
+    ⡏⢹⢸⣉⡁⣇⣀⢸⣀⡀⢇⡸  to convert these into braille characters for printing.)
+    '''
+```
 
 ## module matthewplotlib.unscii16
 
