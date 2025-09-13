@@ -1,3 +1,16 @@
+In development:
+---------------
+
+New:
+
+* More documentation.
+* Generated markdown documentation.
+
+Dependencies:
+
+* Make example dependency on `scikit-learn` explicit.
+* Add `tyro` as a development dependency.
+
 Version 0.1.1:
 --------------
 
