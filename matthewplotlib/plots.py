@@ -1,3 +1,35 @@
+"""
+A collection of building blots for plotting. There are lots of options---take a
+look through this module. They are roughly grouped as follows.
+
+Base class:
+
+* `plot`: Every plot object inherits from this one. See this class for methods,
+  properties, and shortcut operators available with every plot object.
+
+Data plots:
+
+* `image`
+* `fimage`
+* `scatter`
+* `hilbert`
+* `progress`
+
+Furnishing plots:
+
+* `text`
+* `border`
+
+Arrangement plots:
+
+* `blank`
+* `hstack`
+* `vstack`
+* `dstack`
+* `wrap`
+* `center`
+
+"""
 import enum
 import os
 import numpy as np
@@ -372,7 +404,7 @@ class scatter(plot):
         width: int = 30,
         yrange: tuple[float, float] | None = None,
         xrange: tuple[float, float] | None = None,
-        color: ColorLike = None,
+        color: ColorLike | None = None,
         check_bounds: bool = False,
     ):
         # preprocess and check shape
@@ -470,9 +502,9 @@ class hilbert(plot):
     def __init__(
         self,
         data: ArrayLike, # bool[N]
-        dotcolor: ColorLike = None,
-        bgcolor: ColorLike = None,
-        nullcolor: ColorLike = None,
+        dotcolor: ColorLike | None = None,
+        bgcolor: ColorLike | None = None,
+        nullcolor: ColorLike | None = None,
     ):
         # preprocess and compute grid shape
         data = np.asarray(data)
@@ -525,61 +557,6 @@ class hilbert(plot):
         )
 
 
-class text(plot):
-    """
-    A plot object containing one or more lines of text.
-
-    This class wraps a string in the plot interface, allowing it to be
-    composed with other plot objects. It handles multi-line strings by
-    splitting them at newline characters.
-
-    Inputs:
-
-    * text : str
-        The text to be displayed. Newline characters (`\n`) will create
-        separate lines in the plot.
-    * color : optional ColorLike
-        The foreground color of the text. Defaults to the terminal's default
-        foreground color.
-    * bgcolor : optional ColorLike
-        The background color for the text. Defaults to a transparent
-        background.
-    
-    TODO:
-
-    * Allow alignment and resizing.
-    * Account for non-printable and wide characters.
-    """
-    def __init__(
-        self,
-        text: str,
-        color: ColorLike = None,
-        bgcolor: ColorLike = None,
-    ):
-        color_ = Color.parse(color)
-        bgcolor_ = Color.parse(bgcolor)
-
-        lines = text.splitlines()
-        height = len(lines)
-        width = max(len(line) for line in lines)
-        array = [
-            [Char(c, fg=color_, bg=bgcolor_) for c in line]
-            + [BLANK] * (width - len(line))
-            for line in lines
-        ]
-        super().__init__(array=array)
-        if height > 1 or width > 8:
-            self.preview = lines[0][:5] + "..."
-        else:
-            self.preview = lines[0][:8]
-
-    def __repr__(self):
-        return (
-            f"text(height={self.height}, width={self.width}, "
-            f"text={self.preview!r})"
-        )
-
-
 class progress(plot):
     """
     A single-line progress bar.
@@ -604,7 +581,7 @@ class progress(plot):
         self,
         progress: float,
         width: int = 40,
-        color: ColorLike = None,
+        color: ColorLike | None = None,
     ):
         color_ = Color.parse(color)
         progress = np.clip(progress, 0., 1.)
@@ -636,6 +613,153 @@ class progress(plot):
 
     def __repr__(self):
         return f"progress({self.progress:%})"
+
+
+# # # 
+# FURNISHING CLASSES
+
+
+class text(plot):
+    """
+    A plot object containing one or more lines of text.
+
+    This class wraps a string in the plot interface, allowing it to be
+    composed with other plot objects. It handles multi-line strings by
+    splitting them at newline characters.
+
+    Inputs:
+
+    * text : str
+        The text to be displayed. Newline characters (`\n`) will create
+        separate lines in the plot.
+    * color : optional ColorLike
+        The foreground color of the text. Defaults to the terminal's default
+        foreground color.
+    * bgcolor : optional ColorLike
+        The background color for the text. Defaults to a transparent
+        background.
+    
+    TODO:
+
+    * Allow alignment and resizing.
+    * Account for non-printable and wide characters.
+    """
+    def __init__(
+        self,
+        text: str,
+        color: ColorLike | None = None,
+        bgcolor: ColorLike | None = None,
+    ):
+        color_ = Color.parse(color)
+        bgcolor_ = Color.parse(bgcolor)
+
+        lines = text.splitlines()
+        height = len(lines)
+        width = max(len(line) for line in lines)
+        array = [
+            [Char(c, fg=color_, bg=bgcolor_) for c in line]
+            + [BLANK] * (width - len(line))
+            for line in lines
+        ]
+        super().__init__(array=array)
+        if height > 1 or width > 8:
+            self.preview = lines[0][:5] + "..."
+        else:
+            self.preview = lines[0][:8]
+
+    def __repr__(self):
+        return (
+            f"text(height={self.height}, width={self.width}, "
+            f"text={self.preview!r})"
+        )
+
+
+class border(plot):
+    """
+    Add a border around a plot using box-drawing characters.
+
+    Inputs:
+
+    * plot : plot
+        The plot object to be enclosed by the border.
+    * style : optional Style (default: Style.ROUND)
+        The style of the border. Predefined styles are available in
+        `border.Style`.
+    * color : optional ColorLike
+        The color of the border characters. Defaults to the terminal's
+        default foreground color.
+    """
+    class Style(str, enum.Enum):
+        """
+        A string enum defining preset styles for the `border` plot.
+
+        Each style is a string of six characters representing the border
+        elements in the following order: horizontal, vertical, top-left,
+        top-right, bottom-left, and bottom-right.
+
+        Available Styles:
+
+        * `LIGHT`: A standard, single-line border.
+        * `HEAVY`: A thicker, bold border.
+        * `DOUBLE`: A double-line border.
+        * `BLANK`: An invisible border, useful for adding padding around a
+          plot while maintaining layout alignment.
+        * `ROUND`: A single-line border with rounded corners.
+        * `BUMPER`: A single-line border with corners made of blocks.
+
+        Demo:
+
+        ```
+        ┌──────┐ ┏━━━━━━┓ ╔══════╗         ╭──────╮ ▛──────▜
+        │LIGHT │ ┃HEAVY ┃ ║DOUBLE║  BLANK  │ROUND │ │BUMPER│
+        └──────┘ ┗━━━━━━┛ ╚══════╝         ╰──────╯ ▙──────▟
+        ```
+        """
+        LIGHT  = "─│┌┐└┘"
+        HEAVY  = "━┃┏┓┗┛"
+        DOUBLE = "═║╔╗╚╝"
+        BLANK  = "      "
+        ROUND  = "─│╭╮╰╯"
+        BUMPER = "─│▛▜▙▟"
+
+    def __init__(
+        self,
+        plot: plot,
+        style: Style | None = None,
+        color: ColorLike | None = None,
+    ):
+        color_ = Color.parse(color)
+        if style is None:
+            style = self.Style.ROUND
+        array = [
+            # top row
+            [
+                Char(style[2], fg=color_),
+                *[Char(style[0], fg=color_)] * plot.width,
+                Char(style[3], fg=color_),
+            ],
+            # middle rows
+            *[
+                [
+                    Char(style[1], fg=color_),
+                    *row,
+                    Char(style[1], fg=color_),
+                ]
+                for row in plot.array
+            ],
+            # bottom row
+            [
+                Char(style[4], fg=color_),
+                *[Char(style[0], fg=color_)] * plot.width,
+                Char(style[5], fg=color_),
+            ],
+        ]
+        super().__init__(array)
+        self.style = style[2]
+        self.plot = plot
+    
+    def __repr__(self):
+        return f"border(style={self.style!r}, plot={self.plot!r})"
 
 
 # # # 
@@ -833,94 +957,6 @@ class wrap(plot):
             f"wrap(height={self.height}, width={self.width}, "
             f"plots={self.plots!r})"
         )
-
-
-class border(plot):
-    """
-    Add a border around a plot using box-drawing characters.
-
-    Inputs:
-
-    * plot : plot
-        The plot object to be enclosed by the border.
-    * style : optional Style (default: Style.ROUND)
-        The style of the border. Predefined styles are available in
-        `border.Style`.
-    * color : optional ColorLike
-        The color of the border characters. Defaults to the terminal's
-        default foreground color.
-    """
-    class Style(str, enum.Enum):
-        """
-        A string enum defining preset styles for the `border` plot.
-
-        Each style is a string of six characters representing the border
-        elements in the following order: horizontal, vertical, top-left,
-        top-right, bottom-left, and bottom-right.
-
-        Available Styles:
-
-        * `LIGHT`: A standard, single-line border.
-        * `HEAVY`: A thicker, bold border.
-        * `DOUBLE`: A double-line border.
-        * `BLANK`: An invisible border, useful for adding padding around a
-          plot while maintaining layout alignment.
-        * `ROUND`: A single-line border with rounded corners.
-        * `BUMPER`: A single-line border with corners made of blocks.
-
-        Demo:
-
-        ```
-        ┌──────┐ ┏━━━━━━┓ ╔══════╗         ╭──────╮ ▛──────▜
-        │LIGHT │ ┃HEAVY ┃ ║DOUBLE║  BLANK  │ROUND │ │BUMPER│
-        └──────┘ ┗━━━━━━┛ ╚══════╝         ╰──────╯ ▙──────▟
-        ```
-        """
-        LIGHT  = "─│┌┐└┘"
-        HEAVY  = "━┃┏┓┗┛"
-        DOUBLE = "═║╔╗╚╝"
-        BLANK  = "      "
-        ROUND  = "─│╭╮╰╯"
-        BUMPER = "─│▛▜▙▟"
-
-    def __init__(
-        self,
-        plot: plot,
-        style: Style | None = None,
-        color: ColorLike = None,
-    ):
-        color_ = Color.parse(color)
-        if style is None:
-            style = self.Style.ROUND
-        array = [
-            # top row
-            [
-                Char(style[2], fg=color_),
-                *[Char(style[0], fg=color_)] * plot.width,
-                Char(style[3], fg=color_),
-            ],
-            # middle rows
-            *[
-                [
-                    Char(style[1], fg=color_),
-                    *row,
-                    Char(style[1], fg=color_),
-                ]
-                for row in plot.array
-            ],
-            # bottom row
-            [
-                Char(style[4], fg=color_),
-                *[Char(style[0], fg=color_)] * plot.width,
-                Char(style[5], fg=color_),
-            ],
-        ]
-        super().__init__(array)
-        self.style = style[2]
-        self.plot = plot
-    
-    def __repr__(self):
-        return f"border(style={self.style!r}, plot={self.plot!r})"
 
 
 class center(plot):

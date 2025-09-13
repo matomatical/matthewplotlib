@@ -173,7 +173,7 @@ Documentation:
 
 * [x] Minimal docstrings for everything user-facing.
 * [x] Quick start guide.
-* [ ] Complete docstrings for modules, constants, etc.
+* [x] Complete docstrings for modules, constants, etc.
 * [x] Simple generated markdown documentation on GitHub.
 * [ ] Simple generated HTML/CSS documentation, hosted on web.
 

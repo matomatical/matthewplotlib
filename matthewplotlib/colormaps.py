@@ -1,3 +1,17 @@
+"""
+A collection of pre-defined colormaps. They generally come in two flavours:
+
+* Continuous colormaps: Functions of type `float[...] -> uint8[..., 3]`. They
+  turn a batch of floats in the range [0.0, 1.0] into a batch of RGB triples.
+* Discrete colormaps: Functions of type `int[...] -> uint8[..., 3]`. They turn
+  a batch of integer indices into a batch of RGB triples by indexing into the
+  color palette.
+
+For example:
+
+![](images/colormaps.png)
+"""
+
 from typing import Callable
 from numpy.typing import ArrayLike
 

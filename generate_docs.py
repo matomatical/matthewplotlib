@@ -6,7 +6,7 @@ import ast
 import sys
 import tyro
 
-import matthewplotlib
+import matthewplotlib as mp
 
 
 LIVE_BASE_URL = "https://github.com/matomatical/matthewplotlib/blob/main"
@@ -17,10 +17,9 @@ def main(
     /,
     code_base_url: str = LIVE_BASE_URL,
 ):
-    # Header block with title and version
     print("---")
     print("title: Matthew's plotting library (`matthewplotlib`)")
-    print(f"date: Version {matthewplotlib.__version__}")
+    print(f"version: Version {mp.__version__}")
     print("---")
     print()
 
@@ -53,38 +52,41 @@ class MarkdownVisitor(ast.NodeVisitor):
         module: str,
         code_url: str,
     ):
-        if module.endswith(".__init__"):
-            self.module = module[:-len(".__init__")]
-        else:
-            self.module = module
+        self.module = module
         self.code_url = code_url
         self.markdown: list[str] = []
         self.context: list[str] = []
 
 
     def visit_Module(self, node: ast.Module):
+        if self.module.endswith(".__init__"):
+            # just docstring
+            module_docstring = ast.get_docstring(node)
+            if module_docstring:
+                self.markdown.append(f"{module_docstring}\n")
 
-        # section for the module
-        name = s(self.module)
-        self.markdown.append(f"## module {name}\n")
+        else:
+            # section for the module
+            name = s(self.module)
+            self.markdown.append(f"## module {name}\n")
         
-        # source link
-        self.markdown.append(f"[[source]({self.code_url})]\n")
+            # source link
+            self.markdown.append(f"[[source]({self.code_url})]\n")
         
-        # docstring
-        module_docstring = ast.get_docstring(node)
-        if module_docstring:
-            self.markdown.append(f"{module_docstring}\n")
+            # docstring
+            module_docstring = ast.get_docstring(node)
+            if module_docstring:
+                self.markdown.append(f"{module_docstring}\n")
         
-        # children
-        self.context.append(name)
-        self.generic_visit(node)
-        self.context.pop()
+            # children
+            self.context.append(name)
+            self.generic_visit(node)
+            self.context.pop()
     
 
     def visit_ClassDef(self, node: ast.ClassDef):
-        # skip private methods (but not dunder methods)
-        if node.name.startswith('_') and not node.name.startswith('__'):
+        # skip private classes
+        if node.name.startswith('_'):
             return
 
         # subsection for the class
@@ -149,6 +151,22 @@ class MarkdownVisitor(ast.NodeVisitor):
             self.markdown.append(f"{docstring}\n")
 
         # no recursion to children of methods or functions
+
+
+    def visit_TypeAlias(self, node: ast.TypeAlias):
+        # skip private methods
+        if node.name.id.startswith('_'):
+            return
+
+        # section for the type alias
+        context = '.'.join(self.context)
+        name = s(node.name.id)
+        self.markdown.append(f"### type {context}.{name}\n")
+
+        self.markdown.append(f"#### {s(ast.unparse(node))}\n")
+
+        # source link
+        self.markdown.append(f"[[source]({self.code_url}#L{node.lineno})]\n")
 
 
 def s(s: str) -> str:

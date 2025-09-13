@@ -1,3 +1,33 @@
+"""
+Configuring various plots involves specifying colours. In most cases, colours
+can be specified in one of the following `ColorLike` formats:
+
+1. **Named colours:** The following strings are recognised and translated to
+   RGB triples: `"black"`, `"red"`, `"green"`, `"blue"`, `"cyan"`, `"magenta"`,
+   `"yellow"`, `"white"`.
+
+2. **Hexadecimal:** A hexadecimal string like ``"#ff0000"`` specifying the RGB
+   values in the usual manner.
+
+3. **Short hexadecimal:** A three-character hexadecimal string like `"#f00"`,
+   where `"#RGB"` is equivalent to `"#RRGGBB"` in the usual hexadecimal format.
+
+4. **Integer triple:** An array or tuple of three integers in the range 0 to
+    255, converted directly to an RGB triple.
+
+5. **Float triple:** An array or tuple of three floats in the range 0.0 to 1.0,
+   converted to an RGB triple by multiplying by 255 and rounding down to the
+   nearest integer.
+   
+   (Arrays or tuples with mixed integers and floats are promoted by NumPy to
+   become float triples.)
+
+The `Color` class is used internally to represent an RGB colour that has been
+parsed from one of the above formats. In most cases, it is not used externally.
+
+In some contexts, colours are specified through a colour map rather than
+directly specified---see the `matthewplotlib.colormaps` module for details.
+"""
 from __future__ import annotations
 from typing import Self, Iterator
 import dataclasses
@@ -10,7 +40,6 @@ type ColorLike = (
     | np.ndarray # float[3] (0 to 1) or uint8[3] (0 to 255)
     | tuple[int, int, int]
     | tuple[float, float, float]
-    | None
 )
 
 @dataclasses.dataclass(frozen=True)
@@ -28,7 +57,7 @@ class Color:
 
 
     @staticmethod
-    def parse(color: ColorLike) -> Color | None:
+    def parse(color: ColorLike | None) -> Color | None:
         """
         Accept and standardise RGB triples in various formats.
         """

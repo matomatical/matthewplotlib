@@ -1,3 +1,13 @@
+"""
+A collection of classes and types used internally.
+
+Constants:
+
+* `BLANK : Char`
+
+    A colourless space character used for padding.
+"""
+
 import dataclasses
 import numpy as np
 
@@ -98,10 +108,18 @@ def braille_encode(
 
     Inputs:
 
-    * 
+    * a: bool[4h, 2w]
+        
+        Array of booleans, height divisible by 4 and width divisible by 2.
 
-    Here is a visual explanation of this function:
+    Returns:
 
+    * bits: uint16[h, w]
+
+        An array of braille unicode code points. The unicode characters will
+        have a dot in the corresponding places where `a` is True.
+
+    An illustrated example is as follows:
     ```
     Start with an array with height divisible by 4, width divisible by 2:
         ____
