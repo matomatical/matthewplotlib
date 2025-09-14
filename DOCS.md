@@ -3,174 +3,8 @@ title: Matthew's plotting library (`matthewplotlib`)
 version: Version 0.1.1
 ---
 
-A Python plotting library that aspires to *not be painful.*
-
-*Status:* Work in progress. See [roadmap](#roadmap-to-version-1). Currently,
-still generally painful, due to lack of generated documentation and lack of
-common plot types. However, for personal use, I'm already finding what limited
-functionality it does have delightful.
-
-Key features:
-
-* Colourful unicode-based rendering of scatter plots, small images, heatmaps,
-  bar charts, histograms, and more.
-
-* Rendering plots to the terminal with `print(plot)` (no GUI windows to
-  manage).
-
-* Plots are just expressions. Compose complex plots with horizontal (`+`) and
-  vertical (`/`) stacking operations, as in
-    `subplots = (plotA + plotB) / (plotC + plotD)`.
-
-* If you absolutely need plots outside the terminal, you can render them to PNG
-  using a pixel font.
-
-Key missing features:
-
-* Line plots still to be implemented.
-
-* Plots don't have visible axes, ticks, ticklabels, or axis labels yet.
-
-* No HTML documentation (but see WIP markdown [DOCS.md](DOCS.md)).
-
-* Not a lot of input validation, error handling, or testing.
-
-Some eye-candy:
-
-<table>
-<tbody>
-  <tr>
-    <td><img src="images/lissajous.png" height="256px"></td>
-    <td><img src="images/teapot.gif" height="256px"></td>
-    <td><img src="images/colormaps.png" height="256px"></td>
-  </tr>
-</tbody>
-</table>
-
-## Contents
-
-Information:
-
-* Quickstart
-* Examples
-* Related tools
-
-Modules:
-
-* matthewplotlib.plots:
-    Classes for generating plots of various kinds
-* matthewplotlib.colors:
-    Specifying colours.
-* matthewplotlib.colormaps:
-    Various predefined colour scales.
-
-Back-end modules:
-
-* matthewplotlib.core:
-    Helpful classes and types used internally.
-* matthewplotlib.unscii16:
-    A fixed-width pixel font used for image rendering.
-
-
-## Quickstart
-
-Install:
-
-```console
-pip install git+https://github.com/matomatical/matthewplotlib.git
-```
-
-Import the library:
-
-```python
-import matthewplotlib as mp
-```
-
-Construct a plot:
-```python
-import numpy as np
-
-xs = np.linspace(-2*np.pi, +2*np.pi, 156)
-ys1 = 1.0 * np.cos(xs)
-ys2 = 0.9 * np.cos(xs - 0.33 * np.pi)
-ys3 = 0.8 * np.cos(xs - 0.66 * np.pi)
-ys4 = 0.7 * np.cos(xs - 1.00 * np.pi)
-ys5 = 0.8 * np.cos(xs - 1.33 * np.pi)
-ys6 = 0.9 * np.cos(xs - 1.66 * np.pi)
-
-plot = mp.border(
-    mp.scatter(np.c_[xs, ys1], width=78, yrange=(-1,1), color=(1.,0.,0.))
-    @ mp.scatter(np.c_[xs, ys2], width=78, yrange=(-1,1), color=(1.,0.,1.))
-    @ mp.scatter(np.c_[xs, ys3], width=78, yrange=(-1,1), color=(0.,0.,1.))
-    @ mp.scatter(np.c_[xs, ys4], width=78, yrange=(-1,1), color=(0.,1.,1.))
-    @ mp.scatter(np.c_[xs, ys5], width=78, yrange=(-1,1), color=(0.,1.,0.))
-    @ mp.scatter(np.c_[xs, ys6], width=78, yrange=(-1,1), color=(1.,1.,0.))
-    | mp.center(mp.text(f"cos(x + 2 pi k / 6)"), width=78)
-)
-```
-
-Print to terminal:
-```python
-print(plot)
-```
-![](images/quickstart-screenshot.png)
-
-Export to PNG image:
-```python
-plot.saveimg("images/quickstart.png")
-```
-![](images/quickstart.png)
-
-
-## Examples
-
-See [examples/](examples/) folder. Highlights:
-
-* [lissajous.py](examples/lissajous.py) showing scatterplots and basic plot
-  arrangement.
-
-* [colormaps.py](examples/colormaps.py) showing off the different available
-  colormaps more advanced plot arrangement.
-
-* [calendar_heatmap.py](examples/calendar_heatmap.py) showing how to construct
-  a custom plot, in this case colouring the cells of a calendar (inspired by
-  GitHub issues tracker).
-
-* [teapot.py](examples/teapot.py) showing how to use scatter plots to render a
-  3d point cloud, and animations.
-
-Ideas for future examples:
-
-* Simple machine learning experiment, loss curves and progress bars.
-
-* Simple gridworld rollout visualiser for reinforcement learning.
-
-* CPU/RAM usage visualiser.
-
-
-## Related tools
-
-Terminal plotting in Python:
-
-* Plotext: https://github.com/piccolomo/plotext
-* Plotille: https://github.com/tammoippen/plotille
-* Termgraph: https://github.com/sgeisler/termgraph
-* Termplot: https://github.com/justnoise/termplot
-
-Terminal plotting in other languages:
-
-* Julia https://github.com/JuliaPlots/UnicodePlots.jl
-* Julia again https://github.com/sunetos/TextPlots.jl
-* C++ https://github.com/fbbdev/plot
-* GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.html
-
-Braille art:
-
-* Drawille (Python): https://github.com/asciimoo/drawille
-* Rsille (Rust): https://github.com/nidhoggfgg/rsille
-* Drawille (Lua): https://github.com/asciimoo/lua-drawille
-* Drawille (NodeJS): https://github.com/madbence/node-drawille
-* Python repo documents ports to various other languages
+A Python plotting library that aspires to *not be painful.* See
+[README.md](README.md) for overview.
 
 ## module matthewplotlib.plots
 
@@ -186,15 +20,17 @@ Base class:
 
 Data plots:
 
-* `image`
-* `fimage`
 * `scatter`
-* `hilbert`
+* `function`
+* `image`
+* `function2`
+* `histogram2`
 * `progress`
 * `bars`
 * `histogram`
 * `columns`
 * `vistogram`
+* `hilbert`
 
 Furnishing plots:
 
@@ -214,11 +50,11 @@ Arrangement plots:
 
 #### type number = int | float | np.integer | np.floating
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L54)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L55)]
 
 ### class matthewplotlib.plots.plot
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L61)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L62)]
 
 Abstract base class for all plot objects.
 
@@ -255,19 +91,21 @@ Operators:
 * `str(plot)`: Shortcut for `plot.renderstr()`. This means you can render
    the plot just by calling `print(plot)`.
 
-* `~plot`: Shortcut for `plot.clearstr()`. Useful for animations.
+* `-plot`: Shortcut for `plot.clearstr()`. Useful for animations.
 
-* `plot1 | plot2`: Horizontally stacks plots (see `hstack`).
+* `plot1 + plot2`: Horizontally stacks plots (see `hstack`).
 
-* `plot1 ^ plot2`: Vertically stacks plots (see `vstack`).
+* `plot1 / plot2`: Vertically stacks plots (see `vstack`).
 
-* `plot1 & plot2`: Overlays plots (see `dstack`).
+* `plot1 | plot2`: Vertically stacks plots (see `vstack`).
+
+* `plot1 @ plot2`: Overlays plots (see `dstack`).
 
 ### method matthewplotlib.plots.plot.height
 
 #### height() -> int
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L111)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L114)]
 
 Number of character rows in the plot.
 
@@ -275,7 +113,7 @@ Number of character rows in the plot.
 
 #### width() -> int
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L119)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L122)]
 
 Number of character columns in the plot.
 
@@ -283,7 +121,7 @@ Number of character columns in the plot.
 
 #### renderstr() -> str
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L126)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L129)]
 
 Convert the plot into a string for printing to the terminal.
 
@@ -293,7 +131,7 @@ Note: plot.renderstr() is equivalent to str(plot).
 
 #### clearstr(self: Self) -> str
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L135)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L138)]
 
 Convert the plot into a string that, if printed immediately after
 plot.renderstr(), will clear that plot from the terminal.
@@ -302,7 +140,7 @@ plot.renderstr(), will clear that plot from the terminal.
 
 #### renderimg(, scale\_factor: int) -> np.ndarray
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L143)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L146)]
 
 Convert the plot into an RGBA array for rendering with Pillow.
 
@@ -310,7 +148,7 @@ Convert the plot into an RGBA array for rendering with Pillow.
 
 #### saveimg(, filename: str, scale\_factor: int)
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L169)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L172)]
 
 Render the plot as an RGBA image and save it as a PNG file at the path
 `filename`.
@@ -319,7 +157,7 @@ Render the plot as an RGBA image and save it as a PNG file at the path
 
 #### \_\_str\_\_() -> str
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L183)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L186)]
 
 Shortcut for the string for printing the plot.
 
@@ -327,15 +165,15 @@ Shortcut for the string for printing the plot.
 
 #### \_\_neg\_\_(self: Self) -> str
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L190)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L193)]
 
 Shortcut for the string for clearing the plot.
 
 ### method matthewplotlib.plots.plot.\_\_add\_\_
 
-#### \_\_add\_\_(self: Self, other: Self) -> 'vstack'
+#### \_\_add\_\_(self: Self, other: Self) -> 'hstack'
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L197)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L200)]
 
 Operator shortcut for horizontal stack.
 
@@ -361,7 +199,7 @@ plot1 + plot2 | plot3 + plot4
 
 #### \_\_truediv\_\_(self: Self, other: Self) -> 'vstack'
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L222)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L225)]
 
 High-precedence operator shortcut for vertical stack.
 
@@ -384,7 +222,7 @@ For a version that binds after `+`, see `|`.
 
 #### \_\_or\_\_(self: Self, other: Self) -> 'vstack'
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L244)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L247)]
 
 Low-precedence operator shortcut for vertical stack.
 
@@ -406,7 +244,7 @@ For a version that binds before `+`, see `/`.
 
 #### \_\_matmul\_\_(self: Self, other: Self) -> 'dstack'
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L265)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L268)]
 
 Operator shortcut for depth stack.
 
@@ -418,13 +256,114 @@ plot1_ @ plot_2 ==> dstack(plot1_, plot2_) => plot12
 Note that the precedence of `@` competes with `/`, so use parentheses
 or pair with `|`.
 
-### class matthewplotlib.plots.image
+### class matthewplotlib.plots.scatter
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L284)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L287)]
 
 [Inherits from plot]
 
-Render a small image using a grid of unicode half-block characters.
+Render a scatterplot using a grid of braille unicode characters.
+
+Each character cell in the plot corresponds to a 2x4 grid of sub-pixels,
+represented by braille dots.
+
+Inputs:
+
+* data : number[n, 2]
+    
+    An array of n 2D points to plot. Each row is an (x, y) coordinate.
+
+* width : int (default: 30)
+    
+    The width of the plot in characters. The effective pixel width will be
+    2 * width.
+
+* height : int (default: 10)
+    
+    The height of the plot in rows. The effective pixel height will be 4 *
+    height.
+
+* xrange : optional (number, number)
+    
+    The x-axis limits `(xmin, xmax)`. If not provided, the limits are
+    inferred from the min and max x-values in the data.
+
+* yrange : optional (number, number)
+    
+    The y-axis limits `(ymin, ymax)`. If not provided, the limits are
+    inferred from the min and max y-values in the data.
+
+* color : optional ColorLike
+    
+    The color of the plotted points (see `Color.parse`). Defaults to the
+    terminal's default foreground color.
+
+* check_bounds : bool (default: False)
+    
+    If True, raises a `ValueError` if any data points fall outside the
+    specified `xrange` or `yrange`.
+
+### method matthewplotlib.plots.scatter.\_\_repr\_\_
+
+#### \_\_repr\_\_()
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L396)]
+
+### class matthewplotlib.plots.function
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L405)]
+
+[Inherits from scatter]
+
+Scatter plot representing a particular function.
+
+* F : float[batch] -> number[batch]
+    
+    The (vectorised) function to plot. The input should be a batch of
+    floats x. The output should be a batch of scalars f(x).
+
+* xrange : (float, float)
+    
+    Lower and upper bounds on the x values to pass into the function.
+
+* width : int
+    
+    The number of character columns in the plot.
+
+* height : int
+    
+    The number of character rows in the plot.
+
+* yrange : optional (float, float)
+    
+    If provided, specifies the expected lower and upper bounds on the f(x)
+    values. If not provided, they are automatically determined by using the
+    minimum and maximum output over the inputs sampled.
+
+* color : optional ColorLike
+
+    If provided, sets the colors for the scattered points. By default,
+    foreground color is used.
+
+TODO:
+
+* More intelligent interpolation, like a proper line plot with a given
+  thickness.
+
+### method matthewplotlib.plots.function.\_\_repr\_\_
+
+#### \_\_repr\_\_()
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L470)]
+
+### class matthewplotlib.plots.image
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L477)]
+
+[Inherits from plot]
+
+Render a small image or 2d array using a grid of unicode half-block
+characters.
 
 Represents an image by mapping pairs of vertically adjacent pixels to the
 foreground and background colors of a single character cell (this
@@ -460,11 +399,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L358)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L552)]
 
-### class matthewplotlib.plots.fimage
+### class matthewplotlib.plots.function2
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L362)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L556)]
 
 [Inherits from image]
 
@@ -487,14 +426,14 @@ Inputs:
 
 * width : int
     
-    The number of grid squares along the x axis. This will also become the
-    width of the plot.
+    The number of character columns in the plot. This will also become the
+    number of grid squares along the x axis.
 
 * height : int
     
-    The number of grid squares along the y axis. This will become double
-    the height of the plot in lines (since the result is an image plot with
-    two pixels per line).
+    The number of character rows in the plot. This will also be half of the
+    number of grid squares, since the result is an image plot with two
+    half-character-pixels per row.
 
 * zrange : optional (float, float)
     
@@ -518,112 +457,82 @@ Inputs:
     met but the upper bounds are not, meaning each grid square color shows
     the value of the function precisely at its lower left corner.
 
-### method matthewplotlib.plots.fimage.\_\_repr\_\_
+### method matthewplotlib.plots.function2.\_\_repr\_\_
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L455)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L649)]
 
-### class matthewplotlib.plots.scatter
+### class matthewplotlib.plots.histogram2
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L463)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L657)]
 
-[Inherits from plot]
+[Inherits from image]
 
-Render a scatterplot using a grid of braille unicode characters.
-
-Each character cell in the plot corresponds to a 2x4 grid of sub-pixels,
-represented by braille dots.
+Heatmap representing the density of a collection of 2d points.
 
 Inputs:
 
-* data : number[n, 2]
+* x : number[n]
     
-    An array of n 2D points to plot. Each row is an (x, y) coordinate.
+    X coordinates of 2d points to bin and count.
 
-* height : int (default: 10)
+* y : number[n]
     
-    The height of the plot in rows. The effective pixel height will be 4 *
-    height.
+    Y coordinates of 2d points to bin and count.
 
-* width : int (default: 30)
-    
-    The width of the plot in characters. The effective pixel width will be
-    2 * width.
+* width : int (default 24)
 
-* yrange : optional (number, number)
+    Specifies the width of the plot in characters. This is also the number
+    of bins in the x direction.
+
+* height : int (default 12)
     
-    The y-axis limits `(ymin, ymax)`. If not provided, the limits are
-    inferred from the min and max y-values in the data.
+    Specifies the height of the plot in characters. This is also half the
+    number of bins in the y direction.
 
 * xrange : optional (number, number)
     
     The x-axis limits `(xmin, xmax)`. If not provided, the limits are
     inferred from the min and max x-values in the data.
 
-* color : optional ColorLike
+* yrange : optional (number, number)
     
-    The color of the plotted points (see `Color.parse`). Defaults to the
-    terminal's default foreground color.
+    The y-axis limits `(ymin, ymax)`. If not provided, the limits are
+    inferred from the min and max y-values in the data.
 
-* check_bounds : bool (default: False)
+* weights : optional number[n]
+
+    If provided, each 2d point in data contributes this amount to the count
+    for its bin (rather than the default 1). See np.histogram2d's weights
+    argument for details.
+
+* density : bool (default False)
+
+    If true, normalise bin counts so that they sum to 1,0. See
+    np.histogram2d's density argument for details.
+
+* max_count : optional number
+
+    If provided, cell colours are scaled so that only bars matching or
+    exceeding this count max out the colour. Otherwise, the colours are
+    scaled so that the bin with the highest count has the colour maxed out.
+
+* colormap : optional colormap (e.g. mp.viridis)
     
-    If True, raises a `ValueError` if any data points fall outside the
-    specified `xrange` or `yrange`.
+    By default, the output will be in greyscale, with black corresponding
+    to zero density and white corresponding to max_count. You can choose a
+    different colormap (e.g. mp.reds, mp.viridis, etc.) here.
 
-### method matthewplotlib.plots.scatter.\_\_repr\_\_
+### method matthewplotlib.plots.histogram2.\_\_repr\_\_
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L572)]
-
-### class matthewplotlib.plots.hilbert
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L581)]
-
-[Inherits from plot]
-
-Visualize a 1D boolean array along a 2D Hilbert curve.
-
-Maps a 1D sequence of data points to a 2D grid using a space-filling
-Hilbert curve, which helps preserve locality. The curve is rendered using
-braille unicode characters for increased resolution.
-
-Inputs:
-
-* data : bool[N]
-    
-    A 1D array of booleans. The length `N` determines the order of the
-    Hilbert curve required to fit all points. True values are rendered as
-    dots, and False values are rendered as blank spaces.
-
-* dotcolor : optional ColorLike
-    
-    The foreground color used for dots (points along the curve where `data`
-    is `True`). Defaults to the terminal's default foreground color.
-
-* bgcolor : optional ColorLike
-    
-    The background color for the entire path of the Hilbert curve (points
-    along the curve where `data` is `False`, plus possibly some extra
-    points if the curve does not exactly fit the last character cell).
-    Defaults to a transparent background.
-
-* nullcolor : optional ColorLike
-    
-    The background color for the grid area not occupied by the curve. This
-    is relevant for non-square-power-of-2 data lengths. Defaults to a
-    transparent background.
-
-### method matthewplotlib.plots.hilbert.\_\_repr\_\_
-
-#### \_\_repr\_\_()
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L665)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L770)]
 
 ### class matthewplotlib.plots.progress
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L673)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L779)]
 
 [Inherits from plot]
 
@@ -654,11 +563,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L729)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L835)]
 
 ### class matthewplotlib.plots.bars
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L733)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L839)]
 
 [Inherits from plot]
 
@@ -704,11 +613,11 @@ TODO:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L809)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L915)]
 
 ### class matthewplotlib.plots.histogram
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L817)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L923)]
 
 [Inherits from bars]
 
@@ -765,11 +674,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L902)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1008)]
 
 ### class matthewplotlib.plots.columns
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L910)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1016)]
 
 [Inherits from plot]
 
@@ -815,16 +724,16 @@ TODO:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L988)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1094)]
 
 ### class matthewplotlib.plots.vistogram
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L996)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1102)]
 
 [Inherits from columns]
 
 A histogram column chart ("vertical histogram", referring to the direction
-of the *bars,* rather than the *bins*).
+of the bars rather than the bins).
 
 Transform a sequence of values into columns representing the density in
 different bins. The columns are rendered using Unicode block element
@@ -877,11 +786,55 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1082)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1188)]
+
+### class matthewplotlib.plots.hilbert
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1196)]
+
+[Inherits from plot]
+
+Visualize a 1D boolean array along a 2D Hilbert curve.
+
+Maps a 1D sequence of data points to a 2D grid using a space-filling
+Hilbert curve, which helps preserve locality. The curve is rendered using
+braille unicode characters for increased resolution.
+
+Inputs:
+
+* data : bool[N]
+    
+    A 1D array of booleans. The length `N` determines the order of the
+    Hilbert curve required to fit all points. True values are rendered as
+    dots, and False values are rendered as blank spaces.
+
+* dotcolor : optional ColorLike
+    
+    The foreground color used for dots (points along the curve where `data`
+    is `True`). Defaults to the terminal's default foreground color.
+
+* bgcolor : optional ColorLike
+    
+    The background color for the entire path of the Hilbert curve (points
+    along the curve where `data` is `False`, plus possibly some extra
+    points if the curve does not exactly fit the last character cell).
+    Defaults to a transparent background.
+
+* nullcolor : optional ColorLike
+    
+    The background color for the grid area not occupied by the curve. This
+    is relevant for non-square-power-of-2 data lengths. Defaults to a
+    transparent background.
+
+### method matthewplotlib.plots.hilbert.\_\_repr\_\_
+
+#### \_\_repr\_\_()
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1280)]
 
 ### class matthewplotlib.plots.text
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1094)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1292)]
 
 [Inherits from plot]
 
@@ -920,18 +873,17 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1148)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1346)]
 
 ### class matthewplotlib.plots.border
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1155)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1353)]
 
 [Inherits from plot]
 
 Add a border around a plot using box-drawing characters.
 
 Inputs:
-
 
 * plot : plot
     
@@ -949,7 +901,7 @@ Inputs:
 
 ### class matthewplotlib.plots.border.Style
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1176)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1373)]
 
 [Inherits from str, enum.Enum]
 
@@ -981,11 +933,11 @@ Demo:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1245)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1442)]
 
 ### class matthewplotlib.plots.blank
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1253)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1450)]
 
 [Inherits from plot]
 
@@ -1007,11 +959,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1278)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1475)]
 
 ### class matthewplotlib.plots.hstack
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1282)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1479)]
 
 [Inherits from plot]
 
@@ -1030,11 +982,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1311)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1508)]
 
 ### class matthewplotlib.plots.vstack
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1318)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1515)]
 
 [Inherits from plot]
 
@@ -1053,11 +1005,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1345)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1542)]
 
 ### class matthewplotlib.plots.dstack
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1352)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1549)]
 
 [Inherits from plot]
 
@@ -1078,11 +1030,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1391)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1588)]
 
 ### class matthewplotlib.plots.wrap
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1398)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1595)]
 
 [Inherits from plot]
 
@@ -1108,11 +1060,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1453)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1650)]
 
 ### class matthewplotlib.plots.center
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1460)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1657)]
 
 [Inherits from plot]
 
@@ -1142,7 +1094,7 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1509)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1706)]
 
 ## module matthewplotlib.colors
 
@@ -1294,8 +1246,8 @@ channels.
 
 [[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L125)]
 
-Cyberpunk colormap. Uses greyscale value to interpolate between cyan and
-magenta.
+Cyberpunk colormap. Uses greyscale value to interpolate between meganta
+(0.) and cyan (1.).
 
 ### function matthewplotlib.colormaps.rainbow
 
@@ -1370,6 +1322,26 @@ Input should be an array of indices in the range [0,15].
 PICO-8 colour palette (see https://pico-8.fandom.com/wiki/Palette).
 
 Input should be an array of indices in the range [0,15].
+
+### function matthewplotlib.colormaps.tableau
+
+#### tableau(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L539)]
+
+Matplotlib Tableau colourmap.
+
+Input should be an array of indices in the range [0,9].
+
+### function matthewplotlib.colormaps.nouveau
+
+#### nouveau(x: ArrayLike) -> np.ndarray
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L555)]
+
+Updated Tableau colourmap (more accessible).
+
+Input should be an array of indices in the range [0,9].
 
 ## module matthewplotlib.core
 

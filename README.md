@@ -128,10 +128,9 @@ Roadmap to version 1
 
 Basic plot types:
 
+* [x] Scatter plots.
 * [x] Image plots / matrix heatmaps.
 * [x] Function heatmap plots.
-* [x] Scatter plots.
-* [x] Hilbert curves.
 * [x] Progress bars.
 * [x] Basic bar charts and column charts.
 * [x] Histograms.
@@ -194,7 +193,9 @@ More plot types:
 * [ ] Less dense (non-braille) scatter plots with different markers?
 * [ ] Multiple point clouds or lines on a single scatter/line plot.
 * [ ] 3d scatter plots (see [teapot example](examples/teapot.py) for now).
-* [ ] Non-square hilbert curves and 3d hilbert curves.
+* [x] Basic Hilbert curves.
+* [ ] Non-square Hilbert curves.
+* [ ] 3d Hilbert curves.
 * [ ] Calendar heatmap plots (see calendar heatmap example for now).
 * [ ] World maps, 2d projection.
 * [ ] World maps, 3d globe.
@@ -214,6 +215,8 @@ Advanced furnishings:
 
 * [ ] Axis transformations (e.g. logarithmic scale).
 * [ ] Legend construction (API needs thought).
+* [ ] Color bars, vertical or horizontal.
+* [ ] Text embedded in borders.
 
 Advanced rendering:
 

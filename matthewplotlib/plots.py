@@ -9,15 +9,17 @@ Base class:
 
 Data plots:
 
-* `image`
-* `fimage`
 * `scatter`
-* `hilbert`
+* `function`
+* `image`
+* `function2`
+* `histogram2`
 * `progress`
 * `bars`
 * `histogram`
 * `columns`
 * `vistogram`
+* `hilbert`
 
 Furnishing plots:
 
@@ -32,7 +34,6 @@ Arrangement plots:
 * `dstack`
 * `wrap`
 * `center`
-
 """
 import enum
 import os
@@ -196,7 +197,7 @@ class plot:
         return self.clearstr()
     
     
-    def __add__(self: Self, other: Self) -> "vstack":
+    def __add__(self: Self, other: Self) -> "hstack":
         """
         Operator shortcut for horizontal stack.
         
@@ -283,9 +284,200 @@ class plot:
 # DATA PLOTTING CLASSES
 
 
+class scatter(plot):
+    """
+    Render a scatterplot using a grid of braille unicode characters.
+
+    Each character cell in the plot corresponds to a 2x4 grid of sub-pixels,
+    represented by braille dots.
+
+    Inputs:
+
+    * data : number[n, 2]
+        
+        An array of n 2D points to plot. Each row is an (x, y) coordinate.
+    
+    * width : int (default: 30)
+        
+        The width of the plot in characters. The effective pixel width will be
+        2 * width.
+    
+    * height : int (default: 10)
+        
+        The height of the plot in rows. The effective pixel height will be 4 *
+        height.
+    
+    * xrange : optional (number, number)
+        
+        The x-axis limits `(xmin, xmax)`. If not provided, the limits are
+        inferred from the min and max x-values in the data.
+    
+    * yrange : optional (number, number)
+        
+        The y-axis limits `(ymin, ymax)`. If not provided, the limits are
+        inferred from the min and max y-values in the data.
+    
+    * color : optional ColorLike
+        
+        The color of the plotted points (see `Color.parse`). Defaults to the
+        terminal's default foreground color.
+    
+    * check_bounds : bool (default: False)
+        
+        If True, raises a `ValueError` if any data points fall outside the
+        specified `xrange` or `yrange`.
+    """
+    def __init__(
+        self,
+        data: ArrayLike, # number[n, 2]
+        width: int = 30,
+        height: int = 10,
+        xrange: tuple[number, number] | None = None,
+        yrange: tuple[number, number] | None = None,
+        color: ColorLike | None = None,
+        check_bounds: bool = False,
+    ):
+        # preprocess and check shape
+        data = np.asarray(data)
+        n, _2 = data.shape
+        assert _2 == 2
+        color_ = Color.parse(color)
+
+        # shortcut if no data
+        if n == 0:
+            array = [[BLANK] * width] * height
+            super().__init__(array)
+            self.xrange = xrange
+            self.yrange = yrange
+            self.num_points = len(data)
+            return
+        
+        # determine data bounds
+        xmin, ymin = data.min(axis=0)
+        xmax, ymax = data.max(axis=0)
+        if xrange is None:
+            xrange = (xmin, xmax)
+        else:
+            xmin, xmax = xrange
+        if yrange is None:
+            yrange = (ymin, ymax)
+        else:
+            ymin, ymax = yrange
+        # optional check
+        if check_bounds:
+            out_x = xmin < xrange[0] or xmax > xrange[1]
+            out_y = ymin < yrange[0] or ymax > yrange[1]
+            if out_x or out_y:
+                raise ValueError("Scatter points out of range")
+        
+        # quantise 2d float coordinates to data grid
+        dots, *_bins = np.histogram2d(
+            x=data[:,0],
+            y=data[:,1],
+            bins=(2*width, 4*height),
+            range=(xrange, yrange),
+        )
+        dots = dots.T     # we want y first
+        dots = dots[::-1] # correct y for top-down drawing
+        
+        # render data grid as a grid of braille characters
+        array = [[BLANK for _ in range(width)] for _ in range(height)]
+        bgrid = braille_encode(dots > 0)
+        for i in range(height):
+            for j in range(width):
+                if bgrid[i, j] > 0x2800:
+                    braille_char = chr(bgrid[i, j])
+                    array[i][j] = Char(braille_char, fg=color_)
+        super().__init__(array)
+        self.xrange = xrange
+        self.yrange = yrange
+        self.num_points = len(data)
+
+    def __repr__(self):
+        return (
+            f"scatter(height={self.height}, width={self.width}, "
+            f"data=<{self.num_points} points on "
+            f"[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]x"
+            f"[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]>)"
+        )
+
+
+class function(scatter):
+    """
+    Scatter plot representing a particular function.
+
+    * F : float[batch] -> number[batch]
+        
+        The (vectorised) function to plot. The input should be a batch of
+        floats x. The output should be a batch of scalars f(x).
+    
+    * xrange : (float, float)
+        
+        Lower and upper bounds on the x values to pass into the function.
+    
+    * width : int
+        
+        The number of character columns in the plot.
+    
+    * height : int
+        
+        The number of character rows in the plot.
+    
+    * yrange : optional (float, float)
+        
+        If provided, specifies the expected lower and upper bounds on the f(x)
+        values. If not provided, they are automatically determined by using the
+        minimum and maximum output over the inputs sampled.
+
+    * color : optional ColorLike
+
+        If provided, sets the colors for the scattered points. By default,
+        foreground color is used.
+
+    TODO:
+    
+    * More intelligent interpolation, like a proper line plot with a given
+      thickness.
+    """
+    def __init__(
+        self,
+        F: Callable[[np.ndarray], np.ndarray],
+        xrange: tuple[float, float],
+        width: int,
+        height: int,
+        yrange: tuple[float, float] | None = None,
+        color: None | ColorLike = None,
+    ):
+        # create a batch of inputs with the required format and shape
+        X = np.linspace(*xrange, num=8*width, endpoint=False)
+        
+        # sample the function
+        Y = F(X)
+
+        # create the scatter plot
+        super().__init__(
+            data=np.c_[X, Y],
+            width=width,
+            height=height,
+            xrange=xrange,
+            yrange=yrange,
+            color=color,
+        )
+        self.name = F.__name__
+        self.xrange = xrange
+        self.yrange = yrange
+        
+    def __repr__(self):
+        return ("function("
+                f"f={self.name}, "
+                f"input=[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]"
+        ")")
+
+
 class image(plot):
     """
-    Render a small image using a grid of unicode half-block characters.
+    Render a small image or 2d array using a grid of unicode half-block
+    characters.
 
     Represents an image by mapping pairs of vertically adjacent pixels to the
     foreground and background colors of a single character cell (this
@@ -361,7 +553,7 @@ class image(plot):
         return f"image(height={self.height}, width={self.width})"
 
 
-class fimage(image):
+class function2(image):
     """
     Heatmap representing the image of a 2d function over a square.
 
@@ -382,14 +574,14 @@ class fimage(image):
     
     * width : int
         
-        The number of grid squares along the x axis. This will also become the
-        width of the plot.
+        The number of character columns in the plot. This will also become the
+        number of grid squares along the x axis.
     
     * height : int
         
-        The number of grid squares along the y axis. This will become double
-        the height of the plot in lines (since the result is an image plot with
-        two pixels per line).
+        The number of character rows in the plot. This will also be half of the
+        number of grid squares, since the result is an image plot with two
+        half-character-pixels per row.
     
     * zrange : optional (float, float)
         
@@ -421,13 +613,13 @@ class fimage(image):
         width: int,
         height: int,
         zrange: tuple[float, float] | None = None,
-        colormap: Callable | None = None,
+        colormap: ColorMap | None = None,
         endpoints: bool = False,
     ):
         # create a meshgrid with the required format and shape
         X, Y = np.meshgrid(
             np.linspace(*xrange, num=width, endpoint=endpoints),
-            np.linspace(*yrange, num=height, endpoint=endpoints),
+            np.linspace(*yrange, num=2*height, endpoint=endpoints),
         ) # float[h, w] (x2)
         Y = Y[::-1] # correct Y direction for image plotting
         XY = einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')
@@ -436,7 +628,7 @@ class fimage(image):
         Z = F(XY)
 
         # create the image array
-        zgrid = einops.rearrange(Z, '(h w) -> h w', h=height, w=width)
+        zgrid = einops.rearrange(Z, '(h w) -> h w', h=2*height, w=width)
         if zrange is None:
             zrange = (zgrid.min(), zgrid.max())
         if zrange[0] == zrange[1]:
@@ -455,84 +647,90 @@ class fimage(image):
         self.zrange = zrange
         
     def __repr__(self):
-        return ("fimage("
+        return ("function2("
                 f"f={self.name}, "
                 f"input=[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]"
                 f"x[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]"
         ")")
 
 
-class scatter(plot):
+class histogram2(image):
     """
-    Render a scatterplot using a grid of braille unicode characters.
-
-    Each character cell in the plot corresponds to a 2x4 grid of sub-pixels,
-    represented by braille dots.
+    Heatmap representing the density of a collection of 2d points.
 
     Inputs:
 
-    * data : number[n, 2]
+    * x : number[n]
         
-        An array of n 2D points to plot. Each row is an (x, y) coordinate.
+        X coordinates of 2d points to bin and count.
     
-    * height : int (default: 10)
+    * y : number[n]
         
-        The height of the plot in rows. The effective pixel height will be 4 *
-        height.
-    
-    * width : int (default: 30)
+        Y coordinates of 2d points to bin and count.
+
+    * width : int (default 24)
+
+        Specifies the width of the plot in characters. This is also the number
+        of bins in the x direction.
+
+    * height : int (default 12)
         
-        The width of the plot in characters. The effective pixel width will be
-        2 * width.
-    
-    * yrange : optional (number, number)
-        
-        The y-axis limits `(ymin, ymax)`. If not provided, the limits are
-        inferred from the min and max y-values in the data.
+        Specifies the height of the plot in characters. This is also half the
+        number of bins in the y direction.
     
     * xrange : optional (number, number)
         
         The x-axis limits `(xmin, xmax)`. If not provided, the limits are
         inferred from the min and max x-values in the data.
     
-    * color : optional ColorLike
+    * yrange : optional (number, number)
         
-        The color of the plotted points (see `Color.parse`). Defaults to the
-        terminal's default foreground color.
+        The y-axis limits `(ymin, ymax)`. If not provided, the limits are
+        inferred from the min and max y-values in the data.
     
-    * check_bounds : bool (default: False)
+    * weights : optional number[n]
+
+        If provided, each 2d point in data contributes this amount to the count
+        for its bin (rather than the default 1). See np.histogram2d's weights
+        argument for details.
+    
+    * density : bool (default False)
+
+        If true, normalise bin counts so that they sum to 1,0. See
+        np.histogram2d's density argument for details.
+    
+    * max_count : optional number
+
+        If provided, cell colours are scaled so that only bars matching or
+        exceeding this count max out the colour. Otherwise, the colours are
+        scaled so that the bin with the highest count has the colour maxed out.
+
+    * colormap : optional colormap (e.g. mp.viridis)
         
-        If True, raises a `ValueError` if any data points fall outside the
-        specified `xrange` or `yrange`.
+        By default, the output will be in greyscale, with black corresponding
+        to zero density and white corresponding to max_count. You can choose a
+        different colormap (e.g. mp.reds, mp.viridis, etc.) here.
     """
     def __init__(
         self,
-        data: ArrayLike, # number[n, 2]
-        height: int = 10,
-        width: int = 30,
-        yrange: tuple[number, number] | None = None,
+        x: ArrayLike, # number[n]
+        y: ArrayLike, # number[n]
+        width: int = 24,
+        height: int = 12,
         xrange: tuple[number, number] | None = None,
-        color: ColorLike | None = None,
-        check_bounds: bool = False,
+        yrange: tuple[number, number] | None = None,
+        weights = None, # see np.histogram2d
+        density = False, # see np.histogram2d
+        max_count: None | number = None,
+        colormap: ColorMap | None = None,
     ):
-        # preprocess and check shape
-        data = np.asarray(data)
-        n, _2 = data.shape
-        assert _2 == 2
-        color_ = Color.parse(color)
-
-        # shortcut if no data
-        if n == 0:
-            array = [[BLANK] * width] * height
-            super().__init__(array)
-            self.xrange = xrange
-            self.yrange = yrange
-            self.num_points = len(data)
-            return
+        # prepare data
+        x = np.asarray(x)
+        y = np.asarray(y)
         
         # determine data bounds
-        xmin, ymin = data.min(axis=0)
-        xmax, ymax = data.max(axis=0)
+        xmin, ymin = x.min(), y.min()
+        xmax, ymax = x.max(), y.max()
         if xrange is None:
             xrange = (xmin, xmax)
         else:
@@ -541,135 +739,41 @@ class scatter(plot):
             yrange = (ymin, ymax)
         else:
             ymin, ymax = yrange
-        # optional check
-        if check_bounds:
-            out_x = xmin < xrange[0] or xmax > xrange[1]
-            out_y = ymin < yrange[0] or ymax > yrange[1]
-            if out_x or out_y:
-                raise ValueError("Scatter points out of range")
         
-        # quantise 2d float coordinates to data grid
-        dots, *_bins = np.histogram2d(
-            x=data[:,0],
-            y=data[:,1],
-            bins=(2*width, 4*height),
+        # bin data
+        hist, xbins, ybins = np.histogram2d(
+            x=x,
+            y=y,
+            bins=(width, 2*height),
             range=(xrange, yrange),
+            weights=weights,
+            density=density,
         )
-        dots = dots.T     # we want y first
-        dots = dots[::-1] # correct y for top-down drawing
-        
-        # render data grid as a grid of braille characters
-        array = [[BLANK for _ in range(width)] for _ in range(height)]
-        bgrid = braille_encode(dots > 0)
-        for i in range(height):
-            for j in range(width):
-                if bgrid[i, j] > 0x2800:
-                    braille_char = chr(bgrid[i, j])
-                    array[i][j] = Char(braille_char, fg=color_)
-        super().__init__(array)
+
+        # transform counts: scale and reorient
+        if max_count is None:
+            max_count = hist.max()
+        hist /= max_count
+        hist = hist.T[::-1]
+
+        # construct the image
+        super().__init__(
+            im=hist,
+            colormap=colormap,
+        )
         self.xrange = xrange
         self.yrange = yrange
-        self.num_points = len(data)
-
+        self.xbins = xbins
+        self.ybins = ybins
+        self.num_points = len(x)
+        
     def __repr__(self):
-        return (
-            f"scatter(height={self.height}, width={self.width}, "
+        return ("histogram2("
+            f"height={self.height}, width={self.width}, "
             f"data=<{self.num_points} points on "
             f"[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]x"
             f"[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]>)"
-        )
-
-
-class hilbert(plot):
-    """
-    Visualize a 1D boolean array along a 2D Hilbert curve.
-
-    Maps a 1D sequence of data points to a 2D grid using a space-filling
-    Hilbert curve, which helps preserve locality. The curve is rendered using
-    braille unicode characters for increased resolution.
-
-    Inputs:
-
-    * data : bool[N]
-        
-        A 1D array of booleans. The length `N` determines the order of the
-        Hilbert curve required to fit all points. True values are rendered as
-        dots, and False values are rendered as blank spaces.
-    
-    * dotcolor : optional ColorLike
-        
-        The foreground color used for dots (points along the curve where `data`
-        is `True`). Defaults to the terminal's default foreground color.
-    
-    * bgcolor : optional ColorLike
-        
-        The background color for the entire path of the Hilbert curve (points
-        along the curve where `data` is `False`, plus possibly some extra
-        points if the curve does not exactly fit the last character cell).
-        Defaults to a transparent background.
-    
-    * nullcolor : optional ColorLike
-        
-        The background color for the grid area not occupied by the curve. This
-        is relevant for non-square-power-of-2 data lengths. Defaults to a
-        transparent background.
-    """
-    def __init__(
-        self,
-        data: ArrayLike, # bool[N]
-        dotcolor: ColorLike | None = None,
-        bgcolor: ColorLike | None = None,
-        nullcolor: ColorLike | None = None,
-    ):
-        # preprocess and compute grid shape
-        data = np.asarray(data)
-        N, = data.shape
-        n = max(2, ((N-1).bit_length() + 1) // 2)
-        dotcolor_ = Color.parse(dotcolor)
-        bgcolor_ = Color.parse(bgcolor)
-        nullcolor_ = Color.parse(nullcolor)
-
-        # compute grid positions for each data element
-        all_coords: np.ndarray = _hilbert.decode(
-            hilberts=np.arange(N),
-            num_dims=2,
-            num_bits=n,
-        )
-        lit_coords = all_coords[data]
-
-        # make empty dot matrix
-        all_grid = np.zeros((2**n,2**n), dtype=bool)
-        all_grid[all_coords[:,1], all_coords[:,0]] = True
-        lit_grid = np.zeros((2**n,2**n), dtype=bool)
-        lit_grid[lit_coords[:,1], lit_coords[:,0]] = True
-        
-        # render data grid as a grid of braille characters
-        width = int(2 ** (n-1))
-        height = int(2 ** (n-2))
-        null = Char(" ", bg=nullcolor_)
-        array = [[null for _ in range(width)] for _ in range(height)]
-        bg_grid = braille_encode(all_grid)
-        fg_grid = braille_encode(lit_grid)
-        for i in range(height):
-            for j in range(width):
-                if bg_grid[i, j]:
-                    braille_char = chr(fg_grid[i, j])
-                    array[i][j] = Char(
-                        c=braille_char,
-                        fg=dotcolor_,
-                        bg=bgcolor_,
-                    )
-        super().__init__(array)
-        self.num_points = len(lit_coords)
-        self.all_points = N
-        self.n = n
-
-    def __repr__(self):
-        return (
-            f"hilbert(height={self.height}, width={self.width}, "
-            f"data=<{self.num_points} points out of {self.all_points} "
-            f"on a {2**self.n} x {2**self.n} grid>"
-        )
+        ")")
 
 
 class progress(plot):
@@ -998,7 +1102,7 @@ class columns(plot):
 class vistogram(columns):
     """
     A histogram column chart ("vertical histogram", referring to the direction
-    of the *bars,* rather than the *bins*).
+    of the bars rather than the bins).
 
     Transform a sequence of values into columns representing the density in
     different bins. The columns are rendered using Unicode block element
@@ -1089,6 +1193,98 @@ class vistogram(columns):
         )
 
 
+class hilbert(plot):
+    """
+    Visualize a 1D boolean array along a 2D Hilbert curve.
+
+    Maps a 1D sequence of data points to a 2D grid using a space-filling
+    Hilbert curve, which helps preserve locality. The curve is rendered using
+    braille unicode characters for increased resolution.
+
+    Inputs:
+
+    * data : bool[N]
+        
+        A 1D array of booleans. The length `N` determines the order of the
+        Hilbert curve required to fit all points. True values are rendered as
+        dots, and False values are rendered as blank spaces.
+    
+    * dotcolor : optional ColorLike
+        
+        The foreground color used for dots (points along the curve where `data`
+        is `True`). Defaults to the terminal's default foreground color.
+    
+    * bgcolor : optional ColorLike
+        
+        The background color for the entire path of the Hilbert curve (points
+        along the curve where `data` is `False`, plus possibly some extra
+        points if the curve does not exactly fit the last character cell).
+        Defaults to a transparent background.
+    
+    * nullcolor : optional ColorLike
+        
+        The background color for the grid area not occupied by the curve. This
+        is relevant for non-square-power-of-2 data lengths. Defaults to a
+        transparent background.
+    """
+    def __init__(
+        self,
+        data: ArrayLike, # bool[N]
+        dotcolor: ColorLike | None = None,
+        bgcolor: ColorLike | None = None,
+        nullcolor: ColorLike | None = None,
+    ):
+        # preprocess and compute grid shape
+        data = np.asarray(data)
+        N, = data.shape
+        n = max(2, ((N-1).bit_length() + 1) // 2)
+        dotcolor_ = Color.parse(dotcolor)
+        bgcolor_ = Color.parse(bgcolor)
+        nullcolor_ = Color.parse(nullcolor)
+
+        # compute grid positions for each data element
+        all_coords: np.ndarray = _hilbert.decode(
+            hilberts=np.arange(N),
+            num_dims=2,
+            num_bits=n,
+        )
+        lit_coords = all_coords[data]
+
+        # make empty dot matrix
+        all_grid = np.zeros((2**n,2**n), dtype=bool)
+        all_grid[all_coords[:,1], all_coords[:,0]] = True
+        lit_grid = np.zeros((2**n,2**n), dtype=bool)
+        lit_grid[lit_coords[:,1], lit_coords[:,0]] = True
+        
+        # render data grid as a grid of braille characters
+        width = int(2 ** (n-1))
+        height = int(2 ** (n-2))
+        null = Char(" ", bg=nullcolor_)
+        array = [[null for _ in range(width)] for _ in range(height)]
+        bg_grid = braille_encode(all_grid)
+        fg_grid = braille_encode(lit_grid)
+        for i in range(height):
+            for j in range(width):
+                if bg_grid[i, j]:
+                    braille_char = chr(fg_grid[i, j])
+                    array[i][j] = Char(
+                        c=braille_char,
+                        fg=dotcolor_,
+                        bg=bgcolor_,
+                    )
+        super().__init__(array)
+        self.num_points = len(lit_coords)
+        self.all_points = N
+        self.n = n
+
+    def __repr__(self):
+        return (
+            f"hilbert(height={self.height}, width={self.width}, "
+            f"data=<{self.num_points} points out of {self.all_points} "
+            f"on a {2**self.n} x {2**self.n} grid>"
+        )
+
+
 # # # 
 # FURNISHING CLASSES
 
@@ -1160,7 +1356,6 @@ class border(plot):
 
     Inputs:
 
-    
     * plot : plot
         
         The plot object to be enclosed by the border.

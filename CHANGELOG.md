@@ -4,12 +4,15 @@ In development:
 Breaking changes:
 
 * Change operators used for shortcuts.
+* Rename `fimage` to `function2`.
 
 New:
 
-* New plot types: `bars`, `columns`, `histogram`, `vistogram`.
+* New plot types: `bars`, `columns`, `histogram`, `vistogram`, `histogram2`,
+  `function`.
 * More documentation.
 * Generated markdown documentation.
+* Additional examples.
 
 Dependencies:
 

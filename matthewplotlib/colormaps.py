@@ -126,13 +126,13 @@ def cyber(
     x: ArrayLike    # float[...]
 ) -> np.ndarray:    # -> uint8[..., 3]
     """
-    Cyberpunk colormap. Uses greyscale value to interpolate between cyan and
-    magenta.
+    Cyberpunk colormap. Uses greyscale value to interpolate between meganta
+    (0.) and cyan (1.).
     """
     x = np.asarray(x)
     rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
-    rgb[..., 0] = 255 * x
-    rgb[..., 1] = 255 * (1-x)
+    rgb[..., 0] = 255 * (1-x)
+    rgb[..., 1] = 255 * x
     rgb[..., 2] = 255
     return rgb
 
@@ -536,3 +536,33 @@ def pico8(
     ])[idx]
 
 
+def tableau(
+    x: ArrayLike    # int[...]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Matplotlib Tableau colourmap.
+    
+    Input should be an array of indices in the range [0,9].
+    """
+    idx = np.asarray(x, np.uint)
+    return np.array([
+        [ 31, 119, 180], [255, 127,  14], [ 44, 160,  44], [214,  39,  40],
+        [148, 103, 189], [140,  86,  75], [227, 119, 194], [127, 127, 127],
+        [188, 189,  34], [ 23, 190, 207],
+    ])[idx]
+
+
+def nouveau(
+    x: ArrayLike    # int[...]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Updated Tableau colourmap (more accessible).
+    
+    Input should be an array of indices in the range [0,9].
+    """
+    idx = np.asarray(x, np.uint)
+    return np.array([
+        [ 78, 121, 167], [242, 142,  43], [225,  87,  89], [118, 183, 178],
+        [ 89, 161,  79], [237, 201,  72], [176, 122, 161], [255, 157, 167],
+        [156, 117,  95], [186, 176, 172],
+    ])[idx]
