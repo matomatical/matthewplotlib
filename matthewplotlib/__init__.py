@@ -1,10 +1,11 @@
 """
-A Python plotting library that aspires to *not be painful.* See
-[README.md](README.md) for overview.
+A Python plotting library that aspires to *not be painful.*
+
+See [README.md](README.md) for overview.
 """
 
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 
 from matthewplotlib.plots import (

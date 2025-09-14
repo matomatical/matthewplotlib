@@ -1,6 +1,11 @@
 In development:
 ---------------
 
+
+
+Version 0.1.2:
+--------------
+
 Breaking changes:
 
 * Change operators used for shortcuts.

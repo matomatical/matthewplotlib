@@ -1,10 +1,11 @@
 ---
 title: Matthew's plotting library (`matthewplotlib`)
-version: Version 0.1.1
+version: Version 0.1.2
 ---
 
-A Python plotting library that aspires to *not be painful.* See
-[README.md](README.md) for overview.
+A Python plotting library that aspires to *not be painful.*
+
+See [README.md](README.md) for overview.
 
 ## module matthewplotlib.plots
 
