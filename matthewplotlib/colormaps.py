@@ -508,9 +508,10 @@ def sweetie16(
     Sweetie-16 colour palette by GrafxKid (see
     https://lospec.com/palette-list/sweetie-16).
 
-    Input should be an array of indices in the range [0,15].
+    Input should be an array of indices in the range [0,15] (or else it will
+    cycle).
     """
-    idx = np.asarray(x, np.uint)
+    idx = np.asarray(x, np.uint) % 16
     return np.array([
         [ 26,  28,  44], [ 93,  39,  93], [177,  62,  83], [239, 125,  87],
         [255, 205, 117], [167, 240, 112], [ 56, 183, 100], [ 37, 113, 121],
@@ -525,9 +526,10 @@ def pico8(
     """
     PICO-8 colour palette (see https://pico-8.fandom.com/wiki/Palette).
     
-    Input should be an array of indices in the range [0,15].
+    Input should be an array of indices in the range [0,15] (or else it will
+    cycle).
     """
-    idx = np.asarray(x, np.uint)
+    idx = np.asarray(x, np.uint) % 16
     return np.array([
         [  0,   0,   0], [ 29,  43,  83], [126,  37,  83], [  0, 135,  81],
         [171,  82,  54], [ 95,  87,  79], [194, 195, 199], [255, 241, 232],
@@ -542,9 +544,10 @@ def tableau(
     """
     Matplotlib Tableau colourmap.
     
-    Input should be an array of indices in the range [0,9].
+    Input should be an array of indices in the range [0,9] (or else it will
+    cycle).
     """
-    idx = np.asarray(x, np.uint)
+    idx = np.asarray(x, np.uint) % 10
     return np.array([
         [ 31, 119, 180], [255, 127,  14], [ 44, 160,  44], [214,  39,  40],
         [148, 103, 189], [140,  86,  75], [227, 119, 194], [127, 127, 127],
@@ -558,9 +561,10 @@ def nouveau(
     """
     Updated Tableau colourmap (more accessible).
     
-    Input should be an array of indices in the range [0,9].
+    Input should be an array of indices in the range [0,9] (or else it will
+    cycle).
     """
-    idx = np.asarray(x, np.uint)
+    idx = np.asarray(x, np.uint) % 10
     return np.array([
         [ 78, 121, 167], [242, 142,  43], [225,  87,  89], [118, 183, 178],
         [ 89, 161,  79], [237, 201,  72], [176, 122, 161], [255, 157, 167],

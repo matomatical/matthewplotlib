@@ -1,7 +1,14 @@
 In development:
 ---------------
 
+Breaking changes:
 
+* Inverted `cyber` colormap.
+
+New:
+
+* New discrete colourmaps `tableau`, `nouveau`.
+* Discrete colourmaps are now cyclic.
 
 Version 0.1.2:
 --------------

@@ -34,20 +34,19 @@ plot = (
             / mp.image(im_continuous, colormap=c),
         )
         for c in [
-            mp.reds, mp.greens, mp.blues,
-            mp.yellows, mp.magentas, mp.cyans,
-            mp.magma, mp.inferno, mp.plasma,
-            mp.viridis, mp.cyber, mp.rainbow,
+            mp.reds, mp.greens, mp.blues, mp.rainbow,
+            mp.yellows, mp.magentas, mp.cyans, mp.cyber,
+            mp.magma, mp.inferno, mp.plasma, mp.viridis,
         ]
-    ], cols=3)
+    ], cols=4)
     / mp.text("discrete colormaps:")
     / mp.wrap(*[
         mp.border(
             mp.text(c.__name__)
             / mp.image(im_discrete, colormap=c),
         )
-        for c in [ mp.sweetie16, mp.pico8, ]
-    ], cols=3)
+        for c in [ mp.sweetie16, mp.pico8, mp.tableau, mp.nouveau, ]
+    ], cols=4)
 )
 
 print("rendering plot...")
