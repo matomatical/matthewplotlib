@@ -5,8 +5,6 @@ reference documentation.
 import ast
 import sys
 
-import matthewplotlib as mp
-
 
 LIVE_BASE_URL = "https://github.com/matomatical/matthewplotlib/blob/main"
 
@@ -16,14 +14,13 @@ def main(
     /,
     code_base_url: str = LIVE_BASE_URL,
 ):
-    print("---")
-    print("title: Matthew's plotting library (`matthewplotlib`)")
-    print(f"version: Version {mp.__version__}")
-    print("---")
-    print()
-
     for path in paths:
-        if path.endswith(".py"):
+        if path.endswith(".md"):
+            print(f"echoing {path}...", file=sys.stderr)
+            with open(path) as f:
+                print(f.read())
+        
+        elif path.endswith(".py"):
             print(f"parsing {path}...", file=sys.stderr)
             with open(path) as f:
                 source_code = f.read()
@@ -35,6 +32,7 @@ def main(
             visitor = MarkdownVisitor(module, code_url)
             visitor.visit(tree)
             print("\n".join(visitor.markdown))
+        
         else:
             print(f"skipping {path}...", file=sys.stderr)
 
@@ -51,36 +49,32 @@ class MarkdownVisitor(ast.NodeVisitor):
         module: str,
         code_url: str,
     ):
-        self.module = module
+        if module.endswith(".__init__"):
+            self.module = module[:-len(".__init__")]
+        else:
+            self.module = module
         self.code_url = code_url
         self.markdown: list[str] = []
         self.context: list[str] = []
 
 
     def visit_Module(self, node: ast.Module):
-        if self.module.endswith(".__init__"):
-            # just docstring
-            module_docstring = ast.get_docstring(node)
-            if module_docstring:
-                self.markdown.append(f"{module_docstring}\n")
-
-        else:
-            # section for the module
-            name = s(self.module)
-            self.markdown.append(f"## module {name}\n")
-        
-            # source link
-            self.markdown.append(f"[[source]({self.code_url})]\n")
-        
-            # docstring
-            module_docstring = ast.get_docstring(node)
-            if module_docstring:
-                self.markdown.append(f"{module_docstring}\n")
-        
-            # children
-            self.context.append(name)
-            self.generic_visit(node)
-            self.context.pop()
+        # section for the module
+        name = s(self.module)
+        self.markdown.append(f"## module {name}\n")
+    
+        # source link
+        self.markdown.append(f"[[source]({self.code_url})]\n")
+    
+        # docstring
+        module_docstring = ast.get_docstring(node)
+        if module_docstring:
+            self.markdown.append(f"{module_docstring}\n")
+    
+        # children
+        self.context.append(name)
+        self.generic_visit(node)
+        self.context.pop()
     
 
     def visit_ClassDef(self, node: ast.ClassDef):

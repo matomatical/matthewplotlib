@@ -1,7 +1,6 @@
 """
-A Python plotting library that aspires to *not be painful.*
-
-See [README.md](README.md) for overview.
+Top-level module. Imports various documents items from other modules and makes
+them available under the top-level namespace.
 """
 
 
@@ -35,6 +34,11 @@ from matthewplotlib.plots import (
 from matthewplotlib.colors import (
     Color,
     ColorLike,
+)
+
+
+from matthewplotlib.core import (
+    BoxStyle,
 )
 
 

@@ -8,29 +8,29 @@ g = np.clip(np.random.normal(size=(size, size)) + 3, 0, 6) / 6
 plot = (
     mp.border(
         mp.center(mp.text("G'day matthewplotlib"), height=3, width=46),
-        style=mp.border.Style.DOUBLE,
+        style=mp.BoxStyle.DOUBLE,
     )
     |
     mp.border(
         mp.text("uniform:") | mp.image(u, colormap=mp.reds),
-        style=mp.border.Style.LIGHT,
+        style=mp.BoxStyle.LIGHT,
     ) + mp.border(
         mp.text("identity:") | mp.image(i, colormap=mp.greens),
-        style=mp.border.Style.HEAVY,
+        style=mp.BoxStyle.HEAVY,
     ) + mp.border(
         mp.text("gaussian:") | mp.image(g, colormap=mp.blues),
-        style=mp.border.Style.DOUBLE,
+        style=mp.BoxStyle.DOUBLE,
     )
     |
     mp.border(
         mp.text("uniform:") | mp.image(u, colormap=mp.yellows),
-        style=mp.border.Style.ROUND,
+        style=mp.BoxStyle.ROUND,
     ) + mp.border(
         mp.text("identity:") | mp.image(i, colormap=mp.cyber),
-        style=mp.border.Style.BLANK,
+        style=mp.BoxStyle.BLANK,
     ) + mp.border(
         mp.text("gaussian:") | mp.image(g, colormap=mp.cyans),
-        style=mp.border.Style.BUMPER,
+        style=mp.BoxStyle.BUMPER,
     )
     |
     mp.border(
@@ -42,7 +42,7 @@ plot = (
             yrange=(-4, +4),
             color=(0.,1.,0.),
         ),
-        style=mp.border.Style.ROUND,
+        style=mp.BoxStyle.ROUND,
     )
 )
 print(repr(plot))

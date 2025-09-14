@@ -8,6 +8,7 @@ Constants:
     A colourless space character used for padding.
 """
 
+import enum
 import dataclasses
 import numpy as np
 
@@ -303,3 +304,106 @@ def unicode_col(
     return col
 
 
+# # # 
+# BOX DRAWING
+
+
+class BoxStyle(str, enum.Enum):
+    """
+    A string enum defining preset styles for the `border` plot.
+
+    Each style is a string of six characters representing the border
+    elements in the following order: horizontal, vertical, top-left,
+    top-right, bottom-left, and bottom-right.
+
+    Available Styles:
+
+    * `LIGHT`:  A standard, single-line border.
+    * `HEAVY`:  A thicker, bold border.
+    * `DOUBLE`: A double-line border.
+    * `DASHED`: A dashed single-line border.
+    * `BLANK`:  An invisible border (easily add 1-width padding).
+    * `ROUND`:  A single-line border with rounded corners.
+    * `BUMPER`: A single-line border with corners made of blocks.
+    * `BLOCK1`: A blocky border with half-width left and right walls.
+    * `BLOCK2`: A uniform blocky border.
+    * `TIGER1`: A stripy block border.
+    * `TIGER2`: An alternative stripy block border.
+
+    Demo:
+
+    ```
+    ┌──────┐ ┏━━━━━━┓ ╔══════╗ ┌╌╌╌╌╌╌┐ ⡤⠤⠤⠤⠤⠤⠤⢤ ╭──────╮
+    │LIGHT │ ┃HEAVY ┃ ║DOUBLE║ ┊DASHED┊ ⡇DOTTED⢸ │ROUND │
+    └──────┘ ┗━━━━━━┛ ╚══════╝ └╌╌╌╌╌╌┘ ⠓⠒⠒⠒⠒⠒⠒⠚ ╰──────╯
+             ▛──────▜ ▛▀▀▀▀▀▀▜ █▀▀▀▀▀▀█ ▞▝▝▝▝▝▝▝ ▘▘▘▘▘▘▘▚
+     BLANK   │BUMPER│ ▌BLOCK1▐ █BLOCK2█ ▖TIGER1▝ ▘TIGER2▗
+             ▙──────▟ ▙▄▄▄▄▄▄▟ █▄▄▄▄▄▄█ ▖▖▖▖▖▖▖▞ ▚▗▗▗▗▗▗▗
+    ```
+
+    TODO:
+    
+    * It might make sense to consider borders with two characters on the left
+      and right sides of the contents. Would open up new design possibilities.
+    """
+    LIGHT  = "┌─┐││└─┘"
+    HEAVY  = "┏━┓┃┃┗━┛"
+    DOUBLE = "╔═╗║║╚═╝"
+    DASHED = "┌╌┐┊┊└╌┘"
+    DOTTED = "⡤⠤⢤⢸⡇⠓⠒⠚"
+    ROUND  = "╭─╮││╰─╯"
+    BLANK  = "        "
+    BUMPER = "▛─▜││▙─▟"
+    BLOCK1 = "▛▀▜▐▌▙▄▟"
+    BLOCK2 = "█▀████▄█"
+    TIGER1 = "▞▝▝▝▖▖▖▞"
+    TIGER2 = "▘▘▚▘▘▚▗▗"
+
+
+    @property
+    def nw(self) -> str:
+        """Northwest corner symbol."""
+        return self[0]
+    
+
+    @property
+    def n(self) -> str:
+        """North edge symbol."""
+        return self[1]
+    
+
+    @property
+    def ne(self) -> str:
+        """Norteast corner symbol."""
+        return self[2]
+    
+
+    @property
+    def e(self) -> str:
+        """East edge symbol."""
+        return self[3]
+    
+
+    @property
+    def w(self) -> str:
+        """West edge symbol."""
+        return self[4]
+    
+
+    @property
+    def sw(self) -> str:
+        """Southwest corner symbol."""
+        return self[5]
+    
+
+    @property
+    def s(self) -> str:
+        """South edge symbol."""
+        return self[6]
+    
+
+    @property
+    def se(self) -> str:
+        """Southeast corner symbol."""
+        return self[7]
+        

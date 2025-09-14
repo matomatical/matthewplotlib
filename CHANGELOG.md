@@ -4,11 +4,13 @@ In development:
 Breaking changes:
 
 * Inverted `cyber` colormap.
+* Move `plots.border.Style` to `core.BoxStyle`.
 
 New:
 
 * New discrete colourmaps `tableau`, `nouveau`.
 * Discrete colourmaps are now cyclic.
+* New border styles.
 
 Version 0.1.2:
 --------------

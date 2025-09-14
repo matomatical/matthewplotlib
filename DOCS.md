@@ -1,11 +1,287 @@
----
-title: Matthew's plotting library (`matthewplotlib`)
-version: Version 0.1.2
----
+Matthew's plotting library (matthewplotlib)
+===========================================
 
 A Python plotting library that aspires to *not be painful.*
 
-See [README.md](README.md) for overview.
+*Status:* Work in progress. See [roadmap](#roadmap-to-version-1). Currently,
+still generally painful, due to lack of generated documentation and lack of
+common plot types. However, for personal use, I'm already finding what limited
+functionality it does have delightful.
+
+Key features:
+
+* Colourful unicode-based rendering of scatter plots, small images, heatmaps,
+  bar charts, histograms, and more.
+
+* Rendering plots to the terminal with `print(plot)` (no GUI windows to
+  manage).
+
+* Plots are just expressions. Compose complex plots with horizontal (`+`) and
+  vertical (`/`) stacking operations, as in
+    `subplots = (plotA + plotB) / (plotC + plotD)`.
+
+* If you absolutely need plots outside the terminal, you can render them to PNG
+  using a pixel font.
+
+Key missing features (so far, see [roadmap](#roadmap)):
+
+* Line plots still to be implemented.
+
+* Plots don't have visible axes, ticks, ticklabels, or axis labels yet.
+
+* No HTML documentation (but see WIP markdown [DOCS.md](DOCS.md)).
+
+* Not a lot of input validation, error handling, or testing.
+
+Some eye-candy:
+
+<table>
+<tbody>
+  <tr>
+    <td><img src="images/lissajous.png" height="256px"></td>
+    <td><img src="images/teapot.gif" height="256px"></td>
+    <td><img src="images/colormaps.png" height="256px"></td>
+  </tr>
+</tbody>
+</table>
+
+Quickstart
+----------
+
+Install:
+
+```console
+pip install git+https://github.com/matomatical/matthewplotlib.git
+```
+
+Import the library:
+
+```python
+import matthewplotlib as mp
+```
+
+Construct a plot:
+```python
+import numpy as np
+
+xs = np.linspace(-2*np.pi, +2*np.pi, 156)
+ys1 = 1.0 * np.cos(xs)
+ys2 = 0.9 * np.cos(xs - 0.33 * np.pi)
+ys3 = 0.8 * np.cos(xs - 0.66 * np.pi)
+ys4 = 0.7 * np.cos(xs - 1.00 * np.pi)
+ys5 = 0.8 * np.cos(xs - 1.33 * np.pi)
+ys6 = 0.9 * np.cos(xs - 1.66 * np.pi)
+
+plot = mp.border(
+    mp.scatter(np.c_[xs, ys1], width=78, yrange=(-1,1), color=(1.,0.,0.))
+    @ mp.scatter(np.c_[xs, ys2], width=78, yrange=(-1,1), color=(1.,0.,1.))
+    @ mp.scatter(np.c_[xs, ys3], width=78, yrange=(-1,1), color=(0.,0.,1.))
+    @ mp.scatter(np.c_[xs, ys4], width=78, yrange=(-1,1), color=(0.,1.,1.))
+    @ mp.scatter(np.c_[xs, ys5], width=78, yrange=(-1,1), color=(0.,1.,0.))
+    @ mp.scatter(np.c_[xs, ys6], width=78, yrange=(-1,1), color=(1.,1.,0.))
+    | mp.center(mp.text(f"cos(x + 2 pi k / 6)"), width=78)
+)
+```
+
+Print to terminal:
+```python
+print(plot)
+```
+![](images/quickstart-screenshot.png)
+
+Export to PNG image:
+```python
+plot.saveimg("images/quickstart.png")
+```
+![](images/quickstart.png)
+
+
+Other examples
+--------------
+
+See [examples/](examples/) folder. Highlights:
+
+* [lissajous.py](examples/lissajous.py) showing scatterplots and basic plot
+  arrangement.
+
+* [colormaps.py](examples/colormaps.py) showing off the different available
+  colormaps more advanced plot arrangement.
+
+* [calendar_heatmap.py](examples/calendar_heatmap.py) showing how to construct
+  a custom plot, in this case colouring the cells of a calendar (inspired by
+  GitHub issues tracker).
+
+* [teapot.py](examples/teapot.py) showing how to use scatter plots to render a
+  3d point cloud, and animations.
+
+Ideas for future examples:
+
+* Simple machine learning experiment, loss curves and progress bars.
+
+* Simple gridworld rollout visualiser for reinforcement learning.
+
+* CPU/RAM usage visualiser.
+
+
+Roadmap to version 1
+--------------------
+
+Basic plot types:
+
+* [x] Scatter plots.
+* [x] Image plots / matrix heatmaps.
+* [x] Function heatmap plots.
+* [x] Progress bars.
+* [x] Basic bar charts and column charts.
+* [x] Histograms.
+* [ ] Line plots.
+
+Basic plot furnishings:
+
+* [x] Basic text boxes.
+* [x] Borders.
+* [ ] Axis ticks and tick labels for scatter plots (API needs some thought).
+* [ ] Labels and ticks for bar/column charts and histograms.
+
+Basic plot arrangement:
+
+* [x] Horizontal and vertical stacking.
+* [x] Naive layering plots on top of each other.
+* [x] Automatically wrapping plots into a grid.
+
+Styling plots with colors:
+
+* [x] Basic colormaps.
+* [x] BIDS colormaps.
+* [x] Rainbow colormap.
+* [x] Cyberpunk colormap.
+* [x] Discrete colour palettes.
+
+Rendering:
+
+* [x] Render to string / terminal with ANSI control codes.
+* [x] Export to image with pixel font.
+
+Basic code improvements:
+
+* [x] Split up monolithic file into a small number of modules.
+* [x] Comprehensive type annotations, static type checking with mypy.
+* [ ] Robust input validation and error handling.
+* [ ] Tests.
+
+Documentation:
+
+* [x] Minimal docstrings for everything user-facing.
+* [x] Quick start guide.
+* [x] Complete docstrings for modules, constants, etc.
+* [x] Simple generated markdown documentation on GitHub.
+* [ ] Simple generated HTML/CSS documentation, hosted on web.
+
+Repository:
+
+* [x] Set up project, installable via git.
+* [x] A simple example for the quick-start guide.
+* [x] Version numbering and changelog.
+* [ ] List on PyPI.
+
+Advanced features roadmap
+-------------------------
+
+More plot types:
+
+* [ ] Scatter plots with different colours for each point.
+* [ ] Less dense (non-braille) scatter plots with different markers?
+* [ ] Multiple point clouds or lines on a single scatter/line plot.
+* [ ] 3d scatter plots (see [teapot example](examples/teapot.py) for now).
+* [x] Basic Hilbert curves.
+* [ ] Non-square Hilbert curves.
+* [ ] 3d Hilbert curves.
+* [ ] Calendar heatmap plots (see calendar heatmap example for now).
+* [ ] World maps, 2d projection.
+* [ ] World maps, 3d globe.
+* [ ] Candlestick plots.
+* [ ] Error bars on line plots.
+* [ ] Fill plots.
+* [ ] Box plots.
+* [ ] Bar/column charts with configurable sizes, spacing, alignment.
+* [ ] Negative values in bar/column charts.
+
+Advanced plot arrangement:
+
+* [ ] Better support for animated plots (API needs thought).
+* [ ] Cleaner way to share config/axes between multiple plots.
+
+Advanced furnishings:
+
+* [ ] Axis transformations (e.g. logarithmic scale).
+* [ ] Legend construction (API needs thought).
+* [ ] Color bars, vertical or horizontal.
+* [ ] Text embedded in borders.
+
+Advanced rendering:
+
+* [ ] Export animations to gifs.
+* [ ] Render plots to SVG (keep console aesthetic).
+* [ ] Render plots to PDF (keep console aesthetic).
+
+Back end improvements:
+
+* [ ] Upgrade Char backend to use arrays of codepoints and colors (think
+  PyTrees from JAX to replace the current nested lists of dataclasses).
+* [ ] Vectorised composition operations.
+* [ ] Vectorised bitmap rendering.
+* [ ] Faster and more intelligent ANSI rendering (only include necessary
+  control codes and resets, e.g., if several characters in a row use the same
+  colours).
+* [ ] Faster animated plot redraws (e.g., differential rendering with shortcut
+  `-`).
+
+More elaborate documentation:
+
+* [ ] Tutorials and recipes.
+* [ ] Freeze documentation with each version.
+* [x] Links to source code from within documentation.
+* [ ] Links to mentioned functions/classes/methods/types within documentation
+  (automatically linked to relevant release).
+* [ ] Documentation search.
+
+Related work
+------------
+
+Matthewplotlib aspires to achieve a similar levels of functionality as covered
+by the following projects.
+
+Terminal plotting in Python:
+
+* Plotext: https://github.com/piccolomo/plotext
+* Plotille: https://github.com/tammoippen/plotille
+* Termgraph: https://github.com/sgeisler/termgraph
+* Termplot: https://github.com/justnoise/termplot
+
+Terminal plotting in other languages:
+
+* Julia https://github.com/JuliaPlots/UnicodePlots.jl
+* Julia again https://github.com/sunetos/TextPlots.jl
+* C++ https://github.com/fbbdev/plot
+* GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.html
+
+Braille art:
+
+* Drawille (Python): https://github.com/asciimoo/drawille
+* Rsille (Rust): https://github.com/nidhoggfgg/rsille
+* Drawille (Lua): https://github.com/asciimoo/lua-drawille
+* Drawille (NodeJS): https://github.com/madbence/node-drawille
+* Python repo documents ports to various other languages
+
+TODO: Checklist of specific interesting target features that are and are not
+implemented.
+
+## module matthewplotlib
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/__init__.py)]
+
+Top-level module. Imports various documents items from other modules and makes
+them available under the top-level namespace.
 
 ## module matthewplotlib.plots
 
@@ -890,55 +1166,24 @@ Inputs:
     
     The plot object to be enclosed by the border.
 
-* style : optional Style (default: Style.ROUND)
+* style : BoxStyle (default: BoxStyle.ROUND)
     
-    The style of the border. Predefined styles are available in
-    `border.Style`.
+    The style of the border. Predefined styles are available in `BoxStyle`.
 
 * color : optional ColorLike
     
     The color of the border characters. Defaults to the terminal's
     default foreground color.
 
-### class matthewplotlib.plots.border.Style
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1373)]
-
-[Inherits from str, enum.Enum]
-
-A string enum defining preset styles for the `border` plot.
-
-Each style is a string of six characters representing the border
-elements in the following order: horizontal, vertical, top-left,
-top-right, bottom-left, and bottom-right.
-
-Available Styles:
-
-* `LIGHT`: A standard, single-line border.
-* `HEAVY`: A thicker, bold border.
-* `DOUBLE`: A double-line border.
-* `BLANK`: An invisible border, useful for adding padding around a
-  plot while maintaining layout alignment.
-* `ROUND`: A single-line border with rounded corners.
-* `BUMPER`: A single-line border with corners made of blocks.
-
-Demo:
-
-```
-┌──────┐ ┏━━━━━━┓ ╔══════╗         ╭──────╮ ▛──────▜
-│LIGHT │ ┃HEAVY ┃ ║DOUBLE║  BLANK  │ROUND │ │BUMPER│
-└──────┘ ┗━━━━━━┛ ╚══════╝         ╰──────╯ ▙──────▟
-```
-
 ### method matthewplotlib.plots.border.\_\_repr\_\_
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1442)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1408)]
 
 ### class matthewplotlib.plots.blank
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1450)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1416)]
 
 [Inherits from plot]
 
@@ -960,11 +1205,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1475)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1441)]
 
 ### class matthewplotlib.plots.hstack
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1479)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1445)]
 
 [Inherits from plot]
 
@@ -983,11 +1228,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1508)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1474)]
 
 ### class matthewplotlib.plots.vstack
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1515)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1481)]
 
 [Inherits from plot]
 
@@ -1006,11 +1251,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1542)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1508)]
 
 ### class matthewplotlib.plots.dstack
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1549)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1515)]
 
 [Inherits from plot]
 
@@ -1031,11 +1276,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1588)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1554)]
 
 ### class matthewplotlib.plots.wrap
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1595)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1561)]
 
 [Inherits from plot]
 
@@ -1061,11 +1306,11 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1650)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1616)]
 
 ### class matthewplotlib.plots.center
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1657)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1623)]
 
 [Inherits from plot]
 
@@ -1095,7 +1340,7 @@ Inputs:
 
 #### \_\_repr\_\_()
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1706)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1672)]
 
 ## module matthewplotlib.colors
 
@@ -1312,37 +1557,41 @@ Discretised to 256 8-bit colours.
 Sweetie-16 colour palette by GrafxKid (see
 https://lospec.com/palette-list/sweetie-16).
 
-Input should be an array of indices in the range [0,15].
+Input should be an array of indices in the range [0,15] (or else it will
+cycle).
 
 ### function matthewplotlib.colormaps.pico8
 
 #### pico8(x: ArrayLike) -> np.ndarray
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L522)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L523)]
 
 PICO-8 colour palette (see https://pico-8.fandom.com/wiki/Palette).
 
-Input should be an array of indices in the range [0,15].
+Input should be an array of indices in the range [0,15] (or else it will
+cycle).
 
 ### function matthewplotlib.colormaps.tableau
 
 #### tableau(x: ArrayLike) -> np.ndarray
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L539)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L541)]
 
 Matplotlib Tableau colourmap.
 
-Input should be an array of indices in the range [0,9].
+Input should be an array of indices in the range [0,9] (or else it will
+cycle).
 
 ### function matthewplotlib.colormaps.nouveau
 
 #### nouveau(x: ArrayLike) -> np.ndarray
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L555)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L558)]
 
 Updated Tableau colourmap (more accessible).
 
-Input should be an array of indices in the range [0,9].
+Input should be an array of indices in the range [0,9] (or else it will
+cycle).
 
 ## module matthewplotlib.core
 
@@ -1358,7 +1607,7 @@ Constants:
 
 ### class matthewplotlib.core.Char
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L26)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L27)]
 
 A single possibly-coloured character. Plots are assembled from characters
 like these.
@@ -1367,7 +1616,7 @@ like these.
 
 #### isblank(self: Self) -> bool
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L36)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L37)]
 
 True if the character has no visible content.
 
@@ -1375,7 +1624,7 @@ True if the character has no visible content.
 
 #### bg\_(self: Self) -> Color | None
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L44)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L45)]
 
 The 'effective' background color of this Char.
 
@@ -1386,7 +1635,7 @@ where c happens to be '█', in which case return the foreground color.
 
 #### to\_ansi\_str(self: Self) -> str
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L57)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L58)]
 
 If necessary, wrap a Char in ANSI control codes that switch the color into
 the given fg and bg colors; plus a control code to switch back to default
@@ -1396,7 +1645,7 @@ mode.
 
 #### to\_rgba\_array(self: Self) -> np.ndarray
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L74)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L75)]
 
 Convert a Char to a small RGBA image patch, with the specified foreground
 color (or white) and background color (or a transparent background).
@@ -1405,7 +1654,7 @@ color (or white) and background color (or a transparent background).
 
 #### braille\_encode(a: ArrayLike) -> np.ndarray
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L116)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L117)]
 
 Turns a HxW array of booleans into a (H//4)x(W//2) array of braille
 binary codes.
@@ -1458,7 +1707,7 @@ Start with an array with height divisible by 4, width divisible by 2:
 
 #### unicode\_bar(proportion: float, total\_width: int) -> list[str]
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L191)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L192)]
 
 Generates a Unicode progress bar as a list of characters.
 
@@ -1498,7 +1747,7 @@ Examples:
 
 #### unicode\_col(proportion: float, total\_height: int) -> list[str]
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L250)]
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L251)]
 
 Generates a Unicode progress column as a list of characters.
 
@@ -1532,6 +1781,112 @@ Examples:
 [' ','▄','█']
 
 ```
+
+### class matthewplotlib.core.BoxStyle
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L311)]
+
+[Inherits from str, enum.Enum]
+
+A string enum defining preset styles for the `border` plot.
+
+Each style is a string of six characters representing the border
+elements in the following order: horizontal, vertical, top-left,
+top-right, bottom-left, and bottom-right.
+
+Available Styles:
+
+* `LIGHT`:  A standard, single-line border.
+* `HEAVY`:  A thicker, bold border.
+* `DOUBLE`: A double-line border.
+* `DASHED`: A dashed single-line border.
+* `BLANK`:  An invisible border (easily add 1-width padding).
+* `ROUND`:  A single-line border with rounded corners.
+* `BUMPER`: A single-line border with corners made of blocks.
+* `BLOCK1`: A blocky border with half-width left and right walls.
+* `BLOCK2`: A uniform blocky border.
+* `TIGER1`: A stripy block border.
+* `TIGER2`: An alternative stripy block border.
+
+Demo:
+
+```
+┌──────┐ ┏━━━━━━┓ ╔══════╗ ┌╌╌╌╌╌╌┐ ⡤⠤⠤⠤⠤⠤⠤⢤ ╭──────╮
+│LIGHT │ ┃HEAVY ┃ ║DOUBLE║ ┊DASHED┊ ⡇DOTTED⢸ │ROUND │
+└──────┘ ┗━━━━━━┛ ╚══════╝ └╌╌╌╌╌╌┘ ⠓⠒⠒⠒⠒⠒⠒⠚ ╰──────╯
+         ▛──────▜ ▛▀▀▀▀▀▀▜ █▀▀▀▀▀▀█ ▞▝▝▝▝▝▝▝ ▘▘▘▘▘▘▘▚
+ BLANK   │BUMPER│ ▌BLOCK1▐ █BLOCK2█ ▖TIGER1▝ ▘TIGER2▗
+         ▙──────▟ ▙▄▄▄▄▄▄▟ █▄▄▄▄▄▄█ ▖▖▖▖▖▖▖▞ ▚▗▗▗▗▗▗▗
+```
+
+TODO:
+
+* It might make sense to consider borders with two characters on the left
+  and right sides of the contents. Would open up new design possibilities.
+
+### method matthewplotlib.core.BoxStyle.nw
+
+#### nw() -> str
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L364)]
+
+Northwest corner symbol.
+
+### method matthewplotlib.core.BoxStyle.n
+
+#### n() -> str
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L370)]
+
+North edge symbol.
+
+### method matthewplotlib.core.BoxStyle.ne
+
+#### ne() -> str
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L376)]
+
+Norteast corner symbol.
+
+### method matthewplotlib.core.BoxStyle.e
+
+#### e() -> str
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L382)]
+
+East edge symbol.
+
+### method matthewplotlib.core.BoxStyle.w
+
+#### w() -> str
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L388)]
+
+West edge symbol.
+
+### method matthewplotlib.core.BoxStyle.sw
+
+#### sw() -> str
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L394)]
+
+Southwest corner symbol.
+
+### method matthewplotlib.core.BoxStyle.s
+
+#### s() -> str
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L400)]
+
+South edge symbol.
+
+### method matthewplotlib.core.BoxStyle.se
+
+#### se() -> str
+
+[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L406)]
+
+Southeast corner symbol.
 
 ## module matthewplotlib.unscii16
 

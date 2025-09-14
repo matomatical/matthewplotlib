@@ -49,7 +49,7 @@ from matthewplotlib.colors import Color, ColorLike
 from matthewplotlib.colormaps import ColorMap
 from numbers import Number
 
-from matthewplotlib.core import Char, BLANK
+from matthewplotlib.core import Char, BLANK, BoxStyle
 from matthewplotlib.core import braille_encode, unicode_bar, unicode_col
 
 type number = int | float | np.integer | np.floating
@@ -1360,79 +1360,45 @@ class border(plot):
         
         The plot object to be enclosed by the border.
     
-    * style : optional Style (default: Style.ROUND)
+    * style : BoxStyle (default: BoxStyle.ROUND)
         
-        The style of the border. Predefined styles are available in
-        `border.Style`.
+        The style of the border. Predefined styles are available in `BoxStyle`.
     
     * color : optional ColorLike
         
         The color of the border characters. Defaults to the terminal's
         default foreground color.
     """
-    class Style(str, enum.Enum):
-        """
-        A string enum defining preset styles for the `border` plot.
 
-        Each style is a string of six characters representing the border
-        elements in the following order: horizontal, vertical, top-left,
-        top-right, bottom-left, and bottom-right.
-
-        Available Styles:
-
-        * `LIGHT`: A standard, single-line border.
-        * `HEAVY`: A thicker, bold border.
-        * `DOUBLE`: A double-line border.
-        * `BLANK`: An invisible border, useful for adding padding around a
-          plot while maintaining layout alignment.
-        * `ROUND`: A single-line border with rounded corners.
-        * `BUMPER`: A single-line border with corners made of blocks.
-
-        Demo:
-
-        ```
-        ┌──────┐ ┏━━━━━━┓ ╔══════╗         ╭──────╮ ▛──────▜
-        │LIGHT │ ┃HEAVY ┃ ║DOUBLE║  BLANK  │ROUND │ │BUMPER│
-        └──────┘ ┗━━━━━━┛ ╚══════╝         ╰──────╯ ▙──────▟
-        ```
-        """
-        LIGHT  = "─│┌┐└┘"
-        HEAVY  = "━┃┏┓┗┛"
-        DOUBLE = "═║╔╗╚╝"
-        BLANK  = "      "
-        ROUND  = "─│╭╮╰╯"
-        BUMPER = "─│▛▜▙▟"
 
     def __init__(
         self,
         plot: plot,
-        style: Style | None = None,
+        style: BoxStyle = BoxStyle.ROUND,
         color: ColorLike | None = None,
     ):
         color_ = Color.parse(color)
-        if style is None:
-            style = self.Style.ROUND
         array = [
             # top row
             [
-                Char(style[2], fg=color_),
-                *[Char(style[0], fg=color_)] * plot.width,
-                Char(style[3], fg=color_),
+                Char(style.nw, fg=color_),
+                *[Char(style.n, fg=color_)] * plot.width,
+                Char(style.ne, fg=color_),
             ],
             # middle rows
             *[
                 [
-                    Char(style[1], fg=color_),
+                    Char(style.w, fg=color_),
                     *row,
-                    Char(style[1], fg=color_),
+                    Char(style.w, fg=color_),
                 ]
                 for row in plot.array
             ],
             # bottom row
             [
-                Char(style[4], fg=color_),
-                *[Char(style[0], fg=color_)] * plot.width,
-                Char(style[5], fg=color_),
+                Char(style.sw, fg=color_),
+                *[Char(style.s, fg=color_)] * plot.width,
+                Char(style.se, fg=color_),
             ],
         ]
         super().__init__(array)
