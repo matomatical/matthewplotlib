@@ -3,6 +3,7 @@ In development:
 
 New:
 
+* New plot types: `bars`, `columns`, `histogram`, `vistogram`.
 * More documentation.
 * Generated markdown documentation.
 

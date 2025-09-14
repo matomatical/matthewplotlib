@@ -14,6 +14,10 @@ Data plots:
 * `scatter`
 * `hilbert`
 * `progress`
+* `bars`
+* `histogram`
+* `columns`
+* `vistogram`
 
 Furnishing plots:
 
@@ -42,8 +46,12 @@ from typing import Callable, Self
 from numpy.typing import ArrayLike
 from matthewplotlib.colors import Color, ColorLike
 from matthewplotlib.colormaps import ColorMap
+from numbers import Number
 
-from matthewplotlib.core import Char, BLANK, braille_encode
+from matthewplotlib.core import Char, BLANK
+from matthewplotlib.core import braille_encode, unicode_bar, unicode_col
+
+type number = int | float | np.integer | np.floating
 
 
 # # # 
@@ -301,7 +309,7 @@ class fimage(image):
 
     Inputs:
 
-    * F : float[batch, 2] -> float[batch]
+    * F : float[batch, 2] -> number[batch]
         
         The (vectorised) function to plot. The input should be a batch of
         (x, y) vectors. The output should be a batch of scalars f(x, y).
@@ -405,7 +413,7 @@ class scatter(plot):
 
     Inputs:
 
-    * data : float[n, 2]
+    * data : number[n, 2]
         
         An array of n 2D points to plot. Each row is an (x, y) coordinate.
     
@@ -419,12 +427,12 @@ class scatter(plot):
         The width of the plot in characters. The effective pixel width will be
         2 * width.
     
-    * yrange : optional (float, float)
+    * yrange : optional (number, number)
         
         The y-axis limits `(ymin, ymax)`. If not provided, the limits are
         inferred from the min and max y-values in the data.
     
-    * xrange : optional (float, float)
+    * xrange : optional (number, number)
         
         The x-axis limits `(xmin, xmax)`. If not provided, the limits are
         inferred from the min and max x-values in the data.
@@ -441,11 +449,11 @@ class scatter(plot):
     """
     def __init__(
         self,
-        data: ArrayLike, # float[n, 2]
+        data: ArrayLike, # number[n, 2]
         height: int = 10,
         width: int = 30,
-        yrange: tuple[float, float] | None = None,
-        xrange: tuple[float, float] | None = None,
+        yrange: tuple[number, number] | None = None,
+        xrange: tuple[number, number] | None = None,
         color: ColorLike | None = None,
         check_bounds: bool = False,
     ):
@@ -610,9 +618,9 @@ class progress(plot):
     """
     A single-line progress bar.
 
-    Displays a progress bar with a percentage label. The bar is rendered using
-    block element characters to show fractional progress with finer granularity
-    than a single character.
+    Construct a progress bar with a percentage label. The bar is rendered using
+    Unicode block element characters to show fractional progress with finer
+    granularity.
 
     Inputs:
 
@@ -643,19 +651,16 @@ class progress(plot):
         # construct label
         label = f"{progress:4.0%}"
         label_chars = [Char(c) for c in label]
+        
         # construct bar
-        bar_width = width - 2 - len(label)
-        fill_width = bar_width * progress
-        bar_chars = [Char("█", fg=color_)] * int(fill_width)
-        marginal_width = int(8 * (fill_width % 1))
-        if marginal_width > 0:
-            bar_chars.append(Char(
-                    [" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉"][marginal_width],
-                    fg=color_,
-            ))
-        bar_chars.extend(
-            [BLANK] * (bar_width - len(bar_chars))
-        )
+        bar_chars = [
+            Char(block, fg=color_)
+            for block in unicode_bar(
+                proportion=progress,
+                total_width=width - 2 - len(label),
+            )
+        ]
+
         # put it together
         array = [
             [*label_chars, Char("["), *bar_chars, Char("]")]
@@ -667,6 +672,363 @@ class progress(plot):
 
     def __repr__(self):
         return f"progress({self.progress:%})"
+
+
+class bars(plot):
+    """
+    A multi-line bar chart.
+
+    Transform a list of values into horizontal bars with width indicating the
+    values. The bars are rendered using Unicode block element characters for
+    finer granularity.
+
+    Inputs:
+
+    * values : float[n]
+        
+        An array of non-negative values to display.
+
+    * width : int (default: 30)
+        
+        The total width of full bars.
+    
+    * vrange : None | float | (float, float)
+        
+        Determine the scaling of the bars.
+        * If omitted, the bars are scaled such that the bar(s) with the largest
+          value occupy the whole width.
+        * If a single number, then the bars are scaled so that bars with that
+          value (or greater) would occupy the whole width.
+        * If a pair of numbers, the bars are scaled so that bars with the first
+          value (or less) would have zero width and bars with the second value
+          (or greater) would occupy the whole width.
+    
+    * color : optional ColorLike
+        
+        The color of the filled portion of the bars. Defaults to the terminal's
+        default foreground color.
+
+    TODO:
+
+    * Make it possible to draw bars to the left for values below 0.
+    * Make it possible to align all bars to the right rather than left.
+    * Allow each bar to have a height other than 1, and allow spacing.
+    """
+    def __init__(
+        self,
+        values: ArrayLike, # numeric[n]
+        width: int = 30,
+        vrange: None | number | tuple[number, number] = None,
+        color: ColorLike | None = None,
+    ):
+        # standardise inputs
+        values = np.asarray(values)
+        vmin: number
+        vmax: number
+        if vrange is None:
+            vmin = 0.0
+            vmax = values.max()
+        elif isinstance(vrange, Number):
+            vmin = 0.0
+            vmax = vrange
+        elif isinstance(vrange, tuple):
+            vmin, vmax = vrange
+        color_ = Color.parse(color)
+
+        # compute the bar widths
+        norm_values = (values - vmin) / (vmax - vmin + 1e-15)
+        
+        # construct the bar chart!
+        array = [
+            [ Char(block, fg=color_) for block in unicode_bar(v, width) ]
+            for v in norm_values
+        ]
+        super().__init__(
+            array=array,
+        )
+        self.vmin = vmin
+        self.vmax = vmax
+        self.num_bars = len(values)
+
+    def __repr__(self):
+        return (
+            f"bars(height={self.height}, width={self.width}, "
+            f"values=<{self.num_bars} bars on "
+            f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
+        )
+
+
+class histogram(bars):
+    """
+    A histogram bar chart.
+
+    Transform a sequence of values into horizontal bars representing the
+    density in different bins. The bars are rendered using Unicode block
+    element characters for finer granularity.
+
+    Inputs:
+
+    * data : number[n]
+        
+        An array of values to count.
+
+    * xrange : optional (number, number)
+
+        If provided, bins range over this interval, and values outside the
+        range are discarded. Same as np.histogram's range argument.
+    
+    * bins : optional int, sequence, or str
+
+        If provided, used to determine number of bins, bin boundaries, or bin
+        boundary determination method. See np.histogram's bins argument for
+        details.
+    
+    * weights : optional number[n]
+
+        If provided, each element in data contributes this amount to the count
+        for its bin (rather than the default 1). See np.histogram's weights
+        argument for details.
+    
+    * density : bool (default False)
+
+        If true, normalise bin counts so that they sum to 1,0. See
+        np.histogram's density argument for details.
+    
+    * max_count : optional number
+
+        If provided, the bars are scaled so that only bars matching or
+        exceeding this count are full. Otherwise, the bars are scaled so that
+        the bin with the highest count has a full bar.
+
+    * width : int (default: 22)
+        
+        The total width of full bars.
+
+    * color : optional ColorLike
+        
+        The color of the filled portion of the bars. Defaults to the terminal's
+        default foreground color.
+    """
+    def __init__(
+        self,
+        data: ArrayLike,    # number[n]
+        bins = 10,          # as in np.histogram
+        xrange = None,      # as 'range' parameter in np.histogram
+        weights = None,     # as in np.histogram
+        density = False,    # as in np.histogram
+        max_count: None | number = None,
+        width: int = 22,
+        color: ColorLike | None = None,
+    ):
+        # prepare data
+        data = np.asarray(data)
+        
+        # bin data
+        hist, bins = np.histogram(
+            a=data,
+            bins=bins,
+            range=xrange,
+            weights=weights,
+            density=density,
+        )
+
+        # build bar chart
+        if max_count is None:
+            max_count = hist.max()
+        super().__init__(
+            values=hist,
+            width=width,
+            vrange=max_count,
+            color=color,
+        )
+        self.bins = bins
+
+    def __repr__(self):
+        return (
+            f"histogram(height={self.height}, width={self.width}, "
+            f"bins=<{len(self.bins)-1} on "
+            f"[{self.bins[0]:.2f},{self.bins[-1]:.2f}]>)"
+        )
+
+
+class columns(plot):
+    """
+    A column chart.
+
+    Transform a list of values into vertical columns with height indicating the
+    values. The columns are rendered using Unicode block element characters for
+    finer granularity.
+
+    Inputs:
+
+    * values : number[n]
+        
+        An array of non-negative values to display.
+
+    * height : int (default: 10)
+        
+        The total width of full columns.
+    
+    * vrange : None | number | (number, number)
+        
+        Determine the scaling of the columns.
+        * If omitted, the columns are scaled such that the columns(s) with the
+          largest value occupy the whole width.
+        * If a single number, then the columns are scaled so that columns with
+          that value (or greater) would occupy the whole width.
+        * If a pair of numbers, the columns are scaled so that columns with the
+          first value (or less) would have zero width and columns with the
+          second value (or greater) would occupy the whole width.
+    
+    * color : optional ColorLike
+        
+        The color of the filled portion of the columns. Defaults to the
+        terminal's default foreground color.
+
+    TODO:
+
+    * Make it possible to draw columns downward for values below 0.
+    * Make it possible to align all columns to the top rather than bottom.
+    * Allow each column to have a height other than 1, and allow spacing.
+    """
+    def __init__(
+        self,
+        values: ArrayLike, # number[n], actually int[n] will also work
+        height: int = 10,
+        vrange: None | number | tuple[number, number] = None,
+        color: ColorLike | None = None,
+    ):
+        # standardise inputs
+        values = np.asarray(values)
+        vmin: number
+        vmax: number
+        if vrange is None:
+            vmin = 0.0
+            vmax = values.max()
+        elif isinstance(vrange, Number):
+            vmin = 0.0
+            vmax = vrange
+        elif isinstance(vrange, tuple):
+            vmin, vmax = vrange
+        color_ = Color.parse(color)
+
+        # compute the column heights
+        norm_values = (values - vmin) / (vmax - vmin + 1e-15)
+        
+        # construct the column chart!
+        columns = [
+            [ Char(block, fg=color_) for block in unicode_col(v, height) ]
+            for v in norm_values
+        ]
+        array = [
+            [ columns[j][i] for j in range(len(columns)) ]
+            for i in range(height)
+        ]
+        super().__init__(array=array)
+        self.vmin = vmin
+        self.vmax = vmax
+        self.num_cols = len(values)
+
+    def __repr__(self):
+        return (
+            f"columns(height={self.height}, width={self.width}, "
+            f"values=<{self.num_cols} columns on "
+            f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
+        )
+
+
+class vistogram(columns):
+    """
+    A histogram column chart ("vertical histogram", referring to the direction
+    of the *bars,* rather than the *bins*).
+
+    Transform a sequence of values into columns representing the density in
+    different bins. The columns are rendered using Unicode block element
+    characters for finer granularity.
+
+    Inputs:
+
+    * data : number[n]
+        
+        An array of values to count.
+
+    * xrange : optional (number, number)
+
+        If provided, bins range over this interval, and values outside the
+        range are discarded. Same as np.histogram's range argument.
+    
+    * bins : optional int, sequence, or str
+
+        If provided, used to determine number of bins, bin boundaries, or bin
+        boundary determination method. See np.histogram's bins argument for
+        details.
+    
+    * weights : optional number[n]
+
+        If provided, each element in data contributes this amount to the count
+        for its bin (rather than the default 1). See np.histogram's weights
+        argument for details.
+    
+    * density : bool (default False)
+
+        If true, normalise bin counts so that they sum to 1,0. See
+        np.histogram's density argument for details.
+    
+    * max_count : optional number
+
+        If provided, the bars are scaled so that only bars matching or
+        exceeding this count are full. Otherwise, the bars are scaled so that
+        the bin with the highest count has a full bar.
+
+    * height : int (default: 22)
+        
+        The total height of full bars.
+
+    * color : optional ColorLike
+        
+        The color of the filled portion of the bars. Defaults to the terminal's
+        default foreground color.
+    """
+    def __init__(
+        self,
+        data: ArrayLike,    # number[n]
+        bins = 10,          # as in np.histogram
+        xrange = None,      # as 'range' parameter in np.histogram
+        weights = None,     # as in np.histogram
+        density = False,    # as in np.histogram
+        max_count: None | number = None,
+        height: int = 10,
+        color: ColorLike | None = None,
+    ):
+        # prepare data
+        data = np.asarray(data)
+        
+        # bin data
+        hist, bins = np.histogram(
+            a=data,
+            bins=bins,
+            range=xrange,
+            weights=weights,
+            density=density,
+        )
+
+        # build column chart
+        if max_count is None:
+            max_count = hist.max()
+        super().__init__(
+            values=hist,
+            height=height,
+            vrange=max_count,
+            color=color,
+        )
+        self.bins = bins
+
+    def __repr__(self):
+        return (
+            f"vistogram(height={self.height}, width={self.width}, "
+            f"bins=<{len(self.bins)-1} on "
+            f"[{self.bins[0]:.2f},{self.bins[-1]:.2f}]>)"
+        )
 
 
 # # # 
@@ -957,7 +1319,15 @@ class dstack(plot):
         for p in plots:
             for i, line in enumerate(p.array):
                 for j, c in enumerate(line):
-                    if c:
+                    if c.isblank():
+                        # keep underlying character
+                        pass
+                    elif c.bg is None:
+                        # override, but use the (effective) background of the
+                        # underlying char as the new background
+                        array[i][j] = Char(c=c.c, fg=c.fg, bg=array[i][j].bg_)
+                    else:
+                        # simply override
                         array[i][j] = c
         super().__init__(array)
         self.plots = plots

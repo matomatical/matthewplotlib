@@ -11,7 +11,7 @@ functionality it does have delightful.
 Key features:
 
 * Colourful unicode-based rendering of scatter plots, small images, heatmaps,
-  and more.
+  bar charts, histograms, and more.
 
 * Rendering plots to the terminal with `print(plot)` (no GUI windows to
   manage).
@@ -25,11 +25,11 @@ Key features:
 
 Key missing features (so far, see [roadmap](#roadmap)):
 
-* Line plots, bar charts, histograms still to be implemented.
+* Line plots still to be implemented.
 
-* Scatter plots don't have visible axes, ticks, ticklabels, or axis labels yet.
+* Plots don't have visible axes, ticks, ticklabels, or axis labels yet.
 
-* No HTML documentation (but see WIP [REFERENCE.md](REFERENCE.md)).
+* No HTML documentation (but see WIP markdown [DOCS.md](DOCS.md)).
 
 * Not a lot of input validation, error handling, or testing.
 
@@ -133,8 +133,8 @@ Basic plot types:
 * [x] Scatter plots.
 * [x] Hilbert curves.
 * [x] Progress bars.
-* [ ] Bar charts and column charts.
-* [ ] Histograms.
+* [x] Basic bar charts and column charts.
+* [x] Histograms.
 * [ ] Line plots.
 
 Basic plot furnishings:
@@ -142,6 +142,7 @@ Basic plot furnishings:
 * [x] Basic text boxes.
 * [x] Borders.
 * [ ] Axis ticks and tick labels for scatter plots (API needs some thought).
+* [ ] Labels and ticks for bar/column charts and histograms.
 
 Basic plot arrangement:
 
@@ -189,8 +190,8 @@ Advanced features roadmap
 
 More plot types:
 
-* [ ] Scatter plots with different colours.
-* [ ] Less dense (non-braille) scatter plots with different markers.
+* [ ] Scatter plots with different colours for each point.
+* [ ] Less dense (non-braille) scatter plots with different markers?
 * [ ] Multiple point clouds or lines on a single scatter/line plot.
 * [ ] 3d scatter plots (see [teapot example](examples/teapot.py) for now).
 * [ ] Non-square hilbert curves and 3d hilbert curves.
@@ -201,6 +202,8 @@ More plot types:
 * [ ] Error bars on line plots.
 * [ ] Fill plots.
 * [ ] Box plots.
+* [ ] Bar/column charts with configurable sizes, spacing, alignment.
+* [ ] Negative values in bar/column charts.
 
 Advanced plot arrangement:
 
@@ -210,6 +213,7 @@ Advanced plot arrangement:
 Advanced furnishings:
 
 * [ ] Axis transformations (e.g. logarithmic scale).
+* [ ] Legend construction (API needs thought).
 
 Advanced rendering:
 
@@ -265,3 +269,6 @@ Braille art:
 * Drawille (Lua): https://github.com/asciimoo/lua-drawille
 * Drawille (NodeJS): https://github.com/madbence/node-drawille
 * Python repo documents ports to various other languages
+
+TODO: Checklist of specific interesting target features that are and are not
+implemented.

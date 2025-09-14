@@ -9,7 +9,7 @@ functionality it does have delightful.
 Key features:
 
 * Colourful unicode-based rendering of scatter plots, small images, heatmaps,
-  and more.
+  bar charts, histograms, and more.
 
 * Rendering plots to the terminal with `print(plot)` (no GUI windows to
   manage).
@@ -23,11 +23,11 @@ Key features:
 
 Key missing features:
 
-* Line plots, bar charts, histograms still to be implemented.
+* Line plots still to be implemented.
 
-* Scatter plots don't have visible axes, ticks, ticklabels, or axis labels yet.
+* Plots don't have visible axes, ticks, ticklabels, or axis labels yet.
 
-* No HTML documentation (but see WIP [REFERENCE.md](REFERENCE.md)).
+* No HTML documentation (but see WIP markdown [DOCS.md](DOCS.md)).
 
 * Not a lot of input validation, error handling, or testing.
 
@@ -181,6 +181,10 @@ from matthewplotlib.plots import (
     hilbert,
     text,
     progress,
+    bars,
+    histogram,
+    columns,
+    vistogram,
     blank,
     hstack,
     vstack,

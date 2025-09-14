@@ -33,11 +33,25 @@ class Char:
     bg: Color | None = None
     
 
-    def __bool__(self):
+    def isblank(self: Self) -> bool:
         """
-        True if the character has visible content, false if it is blank.
+        True if the character has no visible content.
         """
-        return bool(self.c != " " or self.bg is not None)
+        return bool(self.c.isspace() and self.bg is None)
+
+    
+    @property
+    def bg_(self: Self) -> Color | None:
+        """
+        The 'effective' background color of this Char.
+
+        Usually, this is just the background color, except in the special case
+        where c happens to be '█', in which case return the foreground color.
+        """
+        if self.c == "█":
+            return self.fg
+        else:
+            return self.bg
 
 
     def to_ansi_str(self: Self) -> str:
@@ -88,7 +102,7 @@ BLANK = Char(c=" ", fg=None, bg=None)
 
 
 # # # 
-# BRAILLE HELPER FUNCTIONS
+# UNICODE BRAILLE DOT MATRIX
 
 
 BRAILLE_MAP = np.array([
@@ -154,11 +168,138 @@ def braille_encode(
     array = np.asarray(a, dtype=bool)
     H, W = array.shape
     h, w = H // 4, W // 2
+    
     # create a view that chunks it into 4x2 cells
     cells = array.reshape(h, 4, w, 2)
+    
     # convert each bit in each cell into a mask and combine into code array
     masks = np.left_shift(cells, BRAILLE_MAP.reshape(1,4,1,2), dtype=np.uint16)
     codes = np.bitwise_or.reduce(masks, axis=(1,3))
+    
     # unicode braille block starts at 0x2800
     unicodes = 0x2800 + codes
     return unicodes
+
+
+# # # 
+# UNICODE PARTIAL BLOCKS
+
+
+PARTIAL_BLOCKS_ROW = [" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"]
+
+
+def unicode_bar(
+    proportion: float,
+    total_width: int,
+) -> list[str]:
+    """
+    Generates a Unicode progress bar as a list of characters.
+
+    This function creates a fixed-width left-to-right bar using Unicode block
+    elements to represent the proportion rounded down to nearest 1/8th of a
+    block.
+
+    Inputs:
+
+    * proportion: float
+    
+        The fraction of the bar to fill. Should be between 0.0 and 1.0
+        inclusive.
+    
+    * total_width: int
+        
+        The width of the full bar in characters. Should be positive.
+
+    Returns:
+
+    * bar: list[str]
+
+        A list of unicode characters representing the bar. The length of the
+        list is always equal to `total_width`.
+
+    Examples:
+
+    ```
+    >>> ''.join(unicode_bar(0.5, 10))
+    '█████     '
+    >>> ''.join(unicode_bar(0.625, 10))
+    '██████▎   '
+
+    ```
+    """
+    # clip inputs to valid range
+    proportion = max(0.0, min(1.0, proportion))
+    total_width = max(1, total_width)
+
+    # calculate number of filled 'eighths'
+    full_eighths = int(proportion * total_width * 8)
+    full_blocks, remainder = divmod(full_eighths, 8)
+
+    # construct bar
+    bar = ["█"] * full_blocks
+    if remainder > 0:
+        bar.append(PARTIAL_BLOCKS_ROW[remainder])
+    bar.extend([" "] * (total_width - len(bar)))
+
+    return bar
+
+
+PARTIAL_BLOCKS_COL = [" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
+
+
+def unicode_col(
+    proportion: float,
+    total_height: int,
+) -> list[str]:
+    """
+    Generates a Unicode progress column as a list of characters.
+
+    This function creates a fixed-height column using Unicode block elements to
+    represent a proportion rounded down to nearest 1/8th of a block. The list
+    goes from the top of the bar to the bottom, but the bar grows from the
+    bottom towards the top.
+
+    Inputs:
+
+    * proportion: float
+    
+        The fraction of the column to fill. Should be between 0.0 and 1.0
+        inclusive.
+    
+    * total_height: int
+        
+        The height of the full bar in characters. Should be positive.
+
+    Returns:
+
+    * bar: list[str]
+
+        A list of unicode characters representing the bar. The length of the
+        list is always equal to `total_height`.
+
+    Examples:
+
+    ```
+    >>> unicode_col(0.5, 3)
+    [' ','▄','█']
+    
+    ```
+    """
+    # clip inputs to valid range
+    proportion = max(0.0, min(1.0, proportion))
+    total_height = max(1, total_height)
+
+    # calculate number of filled 'eighths'
+    full_eighths = int(proportion * total_height * 8)
+    full_blocks, remainder = divmod(full_eighths, 8)
+
+    # construct col
+    col = ["█"] * full_blocks
+    if remainder > 0:
+        col.append(PARTIAL_BLOCKS_COL[remainder])
+    col.extend([" "] * (total_height - len(col)))
+    col = col[::-1]
+
+    return col
+
+

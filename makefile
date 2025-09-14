@@ -1,4 +1,4 @@
-REFERENCE.md: generate_docs.py $(wildcard matthewplotlib/*.py)
+DOCS.md: generate_docs.py $(wildcard matthewplotlib/*.py)
 	python generate_docs.py \
 		matthewplotlib/__init__.py \
 		matthewplotlib/plots.py \
