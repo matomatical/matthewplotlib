@@ -34,7 +34,7 @@ def main():
         
         # plot
         if plot:
-            print(~plot, end="")
+            print(-plot, end="")
         plot = mp.scatter(
             data=xy.T,
             xrange=(-1,1),

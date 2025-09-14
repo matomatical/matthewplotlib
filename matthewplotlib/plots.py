@@ -95,13 +95,15 @@ class plot:
     * `str(plot)`: Shortcut for `plot.renderstr()`. This means you can render
        the plot just by calling `print(plot)`.
     
-    * `~plot`: Shortcut for `plot.clearstr()`. Useful for animations.
+    * `-plot`: Shortcut for `plot.clearstr()`. Useful for animations.
     
-    * `plot1 | plot2`: Horizontally stacks plots (see `hstack`).
+    * `plot1 + plot2`: Horizontally stacks plots (see `hstack`).
     
-    * `plot1 ^ plot2`: Vertically stacks plots (see `vstack`).
+    * `plot1 / plot2`: Vertically stacks plots (see `vstack`).
     
-    * `plot1 & plot2`: Overlays plots (see `dstack`).
+    * `plot1 | plot2`: Vertically stacks plots (see `vstack`).
+    
+    * `plot1 @ plot2`: Overlays plots (see `dstack`).
     """
     def __init__(self, array: list[list[Char]]):
         self.array = array
@@ -187,36 +189,92 @@ class plot:
         return self.renderstr()
 
 
-    def __invert__(self: Self) -> str:
+    def __neg__(self: Self) -> str:
         """
         Shortcut for the string for clearing the plot.
         """
         return self.clearstr()
-
-
-    def __or__(self: Self, other: Self) -> "hstack":
+    
+    
+    def __add__(self: Self, other: Self) -> "vstack":
         """
-        Shortcut for horizontally stacking plots:
+        Operator shortcut for horizontal stack.
+        
+        ```
+        plot1 + plot2 ==> hstack(plot1, plot2) ==> plot1 plot2
+        ```
 
-        plot1 | plot2 = hstack(plot1, plot2).
+        When combining with vertical stacking, note that `/` binds before `+`,
+        but `|` binds after:
+        ```
+        plot1 / plot2 + plot3 / plot4
+        ==> hstack(vstack(plot1, plot2), vstack(plot3, plot4))
+        ==> plot1 plot3
+            plot2 plot4
+        
+        plot1 + plot2 | plot3 + plot4
+        ==> vstack(hstack(plot1, plot2), hstack(plot3, plot4))
+        ==> plot1 plot3
+            plot2 plot4
+        ```
         """
         return hstack(self, other)
 
 
-    def __xor__(self: Self, other: Self) -> "vstack":
+    def __truediv__(self: Self, other: Self) -> "vstack":
         """
-        Shortcut for vertically stacking plots:
+        High-precedence operator shortcut for vertical stack.
+        
+        ```
+        plot1 / plot2 ==> vstack(plot1, plot2) ==> plot1
+                                                   plot2
+        ```
 
-        plot1 ^ plot2 = vstack(plot1, plot2).
+        When combining with horizontal stacking, note that `/` binds before
+        `+`:
+        ```
+        plot1 / plot2 + plot3 / plot4
+        ==> plot1 plot3
+            plot2 plot4
+        ```
+
+        For a version that binds after `+`, see `|`.
         """
         return vstack(self, other)
 
 
-    def __and__(self: Self, other: Self) -> "dstack":
+    def __or__(self: Self, other: Self) -> "vstack":
         """
-        Shortcut for depth-stacking plots:
+        Low-precedence operator shortcut for vertical stack.
+        
+        ```
+        plot1 | plot2 ==> vstack(plot1, plot2) ==> plot1
+                                                   plot2
+        ```
 
-        plot1 & plot2 = dstack(plot1, plot2).
+        When combining with horizontal stacking, note that `|` binds after `+`:
+        ```
+        plot1 + plot2 | plot3 + plot4
+        ==> plot1 plot3
+            plot2 plot4
+        ```
+
+        For a version that binds before `+`, see `/`.
+        """
+        return vstack(self, other)
+
+
+    def __matmul__(self: Self, other: Self) -> "dstack":
+        """
+        Operator shortcut for depth stack.
+
+        ```
+        plot1_ @ plot_2 ==> dstack(plot1_, plot2_) => plot12
+        (where _ is a blank character)
+        ```
+
+        Note that the precedence of `@` competes with `/`, so use parentheses
+        or pair with `|`.
         """
         return dstack(self, other)
     

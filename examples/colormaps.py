@@ -17,21 +17,21 @@ im_discrete[coords[:,0], coords[:,1]] = np.arange(256) // 16
 print("generating plot...")
 plot = (
     mp.text("test images:")
-    ^ mp.hstack(
+    / mp.hstack(
         mp.border(
             mp.text("linspace(0,1,256")
-            ^ mp.image(im_continuous),
+            / mp.image(im_continuous),
         ),
         mp.border(
             mp.text("arange(256)//16")
-            ^ mp.image(im_discrete / 16),
+            / mp.image(im_discrete / 16),
         )
     )
-    ^ mp.text("continuous colormaps:")
-    ^ mp.wrap(*[
+    / mp.text("continuous colormaps:")
+    / mp.wrap(*[
         mp.border(
             mp.text(c.__name__)
-            ^ mp.image(im_continuous, colormap=c),
+            / mp.image(im_continuous, colormap=c),
         )
         for c in [
             mp.reds, mp.greens, mp.blues,
@@ -40,11 +40,11 @@ plot = (
             mp.viridis, mp.cyber, mp.rainbow,
         ]
     ], cols=3)
-    ^ mp.text("discrete colormaps:")
-    ^ mp.wrap(*[
+    / mp.text("discrete colormaps:")
+    / mp.wrap(*[
         mp.border(
             mp.text(c.__name__)
-            ^ mp.image(im_discrete, colormap=c),
+            / mp.image(im_discrete, colormap=c),
         )
         for c in [ mp.sweetie16, mp.pico8, ]
     ], cols=3)

@@ -4,7 +4,6 @@ reference documentation.
 """
 import ast
 import sys
-import tyro
 
 import matthewplotlib as mp
 
@@ -177,4 +176,4 @@ def s(s: str) -> str:
 
 
 if __name__ == "__main__":
-    tyro.cli(main)
+    main(sys.argv[1:])

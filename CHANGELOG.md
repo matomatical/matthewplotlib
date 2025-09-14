@@ -1,6 +1,10 @@
 In development:
 ---------------
 
+Breaking changes:
+
+* Change operators used for shortcuts.
+
 New:
 
 * New plot types: `bars`, `columns`, `histogram`, `vistogram`.
@@ -10,7 +14,6 @@ New:
 Dependencies:
 
 * Make example dependency on `scikit-learn` explicit.
-* Add `tyro` as a development dependency.
 
 Version 0.1.1:
 --------------
