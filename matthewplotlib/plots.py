@@ -1265,7 +1265,7 @@ class hilbert(plot):
         fg_grid = braille_encode(lit_grid)
         for i in range(height):
             for j in range(width):
-                if bg_grid[i, j]:
+                if bg_grid[i, j] > 0x2800:
                     braille_char = chr(fg_grid[i, j])
                     array[i][j] = Char(
                         c=braille_char,
@@ -1301,8 +1301,8 @@ class text(plot):
 
     * text : str
         
-        The text to be displayed. Newline characters (`\n`) will create
-        separate lines in the plot.
+        The text to be displayed. Newline characters will create separate lines
+        in the plot.
     
     * color : optional ColorLike
         
