@@ -46,11 +46,33 @@ class Char:
         """
         The 'effective' background color of this Char.
 
-        Usually, this is just the background color, except in the special case
-        where c happens to be '█', in which case return the foreground color.
+        Usually, this is just the background color, except in the following
+        special cases:
+
+        * If c happens to be '█' or '▟', then it is more effective to return
+          the foreground color.
+        * If c happens to be '▀' or '▄', then it is more effective to return a
+          mixture of the two colours, presuming there are two colours to mix.
+
+        TODO:
+
+        * There are more examples to consider, including h/v progress bars
+          and generally any other block drawing situations. I should more
+          systematically identify block drawing characters and interpolate
+          colours better.
         """
-        if self.c == "█":
+        if self.c == "█" or self.c == "▟":
             return self.fg
+        elif self.c == "▀" or self.c == "▄":
+            if self.bg is None:
+                return self.fg
+            if self.fg is None:
+                return self.bg
+            return Color(
+                r=(self.fg.r+self.bg.r)//2,
+                g=(self.fg.g+self.bg.g)//2,
+                b=(self.fg.b+self.bg.b)//2,
+            )
         else:
             return self.bg
 
