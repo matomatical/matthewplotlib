@@ -21,15 +21,13 @@ def main(
                 print(f.read())
         
         elif path.endswith(".py"):
-            print(f"parsing {path}...", file=sys.stderr)
+            print(f"processing {path}...", file=sys.stderr)
+            # parse
             with open(path) as f:
                 source_code = f.read()
             tree = ast.parse(source_code)
-            module = path[:-3].replace("/", ".")
-            
-            print(f"processing {module}...", file=sys.stderr)
-            code_url = "/".join([code_base_url, path])
-            visitor = MarkdownVisitor(module, code_url)
+            # generate
+            visitor = MarkdownVisitor(path, code_base_url)
             visitor.visit(tree)
             print("\n".join(visitor.markdown))
         
@@ -46,16 +44,18 @@ class MarkdownVisitor(ast.NodeVisitor):
     """
     def __init__(
         self,
-        module: str,
-        code_url: str,
+        path: str,
+        code_base_url: str,
     ):
+        module = path[:-3].replace("/", ".")
         if module.endswith(".__init__"):
             self.module = module[:-len(".__init__")]
         else:
             self.module = module
-        self.code_url = code_url
+        self.path = path
+        self.code_url = "/".join([code_base_url, path])
         self.markdown: list[str] = []
-        self.context: list[str] = []
+        self.classctx: None | str = None
 
 
     def visit_Module(self, node: ast.Module):
@@ -63,8 +63,11 @@ class MarkdownVisitor(ast.NodeVisitor):
         name = s(self.module)
         self.markdown.append(f"## module {name}\n")
     
-        # source link
-        self.markdown.append(f"[[source]({self.code_url})]\n")
+        # path and source link
+        self.markdown.append(
+            f"**{s(self.path)}** "
+            f"([source]({self.code_url}))\n"
+        )
     
         # docstring
         module_docstring = ast.get_docstring(node)
@@ -72,9 +75,7 @@ class MarkdownVisitor(ast.NodeVisitor):
             self.markdown.append(f"{module_docstring}\n")
     
         # children
-        self.context.append(name)
         self.generic_visit(node)
-        self.context.pop()
     
 
     def visit_ClassDef(self, node: ast.ClassDef):
@@ -83,20 +84,21 @@ class MarkdownVisitor(ast.NodeVisitor):
             return
 
         # subsection for the class
-        context = '.'.join(self.context)
-        name = s(node.name)
-        self.markdown.append(f"### class {context}.{name}\n")
+        if self.classctx:
+            # inner class
+            name = f'{self.classctx}.{s(node.name)}'
+        else:
+            name = s(node.name)
+        self.markdown.append(f"### class {name}\n")
         
-        # source link
-        self.markdown.append(f"[[source]({self.code_url}#L{node.lineno})]\n")
-        
-        # base classes
+        # inheritance and source link
         bases = ', '.join(
             [s(ast.unparse(b)) for b in node.bases if b is not None]
         )
-        if bases:
-            inheritance_str = f"[Inherits from {bases}]"
-            self.markdown.append(f"{inheritance_str}\n")
+        self.markdown.append(
+            f"**{name}({bases}):** "
+            f"([source]({self.code_url}#L{node.lineno}))\n"
+        )
 
         # docstring
         docstring = ast.get_docstring(node)
@@ -104,9 +106,13 @@ class MarkdownVisitor(ast.NodeVisitor):
             self.markdown.append(f"{docstring}\n")
             
         # children
-        self.context.append(name)
+        oldctx = self.classctx
+        self.classctx = name
         self.generic_visit(node)
-        self.context.pop()
+        self.classctx = oldctx
+
+        # end class with a horizontal divider
+        self.markdown.append("---\n")
 
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
@@ -118,14 +124,13 @@ class MarkdownVisitor(ast.NodeVisitor):
             return
 
         # section for the method or function
-        context = '.'.join(self.context)
         name = s(node.name)
-        if len(self.context) > 1:
-            self.markdown.append(f"### method {context}.{name}\n")
+        if self.classctx is not None:
+            self.markdown.append(f"### method {self.classctx}.{name}\n")
         else:
-            self.markdown.append(f"### function {context}.{name}\n")
+            self.markdown.append(f"### function {name}\n")
 
-        # signature
+        # signature and source link
         args_str = ", ".join([
             arg.arg
             + f": {ast.unparse(arg.annotation)}" if arg.annotation else ""
@@ -133,17 +138,21 @@ class MarkdownVisitor(ast.NodeVisitor):
         ])
         return_str = f" -> {ast.unparse(node.returns)}" if node.returns else ""
         signature = f"{name}({s(args_str)}){s(return_str)}"
-        self.markdown.append(f"**{signature}**\n")
-        
-        # source link
-        self.markdown.append(f"[[source]({self.code_url}#L{node.lineno})]\n")
+        self.markdown.append(
+            f"**{signature}:** "
+            f"([source]({self.code_url}#L{node.lineno}))\n"
+        )
         
         # docstring
         docstring = ast.get_docstring(node)
         if docstring:
             self.markdown.append(f"{docstring}\n")
 
-        # no recursion to children of methods or functions
+        # no recursion to children of methods or functions...
+
+        # end function with a horizontal divider
+        if self.classctx is None:
+            self.markdown.append("---\n")
 
 
     def visit_TypeAlias(self, node: ast.TypeAlias):
@@ -152,14 +161,16 @@ class MarkdownVisitor(ast.NodeVisitor):
             return
 
         # section for the type alias
-        context = '.'.join(self.context)
         name = s(node.name.id)
-        self.markdown.append(f"### type {context}.{name}\n")
+        self.markdown.append(f"### type {name}\n")
 
-        self.markdown.append(f"**{s(ast.unparse(node))}**\n")
+        # TODO: allow a docstring somehow...
 
-        # source link
-        self.markdown.append(f"[[source]({self.code_url}#L{node.lineno})]\n")
+        # title and source link
+        self.markdown.append(
+            f"**{s(ast.unparse(node))}** "
+            f"([source]({self.code_url}#L{node.lineno}))\n"
+        )
 
 
 def s(s: str) -> str:

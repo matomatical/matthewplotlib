@@ -282,14 +282,14 @@ implemented.
 
 ## module matthewplotlib
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/__init__.py)]
+**matthewplotlib/\_\_init\_\_.py** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/__init__.py))
 
 Top-level module. Imports various documents items from other modules and makes
 them available under the top-level namespace.
 
 ## module matthewplotlib.plots
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py)]
+**matthewplotlib/plots.py** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py))
 
 A collection of building blots for plotting. There are lots of options---take a
 look through this module. They are roughly grouped as follows.
@@ -328,15 +328,13 @@ Arrangement plots:
 * `wrap`
 * `center`
 
-### type matthewplotlib.plots.number
+### type number
 
-**type number = int | float | np.integer | np.floating**
+**type number = int | float | np.integer | np.floating** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L57))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L57)]
+### class plot
 
-### class matthewplotlib.plots.plot
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L64)]
+**plot():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L64))
 
 Abstract base class for all plot objects.
 
@@ -373,79 +371,61 @@ Operators:
 * `plot1 | plot2`: Vertically stacks plots (see `vstack`).
 * `plot1 @ plot2`: Overlays plots (see `dstack`).
 
-### method matthewplotlib.plots.plot.height
+### method plot.height
 
-**height() -> int**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L106)]
+**height() -> int:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L106))
 
 Number of character rows in the plot.
 
-### method matthewplotlib.plots.plot.width
+### method plot.width
 
-**width() -> int**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L114)]
+**width() -> int:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L114))
 
 Number of character columns in the plot.
 
-### method matthewplotlib.plots.plot.renderstr
+### method plot.renderstr
 
-**renderstr() -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L121)]
+**renderstr() -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L121))
 
 Convert the plot into a string for printing to the terminal.
 
 Note: plot.renderstr() is equivalent to str(plot).
 
-### method matthewplotlib.plots.plot.clearstr
+### method plot.clearstr
 
-**clearstr(self: Self) -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L130)]
+**clearstr(self: Self) -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L130))
 
 Convert the plot into a string that, if printed immediately after
 plot.renderstr(), will clear that plot from the terminal.
 
-### method matthewplotlib.plots.plot.renderimg
+### method plot.renderimg
 
-**renderimg(, scale\_factor: int) -> np.ndarray**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L138)]
+**renderimg(, scale\_factor: int) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L138))
 
 Convert the plot into an RGBA array for rendering with Pillow.
 
-### method matthewplotlib.plots.plot.saveimg
+### method plot.saveimg
 
-**saveimg(, filename: str, scale\_factor: int)**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L164)]
+**saveimg(, filename: str, scale\_factor: int):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L164))
 
 Render the plot as an RGBA image and save it as a PNG file at the path
 `filename`.
 
-### method matthewplotlib.plots.plot.\_\_str\_\_
+### method plot.\_\_str\_\_
 
-**\_\_str\_\_() -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L178)]
+**\_\_str\_\_() -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L178))
 
 Shortcut for the string for printing the plot.
 
-### method matthewplotlib.plots.plot.\_\_neg\_\_
+### method plot.\_\_neg\_\_
 
-**\_\_neg\_\_(self: Self) -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L185)]
+**\_\_neg\_\_(self: Self) -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L185))
 
 Shortcut for the string for clearing the plot.
 
-### method matthewplotlib.plots.plot.\_\_add\_\_
+### method plot.\_\_add\_\_
 
-**\_\_add\_\_(self: Self, other: Self) -> 'hstack'**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L192)]
+**\_\_add\_\_(self: Self, other: Self) -> 'hstack':** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L192))
 
 Operator shortcut for horizontal stack.
 
@@ -467,11 +447,9 @@ plot1 + plot2 | plot3 + plot4
     plot2 plot4
 ```
 
-### method matthewplotlib.plots.plot.\_\_truediv\_\_
+### method plot.\_\_truediv\_\_
 
-**\_\_truediv\_\_(self: Self, other: Self) -> 'vstack'**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L217)]
+**\_\_truediv\_\_(self: Self, other: Self) -> 'vstack':** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L217))
 
 High-precedence operator shortcut for vertical stack.
 
@@ -490,11 +468,9 @@ plot1 / plot2 + plot3 / plot4
 
 For a version that binds after `+`, see `|`.
 
-### method matthewplotlib.plots.plot.\_\_or\_\_
+### method plot.\_\_or\_\_
 
-**\_\_or\_\_(self: Self, other: Self) -> 'vstack'**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L239)]
+**\_\_or\_\_(self: Self, other: Self) -> 'vstack':** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L239))
 
 Low-precedence operator shortcut for vertical stack.
 
@@ -512,11 +488,9 @@ plot1 + plot2 | plot3 + plot4
 
 For a version that binds before `+`, see `/`.
 
-### method matthewplotlib.plots.plot.\_\_matmul\_\_
+### method plot.\_\_matmul\_\_
 
-**\_\_matmul\_\_(self: Self, other: Self) -> 'dstack'**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L260)]
+**\_\_matmul\_\_(self: Self, other: Self) -> 'dstack':** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L260))
 
 Operator shortcut for depth stack.
 
@@ -528,11 +502,11 @@ plot1_ @ plot_2 ==> dstack(plot1_, plot2_) => plot12
 Note that the precedence of `@` competes with `/`, so use parentheses
 or pair with `|`.
 
-### class matthewplotlib.plots.scatter
+---
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L279)]
+### class scatter
 
-[Inherits from plot]
+**scatter(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L279))
 
 Render a scatterplot using a grid of braille unicode characters.
 
@@ -562,17 +536,15 @@ Inputs:
     If True, raises a `ValueError` if any data points fall outside the
     specified `xrange` or `yrange`.
 
-### method matthewplotlib.plots.scatter.\_\_repr\_\_
+### method scatter.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L375))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L375)]
+---
 
-### class matthewplotlib.plots.function
+### class function
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L384)]
-
-[Inherits from scatter]
+**function(scatter):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L384))
 
 Scatter plot representing a particular function.
 
@@ -609,17 +581,15 @@ TODO:
 * More intelligent interpolation, like a proper line plot with a given
   thickness.
 
-### method matthewplotlib.plots.function.\_\_repr\_\_
+### method function.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L449))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L449)]
+---
 
-### class matthewplotlib.plots.scatter3
+### class scatter3
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L456)]
-
-[Inherits from scatter]
+**scatter3(scatter):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L456))
 
 Scatter plot representing a 3d point cloud.
 
@@ -657,17 +627,15 @@ TODO:
 * Make sure this is not a subclass of scatter for the purposes of labelling
   axes as that would use projected coordinates.
 
-### method matthewplotlib.plots.scatter3.\_\_repr\_\_
+### method scatter3.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L527))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L527)]
+---
 
-### class matthewplotlib.plots.image
+### class image
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L531)]
-
-[Inherits from plot]
+**image(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L531))
 
 Render a small image or 2d array using a grid of unicode half-block
 characters.
@@ -700,17 +668,15 @@ Inputs:
     If `im` has no RGB dimension, it is transformed to a grid of RGB
     triples using one of these colormaps.
 
-### method matthewplotlib.plots.image.\_\_repr\_\_
+### method image.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L604))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L604)]
+---
 
-### class matthewplotlib.plots.function2
+### class function2
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L608)]
-
-[Inherits from image]
+**function2(image):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L608))
 
 Heatmap representing the image of a 2d function over a square.
 
@@ -747,17 +713,15 @@ Inputs:
     met but the upper bounds are not, meaning each grid square color shows
     the value of the function precisely at its lower left corner.
 
-### method matthewplotlib.plots.function2.\_\_repr\_\_
+### method function2.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L686))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L686)]
+---
 
-### class matthewplotlib.plots.histogram2
+### class histogram2
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L694)]
-
-[Inherits from image]
+**histogram2(image):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L694))
 
 Heatmap representing the density of a collection of 2d points.
 
@@ -795,17 +759,15 @@ Inputs:
     to zero density and white corresponding to max_count. You can choose a
     different colormap (e.g. mp.reds, mp.viridis, etc.) here.
 
-### method matthewplotlib.plots.histogram2.\_\_repr\_\_
+### method histogram2.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L788))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L788)]
+---
 
-### class matthewplotlib.plots.progress
+### class progress
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L797)]
-
-[Inherits from plot]
+**progress(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L797))
 
 A single-line progress bar.
 
@@ -825,17 +787,15 @@ Inputs:
     The color of the filled portion of the progress bar. Defaults to the
     terminal's default foreground color.
 
-### method matthewplotlib.plots.progress.\_\_repr\_\_
+### method progress.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L848))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L848)]
+---
 
-### class matthewplotlib.plots.bars
+### class bars
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L852)]
-
-[Inherits from plot]
+**bars(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L852))
 
 A multi-line bar chart.
 
@@ -868,17 +828,15 @@ TODO:
 * Make it possible to align all bars to the right rather than left.
 * Allow each bar to have a height other than 1, and allow spacing.
 
-### method matthewplotlib.plots.bars.\_\_repr\_\_
+### method bars.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L921))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L921)]
+---
 
-### class matthewplotlib.plots.histogram
+### class histogram
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L929)]
-
-[Inherits from bars]
+**histogram(bars):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L929))
 
 A histogram bar chart.
 
@@ -914,17 +872,15 @@ Inputs:
     The color of the filled portion of the bars. Defaults to the terminal's
     default foreground color.
 
-### method matthewplotlib.plots.histogram.\_\_repr\_\_
+### method histogram.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L999))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L999)]
+---
 
-### class matthewplotlib.plots.columns
+### class columns
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1007)]
-
-[Inherits from plot]
+**columns(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1007))
 
 A column chart.
 
@@ -957,17 +913,15 @@ TODO:
 * Make it possible to align all columns to the top rather than bottom.
 * Allow each column to have a height other than 1, and allow spacing.
 
-### method matthewplotlib.plots.columns.\_\_repr\_\_
+### method columns.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1078))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1078)]
+---
 
-### class matthewplotlib.plots.vistogram
+### class vistogram
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1086)]
-
-[Inherits from columns]
+**vistogram(columns):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1086))
 
 A histogram column chart ("vertical histogram", referring to the direction
 of the bars rather than the bins).
@@ -1004,17 +958,15 @@ Inputs:
     The color of the filled portion of the bars. Defaults to the terminal's
     default foreground color.
 
-### method matthewplotlib.plots.vistogram.\_\_repr\_\_
+### method vistogram.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1157))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1157)]
+---
 
-### class matthewplotlib.plots.hilbert
+### class hilbert
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1165)]
-
-[Inherits from plot]
+**hilbert(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1165))
 
 Visualize a 1D boolean array along a 2D Hilbert curve.
 
@@ -1041,17 +993,15 @@ Inputs:
     is relevant for non-square-power-of-2 data lengths. Defaults to a
     transparent background.
 
-### method matthewplotlib.plots.hilbert.\_\_repr\_\_
+### method hilbert.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1242))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1242)]
+---
 
-### class matthewplotlib.plots.text
+### class text
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1254)]
-
-[Inherits from plot]
+**text(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1254))
 
 A plot object containing one or more lines of text.
 
@@ -1076,17 +1026,15 @@ TODO:
 * Allow alignment and resizing.
 * Account for non-printable and wide characters.
 
-### method matthewplotlib.plots.text.\_\_repr\_\_
+### method text.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1302))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1302)]
+---
 
-### class matthewplotlib.plots.border
+### class border
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1309)]
-
-[Inherits from plot]
+**border(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1309))
 
 Add a border around a plot using box-drawing characters.
 
@@ -1100,17 +1048,15 @@ Inputs:
     The color of the border characters. Defaults to the terminal's
     default foreground color.
 
-### method matthewplotlib.plots.border.\_\_repr\_\_
+### method border.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1359))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1359)]
+---
 
-### class matthewplotlib.plots.blank
+### class blank
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1367)]
-
-[Inherits from plot]
+**blank(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1367))
 
 Creates a rectangular plot composed entirely of blank space.
 
@@ -1123,17 +1069,15 @@ Inputs:
 * width : optional int.
   The width of the blank area in character columns. Default 1.
 
-### method matthewplotlib.plots.blank.\_\_repr\_\_
+### method blank.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1389))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1389)]
+---
 
-### class matthewplotlib.plots.hstack
+### class hstack
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1393)]
-
-[Inherits from plot]
+**hstack(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1393))
 
 Horizontally arrange one or more plots side-by-side.
 
@@ -1145,17 +1089,15 @@ Inputs:
 * *plots : plot.
     A sequence of plot objects to be horizontally stacked.
 
-### method matthewplotlib.plots.hstack.\_\_repr\_\_
+### method hstack.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1421))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1421)]
+---
 
-### class matthewplotlib.plots.vstack
+### class vstack
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1428)]
-
-[Inherits from plot]
+**vstack(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1428))
 
 Vertically arrange one or more plots, one above the other.
 
@@ -1167,17 +1109,15 @@ Inputs:
 * *plots : plot.
     A sequence of plot objects to be vertically stacked.
 
-### method matthewplotlib.plots.vstack.\_\_repr\_\_
+### method vstack.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1454))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1454)]
+---
 
-### class matthewplotlib.plots.dstack
+### class dstack
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1461)]
-
-[Inherits from plot]
+**dstack(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1461))
 
 Overlay one or more plots on top of each other.
 
@@ -1191,17 +1131,15 @@ Inputs:
 * *plots : plot.
     A sequence of plot objects to be overlaid.
 
-### method matthewplotlib.plots.dstack.\_\_repr\_\_
+### method dstack.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1499))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1499)]
+---
 
-### class matthewplotlib.plots.wrap
+### class wrap
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1506)]
-
-[Inherits from plot]
+**wrap(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1506))
 
 Arrange a sequence of plots into a grid.
 
@@ -1218,17 +1156,15 @@ Inputs:
     determined based on the terminal width and the width of the largest
     plot.
 
-### method matthewplotlib.plots.wrap.\_\_repr\_\_
+### method wrap.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1558))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1558)]
+---
 
-### class matthewplotlib.plots.center
+### class center
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1565)]
-
-[Inherits from plot]
+**center(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1565))
 
 Pad a plot with blank space to center it within a larger area.
 
@@ -1247,15 +1183,15 @@ Inputs:
     The target width of the new padded plot. If not provided, it defaults
     to the original plot's width (no horizontal padding).
 
-### method matthewplotlib.plots.center.\_\_repr\_\_
+### method center.\_\_repr\_\_
 
-**\_\_repr\_\_()**
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1609))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1609)]
+---
 
 ## module matthewplotlib.colors
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py)]
+**matthewplotlib/colors.py** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py))
 
 Configuring various plots involves specifying colours. In most cases, colours
 can be specified in one of the following `ColorLike` formats:
@@ -1286,36 +1222,32 @@ parsed from one of the above formats. In most cases, it is not used externally.
 In some contexts, colours are specified through a colour map rather than
 directly specified---see the `matthewplotlib.colormaps` module for details.
 
-### type matthewplotlib.colors.ColorLike
+### type ColorLike
 
-**type ColorLike = str | np.ndarray | tuple[int, int, int] | tuple[float, float, float]**
+**type ColorLike = str | np.ndarray | tuple[int, int, int] | tuple[float, float, float]** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L38))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L38)]
+### class Color
 
-### class matthewplotlib.colors.Color
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L46)]
+**Color():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L46))
 
 An RGB color triple.
 
-### method matthewplotlib.colors.Color.\_\_iter\_\_
+### method Color.\_\_iter\_\_
 
-**\_\_iter\_\_() -> Iterator[int]**
+**\_\_iter\_\_() -> Iterator[int]:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L55))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L55)]
+### method Color.parse
 
-### method matthewplotlib.colors.Color.parse
-
-**parse(color: ColorLike | None) -> Color | None**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L60)]
+**parse(color: ColorLike | None) -> Color | None:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py#L60))
 
 Accept and standardise RGB triples in various formats. See module-level
 documentation for a description of the possible formats.
 
+---
+
 ## module matthewplotlib.colormaps
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py)]
+**matthewplotlib/colormaps.py** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py))
 
 A collection of pre-defined colormaps. They generally come in two flavours:
 
@@ -1329,141 +1261,133 @@ For example:
 
 ![](images/colormaps.png)
 
-### type matthewplotlib.colormaps.ContinuousColorMap
+### type ContinuousColorMap
 
-**type ContinuousColorMap = Callable[[ArrayLike], np.ndarray]**
+**type ContinuousColorMap = Callable[[ArrayLike], np.ndarray]** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L25))
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L25)]
+### type DiscreteColorMap
 
-### type matthewplotlib.colormaps.DiscreteColorMap
+**type DiscreteColorMap = Callable[[ArrayLike], np.ndarray]** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L31))
 
-**type DiscreteColorMap = Callable[[ArrayLike], np.ndarray]**
+### type ColorMap
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L31)]
+**type ColorMap = ContinuousColorMap | DiscreteColorMap** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L37))
 
-### type matthewplotlib.colormaps.ColorMap
+### function reds
 
-**type ColorMap = ContinuousColorMap | DiscreteColorMap**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L37)]
-
-### function matthewplotlib.colormaps.reds
-
-**reds(x: ArrayLike) -> np.ndarray**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L44)]
+**reds(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L44))
 
 Red colormap. Simply embeds greyscale value into red channel.
 
-### function matthewplotlib.colormaps.greens
+---
 
-**greens(x: ArrayLike) -> np.ndarray**
+### function greens
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L56)]
+**greens(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L56))
 
 Green colormap. Simply embeds greyscale value into green channel.
 
-### function matthewplotlib.colormaps.blues
+---
 
-**blues(x: ArrayLike) -> np.ndarray**
+### function blues
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L68)]
+**blues(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L68))
 
 Blue colormap. Simply embeds greyscale value into blue channel.
 
-### function matthewplotlib.colormaps.yellows
+---
 
-**yellows(x: ArrayLike) -> np.ndarray**
+### function yellows
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L80)]
+**yellows(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L80))
 
 Yellow colormap. Simply embeds greyscale value into red and green channels.
 
-### function matthewplotlib.colormaps.magentas
+---
 
-**magentas(x: ArrayLike) -> np.ndarray**
+### function magentas
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L93)]
+**magentas(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L93))
 
 Magenta colormap. Simply embeds greyscale value into red and blue
 channels.
 
-### function matthewplotlib.colormaps.cyans
+---
 
-**cyans(x: ArrayLike) -> np.ndarray**
+### function cyans
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L107)]
+**cyans(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L107))
 
 Cyan colormap. Simply embeds greyscale value into green and blue
 channels.
 
-### function matthewplotlib.colormaps.cyber
+---
 
-**cyber(x: ArrayLike) -> np.ndarray**
+### function cyber
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L125)]
+**cyber(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L125))
 
 Cyberpunk colormap. Uses greyscale value to interpolate between meganta
 (0.) and cyan (1.).
 
-### function matthewplotlib.colormaps.rainbow
+---
 
-**rainbow(x: ArrayLike) -> np.ndarray**
+### function rainbow
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L140)]
+**rainbow(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L140))
 
 Rainbow colormap. Effectively embeds greyscale values as hue in HSV color
 space.
 
-### function matthewplotlib.colormaps.magma
+---
 
-**magma(x: ArrayLike) -> np.ndarray**
+### function magma
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L188)]
+**magma(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L188))
 
 Magma colormap by Nathaniel J. Smith and Stefan van der Walt (see
 https://bids.github.io/colormap/).
 
 Discretised to 256 8-bit colours.
 
-### function matthewplotlib.colormaps.inferno
+---
 
-**inferno(x: ArrayLike) -> np.ndarray**
+### function inferno
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L266)]
+**inferno(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L266))
 
 Inferno colormap by Nathaniel J. Smith and Stefan van der Walt (see
 https://bids.github.io/colormap/).
 
 Discretised to 256 8-bit colours.
 
-### function matthewplotlib.colormaps.plasma
+---
 
-**plasma(x: ArrayLike) -> np.ndarray**
+### function plasma
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L344)]
+**plasma(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L344))
 
 Plasma colormap by Nathaniel J. Smith and Stefan van der Walt (see
 https://bids.github.io/colormap/).
 
 Discretised to 256 8-bit colours.
 
-### function matthewplotlib.colormaps.viridis
+---
 
-**viridis(x: ArrayLike) -> np.ndarray**
+### function viridis
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L422)]
+**viridis(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L422))
 
 Viridis colormap by Nathaniel J. Smith, Stefan van der Walt, and Eric
 Firing (see https://bids.github.io/colormap/).
 
 Discretised to 256 8-bit colours.
 
-### function matthewplotlib.colormaps.sweetie16
+---
 
-**sweetie16(x: ArrayLike) -> np.ndarray**
+### function sweetie16
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L504)]
+**sweetie16(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L504))
 
 Sweetie-16 colour palette by GrafxKid (see
 https://lospec.com/palette-list/sweetie-16).
@@ -1471,42 +1395,44 @@ https://lospec.com/palette-list/sweetie-16).
 Input should be an array of indices in the range [0,15] (or else it will
 cycle).
 
-### function matthewplotlib.colormaps.pico8
+---
 
-**pico8(x: ArrayLike) -> np.ndarray**
+### function pico8
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L523)]
+**pico8(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L523))
 
 PICO-8 colour palette (see https://pico-8.fandom.com/wiki/Palette).
 
 Input should be an array of indices in the range [0,15] (or else it will
 cycle).
 
-### function matthewplotlib.colormaps.tableau
+---
 
-**tableau(x: ArrayLike) -> np.ndarray**
+### function tableau
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L541)]
+**tableau(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L541))
 
 Matplotlib Tableau colourmap.
 
 Input should be an array of indices in the range [0,9] (or else it will
 cycle).
 
-### function matthewplotlib.colormaps.nouveau
+---
 
-**nouveau(x: ArrayLike) -> np.ndarray**
+### function nouveau
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L558)]
+**nouveau(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L558))
 
 Updated Tableau colourmap (more accessible).
 
 Input should be an array of indices in the range [0,9] (or else it will
 cycle).
 
+---
+
 ## module matthewplotlib.core
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py)]
+**matthewplotlib/core.py** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py))
 
 A collection of classes and types used internally.
 
@@ -1516,56 +1442,48 @@ Constants:
 
     A colourless space character used for padding.
 
-### class matthewplotlib.core.Char
+### class Char
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L27)]
+**Char():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L27))
 
 A single possibly-coloured character. Plots are assembled from characters
 like these.
 
-### method matthewplotlib.core.Char.isblank
+### method Char.isblank
 
-**isblank(self: Self) -> bool**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L37)]
+**isblank(self: Self) -> bool:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L37))
 
 True if the character has no visible content.
 
-### method matthewplotlib.core.Char.bg\_
+### method Char.bg\_
 
-**bg\_(self: Self) -> Color | None**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L45)]
+**bg\_(self: Self) -> Color | None:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L45))
 
 The 'effective' background color of this Char.
 
 Usually, this is just the background color, except in the special case
 where c happens to be '█', in which case return the foreground color.
 
-### method matthewplotlib.core.Char.to\_ansi\_str
+### method Char.to\_ansi\_str
 
-**to\_ansi\_str(self: Self) -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L58)]
+**to\_ansi\_str(self: Self) -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L58))
 
 If necessary, wrap a Char in ANSI control codes that switch the color into
 the given fg and bg colors; plus a control code to switch back to default
 mode.
 
-### method matthewplotlib.core.Char.to\_rgba\_array
+### method Char.to\_rgba\_array
 
-**to\_rgba\_array(self: Self) -> np.ndarray**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L75)]
+**to\_rgba\_array(self: Self) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L75))
 
 Convert a Char to a small RGBA image patch, with the specified foreground
 color (or white) and background color (or a transparent background).
 
-### function matthewplotlib.core.braille\_encode
+---
 
-**braille\_encode(a: ArrayLike) -> np.ndarray**
+### function braille\_encode
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L117)]
+**braille\_encode(a: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L117))
 
 Turns a HxW array of booleans into a (H//4)x(W//2) array of braille
 binary codes.
@@ -1612,11 +1530,11 @@ Start with an array with height divisible by 4, width divisible by 2:
     '''
 ```
 
-### function matthewplotlib.core.unicode\_bar
+---
 
-**unicode\_bar(proportion: float, total\_width: int) -> list[str]**
+### function unicode\_bar
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L190)]
+**unicode\_bar(proportion: float, total\_width: int) -> list[str]:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L190))
 
 Generates a Unicode progress bar as a list of characters.
 
@@ -1648,11 +1566,11 @@ Examples:
 
 ```
 
-### function matthewplotlib.core.unicode\_col
+---
 
-**unicode\_col(proportion: float, total\_height: int) -> list[str]**
+### function unicode\_col
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L245)]
+**unicode\_col(proportion: float, total\_height: int) -> list[str]:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L245))
 
 Generates a Unicode progress column as a list of characters.
 
@@ -1684,11 +1602,11 @@ Examples:
 
 ```
 
-### class matthewplotlib.core.BoxStyle
+---
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L302)]
+### class BoxStyle
 
-[Inherits from str, enum.Enum]
+**BoxStyle(str, enum.Enum):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L302))
 
 A string enum defining preset styles for the `border` plot.
 
@@ -1732,75 +1650,59 @@ TODO:
 * It might make sense to consider borders with two characters on the left
   and right sides of the contents. Would open up new design possibilities.
 
-### method matthewplotlib.core.BoxStyle.nw
+### method BoxStyle.nw
 
-**nw() -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L364)]
+**nw() -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L364))
 
 Northwest corner symbol.
 
-### method matthewplotlib.core.BoxStyle.n
+### method BoxStyle.n
 
-**n() -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L370)]
+**n() -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L370))
 
 North edge symbol.
 
-### method matthewplotlib.core.BoxStyle.ne
+### method BoxStyle.ne
 
-**ne() -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L376)]
+**ne() -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L376))
 
 Norteast corner symbol.
 
-### method matthewplotlib.core.BoxStyle.e
+### method BoxStyle.e
 
-**e() -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L382)]
+**e() -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L382))
 
 East edge symbol.
 
-### method matthewplotlib.core.BoxStyle.w
+### method BoxStyle.w
 
-**w() -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L388)]
+**w() -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L388))
 
 West edge symbol.
 
-### method matthewplotlib.core.BoxStyle.sw
+### method BoxStyle.sw
 
-**sw() -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L394)]
+**sw() -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L394))
 
 Southwest corner symbol.
 
-### method matthewplotlib.core.BoxStyle.s
+### method BoxStyle.s
 
-**s() -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L400)]
+**s() -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L400))
 
 South edge symbol.
 
-### method matthewplotlib.core.BoxStyle.se
+### method BoxStyle.se
 
-**se() -> str**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L406)]
+**se() -> str:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L406))
 
 Southeast corner symbol.
 
-### function matthewplotlib.core.project3
+---
 
-**project3(xyz: np.ndarray, camera\_position: np.ndarray, camera\_target: np.ndarray, scene\_up: np.ndarray, fov\_degrees: float) -> tuple[np.ndarray, np.ndarray]**
+### function project3
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L415)]
+**project3(xyz: np.ndarray, camera\_position: np.ndarray, camera\_target: np.ndarray, scene\_up: np.ndarray, fov\_degrees: float) -> tuple[np.ndarray, np.ndarray]:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/core.py#L415))
 
 Project a 3d point cloud into two dimensions based on a given camera
 configuration.
@@ -1850,19 +1752,19 @@ Internal notes:
   this left-handedness because the final projection logic takes it into
   account, but I think it is non-standard. Watch out.
 
+---
+
 ## module matthewplotlib.unscii16
 
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/unscii16.py)]
+**matthewplotlib/unscii16.py** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/unscii16.py))
 
 Unscii 2.0, bitmap unicode font created by Viznut (http://viznut.fi/unscii/).
 
 This module is a port of all non-wide characters from unscii-16 (16px by 8px).
 
-### function matthewplotlib.unscii16.bitmap
+### function bitmap
 
-**bitmap(char: str) -> np.ndarray**
-
-[[source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/unscii16.py#L11)]
+**bitmap(char: str) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/unscii16.py#L11))
 
 Look up the bitmap for a single character.
 
@@ -1873,4 +1775,6 @@ Returns:
 
 * bits: bool[16, 8].
     A boolean array representing the character's bitmap.
+
+---
 
