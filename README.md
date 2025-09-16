@@ -127,18 +127,21 @@ Roadmap to version 1
 Basic plot types:
 
 * [x] Scatter plots.
+  * [ ] Different colours for each point.
+  * [ ] Multiple point clouds on a single scatter plot.
+* [x] Function scatter plots.
+* [ ] Line plots (connect the dots).
 * [x] Image plots / matrix heatmaps.
 * [x] Function heatmap plots.
 * [x] Progress bars.
 * [x] Basic bar charts and column charts.
 * [x] Histograms.
-* [ ] Line plots.
 
 Basic plot furnishings:
 
 * [x] Basic text boxes.
 * [x] Borders.
-* [ ] Axis ticks and tick labels for scatter plots (API needs some thought).
+* [ ] Axis ticks and tick labels for scatter plots.
 * [ ] Labels and ticks for bar/column charts and histograms.
 
 Basic plot arrangement:
@@ -187,22 +190,25 @@ Advanced features roadmap
 
 More plot types:
 
-* [ ] Scatter plots with different colours for each point.
-* [ ] Less dense (non-braille) scatter plots with different markers?
-* [ ] Multiple point clouds or lines on a single scatter/line plot.
-* [x] 3d scatter plots.
-* [x] Basic Hilbert curves.
-* [ ] Non-square Hilbert curves.
-* [ ] 3d Hilbert curves.
-* [ ] Calendar heatmap plots (see calendar heatmap example for now).
-* [ ] World maps, 2d projection.
-* [ ] World maps, 3d globe.
-* [ ] Candlestick plots.
-* [ ] Error bars on line plots.
-* [ ] Fill plots.
-* [ ] Box plots.
-* [ ] Bar/column charts with configurable sizes, spacing, alignment.
-* [ ] Negative values in bar/column charts.
+* Advanced scatter plots:
+  * [x] 3d scatter plots.
+* Advanced line plots:
+  * [ ] Error bars on line plots.
+  * [ ] Fill plots.
+* Advanced bar charts:
+  * [ ] Bar/column charts with configurable sizes, spacing, alignment.
+  * [ ] Negative values in bar/column charts.
+* Hilbert curves:
+  * [x] Basic Hilbert curves.
+  * [ ] Non-square Hilbert curves.
+  * [ ] 3d Hilbert curves.
+* World maps:
+  * [ ] Some 2d projections.
+  * [ ] 3d globe projection.
+* Other:
+  * [ ] Calendar heatmap plots (see calendar heatmap example for now).
+  * [ ] Candlestick plots.
+  * [ ] Box plots.
 
 Advanced plot arrangement:
 

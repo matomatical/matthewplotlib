@@ -15,13 +15,11 @@ def bitmap(
     Look up the bitmap for a single character.
 
     Inputs:
-    
-    * char: str (len 1)
+    * char: str (len 1).
         A single-character string.
-
     Returns:
 
-    * bits: bool[16, 8]
+    * bits: bool[16, 8].
         A boolean array representing the character's bitmap.
     """
     if len(char) != 1:

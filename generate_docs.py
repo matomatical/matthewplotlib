@@ -133,7 +133,7 @@ class MarkdownVisitor(ast.NodeVisitor):
         ])
         return_str = f" -> {ast.unparse(node.returns)}" if node.returns else ""
         signature = f"{name}({s(args_str)}){s(return_str)}"
-        self.markdown.append(f"#### {signature}\n")
+        self.markdown.append(f"**{signature}**\n")
         
         # source link
         self.markdown.append(f"[[source]({self.code_url}#L{node.lineno})]\n")
@@ -156,7 +156,7 @@ class MarkdownVisitor(ast.NodeVisitor):
         name = s(node.name.id)
         self.markdown.append(f"### type {context}.{name}\n")
 
-        self.markdown.append(f"#### {s(ast.unparse(node))}\n")
+        self.markdown.append(f"**{s(ast.unparse(node))}**\n")
 
         # source link
         self.markdown.append(f"[[source]({self.code_url}#L{node.lineno})]\n")

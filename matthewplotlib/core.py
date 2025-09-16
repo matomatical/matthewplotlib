@@ -123,14 +123,12 @@ def braille_encode(
 
     Inputs:
 
-    * a: bool[4h, 2w]
-        
+    * a: bool[4h, 2w].
         Array of booleans, height divisible by 4 and width divisible by 2.
 
     Returns:
 
-    * bits: uint16[h, w]
-
+    * bits: uint16[h, w].
         An array of braille unicode code points. The unicode characters will
         have a dot in the corresponding places where `a` is True.
 
@@ -202,19 +200,15 @@ def unicode_bar(
 
     Inputs:
 
-    * proportion: float
-    
+    * proportion: float.
         The fraction of the bar to fill. Should be between 0.0 and 1.0
         inclusive.
-    
-    * total_width: int
-        
+    * total_width: int.
         The width of the full bar in characters. Should be positive.
 
     Returns:
 
-    * bar: list[str]
-
+    * bar: list[str].
         A list of unicode characters representing the bar. The length of the
         list is always equal to `total_width`.
 
@@ -262,13 +256,10 @@ def unicode_col(
 
     Inputs:
 
-    * proportion: float
-    
+    * proportion: float.
         The fraction of the column to fill. Should be between 0.0 and 1.0
         inclusive.
-    
-    * total_height: int
-        
+    * total_height: int.
         The height of the full bar in characters. Should be positive.
 
     Returns:

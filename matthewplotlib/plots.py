@@ -71,25 +71,20 @@ class plot:
 
     Properties:
 
-    * height : int
+    * height : int.
         The height of the plot in character lines.
-    * width : int
+    * width : int.
         The width of the plot in character columns.
 
     Methods:
 
-    * renderstr() -> str
-
+    * renderstr() -> str.
         Returns a string representation of the plot with ANSI color codes,
         ready to be printed to a compatible terminal.
-    
-    * clearstr() -> str
-    
+    * clearstr() -> str.
         Returns control characters that will clear the plot from the
         terminal after it has been printed.
-    
-    * saveimg(filename: str)
-        
+    * saveimg(filename: str).
         Renders the plot to an image file (e.g., "plot.png") using a
         pixel font.
 
@@ -97,15 +92,10 @@ class plot:
     
     * `str(plot)`: Shortcut for `plot.renderstr()`. This means you can render
        the plot just by calling `print(plot)`.
-    
     * `-plot`: Shortcut for `plot.clearstr()`. Useful for animations.
-    
     * `plot1 + plot2`: Horizontally stacks plots (see `hstack`).
-    
     * `plot1 / plot2`: Vertically stacks plots (see `vstack`).
-    
     * `plot1 | plot2`: Vertically stacks plots (see `vstack`).
-    
     * `plot1 @ plot2`: Overlays plots (see `dstack`).
     """
     def __init__(self, array: list[list[Char]]):
@@ -295,37 +285,24 @@ class scatter(plot):
 
     Inputs:
 
-    * data : number[n, 2]
-        
+    * data : number[n, 2].
         An array of n 2D points to plot. Each row is an (x, y) coordinate.
-    
-    * width : int (default: 30)
-        
+    * width : int (default: 30).
         The width of the plot in characters. The effective pixel width will be
         2 * width.
-    
-    * height : int (default: 10)
-        
+    * height : int (default: 10).
         The height of the plot in rows. The effective pixel height will be 4 *
         height.
-    
-    * xrange : optional (number, number)
-        
+    * xrange : optional (number, number).
         The x-axis limits `(xmin, xmax)`. If not provided, the limits are
         inferred from the min and max x-values in the data.
-    
-    * yrange : optional (number, number)
-        
+    * yrange : optional (number, number).
         The y-axis limits `(ymin, ymax)`. If not provided, the limits are
         inferred from the min and max y-values in the data.
-    
-    * color : optional ColorLike
-        
+    * color : optional ColorLike.
         The color of the plotted points (see `Color.parse`). Defaults to the
         terminal's default foreground color.
-    
-    * check_bounds : bool (default: False)
-        
+    * check_bounds : bool (default: False).
         If True, raises a `ValueError` if any data points fall outside the
         specified `xrange` or `yrange`.
     """
@@ -562,8 +539,7 @@ class image(plot):
 
     Inputs:
 
-    * im : float[h,w,3] | int[h,w,3] | float[h,w] | int[h,w] | ArrayLike
-    
+    * im : float[h,w,3] | int[h,w,3] | float[h,w] | int[h,w] | ArrayLike.
         The image data. It can be in any of the following formats:
         * `float[h,w,3]`: A 2D array of RGB triples of floats in range [0,1].
         * `int[h,w,3]`: A 2D array of RGB triples of ints in range [0,255].
@@ -577,8 +553,7 @@ class image(plot):
           should be in range as indices for the colormap, they will be mapped
           to RGB triples as such.
           
-    * colormap : optional ColorMap
-        
+    * colormap : optional ColorMap.
         Function mapping (batches of) scalars to (batches of) RGB triples.
         Examples are provided by this library, such as:
         * continuous colormaps like `viridis : float[...] -> uint8[...,3]`, and
@@ -636,44 +611,29 @@ class function2(image):
 
     Inputs:
 
-    * F : float[batch, 2] -> number[batch]
-        
+    * F : float[batch, 2] -> number[batch].
         The (vectorised) function to plot. The input should be a batch of
         (x, y) vectors. The output should be a batch of scalars f(x, y).
-    
-    * xrange : (float, float)
-        
+    * xrange : (float, float).
         Lower and upper bounds on the x values to pass into the function.
-    
-    * yrange : (float, float)
-        
+    * yrange : (float, float).
         Lower and upper bounds on the y values to pass into the function.
-    
-    * width : int
-        
+    * width : int.
         The number of character columns in the plot. This will also become the
         number of grid squares along the x axis.
-    
-    * height : int
-        
+    * height : int.
         The number of character rows in the plot. This will also be half of the
         number of grid squares, since the result is an image plot with two
         half-character-pixels per row.
-    
-    * zrange : optional (float, float)
-        
+    * zrange : optional (float, float).
         Expected lower and upper bounds on the f(x, y) values. Used for
         determining the bounds of the colour scale. By default, the minimum and
         maximum output over the grid are used.
-    
-    * colormap : optional colormap (e.g. mp.viridis)
-        
+    * colormap : optional colormap (e.g. mp.viridis).
         By default, the output will be in greyscale, with black corresponding
         to zrange[0] and white corresponding to zrange[1]. You can choose a
         different colormap (e.g. mp.reds, mp.viridis, etc.) here.
-    
-    * endpoints : bool (default: False)
-        
+    * endpoints : bool (default: False).
         If true, endpoints are included from the linspaced inputs, and so the
         grid elements in each corner will represent the different combinations
         of xrange/yrange.
@@ -737,53 +697,34 @@ class histogram2(image):
 
     Inputs:
 
-    * x : number[n]
-        
+    * x : number[n].
         X coordinates of 2d points to bin and count.
-    
-    * y : number[n]
-        
+    * y : number[n].
         Y coordinates of 2d points to bin and count.
-
-    * width : int (default 24)
-
+    * width : int (default 24).
         Specifies the width of the plot in characters. This is also the number
         of bins in the x direction.
-
-    * height : int (default 12)
-        
+    * height : int (default 12).
         Specifies the height of the plot in characters. This is also half the
         number of bins in the y direction.
-    
-    * xrange : optional (number, number)
-        
+    * xrange : optional (number, number).
         The x-axis limits `(xmin, xmax)`. If not provided, the limits are
         inferred from the min and max x-values in the data.
-    
-    * yrange : optional (number, number)
-        
+    * yrange : optional (number, number).
         The y-axis limits `(ymin, ymax)`. If not provided, the limits are
         inferred from the min and max y-values in the data.
-    
-    * weights : optional number[n]
-
+    * weights : optional number[n].
         If provided, each 2d point in data contributes this amount to the count
         for its bin (rather than the default 1). See np.histogram2d's weights
         argument for details.
-    
-    * density : bool (default False)
-
+    * density : bool (default False).
         If true, normalise bin counts so that they sum to 1,0. See
         np.histogram2d's density argument for details.
-    
-    * max_count : optional number
-
+    * max_count : optional number.
         If provided, cell colours are scaled so that only bars matching or
         exceeding this count max out the colour. Otherwise, the colours are
         scaled so that the bin with the highest count has the colour maxed out.
-
-    * colormap : optional colormap (e.g. mp.viridis)
-        
+    * colormap : optional colormap (e.g. mp.viridis).
         By default, the output will be in greyscale, with black corresponding
         to zero density and white corresponding to max_count. You can choose a
         different colormap (e.g. mp.reds, mp.viridis, etc.) here.
@@ -863,18 +804,13 @@ class progress(plot):
 
     Inputs:
 
-    * progress : float
-        
+    * progress : float.
         The progress to display, as a float between 0.0 and 1.0. Values outside
         this range will be clipped.
-    
-    * width : int (default: 40)
-        
+    * width : int (default: 40).
         The total width of the progress bar plot in character columns,
         including the label and brackets.
-    
-    * color : optional ColorLike
-        
+    * color : optional ColorLike.
         The color of the filled portion of the progress bar. Defaults to the
         terminal's default foreground color.
     """
@@ -923,16 +859,11 @@ class bars(plot):
 
     Inputs:
 
-    * values : float[n]
-        
+    * values : float[n].
         An array of non-negative values to display.
-
-    * width : int (default: 30)
-        
+    * width : int (default: 30).
         The total width of full bars.
-    
-    * vrange : None | float | (float, float)
-        
+    * vrange : None | float | (float, float).
         Determine the scaling of the bars.
         * If omitted, the bars are scaled such that the bar(s) with the largest
           value occupy the whole width.
@@ -941,9 +872,7 @@ class bars(plot):
         * If a pair of numbers, the bars are scaled so that bars with the first
           value (or less) would have zero width and bars with the second value
           (or greater) would occupy the whole width.
-    
-    * color : optional ColorLike
-        
+    * color : optional ColorLike.
         The color of the filled portion of the bars. Defaults to the terminal's
         default foreground color.
 
@@ -1007,44 +936,29 @@ class histogram(bars):
 
     Inputs:
 
-    * data : number[n]
-        
+    * data : number[n].
         An array of values to count.
-
-    * xrange : optional (number, number)
-
+    * xrange : optional (number, number).
         If provided, bins range over this interval, and values outside the
         range are discarded. Same as np.histogram's range argument.
-    
-    * bins : optional int, sequence, or str
-
+    * bins : optional int, sequence, or str.
         If provided, used to determine number of bins, bin boundaries, or bin
         boundary determination method. See np.histogram's bins argument for
         details.
-    
-    * weights : optional number[n]
-
+    * weights : optional number[n].
         If provided, each element in data contributes this amount to the count
         for its bin (rather than the default 1). See np.histogram's weights
         argument for details.
-    
-    * density : bool (default False)
-
+    * density : bool (default False).
         If true, normalise bin counts so that they sum to 1,0. See
         np.histogram's density argument for details.
-    
-    * max_count : optional number
-
+    * max_count : optional number.
         If provided, the bars are scaled so that only bars matching or
         exceeding this count are full. Otherwise, the bars are scaled so that
         the bin with the highest count has a full bar.
-
-    * width : int (default: 22)
-        
+    * width : int (default: 22).
         The total width of full bars.
-
-    * color : optional ColorLike
-        
+    * color : optional ColorLike.
         The color of the filled portion of the bars. Defaults to the terminal's
         default foreground color.
     """
@@ -1100,16 +1014,11 @@ class columns(plot):
 
     Inputs:
 
-    * values : number[n]
-        
+    * values : number[n].
         An array of non-negative values to display.
-
-    * height : int (default: 10)
-        
+    * height : int (default: 10).
         The total width of full columns.
-    
-    * vrange : None | number | (number, number)
-        
+    * vrange : None | number | (number, number).
         Determine the scaling of the columns.
         * If omitted, the columns are scaled such that the columns(s) with the
           largest value occupy the whole width.
@@ -1118,9 +1027,7 @@ class columns(plot):
         * If a pair of numbers, the columns are scaled so that columns with the
           first value (or less) would have zero width and columns with the
           second value (or greater) would occupy the whole width.
-    
-    * color : optional ColorLike
-        
+    * color : optional ColorLike.
         The color of the filled portion of the columns. Defaults to the
         terminal's default foreground color.
 
@@ -1187,44 +1094,29 @@ class vistogram(columns):
 
     Inputs:
 
-    * data : number[n]
-        
+    * data : number[n].
         An array of values to count.
-
-    * xrange : optional (number, number)
-
+    * xrange : optional (number, number).
         If provided, bins range over this interval, and values outside the
         range are discarded. Same as np.histogram's range argument.
-    
-    * bins : optional int, sequence, or str
-
+    * bins : optional int, sequence, or str.
         If provided, used to determine number of bins, bin boundaries, or bin
         boundary determination method. See np.histogram's bins argument for
         details.
-    
-    * weights : optional number[n]
-
+    * weights : optional number[n].
         If provided, each element in data contributes this amount to the count
         for its bin (rather than the default 1). See np.histogram's weights
         argument for details.
-    
-    * density : bool (default False)
-
+    * density : bool (default False).
         If true, normalise bin counts so that they sum to 1,0. See
         np.histogram's density argument for details.
-    
-    * max_count : optional number
-
+    * max_count : optional number.
         If provided, the bars are scaled so that only bars matching or
         exceeding this count are full. Otherwise, the bars are scaled so that
         the bin with the highest count has a full bar.
-
-    * height : int (default: 22)
-        
+    * height : int (default: 22).
         The total height of full bars.
-
-    * color : optional ColorLike
-        
+    * color : optional ColorLike.
         The color of the filled portion of the bars. Defaults to the terminal's
         default foreground color.
     """
@@ -1280,26 +1172,19 @@ class hilbert(plot):
 
     Inputs:
 
-    * data : bool[N]
-        
+    * data : bool[N].
         A 1D array of booleans. The length `N` determines the order of the
         Hilbert curve required to fit all points. True values are rendered as
         dots, and False values are rendered as blank spaces.
-    
-    * dotcolor : optional ColorLike
-        
+    * dotcolor : optional ColorLike.
         The foreground color used for dots (points along the curve where `data`
         is `True`). Defaults to the terminal's default foreground color.
-    
-    * bgcolor : optional ColorLike
-        
+    * bgcolor : optional ColorLike.
         The background color for the entire path of the Hilbert curve (points
         along the curve where `data` is `False`, plus possibly some extra
         points if the curve does not exactly fit the last character cell).
         Defaults to a transparent background.
-    
-    * nullcolor : optional ColorLike
-        
+    * nullcolor : optional ColorLike.
         The background color for the grid area not occupied by the curve. This
         is relevant for non-square-power-of-2 data lengths. Defaults to a
         transparent background.
@@ -1376,25 +1261,19 @@ class text(plot):
 
     Inputs:
 
-    * text : str
-        
+    * text : str.
         The text to be displayed. Newline characters will create separate lines
         in the plot.
-    
-    * color : optional ColorLike
-        
+    * color : optional ColorLike.
         The foreground color of the text. Defaults to the terminal's default
         foreground color.
-    
-    * bgcolor : optional ColorLike
-        
+    * bgcolor : optional ColorLike.
         The background color for the text. Defaults to a transparent
         background.
     
     TODO:
 
     * Allow alignment and resizing.
-    
     * Account for non-printable and wide characters.
     """
     def __init__(
@@ -1433,16 +1312,11 @@ class border(plot):
 
     Inputs:
 
-    * plot : plot
-        
+    * plot : plot.
         The plot object to be enclosed by the border.
-    
-    * style : BoxStyle (default: BoxStyle.ROUND)
-        
+    * style : BoxStyle (default: BoxStyle.ROUND).
         The style of the border. Predefined styles are available in `BoxStyle`.
-    
-    * color : optional ColorLike
-        
+    * color : optional ColorLike.
         The color of the border characters. Defaults to the terminal's
         default foreground color.
     """
@@ -1498,12 +1372,9 @@ class blank(plot):
 
     Inputs:
 
-    * height : optional int
-
+    * height : optional int.
       The height of the blank area in character rows. Default 1.
-    
-    * width : optional int
-
+    * width : optional int.
       The width of the blank area in character columns. Default 1.
 
     """
@@ -1528,8 +1399,7 @@ class hstack(plot):
 
     Inputs:
 
-    * *plots : plot
-        
+    * *plots : plot.
         A sequence of plot objects to be horizontally stacked.
     """
     def __init__(
@@ -1564,8 +1434,7 @@ class vstack(plot):
 
     Inputs:
 
-    * *plots : plot
-        
+    * *plots : plot.
         A sequence of plot objects to be vertically stacked.
     """
     def __init__(
@@ -1600,8 +1469,7 @@ class dstack(plot):
 
     Inputs:
 
-    * *plots : plot
-        
+    * *plots : plot.
         A sequence of plot objects to be overlaid.
     """
     def __init__(
@@ -1645,12 +1513,9 @@ class wrap(plot):
 
     Inputs:
 
-    * *plots : plot
-        
+    * *plots : plot.
         A sequence of plot objects to be arranged in a grid.
-    
-    * cols : optional int
-        
+    * cols : optional int.
         The number of columns in the grid. If not provided, it is automatically
         determined based on the terminal width and the width of the largest
         plot.
@@ -1707,17 +1572,12 @@ class center(plot):
 
     Inputs:
 
-    * plot : plot
-    
+    * plot : plot.
         The plot object to be centered.
-    
-    * height : optional int
-        
+    * height : optional int.
         The target height of the new padded plot. If not provided, it defaults
         to the original plot's height (no vertical padding).
-    
-    * width : optional int
-        
+    * width : optional int.
         The target width of the new padded plot. If not provided, it defaults
         to the original plot's width (no horizontal padding).
     """
