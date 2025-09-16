@@ -329,6 +329,9 @@ class BoxStyle(str, enum.Enum):
     * `BLOCK2`: A uniform blocky border.
     * `TIGER1`: A stripy block border.
     * `TIGER2`: An alternative stripy block border.
+    * `LIGHTX`: A light border with axis ticks.
+    * `LIGHTX`: A heavy border with axis ticks.
+    * `LOWERX`: A partial border with axis ticks.
 
     Demo:
 
@@ -339,6 +342,9 @@ class BoxStyle(str, enum.Enum):
              ▛──────▜ ▛▀▀▀▀▀▀▜ █▀▀▀▀▀▀█ ▞▝▝▝▝▝▝▝ ▘▘▘▘▘▘▘▚
      BLANK   │BUMPER│ ▌BLOCK1▐ █BLOCK2█ ▖TIGER1▝ ▘TIGER2▗
              ▙──────▟ ▙▄▄▄▄▄▄▟ █▄▄▄▄▄▄█ ▖▖▖▖▖▖▖▞ ▚▗▗▗▗▗▗▗
+    ┬──────┐ ┲━━━━━━┓ ╔══════╗ ╷        
+    │LIGHTX│ ┃HEAVYX┃ ║DOUBLX║ │LOWERX  
+    ┼──────┤ ╄━━━━━━┩ ╚══════╝ ┼──────╴ 
     ```
 
     TODO:
@@ -358,6 +364,9 @@ class BoxStyle(str, enum.Enum):
     BLOCK2 = "█▀████▄█"
     TIGER1 = "▞▝▝▝▖▖▖▞"
     TIGER2 = "▘▘▚▘▘▚▗▗"
+    LIGHTX = "┬─┐││┼─┤"
+    HEAVYX = "┲━┓┃┃╄━┩"
+    LOWERX = "╷   │┼─╴"
 
 
     @property
@@ -406,4 +415,98 @@ class BoxStyle(str, enum.Enum):
     def se(self) -> str:
         """Southeast corner symbol."""
         return self[7]
-        
+
+
+# # # 
+# 3D projection
+
+
+def project3(
+    xyz: np.ndarray,                                        # float[n, 3]
+    camera_position: np.ndarray = np.array([0., 0., 2.]),   # float[3]
+    camera_target: np.ndarray = np.zeros(3),                # float[3]
+    scene_up: np.ndarray = np.array([0.,1.,0.]),            # float[3]
+    fov_degrees: float = 90.0,
+) -> tuple[
+    np.ndarray,                                             # float[n, 2]
+    np.ndarray,                                             # bool[n]
+]:
+    """
+    Project a 3d point cloud into two dimensions based on a given camera
+    configuration.
+
+    Inputs:
+
+    * xyz: float[n, 3].
+        The points to project, with columns corresponding to X, Y, and Z.
+    * camera_position: float[3] (default: [0. 0. 2.]).
+        The position at which the camera is placed. The default is positioned
+        along the positive Z axis.
+    * camera_target: float[3] (default: [0. 0. 0.]).
+        The position towards which the camera is facing. Should be distinct
+        from camera position. The default is that the camera is facing towards
+        the origin.
+    * scene_up: float[3] (default: [0. 1. 0.]).
+        The unit vector designating the 'up' direction for the scene. The
+        default is the positive Y direction. Should not have the same direction
+        as camera_target - camera_position.
+    * fov_degrees: float (default 90).
+        Field of view. Points within a cone (or frustum) of this angle leaving
+        the camera are projected into the unit disk (or the square [-1,1]^2).
+
+    Returns:
+
+    * xy: float[n, 2].
+        Projected points.
+    * valid: bool[n].
+        Mask indicating which of the points are in front of the camera.
+
+    Notes:
+
+    * The combined effect of the defaults is that the camera is looking down
+      the Z axis towards the origin from the positive direction, with the X
+      axis extending towards the right and the Y axis extending upwards, with
+      the field of view ensuring that points within the cube [-1,1]^3 are
+      projected into the square [-1,1]^2.
+    * The valid mask only considers whether points are in front of the camera.
+      A more comprehensive frustum clipping approach is not supported.
+    
+    Internal notes:
+
+    * This implementation uses a left-handed coordinate system for the camera
+      coordinate system, where X and Y point left and up respectively but then
+      Z points towards the object ahead of the camera instead of away from the
+      object behind the camera. I don't think there is any external effect of
+      this left-handedness because the final projection logic takes it into
+      account, but I think it is non-standard. Watch out.
+    """
+    n, _3 = xyz.shape
+
+    # compute view matrix
+    V_z = camera_target - camera_position
+    V_z /= np.linalg.norm(V_z)
+    V_x = np.cross(V_z, scene_up)
+    V_x /= np.linalg.norm(V_x)
+    V_y = np.cross(V_x, V_z)
+    V = np.array([V_x, V_y, V_z]).T
+
+    # transform points to camera coordinate system
+    xyz_ = (xyz - camera_position) @ V
+    
+    # mask for valid points
+    valid = xyz_[:, 2] > 0.
+    
+    # perspective projection
+    xy = np.zeros((n, 2))
+    np.divide(
+        xyz_[:, :2],
+        xyz_[:, 2, np.newaxis],
+        out=xy,
+        where=valid[:, np.newaxis],
+    )
+
+    # scale fov to within [-1,1]^2
+    focal_length = 1 / np.tan(np.radians(fov_degrees) / 2)
+    xy *= focal_length
+
+    return xy, valid

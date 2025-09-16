@@ -11,6 +11,7 @@ Data plots:
 
 * `scatter`
 * `function`
+* `scatter3`
 * `image`
 * `function2`
 * `histogram2`
@@ -51,6 +52,7 @@ from numbers import Number
 
 from matthewplotlib.core import Char, BLANK, BoxStyle
 from matthewplotlib.core import braille_encode, unicode_bar, unicode_col
+from matthewplotlib.core import project3
 
 type number = int | float | np.integer | np.floating
 
@@ -472,6 +474,81 @@ class function(scatter):
                 f"f={self.name}, "
                 f"input=[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]"
         ")")
+
+
+class scatter3(scatter):
+    """
+    Scatter plot representing a 3d point cloud.
+
+    * xyz: float[n, 3].
+        The points to project, with columns corresponding to X, Y, and Z.
+    * camera_position: float[3] (default: [0. 0. 2.]).
+        The position at which the camera is placed.
+    * camera_target: float[3] (default: [0. 0. 0.]).
+        The position towards which the camera is facing. Should be distinct
+        from camera position. The default is that the camera is facing towards
+        the origin.
+    * scene_up: float[3] (default: [0. 1. 0.]).
+        The unit vector designating the 'up' direction for the scene. The
+        default is the positive Y direction. Should not have the same direction
+        as camera_target - camera_position.
+    * vertical_fov_degrees: float (default 90).
+        Vertical field of view. Points within a vertical cone of this angle are
+        projected into the viewing area. The horizontal field of view is then
+        determined based on the aspect ratio.
+    * aspect_ratio: optional float.
+        Aspect ratio for the set of points, as a fraction (W:H represented as
+        W/H). If not provided, uses W=width, H=2*height, which is uniform given
+        the resolution of the plot.
+    * width : int.
+        The number of character columns in the plot.
+    * height : int.
+        The number of character rows in the plot.
+    * color : optional ColorLike.
+        If provided, sets the colors for the scattered points. By default,
+        foreground color is used.
+
+    TODO:
+
+    * Maybe allow configurable xyz ranges with clipping prior to projection?
+    * Make sure this is not a subclass of scatter for the purposes of labelling
+      axes as that would use projected coordinates.
+    """
+    def __init__(
+        self,
+        data: ArrayLike,                                        # float[n, 3]
+        camera_position: np.ndarray = np.array([0., 0., 2.]),   # float[3]
+        camera_target: np.ndarray = np.zeros(3),                # float[3]
+        scene_up: np.ndarray = np.array([0.,1.,0.]),            # float[3]
+        vertical_fov_degrees: float = 90.0,
+        aspect_ratio: float | None = None,
+        width: int = 30,
+        height: int = 15,
+        color: None | ColorLike = None,
+    ):
+        xyz = np.asarray(data)
+        xy, valid = project3(
+            xyz=xyz,
+            camera_position=camera_position,
+            camera_target=camera_target,
+            scene_up=scene_up,
+            fov_degrees=vertical_fov_degrees,
+        )
+        if aspect_ratio is None:
+            aspect_ratio = width / (2*height)
+
+        # create the scatter plot
+        super().__init__(
+            data=xy[valid],
+            width=width,
+            height=height,
+            xrange=(-aspect_ratio, aspect_ratio),
+            yrange=(-1.,1.),
+            color=color,
+        )
+        
+    def __repr__(self):
+        return ("scatter3(TODO)")
 
 
 class image(plot):

@@ -8,6 +8,7 @@ Breaking changes:
 
 New:
 
+* 3d scatterplot.
 * New discrete colourmaps `tableau`, `nouveau`.
 * Discrete colourmaps are now cyclic.
 * New border styles.

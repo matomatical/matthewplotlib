@@ -1,7 +1,7 @@
 """
-UnicodePlots.jl points out that there is a unicode block full of 'octant
-drawing characters' which are like braille but without the space around each
-dot. In the future, these might allow improving some outputs:
+UnicodePlots.jl points out since Unicode 16 there is a unicode block full of
+'octant drawing characters' which are like braille but without the space around
+each dot. In the future, these might allow improving some outputs:
 
 * Nicer-looking Hilbert curves.
 * 2-dense vertical histograms at 1/4 vertical resolution (2-dense at 1/2 is
@@ -20,6 +20,11 @@ Amazing! However, they are missing from my terminal font. Questions:
 
 Come to think of it, all the same improvements are already possible using
 Braille, so I should consider using that where necessary.
+
+Notes:
+
+* https://github.com/reynoldsme/octant
+* https://github.com/microsoft/cascadia-code/issues/711
 """
 
 OCTANT_UNICODE = [

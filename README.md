@@ -11,10 +11,9 @@ functionality it does have delightful.
 Key features:
 
 * Colourful unicode-based rendering of scatter plots, small images, heatmaps,
-  bar charts, histograms, and more.
+  bar charts, histograms, 3d plots, and more.
 
-* Rendering plots to the terminal with `print(plot)` (no GUI windows to
-  manage).
+* Rendering plots to the terminal with `print(plot)`. No GUI windows to manage!
 
 * Plots are just expressions. Compose complex plots with horizontal (`+`) and
   vertical (`/`) stacking operations, as in
@@ -111,8 +110,7 @@ See [examples/](examples/) folder. Highlights:
   a custom plot, in this case colouring the cells of a calendar (inspired by
   GitHub issues tracker).
 
-* [teapot.py](examples/teapot.py) showing how to use scatter plots to render a
-  3d point cloud, and animations.
+* [teapot.py](examples/teapot.py) showing a 3d scatter plot and animation.
 
 Ideas for future examples:
 
@@ -192,7 +190,7 @@ More plot types:
 * [ ] Scatter plots with different colours for each point.
 * [ ] Less dense (non-braille) scatter plots with different markers?
 * [ ] Multiple point clouds or lines on a single scatter/line plot.
-* [ ] 3d scatter plots (see [teapot example](examples/teapot.py) for now).
+* [x] 3d scatter plots.
 * [x] Basic Hilbert curves.
 * [ ] Non-square Hilbert curves.
 * [ ] 3d Hilbert curves.

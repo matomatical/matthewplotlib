@@ -4,8 +4,6 @@ import numpy as np
 import matthewplotlib as mp
 
 
-NUM_POINTS = 200
-
 # configure screen
 FPS = 10
 WIDTH  = 80
@@ -14,34 +12,35 @@ HEIGHT = 25
 # configure camera path
 ORBIT_RADIUS = 4.5
 ORBIT_HEIGHT = 2.5
-ORBIT_SPEED = .75 # radians per second
+ORBIT_SPEED = 0.5*np.pi # radians per second
 
 
 def main():
-    xyz = TEAPOT
     start_time = time.time()
     plot = None
     while True:
-        # sweep camera
+        # # sweep camera
         p = camera_pos(time.time() - start_time)
-        V = view_matrix(p)
-
-        # transform points to camera coordinate system
-        xyz_cam = V @ (xyz - p).T
-
-        # perspective projection
-        xy = xyz_cam[0:2, :] / xyz_cam[2, :]
         
         # plot
         if plot:
             print(-plot, end="")
-        plot = mp.scatter(
-            data=xy.T,
-            xrange=(-1,1),
-            yrange=(-5/8,5/8),
-            height=HEIGHT,
-            width=WIDTH,
-        )
+        plot = mp.dstack(*[
+            mp.scatter3(
+                data=xyz,
+                camera_position=p,
+                vertical_fov_degrees=70,
+                height=HEIGHT,
+                width=WIDTH,
+                color=c,
+            )
+            for xyz, c in [
+                ([[x,0,0] for x in np.linspace(0,1)], 'red'),
+                ([[0,y,0] for y in np.linspace(0,1)], 'green'),
+                ([[0,0,z] for z in np.linspace(0,1)], 'blue'),
+                (TEAPOT, None),
+            ]
+        ])
         print(plot)
 
         time.sleep(1/FPS)
@@ -54,19 +53,6 @@ def camera_pos(t: float) -> np.ndarray:
         ORBIT_HEIGHT,
         ORBIT_RADIUS * np.cos(angle),
     ])
-
-
-def view_matrix(
-    eye_pos: np.ndarray,
-    obj_pos: np.ndarray = np.zeros(3),
-    up: np.ndarray = np.array([0,1,0]),
-) -> np.ndarray:
-    z = obj_pos - eye_pos
-    z /= np.linalg.norm(z)
-    x = np.cross(up, z)
-    x /= np.linalg.norm(x)
-    y = np.cross(z, x)
-    return np.array([x,y,z])
 
 
 TEAPOT = np.array([
@@ -674,12 +660,11 @@ TEAPOT = np.array([
     [+3.411,+2.300,+0.000], [+3.411,+2.300,+0.034], [+3.417,+2.329,-0.026],
     [+3.417,+2.329,+0.000], [+3.417,+2.329,+0.026], [+3.418,+2.325,-0.083],
     [+3.418,+2.325,+0.083], [+3.444,+2.326,+0.000], [+3.444,+2.326,+0.030],
-])
-TEAPOT = TEAPOT - np.array([0,1,0])
+]) - np.array([0., 1. ,0.])
 
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("")
+        print()
