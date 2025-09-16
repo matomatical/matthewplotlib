@@ -8,6 +8,7 @@ Breaking changes:
 
 New:
 
+* Configurable background colour for image rendering.
 * 3d scatterplot.
 * New discrete colourmaps `tableau`, `nouveau`.
 * Discrete colourmaps are now cyclic.

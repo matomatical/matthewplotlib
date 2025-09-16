@@ -138,12 +138,14 @@ class plot:
     def renderimg(
         self,
         scale_factor: int = 1,
+        bgcolor: ColorLike | None = None,
     ) -> np.ndarray: # uint8[scale_factor * 16H, scale_factor * 8W, 4]
         """
         Convert the plot into an RGBA array for rendering with Pillow.
         """
+        bgcolor = Color.parse(bgcolor)
         tiles = np.asarray(
-            [[c.to_rgba_array() for c in l] for l in self.array],
+            [[c.to_rgba_array(bgcolor=bgcolor) for c in l] for l in self.array]
         ) # uint8[H, W, 16, 8, 4]
         stacked = einops.rearrange(
             tiles,
@@ -165,12 +167,14 @@ class plot:
         self,
         filename: str,
         scale_factor: int = 1,
+        bgcolor: ColorLike | None = None,
     ):
         """
         Render the plot as an RGBA image and save it as a PNG file at the path
         `filename`.
         """
-        image_data = self.renderimg(scale_factor=scale_factor)
+        bgcolor = Color.parse(bgcolor)
+        image_data = self.renderimg(scale_factor=scale_factor, bgcolor=bgcolor)
         image = Image.fromarray(image_data, mode='RGBA')
         image.save(filename)
 

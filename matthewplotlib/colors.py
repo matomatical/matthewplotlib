@@ -29,6 +29,7 @@ In some contexts, colours are specified through a colour map rather than
 directly specified---see the `matthewplotlib.colormaps` module for details.
 """
 from __future__ import annotations
+
 from typing import Self, Iterator
 import dataclasses
 
@@ -40,6 +41,7 @@ type ColorLike = (
     | np.ndarray # float[3] (0 to 1) or uint8[3] (0 to 255)
     | tuple[int, int, int]
     | tuple[float, float, float]
+    | Color
 )
 
 @dataclasses.dataclass(frozen=True)
@@ -64,6 +66,9 @@ class Color:
         """
         if color is None:
             return None
+
+        if isinstance(color, Color):
+            return color
 
         if isinstance(color, str):
             if color.startswith("#") and len(color) == 4:

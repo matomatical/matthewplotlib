@@ -74,18 +74,23 @@ class Char:
 
     def to_rgba_array(
         self: Self,
+        bgcolor: Color | None = None,
     ) -> np.ndarray: # uint8[16,8,4]
         """
         Convert a Char to a small RGBA image patch, with the specified foreground
         color (or white) and background color (or a transparent background).
         """
-        # decide colors
+        # decide foreground color
         if self.fg is not None:
             fg = np.array([*self.fg, 255], dtype=np.uint8)
         else:
             fg = np.array([255, 255, 255, 255], dtype=np.uint8)
+        
+        # decide background color
         if self.bg is not None:
             bg = np.array([*self.bg, 255], dtype=np.uint8)
+        elif bgcolor is not None:
+            bg = np.array([*bgcolor, 255], dtype=np.uint8)
         else:
             bg = np.array([0, 0, 0, 0], dtype=np.uint8)
 
