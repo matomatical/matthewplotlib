@@ -13,6 +13,7 @@ New:
 * New discrete colourmaps `tableau`, `nouveau`.
 * Discrete colourmaps are now cyclic.
 * New border styles.
+* Export animations as GIFs.
 
 Version 0.1.2:
 --------------

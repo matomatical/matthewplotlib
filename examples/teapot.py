@@ -19,7 +19,7 @@ def main():
     start_time = time.time()
     plot = None
     while True:
-        # # sweep camera
+        # sweep camera
         p = camera_pos(time.time() - start_time)
         
         # plot

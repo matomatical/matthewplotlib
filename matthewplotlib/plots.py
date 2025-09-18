@@ -44,7 +44,7 @@ import hilbert as _hilbert
 
 from PIL import Image
 
-from typing import Callable, Self
+from typing import Callable, Self, Sequence
 from numpy.typing import ArrayLike
 from matthewplotlib.colors import Color, ColorLike
 from matthewplotlib.colormaps import ColorMap
@@ -1617,3 +1617,85 @@ class center(plot):
         )
 
 
+# # # 
+# ANIMATIONS
+
+
+def save_animation(
+    plots: Sequence[plot], # non-empty
+    filename: str,
+    scale_factor: int = 1,
+    bgcolor: ColorLike | None = None,
+    upscale=1,
+    fps=12,
+    repeat=True,
+):
+    """
+    Supply a list of plots and a filename and this method will create an
+    animated gif.
+    
+    Inputs:
+
+    * plots : list[plot].
+        The list of plots forming the frames of the animation.
+    * filename : str.
+        Where to save the gif. Should usually include a '.gif' extension.
+    * scale_factor : int (>=1, default is 1).
+        Width/height of pixel representation of each logical pixel.
+    * bgcolor : ColorLike | None.
+        Default background colour. If none, a transparent background is used.
+    * fps : int.
+        Approximate frames per second encoded into the gif.
+    * repeat : bool (default True).
+        If true (default), the gif loops indefinitely. If false, the gif only
+        plays once.
+
+    Notes:
+
+    * All plots should be the same size. If they are not, they will be aligned
+      at the top left corner (padded with transparent pixels on the bottom and
+      right). If you want different padding, add blank blocks before passing to
+      this function.
+
+    TODO:
+
+    * Consider allowing downscaling as well as upscaling.
+    * Consider making this a plot aggregator and overriding .saveimg(). The
+      only problem is that it's unclear what to use for renderimg and
+      renderstr.
+    """
+    # render plots as image arrays
+    bgcolor = Color.parse(bgcolor)
+    frames = [
+        plot.renderimg(
+            scale_factor=scale_factor,
+            bgcolor=bgcolor,
+        ) for plot in plots
+    ]
+    
+    # pad them to u8[height, width, RGBA]
+    h = max(frame.shape[0] for frame in frames)
+    w = max(frame.shape[1] for frame in frames)
+    frames_uniform = [
+        np.pad(
+            frame,
+            pad_width=((0,h-frame.shape[0]),(0,w-frame.shape[1]),(0,0)),
+            mode='constant',
+            constant_values=0,
+        ) for frame in frames
+    ]
+    
+    # convert to PIL images
+    images = [
+        Image.fromarray(frame, mode='RGBA') 
+        for frame in frames_uniform
+    ]
+
+    # save
+    images[0].save(
+        filename,
+        save_all=True,
+        append_images=images[1:],
+        duration=1000 // fps,
+        loop=1-bool(repeat), # 1 = loop once, 0 = loop forever
+    )

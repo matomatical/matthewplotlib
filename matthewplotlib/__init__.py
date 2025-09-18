@@ -29,6 +29,7 @@ from matthewplotlib.plots import (
     dstack,
     wrap,
     center,
+    save_animation,
 )
 
 

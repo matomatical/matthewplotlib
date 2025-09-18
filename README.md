@@ -224,7 +224,7 @@ Advanced furnishings:
 
 Advanced rendering:
 
-* [ ] Export animations to gifs.
+* [x] Export animations to gifs.
 * [ ] Render plots to SVG (keep console aesthetic).
 * [ ] Render plots to PDF (keep console aesthetic).
 
@@ -239,6 +239,7 @@ Back end improvements:
   colours).
 * [ ] Faster animated plot redraws (e.g., differential rendering with shortcut
   `-`).
+* [ ] Consider reactive programming principles.
 
 More elaborate documentation:
 
