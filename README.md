@@ -38,11 +38,12 @@ Some eye-candy:
 <tbody>
   <tr>
     <td><img src="images/lissajous.png" height="256px"></td>
-    <td><img src="images/teapot.gif" height="256px"></td>
+    <td><img src="images/teapot.gif?" height="256px"></td>
     <td><img src="images/colormaps.png" height="256px"></td>
   </tr>
 </tbody>
 </table>
+
 
 Quickstart
 ----------
