@@ -10,10 +10,12 @@ Constants:
 
 import enum
 import dataclasses
+
 import numpy as np
+import einops
 
 from typing import Self
-from numpy.typing import ArrayLike
+from numpy.typing import NDArray, ArrayLike
 
 from matthewplotlib.colors import Color
 from matthewplotlib.unscii16 import bitmap
@@ -52,7 +54,7 @@ class Char:
         * If c happens to be '█' or '▟', then it is more effective to return
           the foreground color.
         * If c happens to be '▀' or '▄', then it is more effective to return a
-          mixture of the two colours, presuming there are two colours to mix.
+          mixture of the two colours (when there are two colours to mix).
 
         TODO:
 
@@ -141,23 +143,25 @@ BRAILLE_MAP = np.array([
 ], dtype=np.uint8)
 
 
-def braille_encode(
-    a: ArrayLike,   # bool[4h, 2w]
-) -> np.ndarray:    # -> uint16[h, w]
+def unicode_braille_array(
+    dots: ArrayLike, # bool[4h, 2w]
+    color: Color | None = None,
+) -> list[list[Char]]:
     """
     Turns a HxW array of booleans into a (H//4)x(W//2) array of braille
     binary codes.
 
     Inputs:
 
-    * a: bool[4h, 2w].
+    * dots: bool[4h, 2w].
         Array of booleans, height divisible by 4 and width divisible by 2.
+    * color: optional Color.
+        Foreground color used for braille characters.
 
     Returns:
 
-    * bits: uint16[h, w].
-        An array of braille unicode code points. The unicode characters will
-        have a dot in the corresponding places where `a` is True.
+    * array: list[list[Char]].
+        A nested list of Braille characters with H rows and W columns.
 
     An illustrated example is as follows:
     ```
@@ -185,26 +189,31 @@ def braille_encode(
       convert the braille code to a unicode character and collate into array |
      .-----------------------------------------------------------------------'
      |  '''
-     `->⡇⢸⢸⠉⠁⡇⠀⢸⠀⠀⡎⢱  (Note: this function returns codepoints, use `chr()`
-        ⡏⢹⢸⣉⡁⣇⣀⢸⣀⡀⢇⡸  to convert these into braille characters for printing.)
+     `->⡇⢸⢸⠉⠁⡇⠀⢸⠀⠀⡎⢱  (Note: this function returns a nested list of Chars
+        ⡏⢹⢸⣉⡁⣇⣀⢸⣀⡀⢇⡸  rather than a string.)
         '''
     ```
     """
     # process input
-    array = np.asarray(a, dtype=bool)
-    H, W = array.shape
+    dots_ = np.asarray(dots, dtype=bool)
+    H, W = dots_.shape
     h, w = H // 4, W // 2
     
     # create a view that chunks it into 4x2 cells
-    cells = array.reshape(h, 4, w, 2)
+    cells = dots_.reshape(h, 4, w, 2)
     
     # convert each bit in each cell into a mask and combine into code array
     masks = np.left_shift(cells, BRAILLE_MAP.reshape(1,4,1,2), dtype=np.uint16)
     codes = np.bitwise_or.reduce(masks, axis=(1,3))
     
-    # unicode braille block starts at 0x2800
-    unicodes = 0x2800 + codes
-    return unicodes
+    # convert code array into Char array
+    array = [
+        [
+            Char(chr(0x2800+code), fg=color) if code else BLANK
+            for code in row
+        ] for row in codes
+    ]
+    return array
 
 
 # # # 
@@ -323,7 +332,7 @@ def unicode_col(
 
 
 # # # 
-# BOX DRAWING
+# UNICODE BOX DRAWING
 
 
 class BoxStyle(str, enum.Enum):
@@ -360,9 +369,9 @@ class BoxStyle(str, enum.Enum):
              ▛──────▜ ▛▀▀▀▀▀▀▜ █▀▀▀▀▀▀█ ▞▝▝▝▝▝▝▝ ▘▘▘▘▘▘▘▚
      BLANK   │BUMPER│ ▌BLOCK1▐ █BLOCK2█ ▖TIGER1▝ ▘TIGER2▗
              ▙──────▟ ▙▄▄▄▄▄▄▟ █▄▄▄▄▄▄█ ▖▖▖▖▖▖▖▞ ▚▗▗▗▗▗▗▗
-    ┬──────┐ ┲━━━━━━┓ ╔══════╗ ╷        
-    │LIGHTX│ ┃HEAVYX┃ ║DOUBLX║ │LOWERX  
-    ┼──────┤ ╄━━━━━━┩ ╚══════╝ ┼──────╴ 
+    ┬──────┐ ┲━━━━━━┓ ╷        
+    │LIGHTX│ ┃HEAVYX┃ │LOWERX  
+    ┼──────┤ ╄━━━━━━┩ ┼──────╴ 
     ```
 
     TODO:
@@ -386,53 +395,109 @@ class BoxStyle(str, enum.Enum):
     HEAVYX = "┲━┓┃┃╄━┩"
     LOWERX = "╷   │┼─╴"
 
-
     @property
-    def nw(self) -> str:
+    def _nw(self) -> str:
         """Northwest corner symbol."""
         return self[0]
-    
 
     @property
-    def n(self) -> str:
+    def _n(self) -> str:
         """North edge symbol."""
         return self[1]
-    
 
     @property
-    def ne(self) -> str:
+    def _ne(self) -> str:
         """Norteast corner symbol."""
         return self[2]
-    
 
     @property
-    def e(self) -> str:
+    def _e(self) -> str:
         """East edge symbol."""
         return self[3]
-    
 
     @property
-    def w(self) -> str:
+    def _w(self) -> str:
         """West edge symbol."""
         return self[4]
-    
 
     @property
-    def sw(self) -> str:
+    def _sw(self) -> str:
         """Southwest corner symbol."""
         return self[5]
-    
 
     @property
-    def s(self) -> str:
+    def _s(self) -> str:
         """South edge symbol."""
         return self[6]
-    
 
     @property
-    def se(self) -> str:
+    def _se(self) -> str:
         """Southeast corner symbol."""
         return self[7]
+
+
+def unicode_box(
+    array: list[list[Char]],
+    style: BoxStyle,
+    color: Color | None = None,
+) -> list[list[Char]]:
+    """
+    Wrap a character array in an outline of box drawing characters.
+    """
+    # prepare characters
+    nw = Char(style._nw, fg=color)
+    n  = Char(style._n, fg=color)
+    ne = Char(style._ne, fg=color)
+    w  = Char(style._w, fg=color)
+    e  = Char(style._e, fg=color)
+    sw = Char(style._sw, fg=color)
+    s  = Char(style._s, fg=color)
+    se = Char(style._se, fg=color)
+    # assemble box
+    width = len(array[0])
+    array = [
+        [nw, *[n] * width, ne],
+        *[[w, *row, e] for row in array],
+        [sw, *[s] * width, se],
+    ]
+    return array
+
+
+# # # 
+# UNICODE HALF-BLOCK IMAGE
+
+        
+def unicode_image(
+    image: NDArray, # u8[h, w, rgb] or float[h, w, rgb]
+) -> list[list[Char]]:
+    h, _w, _3 = image.shape
+    
+    if h % 2 == 1:
+        final_row = image[-1]
+        image = image[:-1]
+    else:
+        final_row = None
+
+    stacked = einops.rearrange(
+        image,
+        '(h fgbg) w c -> h w fgbg c',
+        fgbg=2,
+    )
+    array = [
+        [
+            Char(c="▀", fg=Color.parse(fg), bg=Color.parse(bg))
+            for fg, bg in row
+        ]
+        for row in stacked
+    ]
+
+    if final_row is not None:
+        array.append([
+            Char(c="▀", fg=Color.parse(fg), bg=None)
+            for fg in final_row
+        ])
+
+    return array
 
 
 # # # 
@@ -440,14 +505,14 @@ class BoxStyle(str, enum.Enum):
 
 
 def project3(
-    xyz: np.ndarray,                                        # float[n, 3]
-    camera_position: np.ndarray = np.array([0., 0., 2.]),   # float[3]
-    camera_target: np.ndarray = np.zeros(3),                # float[3]
-    scene_up: np.ndarray = np.array([0.,1.,0.]),            # float[3]
+    xyz: np.ndarray, # float[n, 3]
+    camera_position: np.ndarray = np.array([0., 0., 2.]), # float[3]
+    camera_target: np.ndarray = np.zeros(3), # float[3]
+    scene_up: np.ndarray = np.array([0.,1.,0.]), # float[3]
     fov_degrees: float = 90.0,
 ) -> tuple[
-    np.ndarray,                                             # float[n, 2]
-    np.ndarray,                                             # bool[n]
+    np.ndarray, # float[n, 2]
+    np.ndarray, # bool[n]
 ]:
     """
     Project a 3d point cloud into two dimensions based on a given camera

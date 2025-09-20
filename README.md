@@ -281,3 +281,14 @@ Braille art:
 
 TODO: Checklist of specific interesting target features that are and are not
 implemented.
+
+Other Python plotting libraries, most of which offer some level of
+interactivity that there are no plans to replicate.
+
+* Matplotlib https://github.com/matplotlib/matplotlib
+* Seaborn https://github.com/mwaskom/seaborn
+* Plotly.py https://github.com/plotly/plotly.py
+* Pygal https://github.com/Kozea/pygal
+* Bokeh https://github.com/bokeh/bokeh
+* Altair https://github.com/vega/altair
+  * Declarative API

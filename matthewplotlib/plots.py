@@ -50,9 +50,17 @@ from matthewplotlib.colors import Color, ColorLike
 from matthewplotlib.colormaps import ColorMap
 from numbers import Number
 
-from matthewplotlib.core import Char, BLANK, BoxStyle
-from matthewplotlib.core import braille_encode, unicode_bar, unicode_col
-from matthewplotlib.core import project3
+from matthewplotlib.core import (
+    Char,
+    BLANK,
+    BoxStyle,
+    unicode_box,
+    unicode_braille_array,
+    unicode_bar,
+    unicode_col,
+    unicode_image,
+    project3,
+)
 
 type number = int | float | np.integer | np.floating
 
@@ -360,17 +368,14 @@ class scatter(plot):
             bins=(2*width, 4*height),
             range=(xrange, yrange),
         )
-        dots = dots.T     # we want y first
-        dots = dots[::-1] # correct y for top-down drawing
+        dots = dots.T     # we want y to correspond to rows
+        dots = dots[::-1] # we want high y first for top-down drawing
         
         # render data grid as a grid of braille characters
-        array = [[BLANK for _ in range(width)] for _ in range(height)]
-        bgrid = braille_encode(dots > 0)
-        for i in range(height):
-            for j in range(width):
-                if bgrid[i, j] > 0x2800:
-                    braille_char = chr(bgrid[i, j])
-                    array[i][j] = Char(braille_char, fg=color_)
+        array = unicode_braille_array(
+            dots=dots,
+            color=color_,
+        )
         super().__init__(array)
         self.xrange = xrange
         self.yrange = yrange
@@ -564,13 +569,17 @@ class image(plot):
         * discrete colormaps like `pico8 : int[...] -> uint8[...,3]`.
         If `im` has no RGB dimension, it is transformed to a grid of RGB
         triples using one of these colormaps.
+
+    TODO:
+
+    * Offer normalisation?
     """
     def __init__(
         self,
         im: ArrayLike, # float[h,w] | float[h,w,rgb] | int[h,w] | int[h,w,rgb]
         colormap: ColorMap | None = None,
     ):
-        # preprocessing: all inputs become float[h, w, rgb] with even h
+        # preprocessing: all inputs become float[h, w, rgb]
         im = np.asarray(im)
         if len(im.shape) == 2 and colormap is None:
             # greyscale or indexed and no colormap -> uniform colourisation
@@ -578,29 +587,8 @@ class image(plot):
         elif colormap is not None:
             # indexed, greyscale, or rgb and compatible colormap -> mapped rgb
             im = colormap(im)
-        # pad to even height
-        im = np.pad(
-            array=im,
-            pad_width=(
-                (0, im.shape[0] % 2),
-                (0, 0),
-                (0, 0),
-            ),
-            mode='constant',
-            constant_values=0.,
-        )
 
-        # processing: stack into fg/bg format
-        stacked = einops.rearrange(im, '(h fgbg) w c -> h w fgbg c', fgbg=2)
-
-        # render the image lines as unicode strings with ansi color codes
-        array = [
-            [
-                Char("▀", Color.parse(fg), Color.parse(bg))
-                for fg, bg in row
-            ]
-            for row in stacked
-        ]
+        array = unicode_image(im)
 
         # form a plot object
         super().__init__(array)
@@ -1180,66 +1168,43 @@ class hilbert(plot):
         A 1D array of booleans. The length `N` determines the order of the
         Hilbert curve required to fit all points. True values are rendered as
         dots, and False values are rendered as blank spaces.
-    * dotcolor : optional ColorLike.
+    * color : optional ColorLike.
         The foreground color used for dots (points along the curve where `data`
         is `True`). Defaults to the terminal's default foreground color.
-    * bgcolor : optional ColorLike.
-        The background color for the entire path of the Hilbert curve (points
-        along the curve where `data` is `False`, plus possibly some extra
-        points if the curve does not exactly fit the last character cell).
-        Defaults to a transparent background.
-    * nullcolor : optional ColorLike.
-        The background color for the grid area not occupied by the curve. This
-        is relevant for non-square-power-of-2 data lengths. Defaults to a
-        transparent background.
     """
     def __init__(
         self,
         data: ArrayLike, # bool[N]
-        dotcolor: ColorLike | None = None,
-        bgcolor: ColorLike | None = None,
-        nullcolor: ColorLike | None = None,
+        color: ColorLike | None = None,
     ):
         # preprocess and compute grid shape
         data = np.asarray(data)
         N, = data.shape
         n = max(2, ((N-1).bit_length() + 1) // 2)
-        dotcolor_ = Color.parse(dotcolor)
-        bgcolor_ = Color.parse(bgcolor)
-        nullcolor_ = Color.parse(nullcolor)
+        color_ = Color.parse(color)
 
-        # compute grid positions for each data element
-        all_coords: np.ndarray = _hilbert.decode(
+        # compute dot array
+        curve: np.ndarray = _hilbert.decode(
             hilberts=np.arange(N),
             num_dims=2,
             num_bits=n,
         )
-        lit_coords = all_coords[data]
+        lit_curve = curve[data]
 
         # make empty dot matrix
-        all_grid = np.zeros((2**n,2**n), dtype=bool)
-        all_grid[all_coords[:,1], all_coords[:,0]] = True
-        lit_grid = np.zeros((2**n,2**n), dtype=bool)
-        lit_grid[lit_coords[:,1], lit_coords[:,0]] = True
+        dots = np.zeros((2**n,2**n), dtype=bool)
+        dots[lit_curve[:,0], lit_curve[:,1]] = True
+        # transform to have origin at bottom left
+        dots = dots.T
+        dots = dots[::-1]
         
         # render data grid as a grid of braille characters
-        width = int(2 ** (n-1))
-        height = int(2 ** (n-2))
-        null = Char(" ", bg=nullcolor_)
-        array = [[null for _ in range(width)] for _ in range(height)]
-        bg_grid = braille_encode(all_grid)
-        fg_grid = braille_encode(lit_grid)
-        for i in range(height):
-            for j in range(width):
-                if bg_grid[i, j] > 0x2800:
-                    braille_char = chr(fg_grid[i, j])
-                    array[i][j] = Char(
-                        c=braille_char,
-                        fg=dotcolor_,
-                        bg=bgcolor_,
-                    )
+        array = unicode_braille_array(
+            dots=dots,
+            color=color_,
+        )
         super().__init__(array)
-        self.num_points = len(lit_coords)
+        self.num_points = len(curve)
         self.all_points = N
         self.n = n
 
@@ -1325,7 +1290,6 @@ class border(plot):
         default foreground color.
     """
 
-
     def __init__(
         self,
         plot: plot,
@@ -1333,30 +1297,14 @@ class border(plot):
         color: ColorLike | None = None,
     ):
         color_ = Color.parse(color)
-        array = [
-            # top row
-            [
-                Char(style.nw, fg=color_),
-                *[Char(style.n, fg=color_)] * plot.width,
-                Char(style.ne, fg=color_),
-            ],
-            # middle rows
-            *[
-                [
-                    Char(style.w, fg=color_),
-                    *row,
-                    Char(style.w, fg=color_),
-                ]
-                for row in plot.array
-            ],
-            # bottom row
-            [
-                Char(style.sw, fg=color_),
-                *[Char(style.s, fg=color_)] * plot.width,
-                Char(style.se, fg=color_),
-            ],
-        ]
-        super().__init__(array)
+        array = unicode_box(
+            array=plot.array,
+            style=style,
+            color=Color.parse(color),
+        )
+        super().__init__(
+            array,
+        )
         self.style = style[2]
         self.plot = plot
     

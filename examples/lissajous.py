@@ -5,7 +5,7 @@ import matthewplotlib as mp
 
 
 DIMENSION = 10_000
-NUM_STEPS = 10_000
+NUM_STEPS = 1_000
 
 # sample some brownian motion
 print("sample some high-dimensional brownian motion...")
@@ -17,25 +17,28 @@ proj = sklearn.decomposition.PCA(n_components=3).fit_transform(traj)
 time = np.arange(NUM_STEPS)
 
 # construct visualisation
-plot = (
-    mp.text("BROWNIAN MOTION")
-    / mp.text("first two dimensions:")
-    / mp.scatter(traj[:, :2], height=20, width=75, color=(.5,.5,.5))
-    / mp.text("principal components:")
-    / mp.text("PC1, PC2, PC3 over time")
-    / (
-          mp.scatter(np.c_[time, proj[:,0]], width=75, color="red")
-        @ mp.scatter(np.c_[time, proj[:,1]], width=75, color="green")
-        @ mp.scatter(np.c_[time, proj[:,2]], width=75, color="blue")
-    )
-    / (
+plot = mp.vstack(
+    mp.text("BROWNIAN MOTION"),
+    mp.text("first two dimensions"),
+    mp.scatter(
+        traj[:, :2],
+        color=(.5,.5,.5),
+        height=20,
+        width=75,
+    ),
+    mp.text("principal components 1, 2, 3 over time"),
+    mp.scatter(np.c_[time, proj[:,0]], color="red", width=75)
+    @ mp.scatter(np.c_[time, proj[:,1]], color="green", width=75)
+    @ mp.scatter(np.c_[time, proj[:,2]], color="blue", width=75),
+    mp.text("principal components 1, 2, 3 paired"),
+    mp.hstack(
         mp.text("PC1 v PC2")
-        / mp.scatter(proj[:, (0,1)], color="yellow", width=25)
+            / mp.scatter(proj[:, (0,1)], color="yellow", width=25)
         + mp.text("PC1 v PC3")
-        / mp.scatter(proj[:, (0,2)], color="magenta", width=25)
+            / mp.scatter(proj[:, (0,2)], color="magenta", width=25)
         + mp.text("PC2 v PC3")
-        / mp.scatter(proj[:, (1,2)], color="cyan", width=25)
-    )
+            / mp.scatter(proj[:, (1,2)], color="cyan", width=25)
+    ),
 )
 
 print("printing plot...")
