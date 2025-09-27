@@ -51,8 +51,7 @@ from matthewplotlib.colormaps import ColorMap
 from numbers import Number
 
 from matthewplotlib.core import (
-    Char,
-    BLANK,
+    CharArray,
     BoxStyle,
     unicode_box,
     unicode_braille_array,
@@ -73,41 +72,13 @@ class plot:
     """
     Abstract base class for all plot objects.
 
-    A plot is essentially a 2D grid of `Char` objects. This class provides the
-    core functionality for rendering and composing plots. Not typically
-    instantiated directly, but it's useful to know its properties and methods.
-
-    Properties:
-
-    * height : int.
-        The height of the plot in character lines.
-    * width : int.
-        The width of the plot in character columns.
-
-    Methods:
-
-    * renderstr() -> str.
-        Returns a string representation of the plot with ANSI color codes,
-        ready to be printed to a compatible terminal.
-    * clearstr() -> str.
-        Returns control characters that will clear the plot from the
-        terminal after it has been printed.
-    * saveimg(filename: str).
-        Renders the plot to an image file (e.g., "plot.png") using a
-        pixel font.
-
-    Operators:
-    
-    * `str(plot)`: Shortcut for `plot.renderstr()`. This means you can render
-       the plot just by calling `print(plot)`.
-    * `-plot`: Shortcut for `plot.clearstr()`. Useful for animations.
-    * `plot1 + plot2`: Horizontally stacks plots (see `hstack`).
-    * `plot1 / plot2`: Vertically stacks plots (see `vstack`).
-    * `plot1 | plot2`: Vertically stacks plots (see `vstack`).
-    * `plot1 @ plot2`: Overlays plots (see `dstack`).
+    A plot is essentially a 2D grid of coloured characters. This class provides
+    the core functionality for rendering and composing plots. It is not
+    typically instantiated directly, but it's useful to know its properties and
+    methods.
     """
-    def __init__(self, array: list[list[Char]]):
-        self.array = array
+    def __init__(self, chars: CharArray):
+        self.chars = chars
 
 
     @property
@@ -115,7 +86,7 @@ class plot:
         """
         Number of character rows in the plot.
         """
-        return len(self.array)
+        return self.chars.height
 
 
     @property
@@ -123,7 +94,7 @@ class plot:
         """
         Number of character columns in the plot.
         """
-        return len(self.array[0])
+        return self.chars.width
 
 
     def renderstr(self) -> str:
@@ -132,7 +103,7 @@ class plot:
 
         Note: plot.renderstr() is equivalent to str(plot).
         """
-        return "\n".join(["".join([c.to_ansi_str() for c in l]) for l in self.array])
+        return self.chars.to_ansi_str()
 
 
     def clearstr(self: Self) -> str:
@@ -145,44 +116,47 @@ class plot:
 
     def renderimg(
         self,
-        scale_factor: int = 1,
+        upscale: int = 1,
+        downscale: int = 1,
         bgcolor: ColorLike | None = None,
     ) -> np.ndarray: # uint8[scale_factor * 16H, scale_factor * 8W, 4]
         """
         Convert the plot into an RGBA array for rendering with Pillow.
         """
-        bgcolor = Color.parse(bgcolor)
-        tiles = np.asarray(
-            [[c.to_rgba_array(bgcolor=bgcolor) for c in l] for l in self.array]
-        ) # uint8[H, W, 16, 8, 4]
-        stacked = einops.rearrange(
-            tiles,
-            'H W h w rgba -> (H h) (W w) rgba',
-        ) # uint8[16H, 8W, 4]
-        if scale_factor == 1:
-            scaled = stacked
-        else:
-            scaled = einops.repeat(
-                stacked,
-                'Hh Ww rgba -> (Hh scale1) (Ww scale2) rgba',
-                scale1=scale_factor,
-                scale2=scale_factor,
+        # render
+        image = self.chars.to_rgba_array(
+            bgcolor=Color.parse(bgcolor),
+        )
+        # upscale
+        if upscale > 1:
+            image = einops.repeat(
+                image,
+                'H W rgba -> (H scale1) (W scale2) rgba',
+                scale1=upscale,
+                scale2=upscale,
             )
-        return scaled
+        # downscale
+        if downscale > 1:
+            image = image[::downscale, ::downscale]
+        return image
 
 
     def saveimg(
         self,
         filename: str,
-        scale_factor: int = 1,
+        upscale: int = 1,
+        downscale: int = 1,
         bgcolor: ColorLike | None = None,
     ):
         """
         Render the plot as an RGBA image and save it as a PNG file at the path
         `filename`.
         """
-        bgcolor = Color.parse(bgcolor)
-        image_data = self.renderimg(scale_factor=scale_factor, bgcolor=bgcolor)
+        image_data = self.renderimg(
+            bgcolor=bgcolor,
+            upscale=upscale,
+            downscale=downscale,
+        )
         image = Image.fromarray(image_data, mode='RGBA')
         image.save(filename)
 
@@ -299,34 +273,34 @@ class scatter(plot):
 
     * data : number[n, 2].
         An array of n 2D points to plot. Each row is an (x, y) coordinate.
-    * width : int (default: 30).
-        The width of the plot in characters. The effective pixel width will be
-        2 * width.
-    * height : int (default: 10).
-        The height of the plot in rows. The effective pixel height will be 4 *
-        height.
+    * color : optional ColorLike.
+        The color of the plotted points (see `Color.parse`). Defaults to the
+        terminal's default foreground color.
     * xrange : optional (number, number).
         The x-axis limits `(xmin, xmax)`. If not provided, the limits are
         inferred from the min and max x-values in the data.
     * yrange : optional (number, number).
         The y-axis limits `(ymin, ymax)`. If not provided, the limits are
         inferred from the min and max y-values in the data.
-    * color : optional ColorLike.
-        The color of the plotted points (see `Color.parse`). Defaults to the
-        terminal's default foreground color.
     * check_bounds : bool (default: False).
         If True, raises a `ValueError` if any data points fall outside the
         specified `xrange` or `yrange`.
+    * width : int (default: 30).
+        The width of the plot in characters. The effective pixel width will be
+        2 * width.
+    * height : int (default: 10).
+        The height of the plot in rows. The effective pixel height will be 4 *
+        height.
     """
     def __init__(
         self,
         data: ArrayLike, # number[n, 2]
-        width: int = 30,
-        height: int = 10,
+        color: ColorLike | None = None,
         xrange: tuple[number, number] | None = None,
         yrange: tuple[number, number] | None = None,
-        color: ColorLike | None = None,
         check_bounds: bool = False,
+        width: int = 30,
+        height: int = 10,
     ):
         # preprocess and check shape
         data = np.asarray(data)
@@ -336,8 +310,8 @@ class scatter(plot):
 
         # shortcut if no data
         if n == 0:
-            array = [[BLANK] * width] * height
-            super().__init__(array)
+            chars = [[BLANK] * width] * height
+            super().__init__(chars)
             self.xrange = xrange
             self.yrange = yrange
             self.num_points = len(data)
@@ -372,11 +346,11 @@ class scatter(plot):
         dots = dots[::-1] # we want high y first for top-down drawing
         
         # render data grid as a grid of braille characters
-        array = unicode_braille_array(
+        chars = unicode_braille_array(
             dots=dots,
             color=color_,
         )
-        super().__init__(array)
+        super().__init__(chars)
         self.xrange = xrange
         self.yrange = yrange
         self.num_points = len(data)
@@ -588,10 +562,10 @@ class image(plot):
             # indexed, greyscale, or rgb and compatible colormap -> mapped rgb
             im = colormap(im)
 
-        array = unicode_image(im)
+        chars = unicode_image(im)
 
         # form a plot object
-        super().__init__(array)
+        super().__init__(chars)
 
     def __repr__(self):
         return f"image(height={self.height}, width={self.width})"
@@ -829,11 +803,11 @@ class progress(plot):
         ]
 
         # put it together
-        array = [
+        chars = [
             [*label_chars, Char("["), *bar_chars, Char("]")]
         ]
         super().__init__(
-            array=array,
+            chars=chars,
         )
         self.progress = progress
 
@@ -899,12 +873,12 @@ class bars(plot):
         norm_values = (values - vmin) / (vmax - vmin + 1e-15)
         
         # construct the bar chart!
-        array = [
+        chars = [
             [ Char(block, fg=color_) for block in unicode_bar(v, width) ]
             for v in norm_values
         ]
         super().__init__(
-            array=array,
+            chars=chars,
         )
         self.vmin = vmin
         self.vmax = vmax
@@ -1058,11 +1032,11 @@ class columns(plot):
             [ Char(block, fg=color_) for block in unicode_col(v, height) ]
             for v in norm_values
         ]
-        array = [
+        chars = [
             [ columns[j][i] for j in range(len(columns)) ]
             for i in range(height)
         ]
-        super().__init__(array=array)
+        super().__init__(chars=chars)
         self.vmin = vmin
         self.vmax = vmax
         self.num_cols = len(values)
@@ -1199,11 +1173,11 @@ class hilbert(plot):
         dots = dots[::-1]
         
         # render data grid as a grid of braille characters
-        array = unicode_braille_array(
+        chars = unicode_braille_array(
             dots=dots,
             color=color_,
         )
-        super().__init__(array)
+        super().__init__(chars)
         self.num_points = len(curve)
         self.all_points = N
         self.n = n
@@ -1257,12 +1231,12 @@ class text(plot):
         lines = text.splitlines()
         height = len(lines)
         width = max(len(line) for line in lines)
-        array = [
+        chars = [
             [Char(c, fg=color_, bg=bgcolor_) for c in line]
             + [BLANK] * (width - len(line))
             for line in lines
         ]
-        super().__init__(array=array)
+        super().__init__(chars=chars)
         if height > 1 or width > 8:
             self.preview = lines[0][:5] + "..."
         else:
@@ -1297,13 +1271,13 @@ class border(plot):
         color: ColorLike | None = None,
     ):
         color_ = Color.parse(color)
-        array = unicode_box(
-            array=plot.array,
+        chars = unicode_box(
+            chars=plot.chars,
             style=style,
             color=Color.parse(color),
         )
         super().__init__(
-            array,
+            chars,
         )
         self.style = style[2]
         self.plot = plot
@@ -1335,8 +1309,8 @@ class blank(plot):
         height: int = 1,
         width: int = 1,
     ):
-        array = [[BLANK] * width] * height
-        super().__init__(array)
+        chars = [[BLANK] * width] * height
+        super().__init__(chars)
 
     def __repr__(self):
         return f"blank(height={self.height}, width={self.width})"
@@ -1361,13 +1335,13 @@ class hstack(plot):
         height = max(p.height for p in plots)
         width = sum(p.width for p in plots)
         # build array left to right one plot at a time
-        array : list[list[Char]] = [[] for _ in range(height)]
+        chars : list[list[Char]] = [[] for _ in range(height)]
         for p in plots:
             for i in range(p.height):
-                array[i].extend(p.array[i])
+                chars[i].extend(p.chars[i])
             for i in range(p.height, height):
-                array[i].extend([BLANK] * p.width)
-        super().__init__(array)
+                chars[i].extend([BLANK] * p.width)
+        super().__init__(chars)
         self.plots = plots
 
     def __repr__(self):
@@ -1396,11 +1370,11 @@ class vstack(plot):
         height = sum(p.height for p in plots)
         width = max(p.width for p in plots)
         # build the array top to bottom one plot at a time
-        array = []
+        chars = []
         for p in plots:
-            for row in p.array:
-                array.append(row + [BLANK] * (width - p.width))
-        super().__init__(array)
+            for row in p.chars:
+                chars.append(row + [BLANK] * (width - p.width))
+        super().__init__(chars)
         self.plots = plots
 
     def __repr__(self):
@@ -1431,9 +1405,9 @@ class dstack(plot):
         height = max(p.height for p in plots)
         width = max(p.width for p in plots)
         # build the array front to back one plot at a time
-        array = [ [BLANK for _ in range(width) ] for _ in range(height) ]
+        chars = [ [BLANK for _ in range(width) ] for _ in range(height) ]
         for p in plots:
-            for i, line in enumerate(p.array):
+            for i, line in enumerate(p.chars):
                 for j, c in enumerate(line):
                     if c.isblank():
                         # keep underlying character
@@ -1441,11 +1415,11 @@ class dstack(plot):
                     elif c.bg is None:
                         # override, but use the (effective) background of the
                         # underlying char as the new background
-                        array[i][j] = Char(c=c.c, fg=c.fg, bg=array[i][j].bg_)
+                        chars[i][j] = Char(c=c.c, fg=c.fg, bg=chars[i][j].bg_)
                     else:
                         # simply override
-                        array[i][j] = c
-        super().__init__(array)
+                        chars[i][j] = c
+        super().__init__(chars)
         self.plots = plots
 
     def __repr__(self):
@@ -1488,23 +1462,23 @@ class wrap(plot):
                 wrapped_plots.append([])
             wrapped_plots[-1].append(plot)
         # build the array left/right, top/down, one plot at a time
-        array = []
+        chars = []
         for group in wrapped_plots:
             row: list[list[Char]] = [[] for _ in range(cell_height)]
             for p in group:
                 for i in range(p.height):
-                    row[i].extend(p.array[i])
+                    row[i].extend(p.chars[i])
                     row[i].extend([BLANK] * (cell_width - p.width))
                 for i in range(p.height, cell_height):
                     row[i].extend([BLANK] * cell_width)
-            array.extend(row)
+            chars.extend(row)
         # correction for the final row
         if len(group) < cols:
             buffer = [BLANK] * cell_width * (cols - len(group))
             for i in range(cell_height):
-                array[-cell_height+i].extend(buffer)
+                chars[-cell_height+i].extend(buffer)
         # done!
-        super().__init__(array)
+        super().__init__(chars)
         self.plots = plots
 
     def __repr__(self):
@@ -1548,14 +1522,14 @@ class center(plot):
             return left, right
         left, right = _center(plot.width, width)
         above, below = _center(plot.height, height)
-        array = (
+        chars = (
             [[BLANK] * width] * above
             + [
-                [BLANK] * left + row + [BLANK] * right for row in plot.array
+                [BLANK] * left + row + [BLANK] * right for row in plot.chars
             ]
             + [[BLANK] * width] * below
         )
-        super().__init__(array)
+        super().__init__(chars)
         self.plot = plot
     
     def __repr__(self):

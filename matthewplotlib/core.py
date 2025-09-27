@@ -1,13 +1,3 @@
-"""
-A collection of classes and types used internally.
-
-Constants:
-
-* `BLANK : Char`
-
-    A colourless space character used for padding.
-"""
-
 import enum
 import dataclasses
 
@@ -17,118 +7,268 @@ import einops
 from typing import Self
 from numpy.typing import NDArray, ArrayLike
 
-from matthewplotlib.colors import Color
-from matthewplotlib.unscii16 import bitmap
+from matthewplotlib.unscii16 import bitmaps
 
 
-# # # 
-# Core characters
+type ColorLike = (
+    str
+    | NDArray # float[3] (0 to 1) or uint8[3] (0 to 255)
+    | tuple[int, int, int]
+    | tuple[float, float, float]
+    | Color
+)
+
+
+type Color = NDArray # uint8[3]
 
 
 @dataclasses.dataclass(frozen=True)
-class Char:
+class CharArray:
     """
-    A single possibly-coloured character. Plots are assembled from characters
-    like these.
+    A grid of possibly-coloured characters comprising a plot. For internal use.
+
+    Fields:
+
+    * c: uint32[h,w].
+        Unicode code point for the character.
+    * fg: bool[h,w].
+        Whether to use a custom foreground color.
+    * fg_rgb: uint8[h,w,3].
+        (If fg) RGB for custom foreground color.
+    * bg: bool[h,w].
+        Whether to use a custom background color.
+    * bg_rgb: uint8[h,w,3].
+        (If bg) RGB for custom background color.
     """
-    c: str = " "
-    fg: Color | None = None
-    bg: Color | None = None
-    
+    c: NDArray      # uint32[h,w]
+    fg: NDArray     # bool[h,w]
+    fg_rgb: NDArray # uint8[h,w,3]
+    bg: NDArray     # bool[h,w]
+    bg_rgb: NDArray # uint8[h,w,3]
 
-    def isblank(self: Self) -> bool:
-        """
-        True if the character has no visible content.
-        """
-        return bool(self.c.isspace() and self.bg is None)
 
-    
     @property
-    def bg_(self: Self) -> Color | None:
-        """
-        The 'effective' background color of this Char.
+    def height(self: Self) -> int:
+        h, _w = self.c.shape
+        return h
+    
 
-        Usually, this is just the background color, except in the following
-        special cases:
+    @property
+    def width(self: Self) -> int:
+        _h, w = self.c.shape
+        return w
 
-        * If c happens to be '█' or '▟', then it is more effective to return
-          the foreground color.
-        * If c happens to be '▀' or '▄', then it is more effective to return a
-          mixture of the two colours (when there are two colours to mix).
 
-        TODO:
-
-        * There are more examples to consider, including h/v progress bars
-          and generally any other block drawing situations. I should more
-          systematically identify block drawing characters and interpolate
-          colours better.
-        """
-        if self.c == "█" or self.c == "▟":
-            return self.fg
-        elif self.c == "▀" or self.c == "▄":
-            if self.bg is None:
-                return self.fg
-            if self.fg is None:
-                return self.bg
-            return Color(
-                r=(self.fg.r+self.bg.r)//2,
-                g=(self.fg.g+self.bg.g)//2,
-                b=(self.fg.b+self.bg.b)//2,
-            )
+    @staticmethod
+    def from_codes(
+        codes: NDArray, # uint32[h,w]
+        fgcolor: ColorLike | None,
+        bgcolor: ColorLike | None,
+    ) -> CharArray:
+        if fgcolor is None:
+            fg = np.zeros_like(codes, dtype=bool)
+            fg_rgb = np.zeros((*codes.shape, 3), dtype=np.uint8)
         else:
-            return self.bg
+            fg = np.ones_like(codes, dtype=bool)
+            fg_rgb = np.full(
+                (*codes.shape, 3),
+                parse_color(fgcolor),
+                dtype=np.uint8,
+            )
+        if bgcolor is None:
+            bg = np.zeros_like(codes, dtype=bool)
+            bg_rgb = np.zeros((*codes.shape, 3), dtype=np.uint8)
+        else:
+            bg = np.ones_like(codes, dtype=bool)
+            bg_rgb = np.full(
+                (*codes.shape, 3),
+                parse_color(bgcolor),
+                dtype=np.uint8,
+            )
+        return CharArray(
+            c=codes,
+            fg=fg,
+            fg_rgb=fg_rgb,
+            bg=bg,
+            bg_rgb=bg_rgb,
+        )
+
+
+    def isblank(self: Self) -> NDArray: # bool[h,w]
+        """
+        True where the character has no visible content.
+        """
+        return (self.c == ord(" ")) & (~self.bg)
 
 
     def to_ansi_str(self: Self) -> str:
         """
-        If necessary, wrap a Char in ANSI control codes that switch the color into
-        the given fg and bg colors; plus a control code to switch back to default
-        mode.
+        Render a CharArray as a sequence of characters and ANSI control codes
+        (merging codes where possible).
         """
-        ansi_controls = []
-        if self.fg is not None:
-            ansi_controls.extend([38, 2, *self.fg])
-        if self.bg is not None:
-            ansi_controls.extend([48, 2, *self.bg])
-        if ansi_controls:
-            return f"\x1b[{";".join(map(str, ansi_controls))}m{self.c}\x1b[0m"
-        else:
-            return self.c
+        s: list[str] = []
+        current_fg: None | NDArray = None
+        current_bg: None | NDArray = None
+        for i in range(self.height):
+            # line
+            for j in range(self.width):
+                # next character
+                ansi_controls = []
+                # manage fg
+                fg = self.fg_rgb[i,j] if self.fg[i,j] else None
+                if fg is None and current_fg is not None:
+                    ansi_controls.append(39) # reset fg
+                elif fg is not None and np.any(fg != current_fg):
+                    ansi_controls.extend([38, 2, *fg]) # set fg
+                current_fg = fg
+                # manage bg
+                bg = self.bg_rgb[i,j] if self.bg[i,j] else None
+                if bg is None and current_bg is not None:
+                    ansi_controls.append(49) # reset bg
+                elif bg is not None and np.any(bg != current_bg):
+                    ansi_controls.extend([48, 2, *bg]) # set bg
+                current_bg = bg
+                if ansi_controls:
+                    s.append(f"\x1b[{';'.join(map(str, ansi_controls))}m")
+                s.append(chr(self.c[i,j]))
+            # end of line
+            if i < self.height - 1:
+                s.append("\n")
+        # end of grid
+        if current_fg is not None or current_bg is not None:
+            s.append("\x1b[0m")
+        return "".join(s)
+    
+
+    def to_plain_str(self: Self) -> str:
+        """
+        Render a CharArray as a sequence of characters without colour.
+        """
+        rows = [
+            [chr(self.c[i,j]) for j in range(self.width)]
+            for i in range(self.height)
+        ]
+        return "\n".join("".join(row) for row in rows)
 
 
     def to_rgba_array(
         self: Self,
-        bgcolor: Color | None = None,
-    ) -> np.ndarray: # uint8[16,8,4]
+        bgcolor: NDArray | None = None, # optional uint8[4] (RGBA)
+    ) -> np.ndarray: # uint8[height*16,width*8,4]
         """
-        Convert a Char to a small RGBA image patch, with the specified foreground
-        color (or white) and background color (or a transparent background).
+        Convert a CharArray to an RGBA image array
         """
-        # decide foreground color
-        if self.fg is not None:
-            fg = np.array([*self.fg, 255], dtype=np.uint8)
-        else:
-            fg = np.array([255, 255, 255, 255], dtype=np.uint8)
+        # foreground color array
+        fg = np.full((self.height, self.width, 4), 255, dtype=np.uint8)
+        fg[self.fg, :3] = self.fg_rgb[self.fg]
         
-        # decide background color
-        if self.bg is not None:
-            bg = np.array([*self.bg, 255], dtype=np.uint8)
-        elif bgcolor is not None:
-            bg = np.array([*bgcolor, 255], dtype=np.uint8)
+        # background color array
+        if bgcolor is None:
+            bg = np.zeros((self.height, self.width, 4), dtype=np.uint8)
         else:
-            bg = np.array([0, 0, 0, 0], dtype=np.uint8)
+            bg = np.full((self.height, self.width, 4), bgcolor, dtype=np.uint8)
+        bg[self.bg, :3] = self.bg_rgb[self.bg]
+        bg[self.bg, 3] = 255
+        
+        # construct rgba array
+        bits = bitmaps(self.c)       # bool[h,w,16,8]
+        tiles = np.where(
+                bits[:,:,:,:,None], # bool[h,w,16,8,1]
+            fg[:,:,None,None,:],    # uint8[h,w,1,1,4]
+            bg[:,:,None,None,:],    # uint8[h,w,1,1,4]
+        )                           # -> uint8[h,w,16,8,4]
+        img = einops.rearrange(tiles, 'H W h w rgba -> (H h) (W w) rgba')
+                                    # -> uint8[h*16,w*8,4]
+        return img
+    
 
-        # construct rgb array
-        bits = bitmap(self.c)       # bool[16,8]
-        img = np.where(
-            bits[..., np.newaxis],  # bool[16,8,1]
-            fg,                     # uint8[3]
-            bg,                     # uint8[3]
-        )                           # -> uint8[16,8,3]
+    def to_bit_array(
+        self: Self,
+    ) -> np.ndarray: # bool[height*16,width*8]
+        """
+        Convert a CharArray to an bitmap image array
+        """
+        # construct rgba array
+        tiles = bitmaps(self.c) # bool[h,w,16,8]
+        img = einops.rearrange(
+            tiles,
+            'H W h w -> (H h) (W w)',
+        ) # -> uint8[h*16,w*8]
         return img
 
 
-BLANK = Char(c=" ", fg=None, bg=None)
+# # # 
+# Color handling
+
+
+def parse_color(color: ColorLike | None) -> Color | None:
+    """
+    Accept and standardise RGB triples in any of the following 'color like'
+    formats:
+
+    1. **Named colours:** The following strings are recognised and translated
+       to RGB triples: `"black"`, `"red"`, `"green"`, `"blue"`, `"cyan"`,
+       `"magenta"`, `"yellow"`, `"white"`.
+
+    2. **Hexadecimal:** A hexadecimal string like ``"#ff0000"`` specifying the
+       RGB values in the usual manner.
+
+    3. **Short hexadecimal:** A three-character hexadecimal string like
+       `"#f00"`, where `"#RGB"` is equivalent to `"#RRGGBB"` in the usual
+       hexadecimal format.
+
+    4. **Integer triple:** An array or tuple of three integers in the range 0
+       to 255, converted directly to an RGB triple.
+
+    5. **Float triple:** An array or tuple of three floats in the range 0.0 to
+       1.0, converted to an RGB triple by multiplying by 255 and rounding down
+       to the nearest integer.
+
+    (Arrays or tuples with mixed integers and floats are promoted by NumPy to
+    become float triples.)
+    """
+    if color is None:
+        return None
+
+    if isinstance(color, str):
+        if color.startswith("#") and len(color) == 4:
+            return np.array((
+                17*int(color[1], base=16),
+                17*int(color[2], base=16),
+                17*int(color[3], base=16),
+            ), dtype=np.uint8)
+        if color.startswith("#") and len(color) == 7:
+            return np.array((
+                int(color[1:3], base=16),
+                int(color[3:5], base=16),
+                int(color[5:7], base=16),
+            ), dtype=np.uint8)
+        if color.lower() in NAMED_COLORS:
+            return NAMED_COLORS[color.lower()]
+
+    elif isinstance(color, (np.ndarray, tuple)):
+        color_ = np.asarray(color)
+        if color_.shape == (3,):
+            if np.issubdtype(color_.dtype, np.floating):
+                return (255*np.clip(color_, 0., 1.)).astype(np.uint8)
+            if np.issubdtype(color_.dtype, np.integer):
+                return np.clip(color_, 0, 255).astype(np.uint8)
+    
+    raise ValueError(f"invalid color {color!r}")
+
+
+NAMED_COLORS = {
+    "black":    np.array((  0,   0,   0), dtype=np.uint8),
+    "red":      np.array((255,   0,   0), dtype=np.uint8),
+    "green":    np.array((  0, 255,   0), dtype=np.uint8),
+    "blue":     np.array((  0,   0, 255), dtype=np.uint8),
+    "cyan":     np.array((  0, 255, 255), dtype=np.uint8),
+    "magenta":  np.array((255,   0, 255), dtype=np.uint8),
+    "yellow":   np.array((255, 255,   0), dtype=np.uint8),
+    "white":    np.array((255, 255, 255), dtype=np.uint8),
+}
+# # # 
+# Core characters
 
 
 # # # 
@@ -144,9 +284,10 @@ BRAILLE_MAP = np.array([
 
 
 def unicode_braille_array(
-    dots: ArrayLike, # bool[4h, 2w]
-    color: Color | None = None,
-) -> list[list[Char]]:
+    dots: NDArray, # bool[4h, 2w]
+    fgcolor: ColorLike | None = None,
+    bgcolor: ColorLike | None = None,
+) -> CharArray: # Char[h, w]
     """
     Turns a HxW array of booleans into a (H//4)x(W//2) array of braille
     binary codes.
@@ -155,13 +296,15 @@ def unicode_braille_array(
 
     * dots: bool[4h, 2w].
         Array of booleans, height divisible by 4 and width divisible by 2.
-    * color: optional Color.
+    * fgcolor: optional Color.
         Foreground color used for braille characters.
+    * bgcolor: optional Color.
+        Background color used for all characters.
 
     Returns:
 
-    * array: list[list[Char]].
-        A nested list of Braille characters with H rows and W columns.
+    * chars: CharArray.
+        An array of Braille characters with H rows and W columns.
 
     An illustrated example is as follows:
     ```
@@ -189,8 +332,8 @@ def unicode_braille_array(
       convert the braille code to a unicode character and collate into array |
      .-----------------------------------------------------------------------'
      |  '''
-     `->⡇⢸⢸⠉⠁⡇⠀⢸⠀⠀⡎⢱  (Note: this function returns a nested list of Chars
-        ⡏⢹⢸⣉⡁⣇⣀⢸⣀⡀⢇⡸  rather than a string.)
+     `->⡇⢸⢸⠉⠁⡇⠀⢸⠀⠀⡎⢱  (Note: this function returns a CharArray, use
+        ⡏⢹⢸⣉⡁⣇⣀⢸⣀⡀⢇⡸  .to_ansi_str to get a string.)
         '''
     ```
     """
@@ -203,30 +346,35 @@ def unicode_braille_array(
     cells = dots_.reshape(h, 4, w, 2)
     
     # convert each bit in each cell into a mask and combine into code array
-    masks = np.left_shift(cells, BRAILLE_MAP.reshape(1,4,1,2), dtype=np.uint16)
+    masks = np.left_shift(cells, BRAILLE_MAP.reshape(1,4,1,2), dtype=np.uint32)
     codes = np.bitwise_or.reduce(masks, axis=(1,3))
     
-    # convert code array into Char array
-    array = [
-        [
-            Char(chr(0x2800+code), fg=color) if code else BLANK
-            for code in row
-        ] for row in codes
-    ]
-    return array
+    # convert to unicode braille codepoints (except for blanks)
+    codes = np.where(
+        codes > 0,
+        0x2800 + codes,
+        ord(" "),
+    )
+    
+    return CharArray.from_codes(codes, fgcolor, bgcolor)
 
 
 # # # 
 # UNICODE PARTIAL BLOCKS
 
 
-PARTIAL_BLOCKS_ROW = [" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"]
+PARTIAL_BLOCKS_ROW = [
+    ord(c) for c in [" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"]
+]
 
 
 def unicode_bar(
     proportion: float,
-    total_width: int,
-) -> list[str]:
+    width: int,
+    height: int = 1,
+    fgcolor: ColorLike | None = None,
+    bgcolor: ColorLike | None = None,
+) -> CharArray:
     """
     Generates a Unicode progress bar as a list of characters.
 
@@ -239,49 +387,61 @@ def unicode_bar(
     * proportion: float.
         The fraction of the bar to fill. Should be between 0.0 and 1.0
         inclusive.
-    * total_width: int.
-        The width of the full bar in characters. Should be positive.
+    * width: int (positive).
+        The width of the full bar in characters.
+    * height: int (positive, default 1).
+        The number of rows that the bar takes up.
+    * fgcolor: optional Color.
+        Foreground color used for the progress bar characters.
+    * bgcolor: optional Color.
+        Background color used for the progress bar remainder.
 
     Returns:
 
-    * bar: list[str].
-        A list of unicode characters representing the bar. The length of the
-        list is always equal to `total_width`.
+    * chars: CharArray
+        A character array representing the bar.
 
     Examples:
 
     ```
-    >>> ''.join(unicode_bar(0.5, 10))
+    >>> unicode_bar(0.5, 10).to_plain_str()
     '█████     '
-    >>> ''.join(unicode_bar(0.625, 10))
+    >>> unicode_bar(0.625, 10).to_plain_str()
     '██████▎   '
 
     ```
     """
     # clip inputs to valid range
     proportion = max(0.0, min(1.0, proportion))
-    total_width = max(1, total_width)
 
     # calculate number of filled 'eighths'
-    full_eighths = int(proportion * total_width * 8)
+    full_eighths = int(proportion * width * 8)
     full_blocks, remainder = divmod(full_eighths, 8)
 
     # construct bar
-    bar = ["█"] * full_blocks
+    codes = np.zeros((height, width), dtype=np.uint32)
+    codes[:, :full_blocks] = PARTIAL_BLOCKS_ROW[-1]
     if remainder > 0:
-        bar.append(PARTIAL_BLOCKS_ROW[remainder])
-    bar.extend([" "] * (total_width - len(bar)))
+        codes[:, full_blocks] = PARTIAL_BLOCKS_ROW[remainder]
+        codes[:, full_blocks+1:] = ord(" ")
+    else:
+        codes[:, full_blocks:] = ord(" ")
 
-    return bar
+    return CharArray.from_codes(codes, fgcolor, bgcolor)
 
 
-PARTIAL_BLOCKS_COL = [" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
+PARTIAL_BLOCKS_COL = [
+    ord(c) for c in [" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
+]
 
 
 def unicode_col(
     proportion: float,
-    total_height: int,
-) -> list[str]:
+    height: int,
+    width: int = 1,
+    fgcolor: ColorLike | None = None,
+    bgcolor: ColorLike | None = None,
+) -> CharArray:
     """
     Generates a Unicode progress column as a list of characters.
 
@@ -295,40 +455,47 @@ def unicode_col(
     * proportion: float.
         The fraction of the column to fill. Should be between 0.0 and 1.0
         inclusive.
-    * total_height: int.
-        The height of the full bar in characters. Should be positive.
+    * height: int (positive).
+        The height of the full bar in characters.
+    * width: int (positive, default 1).
+        The number of columns that the bar takes up.
+    * fgcolor: optional ColorLike.
+        Foreground color used for the progress bar characters.
+    * bgcolor: optional ColorLike.
+        Background color used for the progress bar remainder.
 
     Returns:
 
-    * bar: list[str]
-
-        A list of unicode characters representing the bar. The length of the
-        list is always equal to `total_height`.
+    * chars: CharArray
+        A char array representing the column.
 
     Examples:
 
     ```
-    >>> unicode_col(0.5, 3)
-    [' ','▄','█']
+    >>> unicode_col(0.5, 3).to_plain_str()
+    ' \n▄\n█'
     
     ```
     """
     # clip inputs to valid range
     proportion = max(0.0, min(1.0, proportion))
-    total_height = max(1, total_height)
 
     # calculate number of filled 'eighths'
-    full_eighths = int(proportion * total_height * 8)
+    full_eighths = int(proportion * height * 8)
     full_blocks, remainder = divmod(full_eighths, 8)
 
-    # construct col
-    col = ["█"] * full_blocks
+    # construct column (upside down)
+    codes = np.zeros((height, width), dtype=np.uint32)
+    codes[:full_blocks, :] = PARTIAL_BLOCKS_COL[-1]
     if remainder > 0:
-        col.append(PARTIAL_BLOCKS_COL[remainder])
-    col.extend([" "] * (total_height - len(col)))
-    col = col[::-1]
+        codes[full_blocks, :] = PARTIAL_BLOCKS_COL[remainder]
+        codes[full_blocks+1:, :] = ord(" ")
+    else:
+        codes[full_blocks:, :] = ord(" ")
+    # (flip)
+    codes = codes[::-1]
 
-    return col
+    return CharArray.from_codes(codes, fgcolor, bgcolor)
 
 
 # # # 
@@ -339,9 +506,8 @@ class BoxStyle(str, enum.Enum):
     """
     A string enum defining preset styles for the `border` plot.
 
-    Each style is a string of six characters representing the border
-    elements in the following order: horizontal, vertical, top-left,
-    top-right, bottom-left, and bottom-right.
+    Each style is a string of eight characters representing the border
+    elements.
 
     Available Styles:
 
@@ -357,7 +523,7 @@ class BoxStyle(str, enum.Enum):
     * `TIGER1`: A stripy block border.
     * `TIGER2`: An alternative stripy block border.
     * `LIGHTX`: A light border with axis ticks.
-    * `LIGHTX`: A heavy border with axis ticks.
+    * `HEAVYX`: A heavy border with axis ticks.
     * `LOWERX`: A partial border with axis ticks.
 
     Demo:
@@ -396,108 +562,150 @@ class BoxStyle(str, enum.Enum):
     LOWERX = "╷   │┼─╴"
 
     @property
-    def _nw(self) -> str:
+    def _nw(self) -> int:
         """Northwest corner symbol."""
-        return self[0]
+        return ord(self[0])
 
     @property
-    def _n(self) -> str:
+    def _n(self) -> int:
         """North edge symbol."""
-        return self[1]
+        return ord(self[1])
 
     @property
-    def _ne(self) -> str:
+    def _ne(self) -> int:
         """Norteast corner symbol."""
-        return self[2]
+        return ord(self[2])
 
     @property
-    def _e(self) -> str:
+    def _e(self) -> int:
         """East edge symbol."""
-        return self[3]
+        return ord(self[3])
 
     @property
-    def _w(self) -> str:
+    def _w(self) -> int:
         """West edge symbol."""
-        return self[4]
+        return ord(self[4])
 
     @property
-    def _sw(self) -> str:
+    def _sw(self) -> int:
         """Southwest corner symbol."""
-        return self[5]
+        return ord(self[5])
 
     @property
-    def _s(self) -> str:
+    def _s(self) -> int:
         """South edge symbol."""
-        return self[6]
+        return ord(self[6])
 
     @property
-    def _se(self) -> str:
+    def _se(self) -> int:
         """Southeast corner symbol."""
-        return self[7]
+        return ord(self[7])
 
 
 def unicode_box(
-    array: list[list[Char]],
+    chars: CharArray,
     style: BoxStyle,
-    color: Color | None = None,
-) -> list[list[Char]]:
+    fgcolor: ColorLike | None = None,
+    bgcolor: ColorLike | None = None,
+) -> CharArray:
     """
     Wrap a character array in an outline of box drawing characters.
     """
-    # prepare characters
-    nw = Char(style._nw, fg=color)
-    n  = Char(style._n, fg=color)
-    ne = Char(style._ne, fg=color)
-    w  = Char(style._w, fg=color)
-    e  = Char(style._e, fg=color)
-    sw = Char(style._sw, fg=color)
-    s  = Char(style._s, fg=color)
-    se = Char(style._se, fg=color)
+    # padded codepoints
+    codes = np.pad(chars.c, 1, constant_values=0)
     # assemble box
-    width = len(array[0])
-    array = [
-        [nw, *[n] * width, ne],
-        *[[w, *row, e] for row in array],
-        [sw, *[s] * width, se],
-    ]
-    return array
+    codes[ 0,1:-1] = style._n
+    codes[-1,1:-1] = style._s
+    codes[1:-1, 0] = style._w
+    codes[1:-1,-1] = style._e
+    codes[ 0, 0] = style._nw
+    codes[ 0,-1] = style._ne
+    codes[-1, 0] = style._sw
+    codes[-1,-1] = style._se
+    # padded foreground colours
+    fg = np.pad(chars.fg, 1, constant_values=fgcolor is not None)
+    fg_rgb = np.pad(
+        chars.fg_rgb,
+        ((1,1),(1,1),(0,0)),
+        constant_values=0,
+    )
+    if fgcolor is not None:
+        fgcolor_ = parse_color(fgcolor)
+        fg_rgb[[0,-1],:] = fgcolor_
+        fg_rgb[:,[0,-1]] = fgcolor_
+    # padded background colours
+    bg = np.pad(chars.bg, 1, constant_values=bgcolor is not None)
+    bg_rgb = np.pad(
+        chars.bg_rgb,
+        ((1,1),(1,1),(0,0)),
+        constant_values=0,
+    )
+    if bgcolor is not None:
+        bgcolor_ = parse_color(bgcolor)
+        bg_rgb[[0,-1],:] = bgcolor_
+        bg_rgb[:,[0,-1]] = bgcolor_
+    # assemble char array
+    wrapped_chars = CharArray(
+        c=codes,
+        fg=fg,
+        fg_rgb=fg_rgb,
+        bg=bg,
+        bg_rgb=bg_rgb,
+    )
+    return wrapped_chars
 
 
 # # # 
 # UNICODE HALF-BLOCK IMAGE
 
-        
-def unicode_image(
-    image: NDArray, # u8[h, w, rgb] or float[h, w, rgb]
-) -> list[list[Char]]:
-    h, _w, _3 = image.shape
-    
-    if h % 2 == 1:
-        final_row = image[-1]
-        image = image[:-1]
-    else:
-        final_row = None
 
+def unicode_image(
+    image: NDArray, # uint8[h, w, rgb]
+) -> CharArray:     # Char[ceil(h/2), w]
+    """
+    Convert an RGB image into an array of coloured Unicode half-block
+    characters representing the pixels of the image.
+
+    Inputs:
+
+    * image: u8[h, w, rgb].
+        The pixels of the image.
+
+    Returns:
+
+    * chars: CharArray[ceil(h/2), w].
+        The array of coloured half-block characters. If the image has odd
+        height, the bottom half of the final row is set to the default
+        background colour.
+    """
+    # pad to even height
+    h, _w, _3 = image.shape
+    pad = (h % 2 == 1)
+    if pad:
+        image = np.pad(image, ((0, 1), (0, 0), (0, 0)))
+
+    # pair pixels along vertical axis
     stacked = einops.rearrange(
         image,
-        '(h fgbg) w c -> h w fgbg c',
+        '(h fgbg) w c -> h fgbg w c',
         fgbg=2,
     )
-    array = [
-        [
-            Char(c="▀", fg=Color.parse(fg), bg=Color.parse(bg))
-            for fg, bg in row
-        ]
-        for row in stacked
-    ]
 
-    if final_row is not None:
-        array.append([
-            Char(c="▀", fg=Color.parse(fg), bg=None)
-            for fg in final_row
-        ])
+    # construct character array
+    H, _2, W, _3 = stacked.shape
+    chars = CharArray(
+        c=np.full((H, W), ord("▀"), dtype=np.uint32),
+        fg=np.ones((H, W), dtype=bool),
+        fg_rgb=stacked[:,0,:,:],
+        bg=np.ones((H, W), dtype=bool),
+        bg_rgb=stacked[:,1,:,:],
+    )
 
-    return array
+    # remove final row if necessary
+    if pad:
+        chars.bg[-1,:] = False
+
+    return chars
 
 
 # # # 
@@ -556,12 +764,10 @@ def project3(
     
     Internal notes:
 
-    * This implementation uses a left-handed coordinate system for the camera
-      coordinate system, where X and Y point left and up respectively but then
-      Z points towards the object ahead of the camera instead of away from the
-      object behind the camera. I don't think there is any external effect of
-      this left-handedness because the final projection logic takes it into
-      account, but I think it is non-standard. Watch out.
+    * This implementation uses a coordinate system for the camera where X and Y
+      point left and up respectively and Z points towards the object ahead of
+      the camera (an alternative convention is for Z to point behind the
+      camera).
     """
     n, _3 = xyz.shape
 

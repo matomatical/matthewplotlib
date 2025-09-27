@@ -4,37 +4,29 @@ Unscii 2.0, bitmap unicode font created by Viznut (http://viznut.fi/unscii/).
 This module is a port of all non-wide characters from unscii-16 (16px by 8px).
 """
 
-
 import numpy as np
 
-
-def bitmap(
-    char: str,      # str (len 1)
-) -> np.ndarray:    # bool[16, 8]
-    """
-    Look up the bitmap for a single character.
-
-    Inputs:
-    * char: str (len 1).
-        A single-character string.
-    Returns:
-
-    * bits: bool[16, 8].
-        A boolean array representing the character's bitmap.
-    """
-    if len(char) != 1:
-        raise ValueError("Expected a single character.")
-    code = ord(char)
-    try:
-        num = UNSCII_16[code]
-    except KeyError:
-        raise ValueError(f"No bitmap for character {char!r} (0x{code:05x}).")
-    rows = np.frombuffer(num.to_bytes(16, byteorder='big'), dtype=np.uint8)
-    bits = np.unpackbits(rows[:,None], axis=1, bitorder='big').astype(bool)
-    return bits
+from numpy.typing import NDArray
 
 
-UNSCII_16 = {
+def bitmaps(
+    codes: NDArray, # uint16[...]
+) -> NDArray:   # bool[..., 16, 8]
+    # lookup bitmap locations
+    indices = np.searchsorted(_UNSCII_16_CODES, codes)
+    # check all present
+    clipped = np.clip(indices, 0, len(_UNSCII_16_CODES)-1)
+    valid = (codes == _UNSCII_16_CODES[clipped])
+    if not valid.all():
+        invalid = set(chr(c) for c in codes[~valid])
+        raise ValueError(f"Missing bitmaps for chars {invalid}.")
+
+    # lookup bitmaps
+    bitmaps = _UNSCII_16_BITMAPS[indices]
+    return bitmaps
+
+
+_UNSCII_16_DATA = {
   0x00000: 0x00000000000000000000000000000000,
   0x00001: 0xE0E08080EAEA2A2AEEEE0A0A0A0A0000,
   0x00002: 0xE0E08080EAEA2A2AE4E40A0A0A0A0000,
@@ -3033,3 +3025,17 @@ UNSCII_16 = {
   0x1FBF8: 0x7C7CC6C6C6C67C7CC6C6C6C67C7C0000,
   0x1FBF9: 0x7C7CC6C6C6C67C7C060606067C7C0000,
 }
+
+_UNSCII_16_CODES = np.array(sorted(_UNSCII_16_DATA.keys()))
+
+_UNSCII_16_BITMAPS = np.array([
+    np.unpackbits(
+        np.frombuffer(
+            _UNSCII_16_DATA[c].to_bytes(16, byteorder='big'),
+            dtype=np.uint8,
+        )[:,None],
+        axis=1,
+        bitorder='big',
+    ).astype(bool)
+    for c in _UNSCII_16_CODES
+])
