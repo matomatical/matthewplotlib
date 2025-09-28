@@ -3,7 +3,6 @@ DOCS.md: generate_docs.py README.md $(wildcard matthewplotlib/*.py)
 		README.md \
 		matthewplotlib/__init__.py \
 		matthewplotlib/plots.py \
-		matthewplotlib/colors.py \
 		matthewplotlib/colormaps.py \
 		matthewplotlib/core.py \
 		matthewplotlib/unscii16.py \
