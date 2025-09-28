@@ -1,8 +1,14 @@
 In development:
 ---------------
 
+TODO
+
+Version 0.2.0:
+--------------
+
 Breaking changes:
 
+* Various argument name changes, especially for colors.
 * Inverted `cyber` colormap.
 * Move `plots.border.Style` to `core.BoxStyle`.
 
@@ -10,10 +16,15 @@ New:
 
 * Configurable background colour for image rendering.
 * 3d scatterplot.
-* New discrete colourmaps `tableau`, `nouveau`.
 * Discrete colourmaps are now cyclic.
+* New discrete colourmaps `tableau`, `nouveau`.
 * New border styles.
 * Export animations as GIFs.
+* New configuration options for bar/column sizes.
+
+Internal:
+
+* Refactor backend to use numpy arrays rather than nested lists.
 
 Version 0.1.2:
 --------------

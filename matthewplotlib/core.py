@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import enum
 import dataclasses
 
 import numpy as np
 import einops
 
-from typing import Self
+from typing import Self, Callable
 from numpy.typing import NDArray, ArrayLike
 
 from matthewplotlib.unscii16 import bitmaps
@@ -22,14 +24,18 @@ type ColorLike = (
 type Color = NDArray # uint8[3]
 
 
-@dataclasses.dataclass(frozen=True)
+# # # 
+# Core coloured character array class
+
+
+@dataclasses.dataclass
 class CharArray:
     """
     A grid of possibly-coloured characters comprising a plot. For internal use.
 
     Fields:
 
-    * c: uint32[h,w].
+    * codes: uint32[h,w].
         Unicode code point for the character.
     * fg: bool[h,w].
         Whether to use a custom foreground color.
@@ -40,7 +46,7 @@ class CharArray:
     * bg_rgb: uint8[h,w,3].
         (If bg) RGB for custom background color.
     """
-    c: NDArray      # uint32[h,w]
+    codes: NDArray  # uint32[h,w]
     fg: NDArray     # bool[h,w]
     fg_rgb: NDArray # uint8[h,w,3]
     bg: NDArray     # bool[h,w]
@@ -49,13 +55,13 @@ class CharArray:
 
     @property
     def height(self: Self) -> int:
-        h, _w = self.c.shape
+        h, _w = self.codes.shape
         return h
     
 
     @property
     def width(self: Self) -> int:
-        _h, w = self.c.shape
+        _h, w = self.codes.shape
         return w
 
 
@@ -65,32 +71,88 @@ class CharArray:
         fgcolor: ColorLike | None,
         bgcolor: ColorLike | None,
     ) -> CharArray:
-        if fgcolor is None:
+        # foreground
+        fgcolor_ = parse_color(fgcolor)
+        if fgcolor_ is None:
             fg = np.zeros_like(codes, dtype=bool)
             fg_rgb = np.zeros((*codes.shape, 3), dtype=np.uint8)
         else:
             fg = np.ones_like(codes, dtype=bool)
             fg_rgb = np.full(
                 (*codes.shape, 3),
-                parse_color(fgcolor),
+                fgcolor_,
                 dtype=np.uint8,
             )
-        if bgcolor is None:
+        # background
+        bgcolor_ = parse_color(bgcolor)
+        if bgcolor_ is None:
             bg = np.zeros_like(codes, dtype=bool)
             bg_rgb = np.zeros((*codes.shape, 3), dtype=np.uint8)
         else:
             bg = np.ones_like(codes, dtype=bool)
             bg_rgb = np.full(
                 (*codes.shape, 3),
-                parse_color(bgcolor),
+                bgcolor_,
                 dtype=np.uint8,
             )
+        # construct chars
         return CharArray(
-            c=codes,
+            codes=codes,
             fg=fg,
             fg_rgb=fg_rgb,
             bg=bg,
             bg_rgb=bg_rgb,
+        )
+
+    
+    @staticmethod
+    def from_size(
+        height: int,
+        width: int,
+        fgcolor: ColorLike | None = None,
+        bgcolor: ColorLike | None = None,
+    ) -> CharArray:
+        codes = np.full(
+            (height, width),
+            ord(" "),
+            dtype=np.uint32,
+        )
+        return CharArray.from_codes(
+            codes=codes,
+            fgcolor=fgcolor,
+            bgcolor=bgcolor,
+        )
+
+
+    def pad(
+        self: Self,
+        above: int = 0,
+        below: int = 0,
+        left: int = 0,
+        right: int = 0,
+    ) -> CharArray:
+        padding = (above, below), (left, right)
+        padding_ = *padding, (0, 0)
+        return CharArray(
+            codes=np.pad(self.codes, padding, constant_values=ord(" ")),
+            fg=np.pad(self.fg, padding, constant_values=False),
+            fg_rgb=np.pad(self.fg_rgb, padding_, constant_values=0),
+            bg=np.pad(self.bg, padding, constant_values=False),
+            bg_rgb=np.pad(self.bg_rgb, padding_, constant_values=0),
+        )
+
+    
+    @staticmethod
+    def map(
+        f: Callable[[list[NDArray]], NDArray],
+        charss: list[CharArray],
+    ) -> CharArray:
+        return CharArray(
+            codes=f([chars.codes for chars in charss]),
+            fg=f([chars.fg for chars in charss]),
+            fg_rgb=f([chars.fg_rgb for chars in charss]),
+            bg=f([chars.bg for chars in charss]),
+            bg_rgb=f([chars.bg_rgb for chars in charss]),
         )
 
 
@@ -98,7 +160,14 @@ class CharArray:
         """
         True where the character has no visible content.
         """
-        return (self.c == ord(" ")) & (~self.bg)
+        return self.codes == ord(" ") & ~self.bg
+
+
+    def isnonblank(self: Self) -> NDArray: # bool[h,w]
+        """
+        True where the character has visible content.
+        """
+        return self.codes != ord(" ") | self.bg
 
 
     def to_ansi_str(self: Self) -> str:
@@ -130,13 +199,14 @@ class CharArray:
                 current_bg = bg
                 if ansi_controls:
                     s.append(f"\x1b[{';'.join(map(str, ansi_controls))}m")
-                s.append(chr(self.c[i,j]))
+                s.append(chr(self.codes[i,j]))
             # end of line
+            if current_fg is not None or current_bg is not None:
+                s.append("\x1b[0m")
+                current_fg = None
+                current_bg = None
             if i < self.height - 1:
                 s.append("\n")
-        # end of grid
-        if current_fg is not None or current_bg is not None:
-            s.append("\x1b[0m")
         return "".join(s)
     
 
@@ -145,7 +215,7 @@ class CharArray:
         Render a CharArray as a sequence of characters without colour.
         """
         rows = [
-            [chr(self.c[i,j]) for j in range(self.width)]
+            [chr(self.codes[i,j]) for j in range(self.width)]
             for i in range(self.height)
         ]
         return "\n".join("".join(row) for row in rows)
@@ -153,25 +223,37 @@ class CharArray:
 
     def to_rgba_array(
         self: Self,
-        bgcolor: NDArray | None = None, # optional uint8[4] (RGBA)
+        bgcolor: ColorLike | None = None,
     ) -> np.ndarray: # uint8[height*16,width*8,4]
         """
         Convert a CharArray to an RGBA image array
         """
         # foreground color array
-        fg = np.full((self.height, self.width, 4), 255, dtype=np.uint8)
+        fg = np.full(
+            (self.height, self.width, 4),
+            255,
+            dtype=np.uint8,
+        )
         fg[self.fg, :3] = self.fg_rgb[self.fg]
         
         # background color array
-        if bgcolor is None:
-            bg = np.zeros((self.height, self.width, 4), dtype=np.uint8)
+        bgcolor_ = parse_color(bgcolor)
+        if bgcolor_ is None:
+            bg = np.zeros(
+                (self.height, self.width, 4),
+                dtype=np.uint8,
+            )
         else:
-            bg = np.full((self.height, self.width, 4), bgcolor, dtype=np.uint8)
+            bg = np.full(
+                (self.height, self.width, 4),
+                (*bgcolor_, 255),
+                dtype=np.uint8,
+            )
         bg[self.bg, :3] = self.bg_rgb[self.bg]
         bg[self.bg, 3] = 255
         
         # construct rgba array
-        bits = bitmaps(self.c)       # bool[h,w,16,8]
+        bits = bitmaps(self.codes)  # bool[h,w,16,8]
         tiles = np.where(
                 bits[:,:,:,:,None], # bool[h,w,16,8,1]
             fg[:,:,None,None,:],    # uint8[h,w,1,1,4]
@@ -189,7 +271,7 @@ class CharArray:
         Convert a CharArray to an bitmap image array
         """
         # construct rgba array
-        tiles = bitmaps(self.c) # bool[h,w,16,8]
+        tiles = bitmaps(self.codes) # bool[h,w,16,8]
         img = einops.rearrange(
             tiles,
             'H W h w -> (H h) (W w)',
@@ -267,8 +349,6 @@ NAMED_COLORS = {
     "yellow":   np.array((255, 255,   0), dtype=np.uint8),
     "white":    np.array((255, 255, 255), dtype=np.uint8),
 }
-# # # 
-# Core characters
 
 
 # # # 
@@ -612,7 +692,7 @@ def unicode_box(
     Wrap a character array in an outline of box drawing characters.
     """
     # padded codepoints
-    codes = np.pad(chars.c, 1, constant_values=0)
+    codes = np.pad(chars.codes, 1, constant_values=0)
     # assemble box
     codes[ 0,1:-1] = style._n
     codes[-1,1:-1] = style._s
@@ -646,7 +726,7 @@ def unicode_box(
         bg_rgb[:,[0,-1]] = bgcolor_
     # assemble char array
     wrapped_chars = CharArray(
-        c=codes,
+        codes=codes,
         fg=fg,
         fg_rgb=fg_rgb,
         bg=bg,
@@ -694,7 +774,7 @@ def unicode_image(
     # construct character array
     H, _2, W, _3 = stacked.shape
     chars = CharArray(
-        c=np.full((H, W), ord("▀"), dtype=np.uint32),
+        codes=np.full((H, W), ord("▀"), dtype=np.uint32),
         fg=np.ones((H, W), dtype=bool),
         fg_rgb=stacked[:,0,:,:],
         bg=np.ones((H, W), dtype=bool),

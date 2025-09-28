@@ -46,11 +46,11 @@ from PIL import Image
 
 from typing import Callable, Self, Sequence
 from numpy.typing import ArrayLike
-from matthewplotlib.colors import Color, ColorLike
 from matthewplotlib.colormaps import ColorMap
 from numbers import Number
 
 from matthewplotlib.core import (
+    ColorLike,
     CharArray,
     BoxStyle,
     unicode_box,
@@ -124,9 +124,7 @@ class plot:
         Convert the plot into an RGBA array for rendering with Pillow.
         """
         # render
-        image = self.chars.to_rgba_array(
-            bgcolor=Color.parse(bgcolor),
-        )
+        image = self.chars.to_rgba_array(bgcolor=bgcolor)
         # upscale
         if upscale > 1:
             image = einops.repeat(
@@ -302,20 +300,8 @@ class scatter(plot):
         width: int = 30,
         height: int = 10,
     ):
-        # preprocess and check shape
         data = np.asarray(data)
         n, _2 = data.shape
-        assert _2 == 2
-        color_ = Color.parse(color)
-
-        # shortcut if no data
-        if n == 0:
-            chars = [[BLANK] * width] * height
-            super().__init__(chars)
-            self.xrange = xrange
-            self.yrange = yrange
-            self.num_points = len(data)
-            return
         
         # determine data bounds
         xmin, ymin = data.min(axis=0)
@@ -348,7 +334,7 @@ class scatter(plot):
         # render data grid as a grid of braille characters
         chars = unicode_braille_array(
             dots=dots,
-            color=color_,
+            fgcolor=color,
         )
         super().__init__(chars)
         self.xrange = xrange
@@ -426,8 +412,6 @@ class function(scatter):
             color=color,
         )
         self.name = F.__name__
-        self.xrange = xrange
-        self.yrange = yrange
         
     def __repr__(self):
         return ("function("
@@ -522,16 +506,16 @@ class image(plot):
 
     Inputs:
 
-    * im : float[h,w,3] | int[h,w,3] | float[h,w] | int[h,w] | ArrayLike.
-        The image data. It can be in any of the following formats:
+    * im : float[h,w,3] | int[h,w,3] | float[h,w] | int[h,w].
+        The image data. An array-like matching any of the following formats:
         * `float[h,w,3]`: A 2D array of RGB triples of floats in range [0,1].
         * `int[h,w,3]`: A 2D array of RGB triples of ints in range [0,255].
         * `float[h,w]`: A 2D array of scalars in the range [0,1]. If no
           colormap is provided, values are treated as greyscale (uniform
           colorisation). If a continuous colormap is provided, values are
           mapped to RGB values.
-        * `int[h,w]`: A 2D array of scalars. If no colormap is provided,
-          values should be in the range [0,255], they are treated as greyscale
+        * `int[h,w]`: A 2D array of ints. If no colormap is provided, values
+          should be in the range [0,255], they are treated as greyscale
           (uniform colorisation). If a discrete colormap is provided, values
           should be in range as indices for the colormap, they will be mapped
           to RGB triples as such.
@@ -555,13 +539,20 @@ class image(plot):
     ):
         # preprocessing: all inputs become float[h, w, rgb]
         im = np.asarray(im)
-        if len(im.shape) == 2 and colormap is None:
-            # greyscale or indexed and no colormap -> uniform colourisation
-            im = einops.repeat(im, 'h w -> h w 3')
-        elif colormap is not None:
-            # indexed, greyscale, or rgb and compatible colormap -> mapped rgb
+        if colormap is not None:
+            # colormap provided: map image to u8 rgb
             im = colormap(im)
+        if im.ndim == 2:
+            # greyscale -> uniform colourisation
+            im = einops.repeat(im, 'h w -> h w 3')
+        if np.issubdtype(im.dtype, np.integer):
+            # clip uint8
+            im = np.clip(im, 0, 255).astype(np.uint8)
+        if np.issubdtype(im.dtype, np.floating):
+            # floats -> clipped uint8
+            im = (255 * np.clip(im, 0., 1.)).astype(np.uint8)
 
+        # construct the plot
         chars = unicode_image(im)
 
         # form a plot object
@@ -776,6 +767,8 @@ class progress(plot):
     * width : int (default: 40).
         The total width of the progress bar plot in character columns,
         including the label and brackets.
+    * height: int (default: 1).
+        The height of the progress bar in character rows.
     * color : optional ColorLike.
         The color of the filled portion of the progress bar. Defaults to the
         terminal's default foreground color.
@@ -784,31 +777,34 @@ class progress(plot):
         self,
         progress: float,
         width: int = 40,
+        height: int = 1,
         color: ColorLike | None = None,
     ):
-        color_ = Color.parse(color)
         progress = np.clip(progress, 0., 1.)
 
         # construct label
         label = f"{progress:4.0%}"
-        label_chars = [Char(c) for c in label]
         
         # construct bar
-        bar_chars = [
-            Char(block, fg=color_)
-            for block in unicode_bar(
-                proportion=progress,
-                total_width=width - 2 - len(label),
-            )
-        ]
+        raw_chars = unicode_bar(
+            proportion=progress,
+            width=width - 2 - len(label),
+            height=height,
+            fgcolor=color,
+            bgcolor=None,
+        )
+
+        # add boundaries
+        all_chars = raw_chars.pad(
+            left=len(label)+1,
+            right=1,
+        )
+        all_chars.codes[0, :len(label)] = [ord(c) for c in label]
+        all_chars.codes[:, len(label)] = ord("[")
+        all_chars.codes[:, -1] = ord("]")
 
         # put it together
-        chars = [
-            [*label_chars, Char("["), *bar_chars, Char("]")]
-        ]
-        super().__init__(
-            chars=chars,
-        )
+        super().__init__(all_chars)
         self.progress = progress
 
     def __repr__(self):
@@ -829,6 +825,10 @@ class bars(plot):
         An array of non-negative values to display.
     * width : int (default: 30).
         The total width of full bars.
+    * bar_height: int (default: 1).
+        The number of rows comprising each bar.
+    * bar_spacing: int (default: 0).
+        The number of rows between each bar.
     * vrange : None | float | (float, float).
         Determine the scaling of the bars.
         * If omitted, the bars are scaled such that the bar(s) with the largest
@@ -846,12 +846,14 @@ class bars(plot):
 
     * Make it possible to draw bars to the left for values below 0.
     * Make it possible to align all bars to the right rather than left.
-    * Allow each bar to have a height other than 1, and allow spacing.
+    * Allow each bar to have its own colour.
     """
     def __init__(
         self,
         values: ArrayLike, # numeric[n]
         width: int = 30,
+        bar_height: int = 1,
+        bar_spacing: int = 0,
         vrange: None | number | tuple[number, number] = None,
         color: ColorLike | None = None,
     ):
@@ -867,22 +869,32 @@ class bars(plot):
             vmax = vrange
         elif isinstance(vrange, tuple):
             vmin, vmax = vrange
-        color_ = Color.parse(color)
+        num_bars = len(values)
 
         # compute the bar widths
         norm_values = (values - vmin) / (vmax - vmin + 1e-15)
         
-        # construct the bar chart!
-        chars = [
-            [ Char(block, fg=color_) for block in unicode_bar(v, width) ]
-            for v in norm_values
+        # construct the bars
+        bars_chars = [
+            unicode_bar(
+                proportion=v,
+                width=width,
+                height=bar_height,
+                fgcolor=color,
+                bgcolor=None,
+            ).pad(
+                below=bar_spacing * (i==num_bars-1),
+            )
+            for i, v in enumerate(norm_values)
         ]
-        super().__init__(
-            chars=chars,
+        all_chars = CharArray.map(
+            lambda xs: np.concatenate(xs, axis=1), 
+            bars_chars,
         )
+        super().__init__(chars=all_chars)
         self.vmin = vmin
         self.vmax = vmax
-        self.num_bars = len(values)
+        self.num_bars = num_bars
 
     def __repr__(self):
         return (
@@ -904,13 +916,12 @@ class histogram(bars):
 
     * data : number[n].
         An array of values to count.
-    * xrange : optional (number, number).
+    * xrange : optional (float, float).
         If provided, bins range over this interval, and values outside the
         range are discarded. Same as np.histogram's range argument.
-    * bins : optional int, sequence, or str.
-        If provided, used to determine number of bins, bin boundaries, or bin
-        boundary determination method. See np.histogram's bins argument for
-        details.
+    * bins : int (default: 10).
+        Used to determine number of bins. Bins are evenly spaced as if this
+        number if provided to np.histogram's bins argument.
     * weights : optional number[n].
         If provided, each element in data contributes this amount to the count
         for its bin (rather than the default 1). See np.histogram's weights
@@ -930,12 +941,12 @@ class histogram(bars):
     """
     def __init__(
         self,
-        data: ArrayLike,    # number[n]
-        bins = 10,          # as in np.histogram
-        xrange = None,      # as 'range' parameter in np.histogram
-        weights = None,     # as in np.histogram
-        density = False,    # as in np.histogram
-        max_count: None | number = None,
+        data: ArrayLike, # number[n]
+        bins: int = 10,
+        xrange: tuple[float, float] | None = None,
+        weights: ArrayLike | None = None, # optional number[n]
+        density: bool = False,
+        max_count: number | None = None,
         width: int = 22,
         color: ColorLike | None = None,
     ):
@@ -943,7 +954,7 @@ class histogram(bars):
         data = np.asarray(data)
         
         # bin data
-        hist, bins = np.histogram(
+        hist, bins_ = np.histogram(
             a=data,
             bins=bins,
             range=xrange,
@@ -957,10 +968,12 @@ class histogram(bars):
         super().__init__(
             values=hist,
             width=width,
+            bar_height=1,
+            bar_spacing=0,
             vrange=max_count,
             color=color,
         )
-        self.bins = bins
+        self.bins = bins_
 
     def __repr__(self):
         return (
@@ -984,6 +997,8 @@ class columns(plot):
         An array of non-negative values to display.
     * height : int (default: 10).
         The total width of full columns.
+    * column_width: int (default 1).
+    * column_spacing: int (default 0).
     * vrange : None | number | (number, number).
         Determine the scaling of the columns.
         * If omitted, the columns are scaled such that the columns(s) with the
@@ -1001,12 +1016,14 @@ class columns(plot):
 
     * Make it possible to draw columns downward for values below 0.
     * Make it possible to align all columns to the top rather than bottom.
-    * Allow each column to have a height other than 1, and allow spacing.
+    * Allow each column to have its own color.
     """
     def __init__(
         self,
         values: ArrayLike, # number[n], actually int[n] will also work
         height: int = 10,
+        column_width: int = 1,
+        column_spacing: int = 0,
         vrange: None | number | tuple[number, number] = None,
         color: ColorLike | None = None,
     ):
@@ -1022,24 +1039,32 @@ class columns(plot):
             vmax = vrange
         elif isinstance(vrange, tuple):
             vmin, vmax = vrange
-        color_ = Color.parse(color)
+        num_cols = len(values)
 
         # compute the column heights
         norm_values = (values - vmin) / (vmax - vmin + 1e-15)
         
-        # construct the column chart!
-        columns = [
-            [ Char(block, fg=color_) for block in unicode_col(v, height) ]
-            for v in norm_values
+        # construct the columns
+        cols_chars = [
+            unicode_col(
+                proportion=v,
+                height=height,
+                width=column_width,
+                fgcolor=color,
+                bgcolor=None,
+            ).pad(
+                right=column_spacing * (i==num_cols-1),
+            )
+            for i, v in enumerate(norm_values)
         ]
-        chars = [
-            [ columns[j][i] for j in range(len(columns)) ]
-            for i in range(height)
-        ]
-        super().__init__(chars=chars)
+        all_chars = CharArray.map(
+            lambda xs: np.concatenate(xs, axis=0), 
+            cols_chars,
+        )
+        super().__init__(chars=all_chars)
         self.vmin = vmin
         self.vmax = vmax
-        self.num_cols = len(values)
+        self.num_cols = num_cols
 
     def __repr__(self):
         return (
@@ -1062,13 +1087,12 @@ class vistogram(columns):
 
     * data : number[n].
         An array of values to count.
-    * xrange : optional (number, number).
+    * xrange : optional (float, float).
         If provided, bins range over this interval, and values outside the
         range are discarded. Same as np.histogram's range argument.
-    * bins : optional int, sequence, or str.
-        If provided, used to determine number of bins, bin boundaries, or bin
-        boundary determination method. See np.histogram's bins argument for
-        details.
+    * bins : int (default: 10).
+        Used to determine number of bins. Bins are evenly spaced as if this
+        number if provided to np.histogram's bins argument.
     * weights : optional number[n].
         If provided, each element in data contributes this amount to the count
         for its bin (rather than the default 1). See np.histogram's weights
@@ -1088,11 +1112,11 @@ class vistogram(columns):
     """
     def __init__(
         self,
-        data: ArrayLike,    # number[n]
-        bins = 10,          # as in np.histogram
-        xrange = None,      # as 'range' parameter in np.histogram
-        weights = None,     # as in np.histogram
-        density = False,    # as in np.histogram
+        data: ArrayLike, # number[n]
+        bins: int = 10,
+        xrange: tuple[float, float] | None = None,
+        weights: ArrayLike | None = None, # optional number[n]
+        density: bool = False,
         max_count: None | number = None,
         height: int = 10,
         color: ColorLike | None = None,
@@ -1101,7 +1125,7 @@ class vistogram(columns):
         data = np.asarray(data)
         
         # bin data
-        hist, bins = np.histogram(
+        hist, bins_ = np.histogram(
             a=data,
             bins=bins,
             range=xrange,
@@ -1115,10 +1139,12 @@ class vistogram(columns):
         super().__init__(
             values=hist,
             height=height,
+            column_width=1,
+            column_spacing=0,
             vrange=max_count,
             color=color,
         )
-        self.bins = bins
+        self.bins = bins_
 
     def __repr__(self):
         return (
@@ -1155,7 +1181,6 @@ class hilbert(plot):
         data = np.asarray(data)
         N, = data.shape
         n = max(2, ((N-1).bit_length() + 1) // 2)
-        color_ = Color.parse(color)
 
         # compute dot array
         curve: np.ndarray = _hilbert.decode(
@@ -1175,7 +1200,7 @@ class hilbert(plot):
         # render data grid as a grid of braille characters
         chars = unicode_braille_array(
             dots=dots,
-            color=color_,
+            fgcolor=color,
         )
         super().__init__(chars)
         self.num_points = len(curve)
@@ -1222,20 +1247,26 @@ class text(plot):
     def __init__(
         self,
         text: str,
-        color: ColorLike | None = None,
+        fgcolor: ColorLike | None = None,
         bgcolor: ColorLike | None = None,
     ):
-        color_ = Color.parse(color)
-        bgcolor_ = Color.parse(bgcolor)
-
         lines = text.splitlines()
         height = len(lines)
         width = max(len(line) for line in lines)
-        chars = [
-            [Char(c, fg=color_, bg=bgcolor_) for c in line]
-            + [BLANK] * (width - len(line))
-            for line in lines
-        ]
+        
+        # blank canvas
+        chars = CharArray.from_size(
+            height=height,
+            width=width,
+            fgcolor=fgcolor,
+            bgcolor=bgcolor,
+        )
+
+        # paint the text
+        for i, line in enumerate(lines):
+            chars.codes[i, :len(line)] = [ord(c) for c in line]
+        
+        # initialise
         super().__init__(chars=chars)
         if height > 1 or width > 8:
             self.preview = lines[0][:5] + "..."
@@ -1263,18 +1294,16 @@ class border(plot):
         The color of the border characters. Defaults to the terminal's
         default foreground color.
     """
-
     def __init__(
         self,
         plot: plot,
         style: BoxStyle = BoxStyle.ROUND,
         color: ColorLike | None = None,
     ):
-        color_ = Color.parse(color)
         chars = unicode_box(
             chars=plot.chars,
             style=style,
-            color=Color.parse(color),
+            fgcolor=color,
         )
         super().__init__(
             chars,
@@ -1302,14 +1331,13 @@ class blank(plot):
       The height of the blank area in character rows. Default 1.
     * width : optional int.
       The width of the blank area in character columns. Default 1.
-
     """
     def __init__(
         self,
         height: int = 1,
         width: int = 1,
     ):
-        chars = [[BLANK] * width] * height
+        chars = CharArray.from_size(height=height, width=width)
         super().__init__(chars)
 
     def __repr__(self):
@@ -1333,15 +1361,12 @@ class hstack(plot):
         *plots: plot,
     ):
         height = max(p.height for p in plots)
-        width = sum(p.width for p in plots)
-        # build array left to right one plot at a time
-        chars : list[list[Char]] = [[] for _ in range(height)]
-        for p in plots:
-            for i in range(p.height):
-                chars[i].extend(p.chars[i])
-            for i in range(p.height, height):
-                chars[i].extend([BLANK] * p.width)
-        super().__init__(chars)
+        padded_chars = [p.chars.pad(below=height-p.height) for p in plots]
+        catted_chars = CharArray.map(
+            lambda xs: np.concatenate(xs, axis=1), 
+            padded_chars,
+        )
+        super().__init__(catted_chars)
         self.plots = plots
 
     def __repr__(self):
@@ -1367,14 +1392,13 @@ class vstack(plot):
         self,
         *plots: plot,
     ):
-        height = sum(p.height for p in plots)
         width = max(p.width for p in plots)
-        # build the array top to bottom one plot at a time
-        chars = []
-        for p in plots:
-            for row in p.chars:
-                chars.append(row + [BLANK] * (width - p.width))
-        super().__init__(chars)
+        padded_chars = [p.chars.pad(right=width-p.width) for p in plots]
+        catted_chars = CharArray.map(
+            lambda xs: np.concatenate(xs, axis=0),
+            padded_chars,
+        )
+        super().__init__(catted_chars)
         self.plots = plots
 
     def __repr__(self):
@@ -1405,21 +1429,21 @@ class dstack(plot):
         height = max(p.height for p in plots)
         width = max(p.width for p in plots)
         # build the array front to back one plot at a time
-        chars = [ [BLANK for _ in range(width) ] for _ in range(height) ]
+        stacked_chars = CharArray.from_size(height=height, width=width)
         for p in plots:
-            for i, line in enumerate(p.chars):
-                for j, c in enumerate(line):
-                    if c.isblank():
-                        # keep underlying character
-                        pass
-                    elif c.bg is None:
-                        # override, but use the (effective) background of the
-                        # underlying char as the new background
-                        chars[i][j] = Char(c=c.c, fg=c.fg, bg=chars[i][j].bg_)
-                    else:
-                        # simply override
-                        chars[i][j] = c
-        super().__init__(chars)
+            h = p.height
+            w = p.width
+            # keep new nonblank characters and foreground
+            mask = p.chars.isnonblank()
+            stacked_chars.codes[:h, :w][mask] = p.chars.codes[mask]
+            stacked_chars.fg[:h, :w][mask] = p.chars.fg[mask]
+            stacked_chars.fg_rgb[:h, :w][mask] = p.chars.fg_rgb[mask]
+            # keep new background, or old background if no new background
+            bgmask = mask & p.chars.bg
+            stacked_chars.bg[:h, :w][bgmask] = True
+            stacked_chars.bg_rgb[:h, :w][bgmask] = p.chars.bg_rgb[bgmask]
+
+        super().__init__(stacked_chars)
         self.plots = plots
 
     def __repr__(self):
@@ -1451,34 +1475,39 @@ class wrap(plot):
         *plots: plot,
         cols: int | None = None,
     ):
+        # match size
         cell_height = max(p.height for p in plots)
         cell_width = max(p.width for p in plots)
+        padded_chars = [
+            p.chars.pad(
+                below=cell_height - p.height,
+                right=cell_width - p.width,
+            ) for p in plots
+        ]
+
+        # wrap list
         if cols is None:
             cols = max(1, os.get_terminal_size()[0] // cell_width)
-        # wrap list of plots into groups, of length `cols` (except last)
-        wrapped_plots: list[list[plot]] = []
-        for i, plot in enumerate(plots):
-            if i % cols == 0:
-                wrapped_plots.append([])
-            wrapped_plots[-1].append(plot)
-        # build the array left/right, top/down, one plot at a time
-        chars = []
-        for group in wrapped_plots:
-            row: list[list[Char]] = [[] for _ in range(cell_height)]
-            for p in group:
-                for i in range(p.height):
-                    row[i].extend(p.chars[i])
-                    row[i].extend([BLANK] * (cell_width - p.width))
-                for i in range(p.height, cell_height):
-                    row[i].extend([BLANK] * cell_width)
-            chars.extend(row)
-        # correction for the final row
-        if len(group) < cols:
-            buffer = [BLANK] * cell_width * (cols - len(group))
-            for i in range(cell_height):
-                chars[-cell_height+i].extend(buffer)
-        # done!
-        super().__init__(chars)
+        n = len(padded_chars)
+        wrapped_chars = [padded_chars[i:i+cols] for i in range(0, n, cols)]
+
+        # correct final row
+        if len(wrapped_chars) > 1 and len(wrapped_chars[-1]) < cols:
+            buffer = CharArray.from_size(
+                height=cell_height,
+                width=cell_width * (cols - len(wrapped_chars[-1])),
+            )
+            wrapped_chars[-1].append(buffer)
+
+        # combine into new char array
+        blocked_chars = CharArray(
+            codes=np.block([[c.codes for c in row] for row in wrapped_chars]),
+            fg=np.block([[c.fg for c in row] for row in wrapped_chars]),
+            fg_rgb=np.block([[[c.fg_rgb] for c in row] for row in wrapped_chars]),
+            bg=np.block([[c.bg for c in row] for row in wrapped_chars]),
+            bg_rgb=np.block([[[c.bg_rgb] for c in row] for row in wrapped_chars]),
+        )
+        super().__init__(blocked_chars)
         self.plots = plots
 
     def __repr__(self):
@@ -1513,23 +1542,31 @@ class center(plot):
         height: int | None = None,
         width: int | None = None,
     ):
-        height = plot.height if height is None else max(height, plot.height)
-        width = plot.width if width is None else max(width, plot.width)
-        def _center(inner_size, outer_size):
-            diff = outer_size - inner_size
-            left = diff // 2
-            right = left + (diff % 2)
-            return left, right
-        left, right = _center(plot.width, width)
-        above, below = _center(plot.height, height)
-        chars = (
-            [[BLANK] * width] * above
-            + [
-                [BLANK] * left + row + [BLANK] * right for row in plot.chars
-            ]
-            + [[BLANK] * width] * below
+        # decide padding amounts
+        # horizontal
+        if height is None or height <= plot.height:
+            above = 0
+            below = 0
+        else:
+            hdiff = height - plot.height
+            above = hdiff // 2
+            below = above + (hdiff % 2)
+        # vertical
+        if width is None or width <= plot.width:
+            left = 0
+            right = 0
+        else:
+            wdiff = width - plot.width
+            left = wdiff // 2
+            right = left + (wdiff % 2)
+        # pad the character array
+        padded_chars = plot.chars.pad(
+            above=above,
+            below=below,
+            left=left,
+            right=right,
         )
-        super().__init__(chars)
+        super().__init__(padded_chars)
         self.plot = plot
     
     def __repr__(self):
@@ -1546,11 +1583,11 @@ class center(plot):
 def save_animation(
     plots: Sequence[plot], # non-empty
     filename: str,
-    scale_factor: int = 1,
+    upscale: int = 1,
+    downscale: int = 1,
     bgcolor: ColorLike | None = None,
-    upscale=1,
-    fps=12,
-    repeat=True,
+    fps: int = 12,
+    repeat: bool = True,
 ):
     """
     Supply a list of plots and a filename and this method will create an
@@ -1562,8 +1599,12 @@ def save_animation(
         The list of plots forming the frames of the animation.
     * filename : str.
         Where to save the gif. Should usually include a '.gif' extension.
-    * scale_factor : int (>=1, default is 1).
-        Width/height of pixel representation of each logical pixel.
+    * upscale : int (>=1, default is 1).
+        Represent each pixel with a square of side-length `upscale` pixels.
+    * downscale : int (>=1, default is 1).
+        Keep every `downscale`th pixel. Does not need to evenly divide the
+        image height or width (think slice(0, height or width, downscale)).
+        Applied after upscaling.
     * bgcolor : ColorLike | None.
         Default background colour. If none, a transparent background is used.
     * fps : int.
@@ -1581,16 +1622,15 @@ def save_animation(
 
     TODO:
 
-    * Consider allowing downscaling as well as upscaling.
     * Consider making this a plot aggregator and overriding .saveimg(). The
       only problem is that it's unclear what to use for renderimg and
       renderstr.
     """
     # render plots as image arrays
-    bgcolor = Color.parse(bgcolor)
     frames = [
         plot.renderimg(
-            scale_factor=scale_factor,
+            upscale=upscale,
+            downscale=downscale,
             bgcolor=bgcolor,
         ) for plot in plots
     ]

@@ -86,11 +86,14 @@ def main():
                     continue
                 date = datetime.date(year, month, day)
                 if date not in DATA:
-                    day_plots.append(mp.text(EMPTY_DAY, color=(0,0,0)))
+                    day_plots.append(mp.text(
+                        EMPTY_DAY,
+                        fgcolor=(0,0,0),
+                    ))
                     continue
                 day_plots.append(mp.text(
                     COUNT_DAY,
-                    color=mp.cyber(1-norm_data[date]),
+                    fgcolor=mp.cyber(1-norm_data[date]),
                     bgcolor=(0,0,0),
                 ))
             week_plots.append(mp.hstack(*day_plots))
@@ -105,6 +108,7 @@ def main():
             year += 1
             month = 1
 
+    # combine
     plot = mp.wrap(*month_plots)
     
     print("printing plot...")

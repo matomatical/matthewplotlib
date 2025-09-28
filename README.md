@@ -153,6 +153,7 @@ Basic plot arrangement:
 
 Styling plots with colors:
 
+* [ ] Consistent API for color specification.
 * [x] Basic colormaps.
 * [x] BIDS colormaps.
 * [x] Rainbow colormap.
@@ -167,6 +168,7 @@ Rendering:
 Basic code improvements:
 
 * [x] Split up monolithic file into a small number of modules.
+* [ ] Split up plotting module with one file per plot type.
 * [x] Comprehensive type annotations, static type checking with mypy.
 * [ ] Robust input validation and error handling.
 * [ ] Tests.
@@ -183,7 +185,8 @@ Repository:
 
 * [x] Set up project, installable via git.
 * [x] A simple example for the quick-start guide.
-* [x] Version numbering and changelog.
+* [x] Changelog.
+* [ ] Version numbering and keep main branch working.
 * [ ] List on PyPI.
 
 Advanced features roadmap
@@ -197,7 +200,8 @@ More plot types:
   * [ ] Error bars on line plots.
   * [ ] Fill plots.
 * Advanced bar charts:
-  * [ ] Bar/column charts with configurable sizes, spacing, alignment.
+  * [x] Bar/column charts with configurable sizes and spacing.
+  * [ ] Bar/column charts with other alignments.
   * [ ] Negative values in bar/column charts.
 * Hilbert curves:
   * [x] Basic Hilbert curves.
@@ -231,16 +235,14 @@ Advanced rendering:
 
 Back end improvements:
 
-* [ ] Upgrade Char backend to use arrays of codepoints and colors (think
-  PyTrees from JAX to replace the current nested lists of dataclasses).
-* [ ] Vectorised composition operations.
-* [ ] Vectorised bitmap rendering.
-* [ ] Faster and more intelligent ANSI rendering (only include necessary
-  control codes and resets, e.g., if several characters in a row use the same
-  colours).
+* [x] Upgrade Char backend to use arrays of codepoints and colors.
+* [x] Vectorised composition operations.
+* [x] Vectorised bitmap rendering.
+* [x] Intelligent ANSI rendering (only include necessary control codes and
+  resets, e.g., if several characters in a row use the same colours).
 * [ ] Faster animated plot redraws (e.g., differential rendering with shortcut
   `-`).
-* [ ] Consider reactive programming principles.
+* [ ] Clean up backend code e.g. using JAX PyTrees and vectorisation.
 
 More elaborate documentation:
 
@@ -250,6 +252,10 @@ More elaborate documentation:
 * [ ] Links to mentioned functions/classes/methods/types within documentation
   (automatically linked to relevant release).
 * [ ] Documentation search.
+
+Future design directions.
+
+* [ ] Reactive plots.
 
 Related work
 ------------

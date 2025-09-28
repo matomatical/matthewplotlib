@@ -18,11 +18,6 @@ dots = np.array([
 print("dot patterns")
 print(dots.astype(int))
 
-braille_codepoints = mpc.braille_encode(dots)
-print("braille codepoints")
-print(braille_codepoints)
-
+braille_chars = mpc.unicode_braille_array(dots)
 print("braille characters")
-for row in braille_codepoints:
-    braille_characters = [chr(int(b)) for b in row]
-    print("".join(braille_characters))
+print(braille_chars.to_ansi_str())
