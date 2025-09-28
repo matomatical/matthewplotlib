@@ -186,7 +186,7 @@ Repository:
 * [x] Set up project, installable via git.
 * [x] A simple example for the quick-start guide.
 * [x] Changelog.
-* [ ] Version numbering and keep main branch working.
+* [x] Version numbering and keep main branch working.
 * [ ] List on PyPI.
 
 Advanced features roadmap

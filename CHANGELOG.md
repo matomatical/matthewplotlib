@@ -11,6 +11,7 @@ Steps to update the version:
 
 * Decide on a new version number.
 * Bump `__version__` in `__init__.py`.
+* Bump version in `pyproject.toml`.
 * `make DOCS.md`.
 * Push/merge new code into main branch.
 * On github, make a new release with a new tag.
@@ -25,6 +26,14 @@ Plans:
 * [ ] Line plots (connect the dots).
 * [ ] Axis ticks and tick labels for scatter plots.
 * [ ] Labels and ticks for bar/column charts and histograms.
+
+Version 0.2.1:
+--------------
+
+Fix:
+
+* Regenerate documentation.
+* Update version number properly.
 
 Version 0.2.0:
 --------------
