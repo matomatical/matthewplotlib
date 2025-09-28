@@ -9,6 +9,7 @@ FPS = 10
 WIDTH  = 80
 HEIGHT = 25
 
+
 # configure camera path
 ORBIT_RADIUS = 4.5
 ORBIT_HEIGHT = 2.5
@@ -25,25 +26,20 @@ def main():
         # plot
         if plot:
             print(-plot, end="")
-        plot = mp.dstack(*[
-            mp.scatter3(
-                data=xyz,
-                camera_position=p,
-                vertical_fov_degrees=70,
-                height=HEIGHT,
-                width=WIDTH,
-                color=c,
-            )
-            for xyz, c in [
-                ([[x,0,0] for x in np.linspace(0,1)], 'red'),
-                ([[0,y,0] for y in np.linspace(0,1)], 'green'),
-                ([[0,0,z] for z in np.linspace(0,1)], 'blue'),
-                (TEAPOT, None),
-            ]
-        ])
+        plot = mp.scatter3(
+            xs=XS,
+            ys=YS,
+            zs=ZS,
+            cs=CS,
+            camera_position=p,
+            vertical_fov_degrees=70,
+            height=HEIGHT,
+            width=WIDTH,
+        )
         print(plot)
 
         time.sleep(1/FPS)
+
 
 
 def camera_pos(t: float) -> np.ndarray:
@@ -661,6 +657,22 @@ TEAPOT = np.array([
     [+3.417,+2.329,+0.000], [+3.417,+2.329,+0.026], [+3.418,+2.325,-0.083],
     [+3.418,+2.325,+0.083], [+3.444,+2.326,+0.000], [+3.444,+2.326,+0.030],
 ]) - np.array([0., 1. ,0.])
+    
+XS = np.concatenate(
+    [np.linspace(0,1,10), np.zeros(10), np.zeros(10), TEAPOT[:,0]],
+)
+YS = np.concatenate(
+    [np.zeros(10), np.linspace(0,1,10), np.zeros(10), TEAPOT[:,1]],
+)
+ZS = np.concatenate(
+    [np.zeros(10), np.zeros(10), np.linspace(0,1,10), TEAPOT[:,2]],
+)
+CS = (255*np.block([
+    [np.ones((10, 1)), np.zeros((10, 1)), np.zeros((10, 1))],
+    [np.zeros((10, 1)), np.ones((10, 1)), np.zeros((10, 1))],
+    [np.zeros((10, 1)), np.zeros((10, 1)), np.ones((10, 1))],
+    [np.ones((len(TEAPOT), 3))],
+])).astype(np.uint8)
 
 
 if __name__ == "__main__":

@@ -35,7 +35,8 @@ plot = (
     |
     mp.border(
         mp.scatter(
-            data=np.random.normal(size=(300, 2)),
+            xs=np.random.normal(size=300),
+            ys=np.random.normal(size=300),
             height=18,
             width=46,
             xrange=(-5, +5),

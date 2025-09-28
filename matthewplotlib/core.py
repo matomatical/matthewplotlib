@@ -364,31 +364,44 @@ BRAILLE_MAP = np.array([
 
 
 def unicode_braille_array(
-    dots: NDArray, # bool[4h, 2w]
+    dots: NDArray, # bool[H, W] or int[H, W]
+    dotc: NDArray | None = None, # uint8[H, W, rgb]
+    dotw: NDArray | None = None, # float[H, W]
     fgcolor: ColorLike | None = None,
     bgcolor: ColorLike | None = None,
-) -> CharArray: # Char[h, w]
+) -> CharArray: # Char[ceil(H/4), ceil(W/2)]
     """
-    Turns a HxW array of booleans into a (H//4)x(W//2) array of braille
-    binary codes.
+    Turns a H by W array of dots into a h=ceil(H/4) by w=ceil(W/2) array of
+    braille Unicode characters.
 
     Inputs:
 
-    * dots: bool[4h, 2w].
-        Array of booleans, height divisible by 4 and width divisible by 2.
+    * dots: bool[H, W].
+        Array of booleans or counts. Dots are placed where this array contains
+        nonzero.
+    * dotc: optional uint8[H, W, RGB].
+        Array of colours to use for the fg of each dot. Where multiple dots
+        are coloured within one one character, mixes the colours according to
+        dotw.
+    * dotw: optional float[H, W].
+        Weights for combining colors when multiple dots occur in one cell. If
+        not provided, combine uniformly. If dotc is not provided, this is not
+        used.
     * fgcolor: optional Color.
-        Foreground color used for braille characters.
+        Foreground color used for all braille characters. Overrides dotc if
+        both are provided.
     * bgcolor: optional Color.
         Background color used for all characters.
 
     Returns:
 
     * chars: CharArray.
-        An array of Braille characters with H rows and W columns.
+        An array of Braille characters with h rows and w columns.
 
-    An illustrated example is as follows:
+    An illustrated example, not including colour combination, is as follows:
     ```
-    Start with an array with height divisible by 4, width divisible by 2:
+    Start with an array. Assume height is divisible by 4 and width divisible by
+    2, otherwise pad with 0s until that is the case.
         ____
        [1  0] 0  1  0  1  1  1  1  0  1  0  0  0  0  1  0  0  0  0  0  1  1  0
        [1  0] 0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
@@ -413,17 +426,33 @@ def unicode_braille_array(
      .-----------------------------------------------------------------------'
      |  '''
      `->⡇⢸⢸⠉⠁⡇⠀⢸⠀⠀⡎⢱  (Note: this function returns a CharArray, use
-        ⡏⢹⢸⣉⡁⣇⣀⢸⣀⡀⢇⡸  .to_ansi_str to get a string.)
+        ⡏⢹⢸⣉⡁⣇⣀⢸⣀⡀⢇⡸  .to_plain_str() to get a string.)
         '''
     ```
     """
     # process input
-    dots_ = np.asarray(dots, dtype=bool)
-    H, W = dots_.shape
+    dots = dots.astype(bool)
+    H, W = dots.shape
+    if dotc is not None and fgcolor is not None:
+        dotc = None
+    if dotc is not None and dotw is None:
+        dotw = np.ones_like(dots, dtype=float)
+
+    # pad to next multiple of (4, 2)
+    hpad = H % 4
+    wpad = W % 2
+    if hpad or wpad:
+        padding = ((0, 4-hpad), (0, 2-wpad))
+        dots = np.pad(dots, padding, constant_values=False)
+        H, W = dots.shape
+        if dotc is not None:
+            assert dotw is not None
+            dotc = np.pad(dotc, (*padding, (0,0)), constant_values=0)
+            dotw = np.pad(dotw, padding, constant_values=0.)
+
+    # chunk it into 4x2 cells
     h, w = H // 4, W // 2
-    
-    # create a view that chunks it into 4x2 cells
-    cells = dots_.reshape(h, 4, w, 2)
+    cells = dots.reshape(h, 4, w, 2)
     
     # convert each bit in each cell into a mask and combine into code array
     masks = np.left_shift(cells, BRAILLE_MAP.reshape(1,4,1,2), dtype=np.uint32)
@@ -435,8 +464,46 @@ def unicode_braille_array(
         0x2800 + codes,
         ord(" "),
     )
-    
-    return CharArray.from_codes(codes, fgcolor, bgcolor)
+
+    # determine cell colors
+    fgcolor_ = parse_color(fgcolor)
+    if fgcolor_ is not None:
+        fg = np.ones_like(codes, dtype=bool)
+        fg_rgb = np.full(
+            (*codes.shape, 3),
+            fgcolor_,
+            dtype=np.uint8,
+        )
+    elif dotc is not None:
+        assert dotw is not None
+        cellc = dotc.reshape(h, 4, w, 2, 3)
+        cellw = dotw.reshape(h, 4, w, 2, 1)
+        numer = np.sum(cellc * cellw, axis=(1,3))
+        denom = np.sum(cellw, axis=(1,3))
+        fg = (denom > 0)[:,:,0]
+        fg_rgb = np.zeros((h, w, 3), dtype=np.uint8)
+        fg_rgb[fg] = numer[fg] / denom[fg]
+        # TODO: Colormap after averaging...?
+    else:
+        fg = np.zeros_like(codes, dtype=bool)
+        fg_rgb = np.zeros((*codes.shape, 3), dtype=np.uint8)
+        
+    # background colors
+    bgcolor_ = parse_color(bgcolor)
+    if bgcolor_ is None:
+        bg = np.zeros_like(codes, dtype=bool)
+        bg_rgb = np.zeros((*codes.shape, 3), dtype=np.uint8)
+    else:
+        bg = np.ones_like(codes, dtype=bool)
+        bg_rgb = np.full((*codes.shape, 3), bgcolor_, dtype=np.uint8)
+
+    return CharArray(
+        codes=codes,
+        fg=fg,
+        fg_rgb=fg_rgb,
+        bg=bg,
+        bg_rgb=bg_rgb,
+    )
 
 
 # # # 

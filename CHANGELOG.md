@@ -3,6 +3,7 @@ Note to self
 
 Things to check before updating a new release:
 
+* mypy checks pass.
 * All examples run without errors.
 * Road map is up to date.
 * Change log is up to date.
@@ -16,16 +17,29 @@ Steps to update the version:
 * Push/merge new code into main branch.
 * On github, make a new release with a new tag.
 
+Next steps
+----------
+
+Immediate plans:
+
+* [ ] Improve cs handling to be more like ColorLike and image.
+* [ ] Good API for multiple point clouds on a single scatter plot.
+
+(See also other branches and roadmap...)
+
 In development:
 ---------------
 
-Plans:
+Breaking changes:
 
-* [ ] Different colours for each point.
-* [ ] Multiple point clouds on a single scatter plot.
-* [ ] Line plots (connect the dots).
-* [ ] Axis ticks and tick labels for scatter plots.
-* [ ] Labels and ticks for bar/column charts and histograms.
+* scatter and scatter3 take xs, ys, (zs), separately instead of as a single
+  array.
+
+New:
+
+* scatter and scatter3 accept cs, an array of colors (one for each point), and
+  plot using them, using weighted averaging to combine plots.
+
 
 Version 0.2.1:
 --------------
