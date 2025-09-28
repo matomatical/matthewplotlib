@@ -1,7 +1,30 @@
+Note to self
+------------
+
+Things to check before updating a new release:
+
+* All examples run without errors.
+* Road map is up to date.
+* Change log is up to date.
+
+Steps to update the version:
+
+* Decide on a new version number.
+* Bump `__version__` in `__init__.py`.
+* `make DOCS.md`.
+* Push/merge new code into main branch.
+* On github, make a new release with a new tag.
+
 In development:
 ---------------
 
-TODO
+Plans:
+
+* [ ] Different colours for each point.
+* [ ] Multiple point clouds on a single scatter plot.
+* [ ] Line plots (connect the dots).
+* [ ] Axis ticks and tick labels for scatter plots.
+* [ ] Labels and ticks for bar/column charts and histograms.
 
 Version 0.2.0:
 --------------
