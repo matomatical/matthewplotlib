@@ -17,29 +17,27 @@ Steps to update the version:
 * Push/merge new code into main branch.
 * On github, make a new release with a new tag.
 
-Next steps
-----------
-
-Immediate plans:
-
-* [ ] Improve cs handling to be more like ColorLike and image.
-* [ ] Good API for multiple point clouds on a single scatter plot.
-
-(See also other branches and roadmap...)
-
 In development:
 ---------------
 
 Breaking changes:
 
-* scatter and scatter3 take xs, ys, (zs), separately instead of as a single
-  array.
+* scatter and scatter3 take xs, ys, (zs), and color as series tuples in
+  positional arguments.
+* removed function plot type (since scatter is now much easier to use).
 
 New:
 
 * scatter and scatter3 accept cs, an array of colors (one for each point), and
   plot using them, using weighted averaging to combine plots.
+* scatter and scatter3 now accept multiple series at once.
+* special series for X/Y/Z axes.
 
+TODO:
+
+* Improve specification of colours; separate from series? More like image with
+  a colormap?
+* Labelled axes.
 
 Version 0.2.1:
 --------------

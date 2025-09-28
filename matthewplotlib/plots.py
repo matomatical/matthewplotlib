@@ -49,6 +49,16 @@ from numpy.typing import ArrayLike, NDArray
 from matthewplotlib.colormaps import ColorMap
 from numbers import Number
 
+from matthewplotlib.colors import ColorLike
+from matthewplotlib.data import (
+    number,
+    Series,
+    Series3,
+    parse_range,
+    parse_multiple_series,
+    parse_multiple_series3,
+    project3,
+)
 from matthewplotlib.core import (
     ColorLike,
     CharArray,
@@ -58,10 +68,9 @@ from matthewplotlib.core import (
     unicode_bar,
     unicode_col,
     unicode_image,
-    project3,
 )
 
-type number = int | float | np.integer | np.floating
+
 
 
 # # # 
@@ -269,15 +278,12 @@ class scatter(plot):
 
     Inputs:
 
-    * xs : number[n].
-        X coordinates of points to plot.
-    * ys : number[n].
-        Y coordinates of points to plot.
-    * cs : optional uint8[n, rgb].
-        Optional RGB colours of each point to be scattered.
-    * color : optional ColorLike.
-        Colour all the points at once. If provided, overrides `cs`. If neither
-        is provided, the points use the terminal's default foreground colour.
+    * series : Series.
+         X Y data, for example a tuple (xs, ys) or triple (xs, ys, cs) where
+         cs is a ColorLike or a list of RGB triples. See documentation for more
+         examples.
+    * *etc.
+        Further series.
     * xrange : optional (number, number).
         The x-axis limits `(xmin, xmax)`. If not provided, the limits are
         inferred from the min and max x-values in the data.
@@ -293,27 +299,18 @@ class scatter(plot):
     """
     def __init__(
         self,
-        xs: ArrayLike, # number[n]
-        ys: ArrayLike, # number[n]
-        cs: ArrayLike | None = None, # optional number[n]
-        color: ColorLike | None = None,
-        xrange: tuple[number, number] | None = None,
-        yrange: tuple[number, number] | None = None,
+        series: Series,
+        *etc: Series,
+        xrange: tuple[number | None, number | None] | None = None,
+        yrange: tuple[number | None, number | None] | None = None,
         width: int = 30,
         height: int = 10,
     ):
-        xs = np.asarray(xs)
-        ys = np.asarray(ys)
-        cs = np.asarray(cs)
+        # parse inputs into standard format
+        xs, ys, cs = parse_multiple_series(series, *etc)
         n, = xs.shape
-        
-        # determine data bounds
-        xmin = xs.min() if xrange is None or xrange[0] is None else xrange[0]
-        xmax = xs.max() if xrange is None or xrange[1] is None else xrange[1]
-        xrange = (xmin, xmax)
-        ymin = ys.min() if yrange is None or yrange[0] is None else yrange[0]
-        ymax = ys.max() if yrange is None or yrange[1] is None else yrange[1]
-        yrange = (ymin, ymax)
+        xrange = parse_range(xs, xrange)
+        yrange = parse_range(ys, yrange)
         
         # quantise 2d float coordinates to data grid
         counts, xedges, yedges = np.histogram2d(
@@ -327,25 +324,19 @@ class scatter(plot):
         dots = counts > 0
         
         # determine colours for each position
-        dotc: NDArray | None # uint8[H, W, 3]
-        if cs is not None:
-            # figure out which half-open bins each point falls into
-            ci = np.searchsorted(xedges, xs, side='right') - 1
-            cj = np.searchsorted(yedges, ys, side='right') - 1
-            # handle edge case where final bin is closed
-            ci[xs == xedges[-1]] = 2 * width - 1
-            cj[ys == yedges[-1]] = 4 * height - 1
-            valid = (ci >= 0) & (ci < 2*width) & (cj >= 0) & (cj < 4*height)
-            # average colors to each cell
-            total_colors = np.zeros((2*width, 4*height, 3))
-            np.add.at(total_colors, (ci[valid], cj[valid]), cs[valid])
-            total_colors[dots] /= counts[dots,None]
-            # round to uint8
-            dotc = total_colors.astype(np.uint8)
-            dotw = counts
-        else:
-            dotc = None
-            dotw = None
+        # 1: figure out which bins each point fell into
+        ci = np.searchsorted(xedges, xs, side='right') - 1
+        cj = np.searchsorted(yedges, ys, side='right') - 1
+        ci[xs == xedges[-1]] = 2 * width - 1
+        cj[ys == yedges[-1]] = 4 * height - 1
+        valid = (ci >= 0) & (ci < 2*width) & (cj >= 0) & (cj < 4*height)
+        # 2: average over colors in each cell
+        total_colors = np.zeros((2*width, 4*height, 3))
+        np.add.at(total_colors, (ci[valid], cj[valid]), cs[valid])
+        total_colors[dots] /= counts[dots,None]
+        # round to uint8
+        dotc = total_colors.astype(np.uint8)
+        dotw = counts
         
         # convert to Cartesian coordinates (+x right, -y down)
         dots = dots.T[::-1]
@@ -358,7 +349,6 @@ class scatter(plot):
             dots=dots,
             dotc=dotc,
             dotw=dotw,
-            fgcolor=color,
         )
         super().__init__(chars)
         self.xrange = xrange
@@ -374,82 +364,16 @@ class scatter(plot):
         )
 
 
-class function(scatter):
-    """
-    Scatter plot representing a particular function.
-
-    * F : float[batch] -> number[batch]
-        The (vectorised) function to plot. The input should be a batch of
-        floats x. The output should be a batch of scalars f(x).
-    * xrange : (float, float)
-        Lower and upper bounds on the x values to pass into the function.
-    * width : int
-        The number of character columns in the plot.
-    * height : int
-        The number of character rows in the plot.
-    * yrange : optional (float, float)
-        If provided, specifies the expected lower and upper bounds on the f(x)
-        values. If not provided, they are automatically determined by using the
-        minimum and maximum output over the inputs sampled.
-    * color : optional ColorLike
-        If provided, sets the colors for the scattered points. By default,
-        foreground color is used.
-
-    TODO:
-    
-    * More intelligent interpolation, like a proper line plot with a given
-      thickness.
-    """
-    def __init__(
-        self,
-        F: Callable[[np.ndarray], np.ndarray],
-        xrange: tuple[float, float],
-        width: int,
-        height: int,
-        yrange: tuple[float, float] | None = None,
-        color: None | ColorLike = None,
-    ):
-        # create a batch of inputs with the required format and shape
-        X = np.linspace(*xrange, num=8*width, endpoint=False)
-        
-        # sample the function
-        Y = F(X)
-
-        # create the scatter plot
-        super().__init__(
-            xs=X,
-            ys=Y,
-            width=width,
-            height=height,
-            xrange=xrange,
-            yrange=yrange,
-            color=color,
-        )
-        self.name = F.__name__
-        
-    def __repr__(self):
-        return ("function("
-                f"f={self.name}, "
-                f"input=[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]"
-        ")")
-
-
 class scatter3(scatter):
     """
     Scatter plot representing a 3d point cloud.
 
-    * xs: float[n].
-        X coordinates of points to plot.
-    * ys: float[n].
-        Z coordinates of points to plot.
-    * zs: float[n].
-        Z coordinates of points to plot.
-    * cs : optional uint8[n, rgb].
-        Optional RGB colours of each point to be scattered.
-    * color : optional ColorLike.
-        If provided, sets the colors for the scattered points (overriding
-        `cs`). If neither `color` nor `cs` is provided, points use the default
-        foreground color.
+    * series : Series3.
+         X Y Z data, for example a triple (xs, ys, zs) or quad (xs, ys, zs, cs)
+         where cs is a ColorLike or a list of RGB triples. See documentation
+         for more examples.
+    * *etc.: Series3
+        Further series.
     * camera_position: float[3] (default: [0. 0. 2.]).
         The position at which the camera is placed.
     * camera_target: float[3] (default: [0. 0. 0.]).
@@ -481,10 +405,8 @@ class scatter3(scatter):
     """
     def __init__(
         self,
-        xs: ArrayLike,                                          # float[n]
-        ys: ArrayLike,                                          # float[n]
-        zs: ArrayLike,                                          # float[n]
-        cs: ArrayLike | None = None,                            # uint8[n, 3]
+        series: Series3,
+        *etc: Series3,
         camera_position: np.ndarray = np.array([0., 0., 2.]),   # float[3]
         camera_target: np.ndarray = np.zeros(3),                # float[3]
         scene_up: np.ndarray = np.array([0.,1.,0.]),            # float[3]
@@ -492,13 +414,10 @@ class scatter3(scatter):
         aspect_ratio: float | None = None,
         width: int = 30,
         height: int = 15,
-        color: None | ColorLike = None,
     ):
-        xs = np.asarray(xs)
-        ys = np.asarray(ys)
-        zs = np.asarray(zs)
-        if cs is not None:
-            cs = np.asarray(cs)
+        # parse inputs into standard format
+        xs, ys, zs, cs = parse_multiple_series3(series, *etc)
+
         xy, valid = project3(
             xyz=np.c_[xs, ys, zs],
             camera_position=camera_position,
@@ -511,10 +430,7 @@ class scatter3(scatter):
 
         # create the scatter plot
         super().__init__(
-            xs=xy[valid, 0],
-            ys=xy[valid, 1],
-            cs=cs[valid] if cs is not None else None,
-            color=color,
+            (xy[valid], cs[valid]),
             width=width,
             height=height,
             xrange=(-aspect_ratio, aspect_ratio),

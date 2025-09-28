@@ -6,8 +6,8 @@ import matthewplotlib as mp
 
 # configure screen
 FPS = 10
-WIDTH  = 80
-HEIGHT = 25
+WIDTH = 80
+HEIGHT = 20
 
 
 # configure camera path
@@ -27,20 +27,19 @@ def main():
         if plot:
             print(-plot, end="")
         plot = mp.scatter3(
-            xs=XS,
-            ys=YS,
-            zs=ZS,
-            cs=CS,
+            (mp.xaxis(), "red"),
+            (mp.yaxis(), "green"),
+            (mp.zaxis(), "blue"),
+            TEAPOT,
             camera_position=p,
-            vertical_fov_degrees=70,
+            vertical_fov_degrees=55,
             height=HEIGHT,
             width=WIDTH,
         )
         print(plot)
 
         time.sleep(1/FPS)
-
-
+   
 
 def camera_pos(t: float) -> np.ndarray:
     angle = ORBIT_SPEED * t
@@ -657,22 +656,6 @@ TEAPOT = np.array([
     [+3.417,+2.329,+0.000], [+3.417,+2.329,+0.026], [+3.418,+2.325,-0.083],
     [+3.418,+2.325,+0.083], [+3.444,+2.326,+0.000], [+3.444,+2.326,+0.030],
 ]) - np.array([0., 1. ,0.])
-    
-XS = np.concatenate(
-    [np.linspace(0,1,10), np.zeros(10), np.zeros(10), TEAPOT[:,0]],
-)
-YS = np.concatenate(
-    [np.zeros(10), np.linspace(0,1,10), np.zeros(10), TEAPOT[:,1]],
-)
-ZS = np.concatenate(
-    [np.zeros(10), np.zeros(10), np.linspace(0,1,10), TEAPOT[:,2]],
-)
-CS = (255*np.block([
-    [np.ones((10, 1)), np.zeros((10, 1)), np.zeros((10, 1))],
-    [np.zeros((10, 1)), np.ones((10, 1)), np.zeros((10, 1))],
-    [np.zeros((10, 1)), np.zeros((10, 1)), np.ones((10, 1))],
-    [np.ones((len(TEAPOT), 3))],
-])).astype(np.uint8)
 
 
 if __name__ == "__main__":

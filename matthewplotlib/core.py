@@ -7,25 +7,14 @@ import numpy as np
 import einops
 
 from typing import Self, Callable
-from numpy.typing import NDArray, ArrayLike
+from numpy.typing import NDArray
 
 from matthewplotlib.unscii16 import bitmaps
-
-
-type ColorLike = (
-    str
-    | NDArray # float[3] (0 to 1) or uint8[3] (0 to 255)
-    | tuple[int, int, int]
-    | tuple[float, float, float]
-    | Color
-)
-
-
-type Color = NDArray # uint8[3]
+from matthewplotlib.colors import ColorLike, parse_color
 
 
 # # # 
-# Core coloured character array class
+# COLOURED CHARACTER ARRAY
 
 
 @dataclasses.dataclass
@@ -280,78 +269,6 @@ class CharArray:
 
 
 # # # 
-# Color handling
-
-
-def parse_color(color: ColorLike | None) -> Color | None:
-    """
-    Accept and standardise RGB triples in any of the following 'color like'
-    formats:
-
-    1. **Named colours:** The following strings are recognised and translated
-       to RGB triples: `"black"`, `"red"`, `"green"`, `"blue"`, `"cyan"`,
-       `"magenta"`, `"yellow"`, `"white"`.
-
-    2. **Hexadecimal:** A hexadecimal string like ``"#ff0000"`` specifying the
-       RGB values in the usual manner.
-
-    3. **Short hexadecimal:** A three-character hexadecimal string like
-       `"#f00"`, where `"#RGB"` is equivalent to `"#RRGGBB"` in the usual
-       hexadecimal format.
-
-    4. **Integer triple:** An array or tuple of three integers in the range 0
-       to 255, converted directly to an RGB triple.
-
-    5. **Float triple:** An array or tuple of three floats in the range 0.0 to
-       1.0, converted to an RGB triple by multiplying by 255 and rounding down
-       to the nearest integer.
-
-    (Arrays or tuples with mixed integers and floats are promoted by NumPy to
-    become float triples.)
-    """
-    if color is None:
-        return None
-
-    if isinstance(color, str):
-        if color.startswith("#") and len(color) == 4:
-            return np.array((
-                17*int(color[1], base=16),
-                17*int(color[2], base=16),
-                17*int(color[3], base=16),
-            ), dtype=np.uint8)
-        if color.startswith("#") and len(color) == 7:
-            return np.array((
-                int(color[1:3], base=16),
-                int(color[3:5], base=16),
-                int(color[5:7], base=16),
-            ), dtype=np.uint8)
-        if color.lower() in NAMED_COLORS:
-            return NAMED_COLORS[color.lower()]
-
-    elif isinstance(color, (np.ndarray, tuple)):
-        color_ = np.asarray(color)
-        if color_.shape == (3,):
-            if np.issubdtype(color_.dtype, np.floating):
-                return (255*np.clip(color_, 0., 1.)).astype(np.uint8)
-            if np.issubdtype(color_.dtype, np.integer):
-                return np.clip(color_, 0, 255).astype(np.uint8)
-    
-    raise ValueError(f"invalid color {color!r}")
-
-
-NAMED_COLORS = {
-    "black":    np.array((  0,   0,   0), dtype=np.uint8),
-    "red":      np.array((255,   0,   0), dtype=np.uint8),
-    "green":    np.array((  0, 255,   0), dtype=np.uint8),
-    "blue":     np.array((  0,   0, 255), dtype=np.uint8),
-    "cyan":     np.array((  0, 255, 255), dtype=np.uint8),
-    "magenta":  np.array((255,   0, 255), dtype=np.uint8),
-    "yellow":   np.array((255, 255,   0), dtype=np.uint8),
-    "white":    np.array((255, 255, 255), dtype=np.uint8),
-}
-
-
-# # # 
 # UNICODE BRAILLE DOT MATRIX
 
 
@@ -387,10 +304,10 @@ def unicode_braille_array(
         Weights for combining colors when multiple dots occur in one cell. If
         not provided, combine uniformly. If dotc is not provided, this is not
         used.
-    * fgcolor: optional Color.
+    * fgcolor: optional ColorLike.
         Foreground color used for all braille characters. Overrides dotc if
         both are provided.
-    * bgcolor: optional Color.
+    * bgcolor: optional ColorLike.
         Background color used for all characters.
 
     Returns:
@@ -538,9 +455,9 @@ def unicode_bar(
         The width of the full bar in characters.
     * height: int (positive, default 1).
         The number of rows that the bar takes up.
-    * fgcolor: optional Color.
+    * fgcolor: optional ColorLike.
         Foreground color used for the progress bar characters.
-    * bgcolor: optional Color.
+    * bgcolor: optional ColorLike.
         Background color used for the progress bar remainder.
 
     Returns:
@@ -855,94 +772,3 @@ def unicode_image(
     return chars
 
 
-# # # 
-# 3D projection
-
-
-def project3(
-    xyz: np.ndarray, # float[n, 3]
-    camera_position: np.ndarray = np.array([0., 0., 2.]), # float[3]
-    camera_target: np.ndarray = np.zeros(3), # float[3]
-    scene_up: np.ndarray = np.array([0.,1.,0.]), # float[3]
-    fov_degrees: float = 90.0,
-) -> tuple[
-    np.ndarray, # float[n, 2]
-    np.ndarray, # bool[n]
-]:
-    """
-    Project a 3d point cloud into two dimensions based on a given camera
-    configuration.
-
-    Inputs:
-
-    * xyz: float[n, 3].
-        The points to project, with columns corresponding to X, Y, and Z.
-    * camera_position: float[3] (default: [0. 0. 2.]).
-        The position at which the camera is placed. The default is positioned
-        along the positive Z axis.
-    * camera_target: float[3] (default: [0. 0. 0.]).
-        The position towards which the camera is facing. Should be distinct
-        from camera position. The default is that the camera is facing towards
-        the origin.
-    * scene_up: float[3] (default: [0. 1. 0.]).
-        The unit vector designating the 'up' direction for the scene. The
-        default is the positive Y direction. Should not have the same direction
-        as camera_target - camera_position.
-    * fov_degrees: float (default 90).
-        Field of view. Points within a cone (or frustum) of this angle leaving
-        the camera are projected into the unit disk (or the square [-1,1]^2).
-
-    Returns:
-
-    * xy: float[n, 2].
-        Projected points.
-    * valid: bool[n].
-        Mask indicating which of the points are in front of the camera.
-
-    Notes:
-
-    * The combined effect of the defaults is that the camera is looking down
-      the Z axis towards the origin from the positive direction, with the X
-      axis extending towards the right and the Y axis extending upwards, with
-      the field of view ensuring that points within the cube [-1,1]^3 are
-      projected into the square [-1,1]^2.
-    * The valid mask only considers whether points are in front of the camera.
-      A more comprehensive frustum clipping approach is not supported.
-    
-    Internal notes:
-
-    * This implementation uses a coordinate system for the camera where X and Y
-      point left and up respectively and Z points towards the object ahead of
-      the camera (an alternative convention is for Z to point behind the
-      camera).
-    """
-    n, _3 = xyz.shape
-
-    # compute view matrix
-    V_z = camera_target - camera_position
-    V_z /= np.linalg.norm(V_z)
-    V_x = np.cross(V_z, scene_up)
-    V_x /= np.linalg.norm(V_x)
-    V_y = np.cross(V_x, V_z)
-    V = np.array([V_x, V_y, V_z]).T
-
-    # transform points to camera coordinate system
-    xyz_ = (xyz - camera_position) @ V
-    
-    # mask for valid points
-    valid = xyz_[:, 2] > 0.
-    
-    # perspective projection
-    xy = np.zeros((n, 2))
-    np.divide(
-        xyz_[:, :2],
-        xyz_[:, 2, np.newaxis],
-        out=xy,
-        where=valid[:, np.newaxis],
-    )
-
-    # scale fov to within [-1,1]^2
-    focal_length = 1 / np.tan(np.radians(fov_degrees) / 2)
-    xy *= focal_length
-
-    return xy, valid

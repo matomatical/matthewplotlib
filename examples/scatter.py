@@ -10,9 +10,7 @@ ys = rs * np.sin(ts) + es[1]
 cs = mp.viridis(1-rs)
 
 plot = mp.border(mp.scatter(
-    xs=xs,
-    ys=ys,
-    cs=cs,
+    (xs, ys, cs),
     height=20,
     width=40,
     xrange=(-1.05, 1.05),

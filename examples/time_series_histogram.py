@@ -37,9 +37,7 @@ Y = np.concatenate([Y_random_walk, Y_sinusoidal])
 # Stacked scatter plots series.
 plot1 = mp.border(mp.dstack(*[
     mp.scatter(
-        xs=x,
-        ys=Y[i],
-        color=mp.tableau(0),
+        (x, Y[i], mp.tableau(0)),
         width=78,
         height=11,
         yrange=(Y.min(), Y.max())
@@ -50,9 +48,7 @@ print(plot1)
 
 # Pooled scatter plots series.
 plot2 = mp.border(mp.scatter(
-    xs=X.ravel(),
-    ys=Y.ravel(),
-    color=mp.tableau(0),
+    (X.ravel(), Y.ravel(), mp.tableau(0)),
     width=78,
     height=11,
 ))

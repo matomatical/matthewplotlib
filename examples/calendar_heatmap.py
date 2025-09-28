@@ -8,7 +8,7 @@ import datetime
 
 
 DATA = {
-    datetime.date(2024,  5,  1): 1,
+    datetime.date(2024,  6,  1): 1,
     datetime.date(2025,  4,  1): 7,
     datetime.date(2025,  4,  2): 9,
     datetime.date(2025,  4,  3): 1,
@@ -99,7 +99,7 @@ def main():
             week_plots.append(mp.hstack(*day_plots))
         month_plots.append(
             mp.vstack(title, daynames, *week_plots)
-            | mp.blank(2,2),
+            + mp.blank(2,2),
         )
         
         # increment month
@@ -109,7 +109,7 @@ def main():
             month = 1
 
     # combine
-    plot = mp.wrap(*month_plots)
+    plot = mp.wrap(*month_plots, cols=3)
     
     print("printing plot...")
     print(plot)

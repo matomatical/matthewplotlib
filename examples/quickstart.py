@@ -2,26 +2,22 @@ import numpy as np
 import matthewplotlib as mp
 
 xs = np.linspace(-2*np.pi, +2*np.pi, 156)
-ys1 = 1.0 * np.cos(xs)
-ys2 = 0.9 * np.cos(xs - 0.33 * np.pi)
-ys3 = 0.8 * np.cos(xs - 0.66 * np.pi)
-ys4 = 0.7 * np.cos(xs - 1.00 * np.pi)
-ys5 = 0.8 * np.cos(xs - 1.33 * np.pi)
-ys6 = 0.9 * np.cos(xs - 1.66 * np.pi)
-
-kwargs = {
-    'width': 78,
-    'yrange': (-1,1),
-}
 
 plot = mp.border(
-    mp.scatter(xs, ys1, **kwargs, color=(1.,0.,0.))
-    @ mp.scatter(xs, ys2, **kwargs, color=(1.,0.,1.))
-    @ mp.scatter(xs, ys3, **kwargs, color=(0.,0.,1.))
-    @ mp.scatter(xs, ys4, **kwargs, color=(0.,1.,1.))
-    @ mp.scatter(xs, ys5, **kwargs, color=(0.,1.,0.))
-    @ mp.scatter(xs, ys6, **kwargs, color=(1.,1.,0.))
-    | mp.center(mp.text(f"cos(x + 2 pi k / 6)"), width=78)
+    mp.scatter(
+        (xs, 1.0 * np.cos(xs), (1.,0.,0.)),
+        (xs, 0.9 * np.cos(xs - 0.33 * np.pi), (1.,0.,1.)),
+        (xs, 0.8 * np.cos(xs - 0.66 * np.pi), (0.,0.,1.)),
+        (xs, 0.7 * np.cos(xs - 1.00 * np.pi), (0.,1.,1.)),
+        (xs, 0.8 * np.cos(xs - 1.33 * np.pi), (0.,1.,0.)),
+        (xs, 0.9 * np.cos(xs - 1.66 * np.pi), (1.,1.,0.)),
+        mp.xaxis(-2*np.pi, +2*np.pi, 156),
+        mp.yaxis(-1, 1, 40),
+        width=78,
+        height=10,
+        yrange=(-1,1),
+    )
+    / mp.center(mp.text(f"cos(x + 2 pi k / 6)"), width=78)
 )
 
 print(plot)

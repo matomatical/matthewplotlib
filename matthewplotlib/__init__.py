@@ -10,7 +10,6 @@ __version__ = "0.2.1"
 from matthewplotlib.plots import (
     plot,
     scatter,
-    function,
     scatter3,
     image,
     function2,
@@ -33,9 +32,22 @@ from matthewplotlib.plots import (
 )
 
 
-from matthewplotlib.core import (
+from matthewplotlib.colors import (
     ColorLike,
+)
+
+
+from matthewplotlib.core import (
     BoxStyle,
+)
+
+
+from matthewplotlib.data import (
+    Series,
+    Series3,
+    xaxis,
+    yaxis,
+    zaxis,
 )
 
 
