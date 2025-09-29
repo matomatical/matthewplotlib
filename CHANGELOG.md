@@ -32,6 +32,7 @@ New:
   plot using them, using weighted averaging to combine plots.
 * scatter and scatter3 now accept multiple series at once.
 * special series for X/Y/Z axes.
+* some new examples (deigned by Gemini): voronoi, dashboard, mandelbrot
 
 TODO:
 

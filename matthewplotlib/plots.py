@@ -36,6 +36,8 @@ Arrangement plots:
 * `wrap`
 * `center`
 """
+from __future__ import annotations
+
 import enum
 import os
 import numpy as np
@@ -182,7 +184,7 @@ class plot:
         return self.clearstr()
     
     
-    def __add__(self: Self, other: Self) -> "hstack":
+    def __add__(self: Self, other: plot) -> hstack:
         """
         Operator shortcut for horizontal stack.
         
@@ -207,7 +209,7 @@ class plot:
         return hstack(self, other)
 
 
-    def __truediv__(self: Self, other: Self) -> "vstack":
+    def __truediv__(self: Self, other: plot) -> vstack:
         """
         High-precedence operator shortcut for vertical stack.
         
@@ -229,7 +231,7 @@ class plot:
         return vstack(self, other)
 
 
-    def __or__(self: Self, other: Self) -> "vstack":
+    def __or__(self: Self, other: plot) -> vstack:
         """
         Low-precedence operator shortcut for vertical stack.
         
@@ -250,7 +252,7 @@ class plot:
         return vstack(self, other)
 
 
-    def __matmul__(self: Self, other: Self) -> "dstack":
+    def __matmul__(self: Self, other: plot) -> dstack:
         """
         Operator shortcut for depth stack.
 
@@ -1004,7 +1006,7 @@ class columns(plot):
             for i, v in enumerate(norm_values)
         ]
         all_chars = CharArray.map(
-            lambda xs: np.concatenate(xs, axis=0), 
+            lambda xs: np.concatenate(xs, axis=1),
             cols_chars,
         )
         super().__init__(chars=all_chars)
