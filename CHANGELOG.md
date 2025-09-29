@@ -20,6 +20,10 @@ Steps to update the version:
 In development:
 ---------------
 
+Fix:
+
+* Missing title parameter from border.
+
 Version 0.3.1
 -------------
 

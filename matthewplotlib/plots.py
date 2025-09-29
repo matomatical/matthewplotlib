@@ -1250,11 +1250,13 @@ class border(plot):
     def __init__(
         self,
         plot: plot,
+        title: str = "",
         style: BoxStyle = BoxStyle.ROUND,
         color: ColorLike | None = None,
     ):
         chars = unicode_box(
             chars=plot.chars,
+            title=title,
             style=style,
             fgcolor=color,
         )
