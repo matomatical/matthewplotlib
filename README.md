@@ -34,9 +34,21 @@ Key missing features (so far, see [roadmap](#roadmap)):
 
 Some eye-candy:
 
-<img src="images/lissajous.png" height="256px"><img src="images/teapot.gif"
-height="256px"><img src="images/colormaps.png" height="256px"><img
-src="images/mandelbrot.gif" height="256px" style="height:256px">
+<table><tr>
+  <td width="30%">
+    <img src="images/lissajous.png" width="100%">
+    <img src="images/scatter.png" width="100%">
+  </td>
+  <td width="40%">
+    <img src="images/teapot.gif" width="100%">
+    <img src="images/mandelbrot.gif" width="100%">
+  </td>
+  <td width="30%">
+    <img src="images/colormaps.png" width="100%">
+    <img src="images/voronoi.png" width="100%">
+  </td>
+</tr></table>
+
 
 
 Quickstart

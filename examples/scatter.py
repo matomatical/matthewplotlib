@@ -2,6 +2,8 @@ import numpy as np
 
 import matthewplotlib as mp
 
+np.random.seed(42)
+
 ts = np.linspace(0, 8*np.pi, 1000)
 rs = np.linspace(0, 1, 1000)
 es = 0.01 * 1/(rs+0.1) * np.random.normal(size=(2, 1000))
@@ -17,3 +19,6 @@ plot = mp.border(mp.scatter(
     yrange=(-1.05, 1.05),
 ))
 print(plot)
+
+print("saving...")
+plot.saveimg("images/scatter.png")
