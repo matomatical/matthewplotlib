@@ -8,19 +8,6 @@ still generally painful, due to lack of generated documentation and lack of
 common plot types. However, for personal use, I'm already finding what limited
 functionality it does have delightful.
 
-Key features:
-
-* Colourful unicode-based rendering of scatter plots, small images, heatmaps,
-  bar charts, histograms, 3d plots, and more.
-* Rendering plots to the terminal with `print(plot)`. No GUI windows to manage!
-* Plots are just expressions. Compose complex plots with horizontal (`+`) and
-  vertical (`/`) stacking operations, as in
-    `subplots = (plotA + plotB) / (plotC + plotD)`.
-* If you absolutely need plots outside the terminal, you can render them to PNG
-  using a pixel font.
-
-Eye candy:
-
 <table><tr>
   <td width="30%">
     <img src="images/lissajous.png" width="100%">
@@ -36,7 +23,18 @@ Eye candy:
   </td>
 </tr></table>
 
-Warnings:
+Key features:
+
+* Colourful unicode-based rendering of scatter plots, small images, heatmaps,
+  bar charts, histograms, 3d plots, and more.
+* Rendering plots to the terminal with `print(plot)`. No GUI windows to manage!
+* Plots are just expressions. Compose complex plots with horizontal (`+`) and
+  vertical (`/`) stacking operations, as in
+    `subplots = (plotA + plotB) / (plotC + plotD)`.
+* If you absolutely need plots outside the terminal, you can render them to PNG
+  using a pixel font.
+
+Rough edges:
 
 * API for compositions not final.
 * API for axes not final.
