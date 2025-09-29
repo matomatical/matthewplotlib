@@ -1,6 +1,6 @@
 [project]
 name = "matthewplotlib"
-version = "0.3.0"
+version = "0.3.1"
 authors = [
     { name="Matthew Farrugia-Roberts", email="matthew@far.in.net" },
 ]
@@ -32,6 +32,8 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "mypy",
+  "scipy-stubs",
+  "types-psutil",
 ]
 examples = [
   "scikit-learn",

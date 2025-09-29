@@ -4,7 +4,7 @@ them available under the top-level namespace.
 """
 
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 
 from matthewplotlib.plots import (
@@ -22,6 +22,7 @@ from matthewplotlib.plots import (
     hilbert,
     text,
     border,
+    axes,
     blank,
     hstack,
     vstack,

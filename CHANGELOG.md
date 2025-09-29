@@ -23,6 +23,15 @@ In development:
 Version 0.3.1
 -------------
 
+New:
+
+* Axes subplot type. Takes a scatter plot or function2 plot as input, and adds
+  axes with labels and ticks. Basic API.
+* Animated version of quickstart example.
+
+Version 0.3.0
+-------------
+
 Breaking changes:
 
 * scatter and scatter3 take xs, ys, (zs), and color as series tuples in

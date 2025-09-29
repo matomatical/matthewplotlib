@@ -119,16 +119,23 @@ class CharArray:
         below: int = 0,
         left: int = 0,
         right: int = 0,
+        fgcolor: ColorLike | None = None,
+        bgcolor: ColorLike | None = None,
     ) -> CharArray:
-        padding = (above, below), (left, right)
-        padding_ = *padding, (0, 0)
-        return CharArray(
-            codes=np.pad(self.codes, padding, constant_values=ord(" ")),
-            fg=np.pad(self.fg, padding, constant_values=False),
-            fg_rgb=np.pad(self.fg_rgb, padding_, constant_values=0),
-            bg=np.pad(self.bg, padding, constant_values=False),
-            bg_rgb=np.pad(self.bg_rgb, padding_, constant_values=0),
+        height = above + self.height + below
+        width = left + self.width + right
+        padded = CharArray.from_size(
+            height=height,
+            width=width,
+            fgcolor=fgcolor,
+            bgcolor=bgcolor,
         )
+        padded.codes[above:height-below,left:width-right] = self.codes
+        padded.fg[above:height-below,left:width-right] = self.fg
+        padded.fg_rgb[above:height-below,left:width-right] = self.fg_rgb
+        padded.bg[above:height-below,left:width-right] = self.bg
+        padded.bg_rgb[above:height-below,left:width-right] = self.bg_rgb
+        return padded
 
     
     @staticmethod
@@ -266,6 +273,13 @@ class CharArray:
             'H W h w -> (H h) (W w)',
         ) # -> uint8[h*16,w*8]
         return img
+        
+
+def ords(chrs):
+    """
+    Convert a string or list of characters to a list of unicode code points.
+    """
+    return [ord(c) for c in chrs]
 
 
 # # # 
@@ -427,9 +441,7 @@ def unicode_braille_array(
 # UNICODE PARTIAL BLOCKS
 
 
-PARTIAL_BLOCKS_ROW = [
-    ord(c) for c in [" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"]
-]
+PARTIAL_BLOCKS_ROW = ords([" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"])
 
 
 def unicode_bar(
@@ -494,9 +506,7 @@ def unicode_bar(
     return CharArray.from_codes(codes, fgcolor, bgcolor)
 
 
-PARTIAL_BLOCKS_COL = [
-    ord(c) for c in [" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
-]
+PARTIAL_BLOCKS_COL = ords([" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"])
 
 
 def unicode_col(
@@ -671,6 +681,7 @@ def unicode_box(
     style: BoxStyle,
     fgcolor: ColorLike | None = None,
     bgcolor: ColorLike | None = None,
+    title: str = "",
 ) -> CharArray:
     """
     Wrap a character array in an outline of box drawing characters.
@@ -716,6 +727,10 @@ def unicode_box(
         bg=bg,
         bg_rgb=bg_rgb,
     )
+    # position title
+    title = title[:chars.width]
+    spos = wrapped_chars.width//2-len(title)//2
+    wrapped_chars.codes[0,spos:spos+len(title)] = ords(title)
     return wrapped_chars
 
 

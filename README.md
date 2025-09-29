@@ -12,27 +12,14 @@ Key features:
 
 * Colourful unicode-based rendering of scatter plots, small images, heatmaps,
   bar charts, histograms, 3d plots, and more.
-
 * Rendering plots to the terminal with `print(plot)`. No GUI windows to manage!
-
 * Plots are just expressions. Compose complex plots with horizontal (`+`) and
   vertical (`/`) stacking operations, as in
     `subplots = (plotA + plotB) / (plotC + plotD)`.
-
 * If you absolutely need plots outside the terminal, you can render them to PNG
   using a pixel font.
 
-Key missing features (so far, see [roadmap](#roadmap)):
-
-* Line plots still to be implemented.
-
-* Plots don't have visible axes, ticks, ticklabels, or axis labels yet.
-
-* No HTML documentation (but see WIP markdown [DOCS.md](DOCS.md)).
-
-* Not a lot of input validation, error handling, or testing.
-
-Some eye-candy:
+Eye candy:
 
 <table><tr>
   <td width="30%">
@@ -48,6 +35,14 @@ Some eye-candy:
     <img src="images/voronoi.png" width="100%">
   </td>
 </tr></table>
+
+Warnings:
+
+* API for compositions not final.
+* API for axes not final.
+* No labels available for bars/columns/histograms yet.
+* No HTML documentation (but see WIP markdown [DOCS.md](DOCS.md)).
+* Limited input validation, error handling, or testing.
 
 
 
@@ -102,6 +97,40 @@ plot.saveimg("images/quickstart.png")
 ```
 ![](images/quickstart.png)
 
+Animated version:
+
+```python
+import time
+import numpy as np
+import matthewplotlib as mp
+
+x = np.linspace(-2*np.pi, +2*np.pi, 150)
+
+plot = None
+while True:
+    k = (time.time() % 3) * 2
+    A = 0.85 + 0.15 * np.cos(k)
+    y = A * np.cos(x - 2*np.pi*k/6)
+    c = mp.rainbow(1-k/6)
+    
+    if plot is not None:
+        print(-plot, end="")
+    plot = mp.axes(
+        mp.scatter(
+            (x, y, c),
+            width=75,
+            height=10,
+            yrange=(-1,1),
+        ),
+        title=f" y = {A:.2f} cos(x + 2π*{k:.2f}/6) ",
+        xlabel="x",
+        ylabel="y",
+    )
+    print(plot)
+    
+    time.sleep(1/20)
+```
+![](images/quickstart.gif)
 
 Other examples
 --------------
@@ -146,7 +175,8 @@ Basic plot furnishings:
 
 * [x] Basic text boxes.
 * [x] Borders.
-* [ ] Axis ticks and tick labels for scatter plots.
+* [x] Axis ticks and tick labels for scatter plots.
+* [x] Axis labels and titles.
 * [ ] Labels and ticks for bar/column charts and histograms.
 
 Basic plot arrangement:

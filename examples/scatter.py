@@ -11,13 +11,18 @@ xs = rs * np.cos(ts) + es[0]
 ys = rs * np.sin(ts) + es[1]
 cs = mp.viridis(1-rs)
 
-plot = mp.border(mp.scatter(
-    (xs, ys, cs),
-    height=20,
-    width=40,
-    xrange=(-1.05, 1.05),
-    yrange=(-1.05, 1.05),
-))
+plot = mp.axes(
+    mp.scatter(
+        (xs, ys, cs),
+        height=20,
+        width=40,
+        xrange=(-1.05, 1.05),
+        yrange=(-1.05, 1.05),
+    ),
+    title=" scatter example ",
+    ylabel="y",
+    xlabel="x",
+)
 print(plot)
 
 print("saving...")

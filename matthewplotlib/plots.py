@@ -26,6 +26,7 @@ Furnishing plots:
 
 * `text`
 * `border`
+* `axes`
 
 Arrangement plots:
 
@@ -64,6 +65,7 @@ from matthewplotlib.data import (
 from matthewplotlib.core import (
     ColorLike,
     CharArray,
+    ords,
     BoxStyle,
     unicode_box,
     unicode_braille_array,
@@ -747,7 +749,7 @@ class progress(plot):
             left=len(label)+1,
             right=1,
         )
-        all_chars.codes[0, :len(label)] = [ord(c) for c in label]
+        all_chars.codes[0, :len(label)] = ords(label)
         all_chars.codes[:, len(label)] = ord("[")
         all_chars.codes[:, -1] = ord("]")
 
@@ -1212,7 +1214,7 @@ class text(plot):
 
         # paint the text
         for i, line in enumerate(lines):
-            chars.codes[i, :len(line)] = [ord(c) for c in line]
+            chars.codes[i, :len(line)] = ords(line)
         
         # initialise
         super().__init__(chars=chars)
@@ -1236,6 +1238,9 @@ class border(plot):
 
     * plot : plot.
         The plot object to be enclosed by the border.
+    * title: str.
+        An optional title for the box. Placed centrally along the top row of
+        the box. Truncated to fit.
     * style : BoxStyle (default: BoxStyle.ROUND).
         The style of the border. Predefined styles are available in `BoxStyle`.
     * color : optional ColorLike.
@@ -1256,6 +1261,90 @@ class border(plot):
         super().__init__(
             chars,
         )
+        self.style = style[2]
+        self.plot = plot
+    
+    def __repr__(self):
+        return f"border(style={self.style!r}, plot={self.plot!r})"
+
+
+class axes(plot):
+    """
+    Add an annotated border around a scatterplot using box-drawing characters.
+
+    Inputs:
+
+    * plot : scatter | function2.
+        The plot object to be enclosed by the axes. Must have an xrange and a
+        yrange. TODO: Allow dstacks.
+    * title: optional str.
+        An optional title for the axes. Placed centrally along the top row of
+        the axes. Truncated to fit.
+    * xlabel: optional str.
+        String to be used as label under the x axis. Truncated to fit between
+        min and max labels.
+    * ylabel: optional str.
+        String to be used as label next to the y axis. Written vertically, and
+        truncated to fit between min and max labels.
+    * xfmt: str (default "{x:.2f}").
+        Format string for x labels. Should have one keyword argument with the
+        key 'x'.
+    * yfmt: str (default "{y:.2f}").
+        Format string for y labels. Should have one keyword argument with the
+        key 'y'.
+    * ypad: int (default 1).
+        How many columns between the y axis and the vertical y axis label.
+    * style : BoxStyle (default: BoxStyle.ROUND).
+        The style of the border. Predefined styles are available in `BoxStyle`.
+    * color : optional ColorLike.
+        The color of the border characters and labels. Defaults to 50% gray.
+        Set to `None` to use foreground color.
+    """
+    def __init__(
+        self,
+        plot: scatter | function2,
+        title: str = "",
+        xlabel: str = "",
+        ylabel: str = "",
+        xfmt: str = "{x:.1f}",
+        yfmt: str = "{y:.1f}",
+        ypad: int = 1,
+        style: BoxStyle = BoxStyle.LIGHTX,
+        color: ColorLike | None = (0.5, 0.5, 0.5),
+    ):
+        # construct tick labels
+        ymin_label = yfmt.format(y=plot.yrange[0])
+        ymax_label = yfmt.format(y=plot.yrange[1])
+        xmin_label = xfmt.format(x=plot.xrange[0])
+        xmax_label = xfmt.format(x=plot.xrange[1])
+
+        # truncate axis labels
+        xroom = plot.width + 2 - len(xmin_label) - len(xmax_label)
+        xlabel = xlabel[:xroom].center(xroom)
+        yroom = plot.height
+        ylabel = ylabel[:yroom].center(yroom)
+
+        # construct inner plot with axes
+        chars_boxed = unicode_box(
+            chars=plot.chars,
+            title=title,
+            style=style,
+            fgcolor=color,
+        )
+
+        # pad chars to make space for labels
+        L = max(len(ymin_label), len(ymax_label))
+        chars_padded = chars_boxed.pad(left=L, below=1, fgcolor=color)
+        # paint ylabels
+        chars_padded.codes[0,L-len(ymax_label):L] = ords(ymax_label)
+        chars_padded.codes[-2,L-len(ymin_label):L] = ords(ymin_label)
+        chars_padded.codes[1:-2,L-1-ypad] = ords(ylabel)
+        # paint xlabels
+        chars_padded.codes[-1,L:L+len(xmin_label)] = ords(xmin_label)
+        chars_padded.codes[-1,-len(xmax_label):] = ords(xmax_label)
+        chars_padded.codes[-1,L+len(xmin_label):-len(xmax_label)] = ords(xlabel)
+
+        super().__init__(chars_padded)
         self.style = style[2]
         self.plot = plot
     
