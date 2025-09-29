@@ -36,7 +36,7 @@ Some eye-candy:
 
 <img src="images/lissajous.png" height="256px"><img src="images/teapot.gif"
 height="256px"><img src="images/colormaps.png" height="256px"><img
-src="images/mandelbrot.gif" height="256px">
+src="images/mandelbrot.gif" height="256px" style="height:256px">
 
 
 Quickstart
