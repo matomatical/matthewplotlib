@@ -3,8 +3,8 @@ import numpy as np
 import matthewplotlib as mp
 
 
-WIDTH = 48
-HEIGHT = 16
+WIDTH = 80
+HEIGHT = 40
 MAX_ITER = 2000
 FRAMES = 200
 FPS = 20.
@@ -53,7 +53,7 @@ def main():
         time.sleep(max(0, start + 1/FPS - time.perf_counter()))
         
     print(f"saving to '{FILENAME}'...")
-    mp.save_animation(frames, FILENAME, fps=FPS)
+    mp.save_animation(frames, FILENAME, fps=FPS, downscale=8)
     print("Done!")
 
 

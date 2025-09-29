@@ -34,15 +34,9 @@ Key missing features (so far, see [roadmap](#roadmap)):
 
 Some eye-candy:
 
-<table>
-<tbody>
-  <tr>
-    <td><img src="images/lissajous.png" height="256px"></td>
-    <td><img src="images/teapot.gif?" height="256px"></td>
-    <td><img src="images/colormaps.png" height="256px"></td>
-  </tr>
-</tbody>
-</table>
+<img src="images/lissajous.png" height="256px"><img src="images/teapot.gif"
+height="256px"><img src="images/colormaps.png" height="256px"><img
+src="images/mandelbrot.gif" height="256px">
 
 
 Quickstart
@@ -129,9 +123,8 @@ Roadmap to version 1
 Basic plot types:
 
 * [x] Scatter plots.
-  * [ ] Different colours for each point.
-  * [ ] Multiple point clouds on a single scatter plot.
-* [x] Function scatter plots.
+  * [x] Different colours for each point.
+  * [x] Multiple point clouds on a single scatter plot.
 * [ ] Line plots (connect the dots).
 * [x] Image plots / matrix heatmaps.
 * [x] Function heatmap plots.
@@ -274,8 +267,11 @@ Terminal plotting in Python:
 Terminal plotting in other languages:
 
 * Julia https://github.com/JuliaPlots/UnicodePlots.jl
-* Julia again https://github.com/sunetos/TextPlots.jl
+  * See also https://github.com/sunetos/TextPlots.jl
 * C++ https://github.com/fbbdev/plot
+* R https://github.com/cheuerde/plotcli
+  * See also https://github.com/bbnkmp/txtplot/ and
+    https://github.com/geotheory/r-plot
 * GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.html
 
 Braille art:
@@ -299,3 +295,5 @@ interactivity that there are no plans to replicate.
 * Bokeh https://github.com/bokeh/bokeh
 * Altair https://github.com/vega/altair
   * Declarative API
+* plotnine https://github.com/has2k1/plotnine
+  * Compose subplots with `|` and `/`
