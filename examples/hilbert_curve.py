@@ -3,6 +3,7 @@ import matthewplotlib as mp
 
 N = 15565
 
+np.random.seed(42)
 data = np.random.binomial(1, p=np.linspace(0,1,N))
 data = data.astype(bool)
 plot = mp.hilbert(

@@ -3,6 +3,7 @@ Note to self
 
 Things to check before updating a new release:
 
+* mypy checks pass.
 * All examples run without errors.
 * Road map is up to date.
 * Change log is up to date.
@@ -19,24 +20,34 @@ Steps to update the version:
 In development:
 ---------------
 
-Plans:
+Version 0.3.1
+-------------
 
-* [ ] Different colours for each point.
-* [ ] Multiple point clouds on a single scatter plot.
-* [ ] Line plots (connect the dots).
-* [ ] Axis ticks and tick labels for scatter plots.
-* [ ] Labels and ticks for bar/column charts and histograms.
+Breaking changes:
 
-Version 0.2.1:
---------------
+* scatter and scatter3 take xs, ys, (zs), and color as series tuples in
+  positional arguments.
+* removed function plot type (since scatter is now much easier to use).
+
+New:
+
+* scatter and scatter3 accept cs, an array of colors (one for each point), and
+  plot using them, using weighted averaging to combine plots.
+* scatter and scatter3 now accept multiple series at once.
+* special series for X/Y/Z axes.
+* some new examples (deigned by Gemini 2.5 pro): voronoi, dashboard,
+  mandelbrot.
+
+Version 0.2.1
+-------------
 
 Fix:
 
 * Regenerate documentation.
 * Update version number properly.
 
-Version 0.2.0:
---------------
+Version 0.2.0
+-------------
 
 Breaking changes:
 
@@ -58,8 +69,8 @@ Internal:
 
 * Refactor backend to use numpy arrays rather than nested lists.
 
-Version 0.1.2:
---------------
+Version 0.1.2
+-------------
 
 Breaking changes:
 
@@ -78,8 +89,8 @@ Dependencies:
 
 * Make example dependency on `scikit-learn` explicit.
 
-Version 0.1.1:
---------------
+Version 0.1.1
+-------------
 
 New:
 

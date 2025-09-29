@@ -6,8 +6,9 @@ import matthewplotlib as mp
 
 # configure screen
 FPS = 10
-WIDTH  = 80
-HEIGHT = 25
+WIDTH = 80
+HEIGHT = 20
+
 
 # configure camera path
 ORBIT_RADIUS = 4.5
@@ -18,6 +19,8 @@ ORBIT_SPEED = 0.5*np.pi # radians per second
 def main():
     start_time = time.time()
     plot = None
+    # frames = []
+    # for i in range(35):
     while True:
         # sweep camera
         p = camera_pos(time.time() - start_time)
@@ -25,26 +28,24 @@ def main():
         # plot
         if plot:
             print(-plot, end="")
-        plot = mp.dstack(*[
-            mp.scatter3(
-                data=xyz,
-                camera_position=p,
-                vertical_fov_degrees=70,
-                height=HEIGHT,
-                width=WIDTH,
-                color=c,
-            )
-            for xyz, c in [
-                ([[x,0,0] for x in np.linspace(0,1)], 'red'),
-                ([[0,y,0] for y in np.linspace(0,1)], 'green'),
-                ([[0,0,z] for z in np.linspace(0,1)], 'blue'),
-                (TEAPOT, None),
-            ]
-        ])
+        plot = mp.scatter3(
+            (mp.xaxis(), "red"),
+            (mp.yaxis(), "green"),
+            (mp.zaxis(), "blue"),
+            TEAPOT,
+            camera_position=p,
+            vertical_fov_degrees=55,
+            height=HEIGHT,
+            width=WIDTH,
+        )
         print(plot)
+        # frames.append(plot)
 
         time.sleep(1/FPS)
+    
+    # mp.save_animation(frames, 'images/teapot.gif', bgcolor="black")
 
+   
 
 def camera_pos(t: float) -> np.ndarray:
     angle = ORBIT_SPEED * t

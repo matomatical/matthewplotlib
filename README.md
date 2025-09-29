@@ -34,15 +34,21 @@ Key missing features (so far, see [roadmap](#roadmap)):
 
 Some eye-candy:
 
-<table>
-<tbody>
-  <tr>
-    <td><img src="images/lissajous.png" height="256px"></td>
-    <td><img src="images/teapot.gif?" height="256px"></td>
-    <td><img src="images/colormaps.png" height="256px"></td>
-  </tr>
-</tbody>
-</table>
+<table><tr>
+  <td width="30%">
+    <img src="images/lissajous.png" width="100%">
+    <img src="images/scatter.png" width="100%">
+  </td>
+  <td width="40%">
+    <img src="images/teapot.gif" width="100%">
+    <img src="images/mandelbrot.gif" width="100%">
+  </td>
+  <td width="30%">
+    <img src="images/colormaps.png" width="100%">
+    <img src="images/voronoi.png" width="100%">
+  </td>
+</tr></table>
+
 
 
 Quickstart
@@ -65,21 +71,22 @@ Construct a plot:
 import numpy as np
 
 xs = np.linspace(-2*np.pi, +2*np.pi, 156)
-ys1 = 1.0 * np.cos(xs)
-ys2 = 0.9 * np.cos(xs - 0.33 * np.pi)
-ys3 = 0.8 * np.cos(xs - 0.66 * np.pi)
-ys4 = 0.7 * np.cos(xs - 1.00 * np.pi)
-ys5 = 0.8 * np.cos(xs - 1.33 * np.pi)
-ys6 = 0.9 * np.cos(xs - 1.66 * np.pi)
 
 plot = mp.border(
-    mp.scatter(np.c_[xs, ys1], width=78, yrange=(-1,1), color=(1.,0.,0.))
-    @ mp.scatter(np.c_[xs, ys2], width=78, yrange=(-1,1), color=(1.,0.,1.))
-    @ mp.scatter(np.c_[xs, ys3], width=78, yrange=(-1,1), color=(0.,0.,1.))
-    @ mp.scatter(np.c_[xs, ys4], width=78, yrange=(-1,1), color=(0.,1.,1.))
-    @ mp.scatter(np.c_[xs, ys5], width=78, yrange=(-1,1), color=(0.,1.,0.))
-    @ mp.scatter(np.c_[xs, ys6], width=78, yrange=(-1,1), color=(1.,1.,0.))
-    | mp.center(mp.text(f"cos(x + 2 pi k / 6)"), width=78)
+    mp.scatter(
+        (xs, 1.0 * np.cos(xs), "red"),
+        (xs, 0.9 * np.cos(xs - 0.33 * np.pi), "magenta"),
+        (xs, 0.8 * np.cos(xs - 0.66 * np.pi), "blue"),
+        (xs, 0.7 * np.cos(xs - 1.00 * np.pi), "cyan"),
+        (xs, 0.8 * np.cos(xs - 1.33 * np.pi), "green"),
+        (xs, 0.9 * np.cos(xs - 1.66 * np.pi), "yellow"),
+        mp.xaxis(-2*np.pi, +2*np.pi, 156),
+        mp.yaxis(-1, 1, 40),
+        width=78,
+        height=10,
+        yrange=(-1,1),
+    )
+    / mp.center(mp.text(f"cos(x + 2 pi k / 6)"), width=78)
 )
 ```
 
@@ -128,9 +135,6 @@ Roadmap to version 1
 Basic plot types:
 
 * [x] Scatter plots.
-  * [ ] Different colours for each point.
-  * [ ] Multiple point clouds on a single scatter plot.
-* [x] Function scatter plots.
 * [ ] Line plots (connect the dots).
 * [x] Image plots / matrix heatmaps.
 * [x] Function heatmap plots.
@@ -150,15 +154,21 @@ Basic plot arrangement:
 * [x] Horizontal and vertical stacking.
 * [x] Naive layering plots on top of each other.
 * [x] Automatically wrapping plots into a grid.
+* [ ] Finalise operator assignment.
 
 Styling plots with colors:
 
-* [ ] Consistent API for color specification.
 * [x] Basic colormaps.
 * [x] BIDS colormaps.
 * [x] Rainbow colormap.
 * [x] Cyberpunk colormap.
 * [x] Discrete colour palettes.
+
+Specifying colors:
+
+* [ ] Consistent API for color specification.
+* [ ] Configurable colour scales and normalisation.
+* [ ] Color bars, vertical or horizontal.
 
 Rendering:
 
@@ -195,6 +205,8 @@ Advanced features roadmap
 More plot types:
 
 * Advanced scatter plots:
+  * [x] Different colours for each point.
+  * [x] Multiple point clouds on a single scatter plot.
   * [x] 3d scatter plots.
 * Advanced line plots:
   * [ ] Error bars on line plots.
@@ -218,13 +230,11 @@ More plot types:
 Advanced plot arrangement:
 
 * [ ] Better support for animated plots (API needs thought).
-* [ ] Cleaner way to share config/axes between multiple plots.
 
 Advanced furnishings:
 
 * [ ] Axis transformations (e.g. logarithmic scale).
 * [ ] Legend construction (API needs thought).
-* [ ] Color bars, vertical or horizontal.
 * [ ] Text embedded in borders.
 
 Advanced rendering:
@@ -273,8 +283,11 @@ Terminal plotting in Python:
 Terminal plotting in other languages:
 
 * Julia https://github.com/JuliaPlots/UnicodePlots.jl
-* Julia again https://github.com/sunetos/TextPlots.jl
+  * See also https://github.com/sunetos/TextPlots.jl
 * C++ https://github.com/fbbdev/plot
+* R https://github.com/cheuerde/plotcli
+  * See also https://github.com/bbnkmp/txtplot/ and
+    https://github.com/geotheory/r-plot
 * GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.html
 
 Braille art:
@@ -298,3 +311,5 @@ interactivity that there are no plans to replicate.
 * Bokeh https://github.com/bokeh/bokeh
 * Altair https://github.com/vega/altair
   * Declarative API
+* plotnine https://github.com/has2k1/plotnine
+  * Compose subplots with `|` and `/`

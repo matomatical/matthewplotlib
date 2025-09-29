@@ -8,7 +8,10 @@ DOCS.md: generate_docs.py README.md $(wildcard matthewplotlib/*.py)
 		matthewplotlib/unscii16.py \
 	> $@
 
+examples:
+	for eg in examples/*.py; do python "$$eg"; done
+
 copy:
 	tail -n +1 pyproject.toml README.md matthewplotlib/*.py examples/*.py | pbcopy
 
-.PHONY: copy
+.PHONY: copy examples

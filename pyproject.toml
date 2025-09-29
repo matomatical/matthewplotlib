@@ -1,6 +1,6 @@
 [project]
 name = "matthewplotlib"
-version = "0.2.1"
+version = "0.3.0"
 authors = [
     { name="Matthew Farrugia-Roberts", email="matthew@far.in.net" },
 ]
@@ -35,6 +35,7 @@ dev = [
 ]
 examples = [
   "scikit-learn",
+  "psutil",
 ]
 
 [project.urls]
