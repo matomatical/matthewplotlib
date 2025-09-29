@@ -20,6 +20,9 @@ Steps to update the version:
 In development:
 ---------------
 
+Version 0.3.1
+-------------
+
 Breaking changes:
 
 * scatter and scatter3 take xs, ys, (zs), and color as series tuples in
@@ -32,24 +35,19 @@ New:
   plot using them, using weighted averaging to combine plots.
 * scatter and scatter3 now accept multiple series at once.
 * special series for X/Y/Z axes.
-* some new examples (deigned by Gemini): voronoi, dashboard, mandelbrot
+* some new examples (deigned by Gemini 2.5 pro): voronoi, dashboard,
+  mandelbrot.
 
-TODO:
-
-* Improve specification of colours; separate from series? More like image with
-  a colormap?
-* Labelled axes.
-
-Version 0.2.1:
---------------
+Version 0.2.1
+-------------
 
 Fix:
 
 * Regenerate documentation.
 * Update version number properly.
 
-Version 0.2.0:
---------------
+Version 0.2.0
+-------------
 
 Breaking changes:
 
@@ -71,8 +69,8 @@ Internal:
 
 * Refactor backend to use numpy arrays rather than nested lists.
 
-Version 0.1.2:
---------------
+Version 0.1.2
+-------------
 
 Breaking changes:
 
@@ -91,8 +89,8 @@ Dependencies:
 
 * Make example dependency on `scikit-learn` explicit.
 
-Version 0.1.1:
---------------
+Version 0.1.1
+-------------
 
 New:
 

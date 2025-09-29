@@ -5,12 +5,12 @@ xs = np.linspace(-2*np.pi, +2*np.pi, 156)
 
 plot = mp.border(
     mp.scatter(
-        (xs, 1.0 * np.cos(xs), (1.,0.,0.)),
-        (xs, 0.9 * np.cos(xs - 0.33 * np.pi), (1.,0.,1.)),
-        (xs, 0.8 * np.cos(xs - 0.66 * np.pi), (0.,0.,1.)),
-        (xs, 0.7 * np.cos(xs - 1.00 * np.pi), (0.,1.,1.)),
-        (xs, 0.8 * np.cos(xs - 1.33 * np.pi), (0.,1.,0.)),
-        (xs, 0.9 * np.cos(xs - 1.66 * np.pi), (1.,1.,0.)),
+        (xs, 1.0 * np.cos(xs), "red"),
+        (xs, 0.9 * np.cos(xs - 0.33 * np.pi), "magenta"),
+        (xs, 0.8 * np.cos(xs - 0.66 * np.pi), "blue"),
+        (xs, 0.7 * np.cos(xs - 1.00 * np.pi), "cyan"),
+        (xs, 0.8 * np.cos(xs - 1.33 * np.pi), "green"),
+        (xs, 0.9 * np.cos(xs - 1.66 * np.pi), "yellow"),
         mp.xaxis(-2*np.pi, +2*np.pi, 156),
         mp.yaxis(-1, 1, 40),
         width=78,

@@ -74,12 +74,12 @@ xs = np.linspace(-2*np.pi, +2*np.pi, 156)
 
 plot = mp.border(
     mp.scatter(
-        (xs, 1.0 * np.cos(xs), (1.,0.,0.)),
-        (xs, 0.9 * np.cos(xs - 0.33 * np.pi), (1.,0.,1.)),
-        (xs, 0.8 * np.cos(xs - 0.66 * np.pi), (0.,0.,1.)),
-        (xs, 0.7 * np.cos(xs - 1.00 * np.pi), (0.,1.,1.)),
-        (xs, 0.8 * np.cos(xs - 1.33 * np.pi), (0.,1.,0.)),
-        (xs, 0.9 * np.cos(xs - 1.66 * np.pi), (1.,1.,0.)),
+        (xs, 1.0 * np.cos(xs), "red"),
+        (xs, 0.9 * np.cos(xs - 0.33 * np.pi), "magenta"),
+        (xs, 0.8 * np.cos(xs - 0.66 * np.pi), "blue"),
+        (xs, 0.7 * np.cos(xs - 1.00 * np.pi), "cyan"),
+        (xs, 0.8 * np.cos(xs - 1.33 * np.pi), "green"),
+        (xs, 0.9 * np.cos(xs - 1.66 * np.pi), "yellow"),
         mp.xaxis(-2*np.pi, +2*np.pi, 156),
         mp.yaxis(-1, 1, 40),
         width=78,
@@ -135,8 +135,6 @@ Roadmap to version 1
 Basic plot types:
 
 * [x] Scatter plots.
-  * [x] Different colours for each point.
-  * [x] Multiple point clouds on a single scatter plot.
 * [ ] Line plots (connect the dots).
 * [x] Image plots / matrix heatmaps.
 * [x] Function heatmap plots.
@@ -156,15 +154,21 @@ Basic plot arrangement:
 * [x] Horizontal and vertical stacking.
 * [x] Naive layering plots on top of each other.
 * [x] Automatically wrapping plots into a grid.
+* [ ] Finalise operator assignment.
 
 Styling plots with colors:
 
-* [ ] Consistent API for color specification.
 * [x] Basic colormaps.
 * [x] BIDS colormaps.
 * [x] Rainbow colormap.
 * [x] Cyberpunk colormap.
 * [x] Discrete colour palettes.
+
+Specifying colors:
+
+* [ ] Consistent API for color specification.
+* [ ] Configurable colour scales and normalisation.
+* [ ] Color bars, vertical or horizontal.
 
 Rendering:
 
@@ -201,6 +205,8 @@ Advanced features roadmap
 More plot types:
 
 * Advanced scatter plots:
+  * [x] Different colours for each point.
+  * [x] Multiple point clouds on a single scatter plot.
   * [x] 3d scatter plots.
 * Advanced line plots:
   * [ ] Error bars on line plots.
@@ -224,13 +230,11 @@ More plot types:
 Advanced plot arrangement:
 
 * [ ] Better support for animated plots (API needs thought).
-* [ ] Cleaner way to share config/axes between multiple plots.
 
 Advanced furnishings:
 
 * [ ] Axis transformations (e.g. logarithmic scale).
 * [ ] Legend construction (API needs thought).
-* [ ] Color bars, vertical or horizontal.
 * [ ] Text embedded in borders.
 
 Advanced rendering:
