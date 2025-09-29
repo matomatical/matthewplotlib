@@ -19,6 +19,8 @@ ORBIT_SPEED = 0.5*np.pi # radians per second
 def main():
     start_time = time.time()
     plot = None
+    # frames = []
+    # for i in range(35):
     while True:
         # sweep camera
         p = camera_pos(time.time() - start_time)
@@ -37,8 +39,12 @@ def main():
             width=WIDTH,
         )
         print(plot)
+        # frames.append(plot)
 
         time.sleep(1/FPS)
+    
+    # mp.save_animation(frames, 'images/teapot.gif', bgcolor="black")
+
    
 
 def camera_pos(t: float) -> np.ndarray:
