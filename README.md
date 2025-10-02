@@ -65,7 +65,7 @@ import numpy as np
 
 xs = np.linspace(-2*np.pi, +2*np.pi, 156)
 
-plot = mp.border(
+plot = mp.axes(
     mp.scatter(
         (xs, 1.0 * np.cos(xs), "red"),
         (xs, 0.9 * np.cos(xs - 0.33 * np.pi), "magenta"),
@@ -73,13 +73,13 @@ plot = mp.border(
         (xs, 0.7 * np.cos(xs - 1.00 * np.pi), "cyan"),
         (xs, 0.8 * np.cos(xs - 1.33 * np.pi), "green"),
         (xs, 0.9 * np.cos(xs - 1.66 * np.pi), "yellow"),
-        mp.xaxis(-2*np.pi, +2*np.pi, 156),
-        mp.yaxis(-1, 1, 40),
-        width=78,
+        width=75,
         height=10,
         yrange=(-1,1),
-    )
-    / mp.center(mp.text(f"cos(x + 2 pi k / 6)"), width=78)
+    ),
+    title=" y = cos(x + 2πk/6) ",
+    xlabel="x",
+    ylabel="y",
 )
 ```
 
