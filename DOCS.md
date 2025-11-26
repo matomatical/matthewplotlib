@@ -65,7 +65,7 @@ import numpy as np
 
 xs = np.linspace(-2*np.pi, +2*np.pi, 156)
 
-plot = mp.border(
+plot = mp.axes(
     mp.scatter(
         (xs, 1.0 * np.cos(xs), "red"),
         (xs, 0.9 * np.cos(xs - 0.33 * np.pi), "magenta"),
@@ -73,13 +73,13 @@ plot = mp.border(
         (xs, 0.7 * np.cos(xs - 1.00 * np.pi), "cyan"),
         (xs, 0.8 * np.cos(xs - 1.33 * np.pi), "green"),
         (xs, 0.9 * np.cos(xs - 1.66 * np.pi), "yellow"),
-        mp.xaxis(-2*np.pi, +2*np.pi, 156),
-        mp.yaxis(-1, 1, 40),
-        width=78,
+        width=75,
         height=10,
         yrange=(-1,1),
-    )
-    / mp.center(mp.text(f"cos(x + 2 pi k / 6)"), width=78)
+    ),
+    title=" y = cos(x + 2πk/6) ",
+    xlabel="x",
+    ylabel="y",
 )
 ```
 
@@ -1184,16 +1184,20 @@ Inputs:
     The number of columns in the grid. If not provided, it is automatically
     determined based on the terminal width and the width of the largest
     plot.
+* transpose: optional bool (default False).
+    If False (default), the plots are arranged in reading order, from left
+    to right and then from top to bottom. If True, the plots are arranged
+    in column order, from top to bottom and then from left to right.
 
 ### method wrap.\_\_repr\_\_
 
-**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1552))
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1563))
 
 ---
 
 ### class center
 
-**center(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1559))
+**center(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1570))
 
 Pad a plot with blank space to center it within a larger area.
 
@@ -1214,13 +1218,13 @@ Inputs:
 
 ### method center.\_\_repr\_\_
 
-**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1611))
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1622))
 
 ---
 
 ### function save\_animation
 
-**save\_animation(plots: Sequence[plot], filename: str, upscale: int, downscale: int, bgcolor: ColorLike | None, fps: int, repeat: bool):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1622))
+**save\_animation(plots: Sequence[plot], filename: str, upscale: int, downscale: int, bgcolor: ColorLike | None, fps: int, repeat: bool):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1633))
 
 Supply a list of plots and a filename and this method will create an
 animated gif.

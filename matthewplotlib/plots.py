@@ -1508,13 +1508,18 @@ class wrap(plot):
         The number of columns in the grid. If not provided, it is automatically
         determined based on the terminal width and the width of the largest
         plot.
+    * transpose: optional bool (default False).
+        If False (default), the plots are arranged in reading order, from left
+        to right and then from top to bottom. If True, the plots are arranged
+        in column order, from top to bottom and then from left to right.
     """
     def __init__(
         self,
         *plots: plot,
         cols: int | None = None,
+        transpose: bool = False,
     ):
-        # match size
+        # determine and standardise cell size
         cell_height = max(p.height for p in plots)
         cell_width = max(p.width for p in plots)
         padded_chars = [
@@ -1523,28 +1528,34 @@ class wrap(plot):
                 right=cell_width - p.width,
             ) for p in plots
         ]
+        blank_cell = CharArray.from_size(
+            height=cell_height,
+            width=cell_width,
+        )
 
-        # wrap list
+        # determine grid size and initialise grid
         if cols is None:
             cols = max(1, os.get_terminal_size()[0] // cell_width)
         n = len(padded_chars)
-        wrapped_chars = [padded_chars[i:i+cols] for i in range(0, n, cols)]
+        full_rows, spare = divmod(n, cols)
+        rows = full_rows + bool(spare)
+        grid = [[blank_cell for _ in range(cols)] for _ in range(rows)]
 
-        # correct final row
-        if len(wrapped_chars) > 1 and len(wrapped_chars[-1]) < cols:
-            buffer = CharArray.from_size(
-                height=cell_height,
-                width=cell_width * (cols - len(wrapped_chars[-1])),
-            )
-            wrapped_chars[-1].append(buffer)
+        # populate grid
+        for i, p in enumerate(padded_chars):
+            if transpose:
+                c, r = divmod(i, rows)
+            else:
+                r, c = divmod(i, cols)
+            grid[r][c] = p
 
         # combine into new char array
         blocked_chars = CharArray(
-            codes=np.block([[c.codes for c in row] for row in wrapped_chars]),
-            fg=np.block([[c.fg for c in row] for row in wrapped_chars]),
-            fg_rgb=np.block([[[c.fg_rgb] for c in row] for row in wrapped_chars]),
-            bg=np.block([[c.bg for c in row] for row in wrapped_chars]),
-            bg_rgb=np.block([[[c.bg_rgb] for c in row] for row in wrapped_chars]),
+            codes=np.block([[c.codes for c in row] for row in grid]),
+            fg=np.block([[c.fg for c in row] for row in grid]),
+            fg_rgb=np.block([[[c.fg_rgb] for c in row] for row in grid]),
+            bg=np.block([[c.bg for c in row] for row in grid]),
+            bg_rgb=np.block([[[c.bg_rgb] for c in row] for row in grid]),
         )
         super().__init__(blocked_chars)
         self.plots = plots

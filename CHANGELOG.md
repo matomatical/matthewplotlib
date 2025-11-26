@@ -24,6 +24,13 @@ Fix:
 
 * Missing title parameter from border.
 
+Version 0.3.2
+-------------
+
+New:
+
+* Transpose parameter for wrap.
+
 Version 0.3.1
 -------------
 
