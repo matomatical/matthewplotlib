@@ -7,6 +7,7 @@ Things to check before updating a new release:
 * All examples run without errors.
 * Road map is up to date.
 * Change log is up to date.
+* All new features are exported in `__init__.py`
 
 Steps to update the version:
 
