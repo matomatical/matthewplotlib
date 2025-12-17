@@ -1272,13 +1272,13 @@ class border(plot):
 
 class axes(plot):
     """
-    Add an annotated border around a scatterplot using box-drawing characters.
+    Add an annotated border around a 2d plot using box-drawing characters.
 
     Inputs:
 
-    * plot : scatter | function2.
+    * plot : scatter | function2 | histogram2 | dstack2.
         The plot object to be enclosed by the axes. Must have an xrange and a
-        yrange. TODO: Allow dstacks.
+        yrange.
     * title: optional str.
         An optional title for the axes. Placed centrally along the top row of
         the axes. Truncated to fit.
@@ -1304,7 +1304,7 @@ class axes(plot):
     """
     def __init__(
         self,
-        plot: scatter | function2,
+        plot: scatter | function2 | histogram2 | dstack2,
         title: str = "",
         xlabel: str = "",
         ylabel: str = "",
@@ -1484,10 +1484,55 @@ class dstack(plot):
 
         super().__init__(stacked_chars)
         self.plots = plots
-
+        
     def __repr__(self):
         return (
             f"dstack(height={self.height}, width={self.width}, "
+            f"plots={self.plots!r})"
+        )
+        
+
+class dstack2(dstack):
+    """
+    Overlay one or more plots on top of each other.
+
+    The plots are layered in the order they are given, with later plots in the
+    sequence drawn on top of earlier ones. The final size of the plot is
+    determined by the maximum width and height among all input plots. Non-blank
+    characters from upper layers will obscure characters from lower layers.
+
+    Unlike dstack, the plots must have xrange and range attributes, and these
+    must all match. The allowable types are scatter, function2, histogram2, and
+    dstack2.
+
+    Inputs:
+
+    * *plots : scatter | function2 | histogram2 | dstack2.
+        A sequence of plot objects to be overlaid. Must have matching xrange
+        and yrange.
+    """
+    def __init__(
+        self,
+        *plots: scatter | function2 | histogram2 | Self,
+    ):
+        # check the shared xrange, yrange
+        xrange: tuple[number, number] | None = None
+        yrange: tuple[number, number] | None = None
+        for plot in plots:
+            assert yrange is None or plot.xrange == xrange, "xrange mismatch"
+            assert xrange is None or plot.yrange == yrange, "yrange mismatch"
+            yrange = plot.yrange
+            xrange = plot.xrange
+        assert yrange is not None
+        assert xrange is not None
+        self.xrange: tuple[number, number] = xrange
+        self.yrange: tuple[number, number] = yrange
+
+        super().__init__(*plots)
+
+    def __repr__(self):
+        return (
+            f"dstack2(height={self.height}, width={self.width}, "
             f"plots={self.plots!r})"
         )
 

@@ -20,9 +20,23 @@ Steps to update the version:
 In development:
 ---------------
 
+TODO
+
+Version 0.3.3
+-------------
+
+New:
+
+* `dstack2` for stacking data, extend axes to more datatypes.
+* `teacher_student.py` example
+
 Fix:
 
 * Missing title parameter from border.
+
+Notes:
+
+* Plausibly `dstack2` should be the default and `dstack` should be removed.
 
 Version 0.3.2
 -------------

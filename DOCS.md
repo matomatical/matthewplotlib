@@ -1047,13 +1047,13 @@ Inputs:
 
 **axes(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1273))
 
-Add an annotated border around a scatterplot using box-drawing characters.
+Add an annotated border around a 2d plot using box-drawing characters.
 
 Inputs:
 
-* plot : scatter | function2.
+* plot : scatter | function2 | histogram2 | dstack2.
     The plot object to be enclosed by the axes. Must have an xrange and a
-    yrange. TODO: Allow dstacks.
+    yrange.
 * title: optional str.
     An optional title for the axes. Placed centrally along the top row of
     the axes. Truncated to fit.
@@ -1166,9 +1166,36 @@ Inputs:
 
 ---
 
+### class dstack2
+
+**dstack2(dstack):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1495))
+
+Overlay one or more plots on top of each other.
+
+The plots are layered in the order they are given, with later plots in the
+sequence drawn on top of earlier ones. The final size of the plot is
+determined by the maximum width and height among all input plots. Non-blank
+characters from upper layers will obscure characters from lower layers.
+
+Unlike dstack, the plots must have xrange and range attributes, and these
+must all match. The allowable types are scatter, function2, histogram2, and
+dstack2.
+
+Inputs:
+
+* *plots : scatter | function2 | histogram2 | dstack2.
+    A sequence of plot objects to be overlaid. Must have matching xrange
+    and yrange.
+
+### method dstack2.\_\_repr\_\_
+
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1533))
+
+---
+
 ### class wrap
 
-**wrap(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1495))
+**wrap(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1540))
 
 Arrange a sequence of plots into a grid.
 
@@ -1191,13 +1218,13 @@ Inputs:
 
 ### method wrap.\_\_repr\_\_
 
-**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1563))
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1608))
 
 ---
 
 ### class center
 
-**center(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1570))
+**center(plot):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1615))
 
 Pad a plot with blank space to center it within a larger area.
 
@@ -1218,13 +1245,13 @@ Inputs:
 
 ### method center.\_\_repr\_\_
 
-**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1622))
+**\_\_repr\_\_():** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1667))
 
 ---
 
 ### function save\_animation
 
-**save\_animation(plots: Sequence[plot], filename: str, upscale: int, downscale: int, bgcolor: ColorLike | None, fps: int, repeat: bool):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1633))
+**save\_animation(plots: Sequence[plot], filename: str, upscale: int, downscale: int, bgcolor: ColorLike | None, fps: int, repeat: bool):** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py#L1678))
 
 Supply a list of plots and a filename and this method will create an
 animated gif.
