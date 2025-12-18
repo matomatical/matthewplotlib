@@ -64,8 +64,9 @@ def main():
             cpu_percents_core,
             height=left_panel.height - 3,
             vrange=100,
-            column_width=2,
-            color="yellow"
+            column_width=1,
+            column_spacing=1,
+            colors=mp.rainbow(np.linspace(0,1,len(cpu_percents_core))),
         ))
         core_title = mp.center(
             mp.text("CPU Core Usage"),

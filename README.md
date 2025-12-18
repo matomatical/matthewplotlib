@@ -242,6 +242,7 @@ More plot types:
 * Advanced bar charts:
   * [x] Bar/column charts with configurable sizes and spacing.
   * [ ] Bar/column charts with other alignments.
+  * [x] Bar/column charts with individual colours.
   * [ ] Negative values in bar/column charts.
 * Hilbert curves:
   * [x] Basic Hilbert curves.

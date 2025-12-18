@@ -791,12 +791,14 @@ class bars(plot):
     * color : optional ColorLike.
         The color of the filled portion of the bars. Defaults to the terminal's
         default foreground color.
+    * colors : optional ColorLike[n].
+        The colours of the filled portion of each bar. Should be an array or
+        list of the same length as `values`.
 
     TODO:
 
     * Make it possible to draw bars to the left for values below 0.
     * Make it possible to align all bars to the right rather than left.
-    * Allow each bar to have its own colour.
     """
     def __init__(
         self,
@@ -806,6 +808,7 @@ class bars(plot):
         bar_spacing: int = 0,
         vrange: None | number | tuple[number, number] = None,
         color: ColorLike | None = None,
+        colors: list[ColorLike | None] | None = None,
     ):
         # standardise inputs
         values = np.asarray(values)
@@ -823,6 +826,10 @@ class bars(plot):
 
         # compute the bar widths
         norm_values = (values - vmin) / (vmax - vmin + 1e-15)
+
+        # determine the colors for each bar
+        if colors is None:
+            colors = [color for _ in range(len(values))]
         
         # construct the bars
         bars_chars = [
@@ -830,10 +837,10 @@ class bars(plot):
                 proportion=v,
                 width=width,
                 height=bar_height,
-                fgcolor=color,
+                fgcolor=colors[i],
                 bgcolor=None,
             ).pad(
-                below=bar_spacing * (i==num_bars-1),
+                below=bar_spacing * (i!=num_bars-1),
             )
             for i, v in enumerate(norm_values)
         ]
@@ -961,12 +968,14 @@ class columns(plot):
     * color : optional ColorLike.
         The color of the filled portion of the columns. Defaults to the
         terminal's default foreground color.
+    * colors : optional ColorLike[n].
+        The colours of the filled portion of each column. Should be an array or
+        list of the same length as `values`.
 
     TODO:
 
     * Make it possible to draw columns downward for values below 0.
     * Make it possible to align all columns to the top rather than bottom.
-    * Allow each column to have its own color.
     """
     def __init__(
         self,
@@ -976,6 +985,7 @@ class columns(plot):
         column_spacing: int = 0,
         vrange: None | number | tuple[number, number] = None,
         color: ColorLike | None = None,
+        colors: list[ColorLike | None] | None = None,
     ):
         # standardise inputs
         values = np.asarray(values)
@@ -993,6 +1003,10 @@ class columns(plot):
 
         # compute the column heights
         norm_values = (values - vmin) / (vmax - vmin + 1e-15)
+
+        # determine the colours
+        if colors is None:
+            colors = [color for _ in range(len(values))]
         
         # construct the columns
         cols_chars = [
@@ -1000,10 +1014,10 @@ class columns(plot):
                 proportion=v,
                 height=height,
                 width=column_width,
-                fgcolor=color,
+                fgcolor=colors[i],
                 bgcolor=None,
             ).pad(
-                right=column_spacing * (i==num_cols-1),
+                right=column_spacing * (i!=num_cols-1),
             )
             for i, v in enumerate(norm_values)
         ]

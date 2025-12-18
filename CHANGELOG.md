@@ -21,7 +21,18 @@ Steps to update the version:
 In development:
 ---------------
 
-TODO
+TODO.
+
+Version 0.3.4
+-------------
+
+New:
+
+* Per-column and per-bar colours in column and bar plots.
+
+Fix:
+
+* Fix bug in column/bar spacing implementation.
 
 Version 0.3.3
 -------------
