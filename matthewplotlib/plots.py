@@ -845,7 +845,7 @@ class bars(plot):
             for i, v in enumerate(norm_values)
         ]
         all_chars = CharArray.map(
-            lambda xs: np.concatenate(xs, axis=1), 
+            lambda xs: np.concatenate(xs, axis=0),
             bars_chars,
         )
         super().__init__(chars=all_chars)

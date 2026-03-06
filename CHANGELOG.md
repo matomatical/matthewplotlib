@@ -30,6 +30,10 @@ New:
 
 * Diverging colormaps divreds, divgreens, divblues.
 
+Fix:
+
+* Fix bug in bar chart layout.
+
 Version 0.3.4
 -------------
 
