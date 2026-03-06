@@ -1293,6 +1293,9 @@ TODO:
 * Consider making this a plot aggregator and overriding .saveimg(). The
   only problem is that it's unclear what to use for renderimg and
   renderstr.
+* Duration is currently broken, seems to be due to Image internally doing a
+  format conversion from RGBA -> P while saving the gif. Should convert
+  beforehand?
 
 ---
 
@@ -1374,18 +1377,45 @@ channels.
 
 ---
 
+### function divreds
+
+**divreds(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L125))
+
+Diverging red/cyan colormap. Uses greyscale value to interpolate between
+cyan (0.0) and white (0.5) and red (1.0).
+
+---
+
+### function divgreens
+
+**divgreens(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L140))
+
+Diverging green/magenta colormap. Uses greyscale value to interpolate
+between magenta (0.0) and white (0.5) and green (1.0).
+
+---
+
+### function divblues
+
+**divblues(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L155))
+
+Diverging blue/yellow colormap. Uses greyscale value to interpolate between
+yellow (0.0) and white (0.5) and blue (1.0).
+
+---
+
 ### function cyber
 
-**cyber(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L125))
+**cyber(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L174))
 
-Cyberpunk colormap. Uses greyscale value to interpolate between meganta
+Cyberpunk colormap. Uses greyscale value to interpolate between magenta
 (0.) and cyan (1.).
 
 ---
 
 ### function rainbow
 
-**rainbow(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L140))
+**rainbow(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L189))
 
 Rainbow colormap. Effectively embeds greyscale values as hue in HSV color
 space.
@@ -1394,7 +1424,7 @@ space.
 
 ### function magma
 
-**magma(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L188))
+**magma(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L237))
 
 Magma colormap by Nathaniel J. Smith and Stefan van der Walt (see
 https://bids.github.io/colormap/).
@@ -1405,7 +1435,7 @@ Discretised to 256 8-bit colours.
 
 ### function inferno
 
-**inferno(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L266))
+**inferno(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L315))
 
 Inferno colormap by Nathaniel J. Smith and Stefan van der Walt (see
 https://bids.github.io/colormap/).
@@ -1416,7 +1446,7 @@ Discretised to 256 8-bit colours.
 
 ### function plasma
 
-**plasma(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L344))
+**plasma(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L393))
 
 Plasma colormap by Nathaniel J. Smith and Stefan van der Walt (see
 https://bids.github.io/colormap/).
@@ -1427,7 +1457,7 @@ Discretised to 256 8-bit colours.
 
 ### function viridis
 
-**viridis(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L422))
+**viridis(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L471))
 
 Viridis colormap by Nathaniel J. Smith, Stefan van der Walt, and Eric
 Firing (see https://bids.github.io/colormap/).
@@ -1438,7 +1468,7 @@ Discretised to 256 8-bit colours.
 
 ### function sweetie16
 
-**sweetie16(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L504))
+**sweetie16(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L553))
 
 Sweetie-16 colour palette by GrafxKid (see
 https://lospec.com/palette-list/sweetie-16).
@@ -1450,7 +1480,7 @@ cycle).
 
 ### function pico8
 
-**pico8(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L523))
+**pico8(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L572))
 
 PICO-8 colour palette (see https://pico-8.fandom.com/wiki/Palette).
 
@@ -1461,7 +1491,7 @@ cycle).
 
 ### function tableau
 
-**tableau(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L541))
+**tableau(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L590))
 
 Matplotlib Tableau colourmap.
 
@@ -1472,7 +1502,7 @@ cycle).
 
 ### function nouveau
 
-**nouveau(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L558))
+**nouveau(x: ArrayLike) -> np.ndarray:** ([source](https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colormaps.py#L607))
 
 Updated Tableau colourmap (more accessible).
 

@@ -23,6 +23,13 @@ In development:
 
 TODO.
 
+Version 0.3.5
+-------------
+
+New:
+
+* Diverging colormaps divreds, divgreens, divblues.
+
 Version 0.3.4
 -------------
 

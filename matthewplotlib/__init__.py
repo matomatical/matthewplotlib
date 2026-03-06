@@ -4,7 +4,7 @@ them available under the top-level namespace.
 """
 
 
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 
 
 from matthewplotlib.plots import (
@@ -63,6 +63,9 @@ from matthewplotlib.colormaps import (
     yellows,
     magentas,
     cyans,
+    divreds,
+    divgreens,
+    divblues,
     cyber,
     rainbow,
     magma,

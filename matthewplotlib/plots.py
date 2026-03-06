@@ -1734,6 +1734,9 @@ def save_animation(
     * Consider making this a plot aggregator and overriding .saveimg(). The
       only problem is that it's unclear what to use for renderimg and
       renderstr.
+    * Duration is currently broken, seems to be due to Image internally doing a
+      format conversion from RGBA -> P while saving the gif. Should convert
+      beforehand?
     """
     # render plots as image arrays
     frames = [

@@ -119,6 +119,55 @@ def cyans(
 
 
 # # # 
+# DIVERGING CONTINUOUS COLOURMAPS
+
+
+def divreds(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Diverging red/cyan colormap. Uses greyscale value to interpolate between
+    cyan (0.0) and white (0.5) and red (1.0).
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
+    rgb[..., 0] = np.minimum(255 * (2 * x), 255)
+    rgb[..., 1] = np.minimum(255 * (2-2*x), 255)
+    rgb[..., 2] = np.minimum(255 * (2-2*x), 255)
+    return rgb
+
+
+def divgreens(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Diverging green/magenta colormap. Uses greyscale value to interpolate
+    between magenta (0.0) and white (0.5) and green (1.0).
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
+    rgb[..., 0] = np.minimum(255 * (2-2*x), 255)
+    rgb[..., 1] = np.minimum(255 * (2 * x), 255)
+    rgb[..., 2] = np.minimum(255 * (2-2*x), 255)
+    return rgb
+
+
+def divblues(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Diverging blue/yellow colormap. Uses greyscale value to interpolate between
+    yellow (0.0) and white (0.5) and blue (1.0).
+    """
+    x = np.asarray(x)
+    rgb = np.zeros((*x.shape, 3), dtype=np.uint8)
+    rgb[..., 0] = np.minimum(255 * (2-2*x), 255)
+    rgb[..., 1] = np.minimum(255 * (2-2*x), 255)
+    rgb[..., 2] = np.minimum(255 * (2 * x), 255)
+    return rgb
+
+
+# # # 
 # CUSTOM CONTINUOUS COLOURMAPS
 
 
@@ -126,7 +175,7 @@ def cyber(
     x: ArrayLike    # float[...]
 ) -> np.ndarray:    # -> uint8[..., 3]
     """
-    Cyberpunk colormap. Uses greyscale value to interpolate between meganta
+    Cyberpunk colormap. Uses greyscale value to interpolate between magenta
     (0.) and cyan (1.).
     """
     x = np.asarray(x)

@@ -42,7 +42,8 @@ plot = mp.vstack(
         for c in [
             mp.reds, mp.greens, mp.blues, mp.rainbow,
             mp.yellows, mp.magentas, mp.cyans, mp.cyber,
-            mp.magma, mp.inferno, mp.plasma, mp.viridis
+            mp.magma, mp.inferno, mp.plasma, mp.viridis,
+            mp.divreds, mp.divgreens, mp.divblues,
         ]
     ], cols=4),
     mp.text("discrete colormaps:"),
