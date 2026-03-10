@@ -21,7 +21,9 @@ Steps to update the version:
 In development:
 ---------------
 
-TODO.
+Fix:
+
+* Fix operator precedence bug in `isblank`/`isnonblank` (affected `dstack` overlays).
 
 Version 0.3.5
 -------------

@@ -156,14 +156,14 @@ class CharArray:
         """
         True where the character has no visible content.
         """
-        return self.codes == ord(" ") & ~self.bg
+        return (self.codes == ord(" ")) & (~self.bg)
 
 
     def isnonblank(self: Self) -> NDArray: # bool[h,w]
         """
         True where the character has visible content.
         """
-        return self.codes != ord(" ") | self.bg
+        return (self.codes != ord(" ")) | (self.bg)
 
 
     def to_ansi_str(self: Self) -> str:
