@@ -21,12 +21,18 @@ Steps to update the version:
 In development:
 ---------------
 
+TODO.
+
+Version 0.3.6
+-------------
+
 Fix:
 
 * Fix operator precedence bug in `isblank`/`isnonblank` (affected `dstack` overlays).
 * Fix `axes.__repr__` returning `"border(...)"` instead of `"axes(...)"`.
 * Accept `list` as a valid color input in `parse_color`.
 * Fix `save_animation` playing GIFs twice instead of once when `repeat=False`.
+* Fix mypy errors.
 
 Version 0.3.5
 -------------

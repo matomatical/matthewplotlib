@@ -9,7 +9,7 @@ DOCS.md: generate_docs.py README.md $(wildcard matthewplotlib/*.py)
 	> $@
 
 examples:
-	for eg in examples/*.py; do python "$$eg"; done
+	for eg in examples/*.py; do timeout 2 python "$$eg" || true; done
 
 copy:
 	tail -n +1 pyproject.toml README.md matthewplotlib/*.py examples/*.py | pbcopy

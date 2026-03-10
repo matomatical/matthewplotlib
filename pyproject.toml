@@ -1,6 +1,6 @@
 [project]
 name = "matthewplotlib"
-version = "0.3.5"
+version = "0.3.6"
 authors = [
     { name="Matthew Farrugia-Roberts", email="matthew@far.in.net" },
 ]
