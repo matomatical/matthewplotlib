@@ -234,16 +234,7 @@ def rainbow(
 # BIDS CONTINUOUS COLOURMAPS
 
 
-def magma(
-    x: ArrayLike    # float[...]
-) -> np.ndarray:    # -> uint8[..., 3]
-    """
-    Magma colormap by Nathaniel J. Smith and Stefan van der Walt (see
-    https://bids.github.io/colormap/).
-
-    Discretised to 256 8-bit colours.
-    """
-    MAGMA = np.array([
+_MAGMA = np.array([
         [  0,   0,   3], [  0,   0,   4], [  0,   0,   6], [  1,   0,   7],
         [  1,   1,   9], [  1,   1,  11], [  2,   2,  13], [  2,   2,  15],
         [  3,   3,  17], [  4,   3,  19], [  4,   4,  21], [  5,   4,  23],
@@ -308,20 +299,22 @@ def magma(
         [252, 232, 170], [252, 234, 172], [252, 236, 174], [252, 238, 176],
         [252, 240, 177], [252, 241, 179], [252, 243, 181], [252, 245, 183],
         [251, 247, 185], [251, 249, 187], [251, 250, 189], [251, 252, 191],
-    ])
-    return MAGMA[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
+])
 
 
-def inferno(
+def magma(
     x: ArrayLike    # float[...]
 ) -> np.ndarray:    # -> uint8[..., 3]
     """
-    Inferno colormap by Nathaniel J. Smith and Stefan van der Walt (see
+    Magma colormap by Nathaniel J. Smith and Stefan van der Walt (see
     https://bids.github.io/colormap/).
 
     Discretised to 256 8-bit colours.
     """
-    INFERNO = np.array([
+    return _MAGMA[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
+
+
+_INFERNO = np.array([
         [  0,   0,   3], [  0,   0,   4], [  0,   0,   6], [  1,   0,   7],
         [  1,   1,   9], [  1,   1,  11], [  2,   1,  14], [  2,   2,  16],
         [  3,   2,  18], [  4,   3,  20], [  4,   3,  22], [  5,   4,  24],
@@ -386,20 +379,22 @@ def inferno(
         [241, 240, 121], [241, 242, 125], [242, 243, 129], [242, 244, 133],
         [243, 246, 137], [244, 247, 141], [245, 248, 145], [246, 250, 149],
         [247, 251, 153], [249, 252, 157], [250, 253, 160], [252, 254, 164],
-    ])
-    return INFERNO[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
+])
 
 
-def plasma(
+def inferno(
     x: ArrayLike    # float[...]
 ) -> np.ndarray:    # -> uint8[..., 3]
     """
-    Plasma colormap by Nathaniel J. Smith and Stefan van der Walt (see
+    Inferno colormap by Nathaniel J. Smith and Stefan van der Walt (see
     https://bids.github.io/colormap/).
 
     Discretised to 256 8-bit colours.
     """
-    PLASMA = np.array([
+    return _INFERNO[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
+
+
+_PLASMA = np.array([
         [ 12,   7, 134], [ 16,   7, 135], [ 19,   6, 137], [ 21,   6, 138],
         [ 24,   6, 139], [ 27,   6, 140], [ 29,   6, 141], [ 31,   5, 142],
         [ 33,   5, 143], [ 35,   5, 144], [ 37,   5, 145], [ 39,   5, 146],
@@ -464,20 +459,22 @@ def plasma(
         [246, 229,  37], [245, 231,  38], [245, 233,  38], [244, 234,  38],
         [243, 236,  38], [243, 238,  38], [242, 240,  38], [242, 241,  38],
         [241, 243,  38], [240, 245,  37], [240, 246,  35], [239, 248,  33],
-    ])
-    return PLASMA[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
+])
 
 
-def viridis(
+def plasma(
     x: ArrayLike    # float[...]
 ) -> np.ndarray:    # -> uint8[..., 3]
     """
-    Viridis colormap by Nathaniel J. Smith, Stefan van der Walt, and Eric
-    Firing (see https://bids.github.io/colormap/).
+    Plasma colormap by Nathaniel J. Smith and Stefan van der Walt (see
+    https://bids.github.io/colormap/).
 
     Discretised to 256 8-bit colours.
     """
-    VIRIDIS = np.array([
+    return _PLASMA[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
+
+
+_VIRIDIS = np.array([
         [ 68,   1,  84], [ 68,   2,  85], [ 68,   3,  87], [ 69,   5,  88],
         [ 69,   6,  90], [ 69,   8,  91], [ 70,   9,  92], [ 70,  11,  94],
         [ 70,  12,  95], [ 70,  14,  97], [ 71,  15,  98], [ 71,  17,  99],
@@ -542,11 +539,22 @@ def viridis(
         [225, 227,  24], [228, 227,  24], [231, 228,  25], [233, 228,  25],
         [236, 228,  26], [238, 229,  27], [241, 229,  28], [243, 229,  30],
         [246, 230,  31], [248, 230,  33], [250, 230,  34], [253, 231,  36],
-    ])
-    return VIRIDIS[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
+])
 
 
-# # # 
+def viridis(
+    x: ArrayLike    # float[...]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Viridis colormap by Nathaniel J. Smith, Stefan van der Walt, and Eric
+    Firing (see https://bids.github.io/colormap/).
+
+    Discretised to 256 8-bit colours.
+    """
+    return _VIRIDIS[(np.clip(x, 0., 1.) * 255).astype(np.uint8)]
+
+
+# # #
 # DISCRETE COLORMAPS
 
 
