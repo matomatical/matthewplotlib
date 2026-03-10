@@ -3,20 +3,23 @@ Note to self
 
 Things to check before updating a new release:
 
-* mypy checks pass.
-* All examples run without errors.
+* mypy checks pass (`mypy matthewplotlib/`).
+* All examples run without errors (`make examples`).
 * Road map is up to date.
 * Change log is up to date.
-* All new features are exported in `__init__.py`
+* All new features are exported in `__init__.py`.
 
-Steps to update the version:
+Steps to release a new version:
 
-* Decide on a new version number.
-* Bump `__version__` in `__init__.py`.
-* Bump version in `pyproject.toml`.
-* `make DOCS.md`.
-* Push/merge new code into main branch.
-* On github, make a new release with a new tag.
+1. Decide on a new version number (V).
+2. Bump `__version__` in `__init__.py` to V.
+3. Bump `version` in `pyproject.toml` to V.
+4. Move changelog items from 'In development' to a new 'Version V' section.
+5. Regenerate docs: `make DOCS.md`.
+6. Commit: `git commit -m "Version V"`.
+7. Tag: `git tag vV`.
+8. Push: `git push origin main --tags`.
+9. On GitHub, create a new release from the tag.
 
 In development:
 ---------------
