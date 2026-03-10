@@ -52,7 +52,6 @@ from numpy.typing import ArrayLike, NDArray
 from matthewplotlib.colormaps import ColorMap
 from numbers import Number
 
-from matthewplotlib.colors import ColorLike
 from matthewplotlib.data import (
     number,
     Series,
