@@ -24,6 +24,8 @@ In development:
 Fix:
 
 * Fix operator precedence bug in `isblank`/`isnonblank` (affected `dstack` overlays).
+* Fix `axes.__repr__` returning `"border(...)"` instead of `"axes(...)"`.
+
 
 Version 0.3.5
 -------------

@@ -1365,10 +1365,10 @@ class axes(plot):
         self.plot = plot
     
     def __repr__(self):
-        return f"border(style={self.style!r}, plot={self.plot!r})"
+        return f"axes(style={self.style!r}, plot={self.plot!r})"
 
 
-# # # 
+# # #
 # ARRANGEMENT CLASSES
 
 
