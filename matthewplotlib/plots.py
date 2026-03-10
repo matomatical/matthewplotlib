@@ -1765,10 +1765,11 @@ def save_animation(
     ]
 
     # save
-    images[0].save(
-        filename,
+    save_kwargs = dict(
         save_all=True,
         append_images=images[1:],
         duration=1000 // fps,
-        loop=1-bool(repeat), # 1 = loop once, 0 = loop forever
     )
+    if repeat:
+        save_kwargs['loop'] = 0  # 0 = loop forever
+    images[0].save(filename, **save_kwargs)
