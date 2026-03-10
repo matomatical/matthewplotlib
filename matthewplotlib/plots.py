@@ -1652,7 +1652,7 @@ class center(plot):
         width: int | None = None,
     ):
         # decide padding amounts
-        # horizontal
+        # vertical
         if height is None or height <= plot.height:
             above = 0
             below = 0
@@ -1660,7 +1660,7 @@ class center(plot):
             hdiff = height - plot.height
             above = hdiff // 2
             below = above + (hdiff % 2)
-        # vertical
+        # horizontal
         if width is None or width <= plot.width:
             left = 0
             right = 0
