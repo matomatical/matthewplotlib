@@ -486,23 +486,23 @@ class image(plot):
         im: ArrayLike, # float[h,w] | float[h,w,rgb] | int[h,w] | int[h,w,rgb]
         colormap: ColorMap | None = None,
     ):
-        # preprocessing: all inputs become float[h, w, rgb]
-        im = np.asarray(im)
+        # preprocessing: all inputs become uint8[h, w, rgb]
+        arr = np.asarray(im)
         if colormap is not None:
             # colormap provided: map image to u8 rgb
-            im = colormap(im)
-        if im.ndim == 2:
+            arr = colormap(arr)
+        if arr.ndim == 2:
             # greyscale -> uniform colourisation
-            im = einops.repeat(im, 'h w -> h w 3')
-        if np.issubdtype(im.dtype, np.integer):
+            arr = einops.repeat(arr, 'h w -> h w 3')
+        if np.issubdtype(arr.dtype, np.integer):
             # clip uint8
-            im = np.clip(im, 0, 255).astype(np.uint8)
-        if np.issubdtype(im.dtype, np.floating):
+            arr = np.clip(arr, 0, 255).astype(np.uint8)
+        if np.issubdtype(arr.dtype, np.floating):
             # floats -> clipped uint8
-            im = (255 * np.clip(im, 0., 1.)).astype(np.uint8)
+            arr = (255 * np.clip(arr, 0., 1.)).astype(np.uint8)
 
         # construct the plot
-        chars = unicode_image(im)
+        chars = unicode_image(arr)
 
         # form a plot object
         super().__init__(chars)
