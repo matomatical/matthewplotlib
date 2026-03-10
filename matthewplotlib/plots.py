@@ -584,7 +584,7 @@ class function2(image):
             im=zgrid_norm,
             colormap=colormap,
         )
-        self.name = F.__name__
+        self.name = getattr(F, '__name__', '?')
         self.xrange = xrange
         self.yrange = yrange
         self.zrange = zrange
