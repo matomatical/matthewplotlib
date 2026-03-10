@@ -70,7 +70,7 @@ def parse_color(color: ColorLike | None) -> Color | None:
         if color.lower() in NAMED_COLORS:
             return NAMED_COLORS[color.lower()]
 
-    elif isinstance(color, (np.ndarray, tuple)):
+    elif isinstance(color, (np.ndarray, tuple, list)):
         color_ = np.asarray(color)
         if color_.shape == (3,):
             if np.issubdtype(color_.dtype, np.floating):

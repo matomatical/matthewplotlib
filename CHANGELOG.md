@@ -25,7 +25,7 @@ Fix:
 
 * Fix operator precedence bug in `isblank`/`isnonblank` (affected `dstack` overlays).
 * Fix `axes.__repr__` returning `"border(...)"` instead of `"axes(...)"`.
-
+* Accept `list` as a valid color input in `parse_color`.
 
 Version 0.3.5
 -------------
