@@ -1532,8 +1532,8 @@ class dstack2(dstack):
         xrange: tuple[number, number] | None = None
         yrange: tuple[number, number] | None = None
         for plot in plots:
-            assert yrange is None or plot.xrange == xrange, "xrange mismatch"
-            assert xrange is None or plot.yrange == yrange, "yrange mismatch"
+            assert xrange is None or plot.xrange == xrange, "xrange mismatch"
+            assert yrange is None or plot.yrange == yrange, "yrange mismatch"
             yrange = plot.yrange
             xrange = plot.xrange
         assert yrange is not None
