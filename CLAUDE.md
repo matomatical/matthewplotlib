@@ -19,9 +19,6 @@ pytest tests/test_colors.py::TestParseColorNamed::test_named_colors -v  # single
 # Type checking (primary quality gate)
 mypy matthewplotlib/
 
-# Run all examples (integration validation, 2-second timeout each)
-make examples
-
 # Regenerate API docs
 make DOCS.md
 ```
@@ -43,8 +40,8 @@ Public API is aggregated in `__init__.py`. New features must be exported there.
 
 From CONTRIBUTING.md — before merging any branch:
 1. `mypy matthewplotlib/` passes
-2. `make DOCS.md` is up to date
-3. `make examples` runs without errors
+2. `pytest tests/ -v` passes (includes integration tests for all examples)
+3. `make DOCS.md` is up to date
 4. Update README.md roadmap if relevant
 5. Update CHANGELOG.md
 6. Export new features in `__init__.py`

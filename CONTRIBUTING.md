@@ -12,8 +12,8 @@ To work on a new feature:
 1. Make the change on a new branch
 2. Make sure the branch passes the checklist:
    * mypy checks pass (`mypy matthewplotlib/`).
-   * Docs up to date `make DOCS.md`.
-   * All examples run without errors (`make examples`).
+   * Tests pass (`pytest tests/ -v`), including integration tests for all examples.
+   * Docs up to date (`make DOCS.md`).
    * Road map (in README.md) is up to date.
    * Change log (CHANGELOG.md) is up to date.
    * All new features are exported in `__init__.py`.
