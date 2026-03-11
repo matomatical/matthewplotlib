@@ -40,7 +40,7 @@ Rough edges:
 * API for axes not final.
 * No labels available for bars/columns/histograms yet.
 * No HTML documentation (but see WIP markdown [DOCS.md](DOCS.md)).
-* Limited input validation, error handling, or testing.
+* Limited input validation, error handling.
 
 
 
@@ -147,13 +147,13 @@ See [examples/](examples/) folder. Highlights:
 
 * [teapot.py](examples/teapot.py) showing a 3d scatter plot and animation.
 
-Ideas for future examples:
-
 * Simple machine learning experiment, loss curves and progress bars.
 
-* Simple gridworld rollout visualiser for reinforcement learning.
-
 * CPU/RAM usage visualiser.
+
+Ideas for future examples:
+
+* Simple gridworld rollout visualiser for reinforcement learning.
 
 
 Roadmap to version 1
@@ -216,7 +216,6 @@ Testing:
 * [x] Integration tests for examples (str output and image/gif output).
 * [ ] Tests for plot types (sizing, operators, rendering smoke tests).
 * [ ] Snapshot testing for str output and image output regression detection.
-* [ ] Automated testing in CI.
 
 Documentation:
 
@@ -239,26 +238,26 @@ Advanced features roadmap
 
 More plot types:
 
-* Advanced scatter plots:
+* [x] Advanced scatter plots:
   * [x] Different colours for each point.
   * [x] Multiple point clouds on a single scatter plot.
   * [x] 3d scatter plots.
-* Advanced line plots:
+* [ ] Advanced line plots:
   * [ ] Error bars on line plots.
   * [ ] Fill plots.
-* Advanced bar charts:
+* [ ] Advanced bar charts:
   * [x] Bar/column charts with configurable sizes and spacing.
   * [ ] Bar/column charts with other alignments.
   * [x] Bar/column charts with individual colours.
   * [ ] Negative values in bar/column charts.
-* Hilbert curves:
+* [ ] Hilbert curves:
   * [x] Basic Hilbert curves.
   * [ ] Non-square Hilbert curves.
   * [ ] 3d Hilbert curves.
-* World maps:
+* [ ] World maps:
   * [ ] Some 2d projections.
   * [ ] 3d globe projection.
-* Other:
+* [ ] Other:
   * [ ] Calendar heatmap plots (see calendar heatmap example for now).
   * [ ] Candlestick plots.
   * [ ] Box plots.
