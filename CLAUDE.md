@@ -50,6 +50,11 @@ From CONTRIBUTING.md — before merging any branch:
 See CONTRIBUTING.md for instructions on how to prepare a new version for
 release.
 
+## Code Style
+
+- `# # #` / `# Title` comment blocks are used for code folding — preserve this pattern when adding new sections
+- CHANGELOG entries should be concise and describe API-level changes, not implementation details
+
 ## Build Configuration
 
 - Build backend: Hatchling
