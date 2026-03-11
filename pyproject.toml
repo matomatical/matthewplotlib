@@ -32,6 +32,8 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "mypy",
+  "pytest",
+  "pytest-cov",
   "scipy-stubs",
   "types-psutil",
 ]
@@ -41,6 +43,7 @@ examples = [
   "jax",
   "jaxtyping",
   "opencv-python",
+  "tyro",
 ]
 
 [project.urls]
@@ -50,6 +53,9 @@ Issues = "https://github.com/matomatical/matthewplotlib/issues"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.mypy]
 packages = ["matthewplotlib"]

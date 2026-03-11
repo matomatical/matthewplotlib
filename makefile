@@ -23,4 +23,7 @@ copy:
 # 	git commit -m "Version $(V)"
 # 	git tag v$(V)
 
-.PHONY: copy examples # release
+test:
+	pytest tests/ -v
+
+.PHONY: copy examples test # release

@@ -1,30 +1,17 @@
-Note to self
-------------
+Changelog
+=========
 
-Things to check before updating a new release:
+In development
+--------------
 
-* mypy checks pass (`mypy matthewplotlib/`).
-* All examples run without errors (`make examples`).
-* Road map is up to date.
-* Change log is up to date.
-* All new features are exported in `__init__.py`.
+Fix:
 
-Steps to release a new version:
+* Fix BIDS colormaps (magma, inferno, plasma, viridis) returning wrong dtype.
 
-1. Decide on a new version number (V).
-2. Bump `__version__` in `__init__.py` to V.
-3. Bump `version` in `pyproject.toml` to V.
-4. Move changelog items from 'In development' to a new 'Version V' section.
-5. Regenerate docs: `make DOCS.md`.
-6. Commit: `git commit -m "Version V"`.
-7. Tag: `git tag vV`.
-8. Push: `git push origin main --tags`.
-9. On GitHub, create a new release from the tag.
+Dev:
 
-In development:
----------------
-
-TODO.
+* Add unit test suite and `make test` target.
+* Add `pytest` to dev dependencies.
 
 Version 0.3.6
 -------------
