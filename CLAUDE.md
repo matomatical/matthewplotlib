@@ -42,9 +42,13 @@ From CONTRIBUTING.md — before merging any branch:
 1. `mypy matthewplotlib/` passes
 2. `pytest tests/ -v` passes (includes integration tests for all examples)
 3. `make DOCS.md` is up to date
-4. Update README.md roadmap if relevant
+4. Look through README and make sure it's up to date, including roadmap
+   section.
 5. Update CHANGELOG.md
 6. Export new features in `__init__.py`
+
+See CONTRIBUTING.md for instructions on how to prepare a new version for
+release.
 
 ## Build Configuration
 

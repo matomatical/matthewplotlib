@@ -31,13 +31,14 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+  # type checking
   "mypy",
-  "pytest",
-  "pytest-cov",
   "scipy-stubs",
   "types-psutil",
-]
-examples = [
+  # testing
+  "pytest",
+  "pytest-cov",
+  # for examples (needed for integration tests)
   "scikit-learn",
   "psutil",
   "jax",
