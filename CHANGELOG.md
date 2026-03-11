@@ -4,6 +4,11 @@ Changelog
 In development
 --------------
 
+TODO
+
+Version 0.3.7
+-------------
+
 Fix:
 
 * Fix BIDS colormaps (magma, inferno, plasma, viridis) returning wrong dtype.
