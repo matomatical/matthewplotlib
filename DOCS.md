@@ -209,9 +209,14 @@ Basic code improvements:
 * [ ] Split up plotting module with one file per plot type.
 * [x] Comprehensive type annotations, static type checking with mypy.
 * [ ] Robust input validation and error handling.
+
+Testing:
+
 * [x] Unit tests for core modules (colors, colormaps, data, core).
+* [x] Integration tests for examples (str output and image/gif output).
 * [ ] Tests for plot types (sizing, operators, rendering smoke tests).
-* [ ] Automated integration tests (CI).
+* [ ] Snapshot testing for str output and image output regression detection.
+* [ ] Automated testing in CI.
 
 Documentation:
 

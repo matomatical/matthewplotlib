@@ -1,21 +1,25 @@
 import time
 import collections
 
+import tyro
 import numpy as np
 import psutil # pip install psutil
 
 import matthewplotlib as mp
 
-FPS = 10
-HISTORY_SECONDS = 30
-PLOT_WIDTH = 80
 
-def main():
-    history_size = HISTORY_SECONDS * FPS
+def main(
+    num_frames: int = 0,
+    fps: int = 10,
+    history_seconds: int = 30,
+):
+    """Live system dashboard showing CPU and memory usage."""
+    history_size = history_seconds * fps
     cpu_history = collections.deque(maxlen=history_size)
-    time_points = -np.linspace(HISTORY_SECONDS, 0, history_size)
+    time_points = -np.linspace(history_seconds, 0, history_size)
     plot = None
-    while True:
+    frame = 0
+    while num_frames == 0 or frame < num_frames:
         # collect data
         cpu_percent = psutil.cpu_percent(percpu=False)
         cpu_percents_core = psutil.cpu_percent(percpu=True)
@@ -34,11 +38,11 @@ def main():
             (time_points, padded_history, "cyan"),
             width=40,
             height=7,
-            xrange=(-HISTORY_SECONDS, 0),
+            xrange=(-history_seconds, 0),
             yrange=(0, 100),
         ))
         cpu_title = mp.center(
-            mp.text(f"CPU History ({HISTORY_SECONDS}s)"),
+            mp.text(f"CPU History ({history_seconds}s)"),
             width=cpu_plot.width,
         )
 
@@ -80,11 +84,12 @@ def main():
         plot = dashboard
         print(plot)
 
-        time.sleep(1 / FPS)
+        frame += 1
+        time.sleep(1 / fps)
 
 
 if __name__ == "__main__":
     try:
-        main()
+        tyro.cli(main)
     except KeyboardInterrupt:
         print()

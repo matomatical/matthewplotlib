@@ -11,7 +11,9 @@ Fix:
 Dev:
 
 * Add unit test suite and `make test` target.
+* Add integration tests for all examples.
 * Add `pytest` to dev dependencies.
+* Add `tyro` CLI argument parsing to long-running examples.
 
 Version 0.3.6
 -------------

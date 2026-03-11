@@ -1,13 +1,8 @@
 import time
+import tyro
 import numpy as np
 
 import matthewplotlib as mp
-
-
-# configure screen
-FPS = 10
-WIDTH = 80
-HEIGHT = 20
 
 
 # configure camera path
@@ -16,15 +11,21 @@ ORBIT_HEIGHT = 2.5
 ORBIT_SPEED = 0.5*np.pi # radians per second
 
 
-def main():
-    start_time = time.time()
+def main(
+    num_frames: int = 0,
+    fps: int = 10,
+    width: int = 80,
+    height: int = 20,
+):
+    """Rotating 3D teapot with orbiting camera."""
     plot = None
     # frames = []
-    # for i in range(35):
-    while True:
+    frame = 0
+    # for frame in range(35):
+    while num_frames == 0 or frame < num_frames:
         # sweep camera
-        p = camera_pos(time.time() - start_time)
-        
+        p = camera_pos(frame / fps)
+
         # plot
         if plot:
             print(-plot, end="")
@@ -35,14 +36,15 @@ def main():
             TEAPOT,
             camera_position=p,
             vertical_fov_degrees=55,
-            height=HEIGHT,
-            width=WIDTH,
+            height=height,
+            width=width,
         )
         print(plot)
         # frames.append(plot)
 
-        time.sleep(1/FPS)
-    
+        frame += 1
+        time.sleep(1/fps)
+
     # mp.save_animation(frames, 'images/teapot.gif', bgcolor="black")
 
    
@@ -666,6 +668,6 @@ TEAPOT = np.array([
 
 if __name__ == "__main__":
     try:
-        main()
+        tyro.cli(main)
     except KeyboardInterrupt:
         print()

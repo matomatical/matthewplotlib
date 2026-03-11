@@ -1,16 +1,24 @@
 import time
+import tyro
 import numpy as np
 import matthewplotlib as mp
 
-x = np.linspace(-2*np.pi, +2*np.pi, 150)
 
-plot = None
-# frames = []
+def main(
+    num_frames: int = 0,
+    fps: int = 20,
+    period: float = 3.0,
+):
+    """Animated cosine wave with shifting phase and amplitude."""
+    x = np.linspace(-2*np.pi, +2*np.pi, 150)
 
-try:
-    # for i in range(49):
-    while True:
-        k = (time.time() % 3) * 2
+    plot = None
+    # frames = []
+
+    frame = 0
+    # for frame in range(49):
+    while num_frames == 0 or frame < num_frames:
+        k = (frame / fps % period) / period * 6
         A = 0.85 + 0.15 * np.cos(k)
         y = A * np.cos(x - 2*np.pi*k/6)
         c = mp.rainbow(1-k/6)
@@ -29,12 +37,18 @@ try:
         )
         print(plot)
         # frames.append(plot)
-        time.sleep(1/20)
-except KeyboardInterrupt:
-    print()
-# mp.save_animation(
-#     frames,
-#     "images/quickstart.gif",
-#     bgcolor="black",
-#     fps=20,
-# )
+        frame += 1
+        time.sleep(1/fps)
+    # mp.save_animation(
+    #     frames,
+    #     "images/quickstart.gif",
+    #     bgcolor="black",
+    #     fps=20,
+    # )
+
+
+if __name__ == "__main__":
+    try:
+        tyro.cli(main)
+    except KeyboardInterrupt:
+        print()

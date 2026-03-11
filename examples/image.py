@@ -29,6 +29,7 @@ plot = mp.wrap(
     mp.image(np.array([0,5,6,7,7])[image // 3], colormap=mp.pico8),
     mp.image(image // 2, colormap=mp.sweetie16),
     mp.image(0.5 + image / 30, colormap=mp.rainbow),
+    cols=3,
 )
 
 print("printing plot...")

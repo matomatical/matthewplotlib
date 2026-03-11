@@ -1,25 +1,27 @@
 import time
+import tyro
 import numpy as np
 import matthewplotlib as mp
 
-
-WIDTH = 80
-HEIGHT = 40
-MAX_ITER = 2000
-FRAMES = 200
-FPS = 20.
-FILENAME = "images/mandelbrot.gif"
 
 CX, CY = -0.743643887037151, 0.131825904205330
 ZOOM_START = 3
 ZOOM_END = 0.000000000001
 
 
-def main():
+def main(
+    num_frames: int = 200,
+    fps: float = 20.0,
+    width: int = 80,
+    height: int = 40,
+    max_iter: int = 2000,
+    filename: str = "images/mandelbrot.gif",
+):
+    """Mandelbrot set zoom animation."""
     frames = []
-    zoom_factors = np.geomspace(ZOOM_START, ZOOM_END, FRAMES)
-    
-    print(f"Generating {FRAMES} frames for Mandelbrot zoom...")
+    zoom_factors = np.geomspace(ZOOM_START, ZOOM_END, num_frames)
+
+    print(f"Generating {num_frames} frames for Mandelbrot zoom...")
     
     plot = None
     for i, zoom in enumerate(zoom_factors):
@@ -27,18 +29,18 @@ def main():
 
         # zoom
         xrange = (CX - zoom, CX + zoom)
-        aspect_ratio = WIDTH / (2 * HEIGHT)
+        aspect_ratio = width / (2 * height)
         yzoom = zoom / aspect_ratio
         yrange = (CY - yzoom, CY + yzoom)
         
         # compute
         frame = mp.function2(
-            lambda xy: MAX_ITER-escape_time(xy[:,0] + 1j * xy[:,1]),
+            lambda xy: max_iter-escape_time(xy[:,0] + 1j * xy[:,1], max_iter),
             xrange=xrange,
             yrange=yrange,
-            width=WIDTH,
-            height=HEIGHT,
-            zrange=(0, MAX_ITER),
+            width=width,
+            height=height,
+            zrange=(0, max_iter),
             colormap=mp.magma,
         )
         frames.append(frame)
@@ -46,22 +48,22 @@ def main():
         # plot
         if plot is not None:
             print(-plot, end="")
-        plot = mp.vstack(mp.progress((i+1)/FRAMES, width=WIDTH), frame)
+        plot = mp.vstack(mp.progress((i+1)/num_frames, width=width), frame)
         print(plot, sep="")
 
         # wait
-        time.sleep(max(0, start + 1/FPS - time.perf_counter()))
-        
-    print(f"saving to '{FILENAME}'...")
-    mp.save_animation(frames, FILENAME, fps=FPS, downscale=8)
+        time.sleep(max(0, start + 1/fps - time.perf_counter()))
+
+    print(f"saving to '{filename}'...")
+    mp.save_animation(frames, filename, fps=fps, downscale=8)
     print("Done!")
 
 
-def escape_time(c: np.ndarray) -> np.ndarray:
+def escape_time(c: np.ndarray, max_iter: int) -> np.ndarray:
     z = np.zeros_like(c)
     n = np.zeros(c.shape, dtype=int)
     mask = np.ones(c.shape, dtype=bool)
-    for i in range(MAX_ITER):
+    for i in range(max_iter):
         z[mask] = z[mask]**2 + c[mask]
         mask[np.abs(z) > 2] = False
         n[mask] = i
@@ -71,4 +73,4 @@ def escape_time(c: np.ndarray) -> np.ndarray:
 
 
 if __name__ == "__main__":
-    main()
+    tyro.cli(main)
