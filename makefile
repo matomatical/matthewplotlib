@@ -17,6 +17,7 @@ examples:
 	python examples/functions.py
 	python examples/hilbert_curve.py
 	python examples/image.py
+	python examples/jointplot.py
 	python examples/lissajous.py
 	python examples/mandelbrot.py --num-frames 5
 	python examples/quickstart1.py

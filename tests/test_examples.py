@@ -17,6 +17,7 @@ EXAMPLES = [
     ("functions.py", [], None),
     ("hilbert_curve.py", [], "images/hilbert_curve.png"),
     ("image.py", [], None),
+    ("jointplot.py", [], "images/jointplot.png"),
     ("lissajous.py", [], "images/lissajous.png"),
     ("mandelbrot.py", ["--num-frames", "5"], "images/mandelbrot.gif"),
     ("quickstart1.py", [], "images/quickstart.png"),
@@ -29,8 +30,20 @@ EXAMPLES = [
 ]
 
 
-def _run_example(script, args, tmp_path):
-    """Run an example script in a tmp dir with images/ created."""
+@pytest.mark.parametrize(
+    "script, args, output_file",
+    EXAMPLES,
+    ids=[s for s, _, _ in EXAMPLES],
+)
+def test_example(script, args, output_file, tmp_path):
+    """Each example should run successfully and produce terminal output.
+
+    For examples that save a file, also check the output file exists.
+
+    TODO: snapshot stdout content to detect rendering regressions.
+    TODO: compare output images against reference snapshots to detect
+    rendering regressions.
+    """
     (tmp_path / "images").mkdir()
     result = subprocess.run(
         [sys.executable, str(EXAMPLES_DIR / script)] + args,
@@ -40,41 +53,11 @@ def _run_example(script, args, tmp_path):
         cwd=tmp_path,
     )
     assert result.returncode == 0, f"stderr:\n{result.stderr}"
-    return result
-
-
-@pytest.mark.parametrize(
-    "script, args",
-    [(s, a) for s, a, _ in EXAMPLES],
-    ids=[s for s, _, _ in EXAMPLES],
-)
-def test_example_str(script, args, tmp_path):
-    """Each example should run successfully and produce terminal output.
-
-    TODO: snapshot stdout content to detect rendering regressions.
-    """
-    result = _run_example(script, args, tmp_path)
     assert len(result.stdout) > 0
-
-
-EXAMPLES_WITH_IMAGE = [(s, a, f) for s, a, f in EXAMPLES if f is not None]
-
-
-@pytest.mark.parametrize(
-    "script, args, output_file",
-    EXAMPLES_WITH_IMAGE,
-    ids=[s for s, _, _ in EXAMPLES_WITH_IMAGE],
-)
-def test_example_image(script, args, output_file, tmp_path):
-    """Each example that saves a file should produce the expected output.
-
-    TODO: compare output images against reference snapshots to detect
-    rendering regressions.
-    """
-    _run_example(script, args, tmp_path)
-    output_path = tmp_path / output_file
-    assert output_path.exists(), f"expected output file {output_file}"
-    assert output_path.stat().st_size > 0
+    if output_file is not None:
+        output_path = tmp_path / output_file
+        assert output_path.exists(), f"expected output file {output_file}"
+        assert output_path.stat().st_size > 0
 
 
 def test_all_examples_covered():
