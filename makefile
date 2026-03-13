@@ -22,7 +22,7 @@ copy:
 # 	git tag v$(V)
 
 docs: templates/custom.css $(wildcard matthewplotlib/*.py)
-	pdoc matthewplotlib/ \!matthewplotlib.unscii16 \
+	pdoc matthewplotlib/ \
 		--no-show-source \
 		-e matthewplotlib=https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/ \
 		-t templates/ \

@@ -36,8 +36,8 @@ comparison.
 ### Content
 
 - [ ] Richer landing page (include README content: images, quickstart, etc.)
-- [ ] Exclude private variables from docs (pdoc hides `_`-prefixed by default;
-      verify this covers `_UNSCII_16_DATA` and `CharArray` internals)
+- [x] Exclude private variables from docs (pdoc hides `_`-prefixed by default;
+      verified: `_UNSCII_16_DATA` excluded, `CharArray` only shows public API)
 - [ ] Example gallery page (images + links to source)
 - [ ] Changelog page (rendered from CHANGELOG.md)
 
