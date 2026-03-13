@@ -43,7 +43,6 @@ Rough edges:
 * Limited input validation, error handling.
 
 
-
 Quickstart
 ----------
 
@@ -147,9 +146,20 @@ See [examples/](examples/) folder. Highlights:
 
 * [teapot.py](examples/teapot.py) showing a 3d scatter plot and animation.
 
-* Simple machine learning experiment, loss curves and progress bars.
+* [mandelbrot.py](examples/mandelbrot.py) showing an animated Mandelbrot
+  fractal zoom using function heatmaps and colormaps.
 
-* CPU/RAM usage visualiser.
+* [jointplot.py](examples/jointplot.py) showing a joint distribution with
+  marginal histograms, demonstrating plot composition with hstack and vstack.
+
+* [voronoi.py](examples/voronoi.py) showing a Voronoi diagram using function
+  heatmaps and scipy.
+
+* [teacher_student.py](examples/teacher_student.py) showing a simple machine
+  learning experiment with loss curves and progress bars.
+
+* [dashboard.py](examples/dashboard.py) showing a live CPU/RAM usage
+  visualiser.
 
 Ideas for future examples:
 
@@ -213,8 +223,7 @@ Basic code improvements:
 Testing:
 
 * [x] Unit tests for core modules (colors, colormaps, data, core).
-* [x] Integration tests for examples (str output and image/gif output).
-* [ ] Tests for plot types (sizing, operators, rendering smoke tests).
+* [x] Integration smoke tests (all examples run).
 * [ ] Snapshot testing for str output and image output regression detection.
 
 Documentation:
