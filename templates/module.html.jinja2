@@ -1,0 +1,52 @@
+{% extends "default/module.html.jinja2" %}
+
+{% block module_list_link %}
+{% endblock %}
+
+{% block nav_title %}
+    <a href="{{ "../" * module.modulename.count(".") }}matthewplotlib.html" class="nav-title">matthewplotlib</a>
+{% endblock %}
+
+{% block nav_footer %}
+{% endblock %}
+
+{% block edit_button %}
+    {% set parentmodule = ".".join(module.modulename.split(".")[:-1]) %}
+    {% if parentmodule and parentmodule in all_modules %}
+        <a class="pdoc-button git-button back-button" href="../{{ parentmodule.split(".")[-1] }}.html">
+            {% include "resources/box-arrow-in-left.svg" %}
+            &nbsp;
+            {{- parentmodule -}}
+        </a>
+    {% endif %}
+    <button class="pdoc-button git-button theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme">
+        <span class="theme-icon"></span>
+    </button>
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    <script>
+    (function() {
+        function getPreferred() {
+            var saved = localStorage.getItem('pdoc-theme');
+            if (saved) return saved;
+            return window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light' : 'dark';
+        }
+        function apply(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            var icon = document.querySelector('.theme-icon');
+            if (icon) icon.textContent = theme === 'dark' ? '\u263E' : '\u2600';
+        }
+        window.toggleTheme = function() {
+            var current = document.documentElement.getAttribute('data-theme') || 'dark';
+            var next = current === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('pdoc-theme', next);
+            apply(next);
+        };
+        apply(getPreferred());
+    })();
+    </script>
+{% endblock %}

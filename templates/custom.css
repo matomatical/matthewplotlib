@@ -1,0 +1,223 @@
+/* matthewplotlib docs theme — sweetie16 palette */
+/* https://lospec.com/palette-list/sweetie-16 */
+
+/* # # # Dark theme (default) # # # */
+
+:root {
+    --pdoc-background: #1a1c2c;  /* sweetie 0: dark navy */
+}
+
+.pdoc {
+    --text: #f4f4f4;             /* sweetie 12: white */
+    --muted: #94b0c2;            /* sweetie 13: light gray-blue */
+    --link: #41a6f6;             /* sweetie 10: light blue */
+    --link-hover: #73eff7;       /* sweetie 11: cyan */
+    --code: #29366f;             /* sweetie 8: navy */
+    --active: rgba(93, 39, 93, 0.35); /* sweetie 1 */
+    --accent: #333c57;           /* sweetie 15: dark gray-blue */
+    --accent2: #566c86;          /* sweetie 14: gray-blue */
+    --nav-hover: rgba(65, 166, 246, 0.15); /* sweetie 10 */
+    --name: #73eff7;             /* sweetie 11: cyan */
+    --def: #a7f070;              /* sweetie 5: lime */
+    --annotation: #41a6f6;       /* sweetie 10: light blue */
+}
+
+/* Dark syntax highlighting — sweetie16 */
+.pdoc-code { background: #29366f; }      /* sweetie 8 */
+.pdoc-code .c,
+.pdoc-code .ch,
+.pdoc-code .cm,
+.pdoc-code .cpf,
+.pdoc-code .c1,
+.pdoc-code .cs { color: #566c86; font-style: italic; }   /* sweetie 14 */
+.pdoc-code .k,
+.pdoc-code .kc,
+.pdoc-code .kd,
+.pdoc-code .kn,
+.pdoc-code .kr,
+.pdoc-code .kt { color: #a7f070; font-weight: bold; }    /* sweetie 5 */
+.pdoc-code .kp { color: #a7f070; }
+.pdoc-code .s,
+.pdoc-code .sa,
+.pdoc-code .sb,
+.pdoc-code .sc,
+.pdoc-code .dl,
+.pdoc-code .sd,
+.pdoc-code .s2,
+.pdoc-code .sh,
+.pdoc-code .s1,
+.pdoc-code .ss { color: #ef7d57; }                       /* sweetie 3: orange */
+.pdoc-code .se { color: #ffcd75; font-weight: bold; }    /* sweetie 4: yellow */
+.pdoc-code .si { color: #b13e53; font-weight: bold; }    /* sweetie 2: red */
+.pdoc-code .sr { color: #b13e53; }
+.pdoc-code .sx { color: #a7f070; }
+.pdoc-code .nb,
+.pdoc-code .bp { color: #41a6f6; }                       /* sweetie 10 */
+.pdoc-code .nf,
+.pdoc-code .fm { color: #73eff7; }                       /* sweetie 11 */
+.pdoc-code .nc { color: #73eff7; font-weight: bold; }
+.pdoc-code .nn { color: #41a6f6; font-weight: bold; }    /* sweetie 10 */
+.pdoc-code .no { color: #ffcd75; }                       /* sweetie 4 */
+.pdoc-code .nd { color: #5d275d; }                       /* sweetie 1 */
+.pdoc-code .ni { color: #f4f4f4; font-weight: bold; }    /* sweetie 12 */
+.pdoc-code .ne { color: #b13e53; font-weight: bold; }    /* sweetie 2 */
+.pdoc-code .o,
+.pdoc-code .ow { color: #94b0c2; }                       /* sweetie 13 */
+.pdoc-code .m,
+.pdoc-code .mb,
+.pdoc-code .mf,
+.pdoc-code .mh,
+.pdoc-code .mi,
+.pdoc-code .mo,
+.pdoc-code .il { color: #ffcd75; }                       /* sweetie 4 */
+.pdoc-code .n { color: #f4f4f4; }                        /* sweetie 12 */
+.pdoc-code .na { color: #73eff7; }                       /* sweetie 11 */
+.pdoc-code .nv,
+.pdoc-code .vc,
+.pdoc-code .vg,
+.pdoc-code .vi,
+.pdoc-code .vm { color: #f4f4f4; }                       /* sweetie 12 */
+.pdoc-code .nl { color: #73eff7; }
+.pdoc-code .nt { color: #a7f070; font-weight: bold; }    /* sweetie 5 */
+.pdoc-code .cp { color: #ffcd75; }                       /* sweetie 4 */
+.pdoc-code .err { color: #b13e53; }                      /* sweetie 2 */
+.pdoc-code .w { color: #333c57; }                        /* sweetie 15 */
+.pdoc-code .p { color: #f4f4f4; }                        /* sweetie 12 */
+.pdoc-code .go { color: #566c86; }                       /* sweetie 14 */
+.pdoc-code .gp { color: #94b0c2; font-weight: bold; }    /* sweetie 13 */
+
+/* # # # Light theme # # # */
+
+[data-theme="light"] {
+    --pdoc-background: #f4f4f4;  /* sweetie 12: white */
+}
+
+[data-theme="light"] .pdoc {
+    --text: #1a1c2c;             /* sweetie 0: dark navy */
+    --muted: #566c86;            /* sweetie 14: gray-blue */
+    --link: #3b5dc9;             /* sweetie 9: blue */
+    --link-hover: #257179;       /* sweetie 7: teal */
+    --code: #f4f4f4;             /* sweetie 12 */
+    --active: rgba(255, 205, 117, 0.35); /* sweetie 4 */
+    --accent: #e8ebef;           /* tinted toward sweetie 13 */
+    --accent2: #94b0c2;          /* sweetie 13: light gray-blue */
+    --nav-hover: rgba(59, 93, 201, 0.1); /* sweetie 9 */
+    --name: #257179;             /* sweetie 7: teal */
+    --def: #38b764;              /* sweetie 6: green */
+    --annotation: #3b5dc9;       /* sweetie 9: blue */
+}
+
+/* Light syntax highlighting — sweetie16 tones */
+[data-theme="light"] .pdoc-code { background: #e8ebef; }
+[data-theme="light"] .pdoc-code .c,
+[data-theme="light"] .pdoc-code .ch,
+[data-theme="light"] .pdoc-code .cm,
+[data-theme="light"] .pdoc-code .cpf,
+[data-theme="light"] .pdoc-code .c1,
+[data-theme="light"] .pdoc-code .cs { color: #566c86; font-style: italic; }
+[data-theme="light"] .pdoc-code .k,
+[data-theme="light"] .pdoc-code .kc,
+[data-theme="light"] .pdoc-code .kd,
+[data-theme="light"] .pdoc-code .kn,
+[data-theme="light"] .pdoc-code .kr,
+[data-theme="light"] .pdoc-code .kt { color: #38b764; font-weight: bold; }
+[data-theme="light"] .pdoc-code .kp { color: #38b764; }
+[data-theme="light"] .pdoc-code .s,
+[data-theme="light"] .pdoc-code .sa,
+[data-theme="light"] .pdoc-code .sb,
+[data-theme="light"] .pdoc-code .sc,
+[data-theme="light"] .pdoc-code .dl,
+[data-theme="light"] .pdoc-code .sd,
+[data-theme="light"] .pdoc-code .s2,
+[data-theme="light"] .pdoc-code .sh,
+[data-theme="light"] .pdoc-code .s1,
+[data-theme="light"] .pdoc-code .ss { color: #b13e53; }
+[data-theme="light"] .pdoc-code .se { color: #ef7d57; font-weight: bold; }
+[data-theme="light"] .pdoc-code .si { color: #5d275d; font-weight: bold; }
+[data-theme="light"] .pdoc-code .sr { color: #5d275d; }
+[data-theme="light"] .pdoc-code .sx { color: #38b764; }
+[data-theme="light"] .pdoc-code .nb,
+[data-theme="light"] .pdoc-code .bp { color: #3b5dc9; }
+[data-theme="light"] .pdoc-code .nf,
+[data-theme="light"] .pdoc-code .fm { color: #257179; }
+[data-theme="light"] .pdoc-code .nc { color: #257179; font-weight: bold; }
+[data-theme="light"] .pdoc-code .nn { color: #3b5dc9; font-weight: bold; }
+[data-theme="light"] .pdoc-code .no { color: #5d275d; }
+[data-theme="light"] .pdoc-code .nd { color: #5d275d; }
+[data-theme="light"] .pdoc-code .ni { color: #1a1c2c; font-weight: bold; }
+[data-theme="light"] .pdoc-code .ne { color: #b13e53; font-weight: bold; }
+[data-theme="light"] .pdoc-code .o,
+[data-theme="light"] .pdoc-code .ow { color: #333c57; }
+[data-theme="light"] .pdoc-code .m,
+[data-theme="light"] .pdoc-code .mb,
+[data-theme="light"] .pdoc-code .mf,
+[data-theme="light"] .pdoc-code .mh,
+[data-theme="light"] .pdoc-code .mi,
+[data-theme="light"] .pdoc-code .mo,
+[data-theme="light"] .pdoc-code .il { color: #29366f; }
+[data-theme="light"] .pdoc-code .n { color: #1a1c2c; }
+[data-theme="light"] .pdoc-code .na { color: #257179; }
+[data-theme="light"] .pdoc-code .nv,
+[data-theme="light"] .pdoc-code .vc,
+[data-theme="light"] .pdoc-code .vg,
+[data-theme="light"] .pdoc-code .vi,
+[data-theme="light"] .pdoc-code .vm { color: #1a1c2c; }
+[data-theme="light"] .pdoc-code .nl { color: #257179; }
+[data-theme="light"] .pdoc-code .nt { color: #38b764; font-weight: bold; }
+[data-theme="light"] .pdoc-code .cp { color: #29366f; }
+[data-theme="light"] .pdoc-code .err { color: #b13e53; }
+[data-theme="light"] .pdoc-code .w { color: #94b0c2; }
+[data-theme="light"] .pdoc-code .p { color: #1a1c2c; }
+[data-theme="light"] .pdoc-code .go { color: #566c86; }
+[data-theme="light"] .pdoc-code .gp { color: #333c57; font-weight: bold; }
+
+/* # # # Layout tweaks # # # */
+
+/* Flat sidebar */
+nav.pdoc {
+    box-shadow: none;
+}
+
+/* Monospace headings */
+.pdoc h1, .pdoc h2, .pdoc h3,
+.pdoc .modulename,
+.pdoc .attr {
+    font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono",
+                 "Courier New", monospace;
+}
+
+/* Nav title */
+.nav-title {
+    display: block;
+    font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono",
+                 "Courier New", monospace;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--text);
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+.nav-title:hover {
+    color: var(--link);
+}
+
+/* Back button — float left, opposite to the git/theme buttons */
+.back-button {
+    float: left !important;
+}
+
+/* Ensure module title clears the floated buttons */
+.pdoc .modulename {
+    clear: both;
+}
+
+/* Theme toggle — reuses pdoc's git-button style */
+.theme-toggle {
+    background: transparent;
+    margin-left: 0.5rem;
+}
+
+/* Smaller nav headings to prevent wrapping */
+nav.pdoc h2 {
+    font-size: 1.5rem;
+}

@@ -21,7 +21,14 @@ copy:
 # 	git commit -m "Version $(V)"
 # 	git tag v$(V)
 
+docs: templates/custom.css $(wildcard matthewplotlib/*.py)
+	pdoc matthewplotlib/ \!matthewplotlib.unscii16 \
+		--no-show-source \
+		-e matthewplotlib=https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/ \
+		-t templates/ \
+		-o docs/
+
 test:
 	pytest tests/ -v
 
-.PHONY: copy test # release
+.PHONY: copy test docs # release
