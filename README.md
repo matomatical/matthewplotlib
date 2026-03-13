@@ -270,7 +270,7 @@ Advanced furnishings:
 
 * [ ] Axis transformations (e.g. logarithmic scale).
 * [ ] Legend construction (API needs thought).
-* [ ] Text embedded in borders.
+* [x] Text embedded in borders.
 
 Advanced rendering:
 
