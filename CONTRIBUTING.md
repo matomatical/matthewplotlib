@@ -4,6 +4,13 @@ Contributing to matthewplotlib
 Best to discuss before attempting to contribute. This file contains some notes
 to self.
 
+Development dependencies
+------------------------
+
+* uv for managing virtual environment
+* make for building docs, running tests, making releases
+* pandoc for building some parts of docs
+
 Workflow
 --------
 
@@ -14,16 +21,18 @@ To work on a new feature:
    * mypy checks pass (`mypy matthewplotlib/`).
    * Tests pass (`pytest tests/ -v`), including integration tests for all
      examples.
-   * Docs up to date (`make DOCS.md`).
-   * Road map (in README.md) is up to date.
-   * Change log (CHANGELOG.md) is up to date.
+   * Docs up to date (`make docs`).
+   * Roadmap (`pages/roadmap.md`) is up to date.
+   * Changelog (`CHANGELOG.md`) is up to date.
    * All new features are exported in `__init__.py`.
 3. Then merge into main
 
 Notes:
 
 * CHANGELOG entries should be concise and describe API-level changes, not
-  implementation details
+  implementation details.
+* Important notes on implementation should be documented in the code, or, if
+  there's no appropriate place for that, in commit notes or PR or something.
 
 Testing
 -------
@@ -57,3 +66,4 @@ To release a new version:
 8. Push: `git push origin main --tags`.
 9. On GitHub, create a new release from the tag.
 
+TODO: Make sure we also build docs for the new version.

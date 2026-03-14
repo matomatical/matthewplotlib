@@ -38,6 +38,8 @@ dev = [
   # testing
   "pytest",
   "pytest-cov",
+  # docs
+  "pdoc",
   # for examples (needed for integration tests)
   "scikit-learn",
   "psutil",
