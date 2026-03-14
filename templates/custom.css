@@ -201,6 +201,38 @@ nav.pdoc {
     color: var(--link);
 }
 
+/* Nav tree indentation — use padding on links (not list padding) so
+   hover backgrounds still span the full sidebar width. */
+nav.pdoc {
+    --step: 0.5rem;
+}
+/* Level 2: submodules under matthewplotlib */
+nav.pdoc > div > ul > li > ul > li > a {
+    padding-left: calc(var(--pad, 1.75rem) + var(--step));
+}
+/* Level 3: members under a submodule */
+nav.pdoc > div > ul > li > ul > li > ul {
+    padding-left: 0;
+    margin-left: 0;
+}
+nav.pdoc > div > ul > li > ul > li > ul li a {
+    padding-left: calc(var(--pad, 1.75rem) + 2 * var(--step));
+}
+/* Level 4: class members under a class */
+nav.pdoc > div > ul > li > ul > li > ul ul {
+    padding-left: 0;
+    margin-left: 0;
+}
+nav.pdoc > div > ul > li > ul > li > ul ul li a {
+    padding-left: calc(var(--pad, 1.75rem) + 3 * var(--step));
+}
+
+/* Active module in nav tree */
+nav.pdoc .nav-active {
+    font-weight: bold;
+    color: var(--link);
+}
+
 /* Back button — float left, opposite to the git/theme buttons */
 .back-button {
     float: left !important;
@@ -215,6 +247,15 @@ nav.pdoc {
 .theme-toggle {
     background: transparent;
     margin-left: 0.5rem;
+}
+
+/* Pandoc page content — clear floated buttons, match pdoc .modulename for title */
+.page-content {
+    clear: both;
+}
+.page-content > h1:first-child {
+    margin-top: 0;
+    font-weight: bold;
 }
 
 /* Smaller nav headings to prevent wrapping */

@@ -4,7 +4,56 @@
 {% endblock %}
 
 {% block nav_title %}
-    <a href="{{ "../" * module.modulename.count(".") }}matthewplotlib.html" class="nav-title">matthewplotlib</a>
+    <a href="{{ "../" * module.modulename.count(".") }}index.html" class="nav-title">matthewplotlib</a>
+{% endblock %}
+
+{% block search_box %}
+    {{ super() }}
+    <h2>Getting Started</h2>
+    <ul>
+        <li><a href="{{ "../" * module.modulename.count(".") }}index.html">Home</a></li>
+        <li><a href="{{ "../" * module.modulename.count(".") }}quickstart.html">Quickstart</a></li>
+        <li><a href="{{ "../" * module.modulename.count(".") }}examples.html">Examples</a></li>
+        <li><a href="{{ "../" * module.modulename.count(".") }}roadmap.html">Roadmap</a></li>
+        <li><a href="{{ "../" * module.modulename.count(".") }}changelog.html">Changelog</a></li>
+    </ul>
+{% endblock %}
+
+{% block nav_submodules %}
+    {% set root = all_modules.get("matthewplotlib") %}
+    {% if root %}
+        <h2>API Reference</h2>
+        <ul>
+            <li>
+                <a class="module{% if module.modulename == 'matthewplotlib' %} nav-active{% endif %}"
+                   href="{{ "../" * module.modulename.count(".") }}matthewplotlib.html">
+                    matthewplotlib
+                </a>
+                {% if root.submodules %}
+                    <ul>
+                        {% for submod in root.submodules if is_public(submod) | trim %}
+                            {% set is_active = module.modulename == submod.modulename %}
+                            <li>
+                                <a class="module{% if is_active %} nav-active{% endif %}"
+                                   href="{{ "../" * module.modulename.count(".") }}matthewplotlib/{{ submod.name }}.html">
+                                    {{ submod.name }}
+                                </a>
+                                {% if is_active and module.members %}
+                                    {{ nav_members(module.members.values()) }}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{# nav_members is suppressed because we show members inline in the
+   submodule tree above. If matthewplotlib/__init__.py gains its own
+   public members (not re-exports), re-enable this block. #}
+{% block nav_members %}
 {% endblock %}
 
 {% block nav_footer %}
