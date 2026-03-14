@@ -67,7 +67,7 @@ Documentation:
 * [x] Quick start guide.
 * [x] Complete docstrings for modules, constants, etc.
 * [x] Simple generated markdown documentation on GitHub.
-* [ ] Simple generated HTML/CSS documentation, hosted on web.
+* [x] Simple generated HTML/CSS documentation, hosted on web.
 
 Repository:
 
@@ -140,7 +140,7 @@ More elaborate documentation:
 * [x] Links to source code from within documentation.
 * [ ] Links to mentioned functions/classes/methods/types within documentation
   (automatically linked to relevant release).
-* [ ] Documentation search.
+* [x] Documentation search.
 
 Future design directions.
 

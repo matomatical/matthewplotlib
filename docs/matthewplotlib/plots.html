@@ -1,0 +1,2705 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="pdoc 16.0.0"/>
+    <title>matthewplotlib.plots API documentation</title>
+
+    <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
+    <style>/*! syntax-highlighting.css */pre{line-height:125%;}span.linenos{color:inherit; background-color:transparent; padding-left:5px; padding-right:20px;}.pdoc-code .hll{background-color:#ffffcc}.pdoc-code{background:#f8f8f8;}.pdoc-code .c{color:#3D7B7B; font-style:italic}.pdoc-code .err{border:1px solid #FF0000}.pdoc-code .k{color:#008000; font-weight:bold}.pdoc-code .o{color:#666666}.pdoc-code .ch{color:#3D7B7B; font-style:italic}.pdoc-code .cm{color:#3D7B7B; font-style:italic}.pdoc-code .cp{color:#9C6500}.pdoc-code .cpf{color:#3D7B7B; font-style:italic}.pdoc-code .c1{color:#3D7B7B; font-style:italic}.pdoc-code .cs{color:#3D7B7B; font-style:italic}.pdoc-code .gd{color:#A00000}.pdoc-code .ge{font-style:italic}.pdoc-code .gr{color:#E40000}.pdoc-code .gh{color:#000080; font-weight:bold}.pdoc-code .gi{color:#008400}.pdoc-code .go{color:#717171}.pdoc-code .gp{color:#000080; font-weight:bold}.pdoc-code .gs{font-weight:bold}.pdoc-code .gu{color:#800080; font-weight:bold}.pdoc-code .gt{color:#0044DD}.pdoc-code .kc{color:#008000; font-weight:bold}.pdoc-code .kd{color:#008000; font-weight:bold}.pdoc-code .kn{color:#008000; font-weight:bold}.pdoc-code .kp{color:#008000}.pdoc-code .kr{color:#008000; font-weight:bold}.pdoc-code .kt{color:#B00040}.pdoc-code .m{color:#666666}.pdoc-code .s{color:#BA2121}.pdoc-code .na{color:#687822}.pdoc-code .nb{color:#008000}.pdoc-code .nc{color:#0000FF; font-weight:bold}.pdoc-code .no{color:#880000}.pdoc-code .nd{color:#AA22FF}.pdoc-code .ni{color:#717171; font-weight:bold}.pdoc-code .ne{color:#CB3F38; font-weight:bold}.pdoc-code .nf{color:#0000FF}.pdoc-code .nl{color:#767600}.pdoc-code .nn{color:#0000FF; font-weight:bold}.pdoc-code .nt{color:#008000; font-weight:bold}.pdoc-code .nv{color:#19177C}.pdoc-code .ow{color:#AA22FF; font-weight:bold}.pdoc-code .w{color:#bbbbbb}.pdoc-code .mb{color:#666666}.pdoc-code .mf{color:#666666}.pdoc-code .mh{color:#666666}.pdoc-code .mi{color:#666666}.pdoc-code .mo{color:#666666}.pdoc-code .sa{color:#BA2121}.pdoc-code .sb{color:#BA2121}.pdoc-code .sc{color:#BA2121}.pdoc-code .dl{color:#BA2121}.pdoc-code .sd{color:#BA2121; font-style:italic}.pdoc-code .s2{color:#BA2121}.pdoc-code .se{color:#AA5D1F; font-weight:bold}.pdoc-code .sh{color:#BA2121}.pdoc-code .si{color:#A45A77; font-weight:bold}.pdoc-code .sx{color:#008000}.pdoc-code .sr{color:#A45A77}.pdoc-code .s1{color:#BA2121}.pdoc-code .ss{color:#19177C}.pdoc-code .bp{color:#008000}.pdoc-code .fm{color:#0000FF}.pdoc-code .vc{color:#19177C}.pdoc-code .vg{color:#19177C}.pdoc-code .vi{color:#19177C}.pdoc-code .vm{color:#19177C}.pdoc-code .il{color:#666666}</style>
+    <style>/*! theme.css */:root{--pdoc-background:#fff;}.pdoc{--text:#212529;--muted:#6c757d;--link:#3660a5;--link-hover:#1659c5;--code:#f8f8f8;--active:#fff598;--accent:#eee;--accent2:#c1c1c1;--nav-hover:rgba(255, 255, 255, 0.5);--name:#0066BB;--def:#008800;--annotation:#007020;}</style>
+    <style>/*! layout.css */html, body{width:100%;height:100%;}html, main{scroll-behavior:smooth;}body{background-color:var(--pdoc-background);}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;z-index:999;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}header + main{margin-top:-3rem;}.git-button{display:none !important;}nav input[type="search"]{max-width:77%;}nav input[type="search"]:first-child{margin-top:-6px;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}header + main{margin-top:-4rem;}#navtoggle{display:none;}}#togglestate{position:absolute;height:0;opacity:0;}nav.pdoc{--pad:clamp(0.5rem, 2vw, 1.75rem);--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent; z-index:1}nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc > div > ul{margin-left:calc(0px - var(--pad));}nav.pdoc li a{padding:.2rem 0 .2rem calc(var(--pad) + var(--indent));}nav.pdoc > div > ul > li > a{padding-left:var(--pad);}nav.pdoc li{transition:all 100ms;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}</style>
+    <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{cursor:pointer;display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .alert{padding:1rem 1rem 1rem calc(1.5rem + 24px);border:1px solid transparent;border-radius:.25rem;background-repeat:no-repeat;background-position:.75rem center;margin-bottom:1rem;}.pdoc .alert > em{display:none;}.pdoc .alert > *:last-child{margin-bottom:0;}.pdoc .alert.note{color:#084298;background-color:#cfe2ff;border-color:#b6d4fe;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23084298%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8%2016A8%208%200%201%200%208%200a8%208%200%200%200%200%2016zm.93-9.412-1%204.705c-.07.34.029.533.304.533.194%200%20.487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703%200-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381%202.29-.287zM8%205.5a1%201%200%201%201%200-2%201%201%200%200%201%200%202z%22/%3E%3C/svg%3E");}.pdoc .alert.tip{color:#0a3622;background-color:#d1e7dd;border-color:#a3cfbb;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%230a3622%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M2%206a6%206%200%201%201%2010.174%204.31c-.203.196-.359.4-.453.619l-.762%201.769A.5.5%200%200%201%2010.5%2013a.5.5%200%200%201%200%201%20.5.5%200%200%201%200%201l-.224.447a1%201%200%200%201-.894.553H6.618a1%201%200%200%201-.894-.553L5.5%2015a.5.5%200%200%201%200-1%20.5.5%200%200%201%200-1%20.5.5%200%200%201-.46-.302l-.761-1.77a2%202%200%200%200-.453-.618A5.98%205.98%200%200%201%202%206m6-5a5%205%200%200%200-3.479%208.592c.263.254.514.564.676.941L5.83%2012h4.342l.632-1.467c.162-.377.413-.687.676-.941A5%205%200%200%200%208%201%22/%3E%3C/svg%3E");}.pdoc .alert.important{color:#055160;background-color:#cff4fc;border-color:#9eeaf9;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23055160%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M2%200a2%202%200%200%200-2%202v12a2%202%200%200%200%202%202h12a2%202%200%200%200%202-2V2a2%202%200%200%200-2-2zm6%204c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%204.995A.905.905%200%200%201%208%204m.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2%22/%3E%3C/svg%3E");}.pdoc .alert.warning{color:#664d03;background-color:#fff3cd;border-color:#ffecb5;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23664d03%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8.982%201.566a1.13%201.13%200%200%200-1.96%200L.165%2013.233c-.457.778.091%201.767.98%201.767h13.713c.889%200%201.438-.99.98-1.767L8.982%201.566zM8%205c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%205.995A.905.905%200%200%201%208%205zm.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2z%22/%3E%3C/svg%3E");}.pdoc .alert.caution{color:#842029;background-color:#f8d7da;border-color:#f5c2c7;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23842029%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M11.46.146A.5.5%200%200%200%2011.107%200H4.893a.5.5%200%200%200-.353.146L.146%204.54A.5.5%200%200%200%200%204.893v6.214a.5.5%200%200%200%20.146.353l4.394%204.394a.5.5%200%200%200%20.353.146h6.214a.5.5%200%200%200%20.353-.146l4.394-4.394a.5.5%200%200%200%20.146-.353V4.893a.5.5%200%200%200-.146-.353zM8%204c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%204.995A.905.905%200%200%201%208%204m.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2%22/%3E%3C/svg%3E");}.pdoc .alert.danger{color:#842029;background-color:#f8d7da;border-color:#f5c2c7;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23842029%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M5.52.359A.5.5%200%200%201%206%200h4a.5.5%200%200%201%20.474.658L8.694%206H12.5a.5.5%200%200%201%20.395.807l-7%209a.5.5%200%200%201-.873-.454L6.823%209.5H3.5a.5.5%200%200%201-.48-.641l2.5-8.5z%22/%3E%3C/svg%3E");}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc > section:not(.module-info) h1{font-size:1.5rem;font-weight:500;}.pdoc > section:not(.module-info) h2{font-size:1.4rem;font-weight:500;}.pdoc > section:not(.module-info) h3{font-size:1.3rem;font-weight:500;}.pdoc > section:not(.module-info) h4{font-size:1.2rem;}.pdoc > section:not(.module-info) h5{font-size:1.1rem;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--accent);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc > section:not(.module-info){margin-bottom:1.5rem;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.view-source-toggle-state,.view-source-toggle-state ~ .pdoc-code{display:none;}.view-source-toggle-state:checked ~ .pdoc-code{display:block;}.view-source-button{display:inline-block;float:right;font-size:.75rem;line-height:1.5rem;color:var(--muted);padding:0 .4rem 0 1.3rem;cursor:pointer;text-indent:-2px;}.view-source-button > span{visibility:hidden;}.module-info .view-source-button{float:none;display:flex;justify-content:flex-end;margin:-1.2rem .4rem -.2rem 0;}.view-source-button::before{position:absolute;content:"View Source";display:list-item;list-style-type:disclosure-closed;}.view-source-toggle-state:checked ~ .attr .view-source-button::before,.view-source-toggle-state:checked ~ .view-source-button::before{list-style-type:disclosure-open;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc section:not(.module-info) .docstring{margin-left:clamp(0rem, 5vw - 2rem, 1rem);}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target,.pdoc .pdoc-code > pre > span:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc .pdoc-code > pre > span:target{display:block;}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc *{scroll-margin:2rem;}.pdoc .pdoc-code .linenos{user-select:none;}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc section, .pdoc .classattr{position:relative;}.pdoc .headerlink{--width:clamp(1rem, 3vw, 2rem);position:absolute;top:0;left:calc(0rem - var(--width));transition:all 100ms ease-in-out;opacity:0;}.pdoc .headerlink::before{content:"#";display:block;text-align:center;width:var(--width);height:2.3rem;line-height:2.3rem;font-size:1.5rem;}.pdoc .attr:hover ~ .headerlink,.pdoc *:target > .headerlink,.pdoc .headerlink:hover{opacity:1;}.pdoc .attr{display:block;margin:.5rem 0 .5rem;padding:.4rem .4rem .4rem 1rem;background-color:var(--accent);overflow-x:auto;}.pdoc .classattr{margin-left:2rem;}.pdoc .decorator-deprecated{color:#842029;}.pdoc .decorator-deprecated ~ span{filter:grayscale(1) opacity(0.8);}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{background-color:transparent;}.pdoc .param, .pdoc .return-annotation{white-space:pre;}.pdoc .signature.multiline .param{display:block;}.pdoc .signature.condensed .param{display:inline-block;}.pdoc .annotation{color:var(--annotation);}.pdoc .view-value-toggle-state,.pdoc .view-value-toggle-state ~ .default_value{display:none;}.pdoc .view-value-toggle-state:checked ~ .default_value{display:inherit;}.pdoc .view-value-button{font-size:.5rem;vertical-align:middle;border-style:dashed;margin-top:-0.1rem;}.pdoc .view-value-button:hover{background:white;}.pdoc .view-value-button::before{content:"show";text-align:center;width:2.2em;display:inline-block;}.pdoc .view-value-toggle-state:checked ~ .view-value-button::before{content:"hide";}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:27px;vertical-align:bottom;width:50px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
+    <style>/*! custom.css */:root{--pdoc-background:#1a1c2c;  }.pdoc{--text:#f4f4f4; --muted:#94b0c2;--link:#41a6f6; --link-hover:#73eff7;   --code:#29366f; --active:rgba(93, 39, 93, 0.35); --accent:#333c57;   --accent2:#566c86;  --nav-hover:rgba(65, 166, 246, 0.15); --name:#73eff7; --def:#a7f070;  --annotation:#41a6f6;   }.pdoc-code{background:#29366f;}  .pdoc-code .c,.pdoc-code .ch,.pdoc-code .cm,.pdoc-code .cpf,.pdoc-code .c1,.pdoc-code .cs{color:#566c86; font-style:italic;}  .pdoc-code .k,.pdoc-code .kc,.pdoc-code .kd,.pdoc-code .kn,.pdoc-code .kr,.pdoc-code .kt{color:#a7f070; font-weight:bold;}.pdoc-code .kp{color:#a7f070;}.pdoc-code .s,.pdoc-code .sa,.pdoc-code .sb,.pdoc-code .sc,.pdoc-code .dl,.pdoc-code .sd,.pdoc-code .s2,.pdoc-code .sh,.pdoc-code .s1,.pdoc-code .ss{color:#ef7d57;}   .pdoc-code .se{color:#ffcd75; font-weight:bold;}.pdoc-code .si{color:#b13e53; font-weight:bold;}.pdoc-code .sr{color:#b13e53;}.pdoc-code .sx{color:#a7f070;}.pdoc-code .nb,.pdoc-code .bp{color:#41a6f6;}   .pdoc-code .nf,.pdoc-code .fm{color:#73eff7;}   .pdoc-code .nc{color:#73eff7; font-weight:bold;}.pdoc-code .nn{color:#41a6f6; font-weight:bold;}.pdoc-code .no{color:#ffcd75;}   .pdoc-code .nd{color:#5d275d;}   .pdoc-code .ni{color:#f4f4f4; font-weight:bold;}.pdoc-code .ne{color:#b13e53; font-weight:bold;}.pdoc-code .o,.pdoc-code .ow{color:#94b0c2;}   .pdoc-code .m,.pdoc-code .mb,.pdoc-code .mf,.pdoc-code .mh,.pdoc-code .mi,.pdoc-code .mo,.pdoc-code .il{color:#ffcd75;}   .pdoc-code .n{color:#f4f4f4;}.pdoc-code .na{color:#73eff7;}   .pdoc-code .nv,.pdoc-code .vc,.pdoc-code .vg,.pdoc-code .vi,.pdoc-code .vm{color:#f4f4f4;}   .pdoc-code .nl{color:#73eff7;}.pdoc-code .nt{color:#a7f070; font-weight:bold;}.pdoc-code .cp{color:#ffcd75;}   .pdoc-code .err{color:#b13e53;}  .pdoc-code .w{color:#333c57;}.pdoc-code .p{color:#f4f4f4;}.pdoc-code .go{color:#566c86;}   .pdoc-code .gp{color:#94b0c2; font-weight:bold;}[data-theme="light"]{--pdoc-background:#f4f4f4;  }[data-theme="light"] .pdoc{--text:#1a1c2c; --muted:#566c86;--link:#3b5dc9; --link-hover:#257179;   --code:#f4f4f4; --active:rgba(255, 205, 117, 0.35); --accent:#e8ebef;   --accent2:#94b0c2;  --nav-hover:rgba(59, 93, 201, 0.1); --name:#257179; --def:#38b764;  --annotation:#3b5dc9;   }[data-theme="light"] .pdoc-code{background:#e8ebef;}[data-theme="light"] .pdoc-code .c,[data-theme="light"] .pdoc-code .ch,[data-theme="light"] .pdoc-code .cm,[data-theme="light"] .pdoc-code .cpf,[data-theme="light"] .pdoc-code .c1,[data-theme="light"] .pdoc-code .cs{color:#566c86; font-style:italic;}[data-theme="light"] .pdoc-code .k,[data-theme="light"] .pdoc-code .kc,[data-theme="light"] .pdoc-code .kd,[data-theme="light"] .pdoc-code .kn,[data-theme="light"] .pdoc-code .kr,[data-theme="light"] .pdoc-code .kt{color:#38b764; font-weight:bold;}[data-theme="light"] .pdoc-code .kp{color:#38b764;}[data-theme="light"] .pdoc-code .s,[data-theme="light"] .pdoc-code .sa,[data-theme="light"] .pdoc-code .sb,[data-theme="light"] .pdoc-code .sc,[data-theme="light"] .pdoc-code .dl,[data-theme="light"] .pdoc-code .sd,[data-theme="light"] .pdoc-code .s2,[data-theme="light"] .pdoc-code .sh,[data-theme="light"] .pdoc-code .s1,[data-theme="light"] .pdoc-code .ss{color:#b13e53;}[data-theme="light"] .pdoc-code .se{color:#ef7d57; font-weight:bold;}[data-theme="light"] .pdoc-code .si{color:#5d275d; font-weight:bold;}[data-theme="light"] .pdoc-code .sr{color:#5d275d;}[data-theme="light"] .pdoc-code .sx{color:#38b764;}[data-theme="light"] .pdoc-code .nb,[data-theme="light"] .pdoc-code .bp{color:#3b5dc9;}[data-theme="light"] .pdoc-code .nf,[data-theme="light"] .pdoc-code .fm{color:#257179;}[data-theme="light"] .pdoc-code .nc{color:#257179; font-weight:bold;}[data-theme="light"] .pdoc-code .nn{color:#3b5dc9; font-weight:bold;}[data-theme="light"] .pdoc-code .no{color:#5d275d;}[data-theme="light"] .pdoc-code .nd{color:#5d275d;}[data-theme="light"] .pdoc-code .ni{color:#1a1c2c; font-weight:bold;}[data-theme="light"] .pdoc-code .ne{color:#b13e53; font-weight:bold;}[data-theme="light"] .pdoc-code .o,[data-theme="light"] .pdoc-code .ow{color:#333c57;}[data-theme="light"] .pdoc-code .m,[data-theme="light"] .pdoc-code .mb,[data-theme="light"] .pdoc-code .mf,[data-theme="light"] .pdoc-code .mh,[data-theme="light"] .pdoc-code .mi,[data-theme="light"] .pdoc-code .mo,[data-theme="light"] .pdoc-code .il{color:#29366f;}[data-theme="light"] .pdoc-code .n{color:#1a1c2c;}[data-theme="light"] .pdoc-code .na{color:#257179;}[data-theme="light"] .pdoc-code .nv,[data-theme="light"] .pdoc-code .vc,[data-theme="light"] .pdoc-code .vg,[data-theme="light"] .pdoc-code .vi,[data-theme="light"] .pdoc-code .vm{color:#1a1c2c;}[data-theme="light"] .pdoc-code .nl{color:#257179;}[data-theme="light"] .pdoc-code .nt{color:#38b764; font-weight:bold;}[data-theme="light"] .pdoc-code .cp{color:#29366f;}[data-theme="light"] .pdoc-code .err{color:#b13e53;}[data-theme="light"] .pdoc-code .w{color:#94b0c2;}[data-theme="light"] .pdoc-code .p{color:#1a1c2c;}[data-theme="light"] .pdoc-code .go{color:#566c86;}[data-theme="light"] .pdoc-code .gp{color:#333c57; font-weight:bold;}nav.pdoc{box-shadow:none;}.pdoc h1, .pdoc h2, .pdoc h3,.pdoc .modulename,.pdoc .attr{font-family:"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}.nav-title{display:block;font-family:"SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:1.25rem;font-weight:bold;color:var(--text);text-decoration:none;margin-bottom:1rem;}.nav-title:hover{color:var(--link);}nav.pdoc{--step:0.5rem;}nav.pdoc > div > ul > li > ul > li > a{padding-left:calc(var(--pad, 1.75rem) + var(--step));}nav.pdoc > div > ul > li > ul > li > ul{padding-left:0;margin-left:0;}nav.pdoc > div > ul > li > ul > li > ul li a{padding-left:calc(var(--pad, 1.75rem) + 2 * var(--step));}nav.pdoc > div > ul > li > ul > li > ul ul{padding-left:0;margin-left:0;}nav.pdoc > div > ul > li > ul > li > ul ul li a{padding-left:calc(var(--pad, 1.75rem) + 3 * var(--step));}nav.pdoc .nav-active{font-weight:bold;color:var(--link);}.back-button{float:left !important;}.pdoc .modulename{clear:both;}.theme-toggle{background:transparent;margin-left:0.5rem;color:var(--link);}.pdoc .git-button{color:var(--link);}.pdoc .git-button svg{vertical-align:middle;}.page-content{clear:both;}.page-content img{max-width:100%;height:auto;background:#1a1c2c; }.page-content > h1:first-child{margin-top:0;font-weight:bold;}nav.pdoc h2{font-size:1.25rem;font-weight:bold;}nav.pdoc h2:first-of-type{margin-top:1.5rem;}</style></head>
+<body>
+    <nav class="pdoc">
+        <label id="navtoggle" for="togglestate" class="pdoc-button"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke-linecap='round' stroke="currentColor" stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg></label>
+        <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
+        <div>
+    <a href="../index.html" class="nav-title">matthewplotlib</a>
+
+                <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
+                   pattern=".+" required>
+
+    <h2>Overview</h2>
+    <ul>
+        <li><a href="../index.html">README</a></li>
+        <li><a href="../quickstart.html">Quickstart</a></li>
+        <li><a href="../examples.html">Examples</a></li>
+        <li><a href="../roadmap.html">Roadmap</a></li>
+        <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+
+
+        <h2>Reference</h2>
+        <ul>
+            <li>
+                <a class="module"
+                   href="../matthewplotlib.html">
+                    matthewplotlib
+                </a>
+                    <ul>
+                            <li>
+                                <a class="module"
+                                   href="../matthewplotlib/colormaps.html">
+                                    colormaps
+                                </a>
+                            </li>
+                            <li>
+                                <a class="module"
+                                   href="../matthewplotlib/colors.html">
+                                    colors
+                                </a>
+                            </li>
+                            <li>
+                                <a class="module"
+                                   href="../matthewplotlib/core.html">
+                                    core
+                                </a>
+                            </li>
+                            <li>
+                                <a class="module"
+                                   href="../matthewplotlib/data.html">
+                                    data
+                                </a>
+                            </li>
+                            <li>
+                                <a class="module nav-active"
+                                   href="../matthewplotlib/plots.html">
+                                    plots
+                                </a>
+                                        <ul class="memberlist">
+            <li>
+                    <a class="class" href="#plot">plot</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#plot.__init__">plot</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#plot.chars">chars</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#plot.height">height</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#plot.width">width</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#plot.renderstr">renderstr</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#plot.clearstr">clearstr</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#plot.renderimg">renderimg</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#plot.saveimg">saveimg</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#scatter">scatter</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#scatter.__init__">scatter</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#scatter.xrange">xrange</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#scatter.yrange">yrange</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#scatter.num_points">num_points</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#scatter3">scatter3</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#scatter3.__init__">scatter3</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#image">image</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#image.__init__">image</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#function2">function2</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#function2.__init__">function2</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#function2.name">name</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#function2.xrange">xrange</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#function2.yrange">yrange</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#function2.zrange">zrange</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#histogram2">histogram2</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#histogram2.__init__">histogram2</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#histogram2.xrange">xrange</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#histogram2.yrange">yrange</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#histogram2.xbins">xbins</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#histogram2.ybins">ybins</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#histogram2.num_points">num_points</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#progress">progress</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#progress.__init__">progress</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#progress.progress">progress</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#bars">bars</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#bars.__init__">bars</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#bars.vmin">vmin</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#bars.vmax">vmax</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#bars.num_bars">num_bars</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#histogram">histogram</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#histogram.__init__">histogram</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#histogram.bins">bins</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#columns">columns</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#columns.__init__">columns</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#columns.vmin">vmin</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#columns.vmax">vmax</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#columns.num_cols">num_cols</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#vistogram">vistogram</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#vistogram.__init__">vistogram</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#vistogram.bins">bins</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#hilbert">hilbert</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#hilbert.__init__">hilbert</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#hilbert.num_points">num_points</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#hilbert.all_points">all_points</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#hilbert.n">n</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#text">text</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#text.__init__">text</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#border">border</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#border.__init__">border</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#border.style">style</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#border.plot">plot</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#axes">axes</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#axes.__init__">axes</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#axes.style">style</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#axes.plot">plot</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#blank">blank</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#blank.__init__">blank</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#hstack">hstack</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#hstack.__init__">hstack</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#hstack.plots">plots</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#vstack">vstack</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#vstack.__init__">vstack</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#vstack.plots">plots</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#dstack">dstack</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#dstack.__init__">dstack</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#dstack.plots">plots</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#dstack2">dstack2</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#dstack2.__init__">dstack2</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#dstack2.xrange">xrange</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#dstack2.yrange">yrange</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#wrap">wrap</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#wrap.__init__">wrap</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#wrap.plots">plots</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#center">center</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#center.__init__">center</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#center.plot">plot</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="function" href="#save_animation">save_animation</a>
+            </li>
+    </ul>
+
+                            </li>
+                            <li>
+                                <a class="module"
+                                   href="../matthewplotlib/unscii16.html">
+                                    unscii16
+                                </a>
+                            </li>
+                    </ul>
+            </li>
+        </ul>
+
+
+
+        <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
+            built with <span class="visually-hidden">pdoc</span><img
+                alt="pdoc logo"
+                src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20role%3D%22img%22%20aria-label%3D%22pdoc%20logo%22%20width%3D%22300%22%20height%3D%22160%22%20viewBox%3D%220%200%20150%2080%22%3E%3Ctitle%3Epdoc%3C/title%3E%3Cpath%20d%3D%22M132.316%2048.886c.276-4.679%202.342-6.698%204.409-7.982s4.27-1.165%206.751-1.055c1.586.07%203.044.156%204.222-.482%201.142-.619%202.026-1.932%202.162-3.739.268-3.576-1.929-5.368-5.006-5.551s-7.599.524-10.517%201.606c-4.455%201.652-8.588%206.606-9.552%208.992s-2.342%206.193-1.745%2010.873%202.664%209.221%205.878%2011.79%205.878%203.808%2010.103%204.312%203.444.229%206.062.229%205.006-2.202%204.914-4.909-2.296-5.001-4.501-4.863-3.077.505-5.281.229-7.715-2.064-7.899-9.451z%22%20fill%3D%22%23198754%22/%3E%3Ccircle%20cx%3D%22101.504%22%20cy%3D%2248.943%22%20r%3D%2214.208%22%20fill%3D%22none%22%20stroke%3D%22%23198754%22%20stroke-width%3D%229.354%22/%3E%3Cpath%20d%3D%22M87.81.002c-3.637.065-5.001.454-7.014%201.232s-3.443%201.363-6.3%204.282c-1.723%201.76-3.148%205.019-3.776%207.329-.413%201.521-.316%202.63-.316%202.63l-.195%2034.612c.065%205.774-6.755%208.305-9.612%208.37s-9.678-1.038-9.743-9.408%207.128-9.521%208.362-9.521c1.413-.13%202.526-.021%203.718-.016%202.071.009%204.157-.778%204.092-4.671s-4.157-4.736-4.157-4.736c-6.3-.843-11.43%202.206-11.43%202.206S40.917%2038.15%2041.372%2049.634%2051.568%2068.19%2061.311%2068.125s18.316-7.007%2018.445-17.193l.13-22.772c.046-2.291%202.683-3.644%204.476-4.203.745-.232%201.694-.274%201.694-.274l10.457-.13s4.871-.324%207.729-3.114%204.352-6.294%204.352-6.294.974-3.049.13-4.606-.195-1.233-2.792-3.309-8.573-4.477-8.573-4.477S91.447-.063%2087.81.002zM0%2047.169l.065%2028.417S0%2080.127%204.481%2079.997s5.072-3.866%205.049-4.152l-.113-28.482s1.624-7.656%209.937-7.721%2010.002%206.942%2010.002%208.499-.909%2010.51-9.093%2010.51c-.948%200-2.99-.567-4.145-.272-3.919%201-3.194%204.554-3.194%204.554s.065%205.061%207.404%204.996%2018.575-6.034%2018.575-19.074S26.953%2030.04%2019.549%2029.91%201.234%2035.296%200%2047.169z%22%20fill%3D%22%23198754%22/%3E%3Cg%20transform%3D%22matrix%28.325601%200%200%20.325256%20-10.32669%20-45.802786%29%22%3E%3Ccircle%20cx%3D%22297.554%22%20cy%3D%22172.286%22%20r%3D%2216.5%22%20fill%3D%22%23fff%22/%3E%3Cellipse%20cx%3D%22297.709%22%20cy%3D%22172.642%22%20rx%3D%2211.071%22%20ry%3D%2210.871%22%20fill%3D%22%23105a48%22/%3E%3Ccircle%20cx%3D%22304.104%22%20cy%3D%22167.667%22%20r%3D%224.5%22%20fill%3D%22%23fff%22/%3E%3C/g%3E%3Cpath%20d%3D%22M94.661%2017.032l.893-1.476s.99.714%201.916.925%201.575.114%202.955.114l14.565-.162c1.283-.032%203.085-.762%203.02-3.293s-.373-3.503-.373-3.503l1.283-.487s.52.503.877%201.573.309%201.995.292%202.66-.227%201.541-.227%201.541%201.564-.308%202.359-1.038.823-.779%201.489-1.508.812-.86.812-.86.552-.13.877.26.341.957.065%201.46-1.672%202.206-3.247%203.066-2.76%201.427-3.929%201.768-3.848.73-7.063.714l-10.944-.114s-2.143-.081-3.02-.373-2.241-.973-2.598-1.265z%22%20fill%3D%22%23d36d49%22/%3E%3Cg%20fill%3D%22%23105a48%22%3E%3Cellipse%20cx%3D%2293.052%22%20cy%3D%2243.567%22%20rx%3D%22.869%22%20ry%3D%221.014%22%20transform%3D%22rotate%28341.022%29%22/%3E%3Cellipse%20cx%3D%22104.3%22%20cy%3D%22-16.184%22%20rx%3D%22.865%22%20ry%3D%221.009%22%20transform%3D%22rotate%2814.786%29%22/%3E%3C/g%3E%3C/svg%3E"/>
+        </a>
+</div>
+    </nav>
+        <main class="pdoc">
+            <section class="module-info">
+        <a class="pdoc-button git-button back-button" href="../matthewplotlib.html">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/>
+  <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+</svg>            &nbsp;matthewplotlib</a>
+    <button class="pdoc-button git-button theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme">
+        <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+        <a class="pdoc-button git-button" href="https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/plots.py" title="Edit on GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 496 512" fill="currentColor"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+        </a>
+                    <h1 class="modulename">
+<a href="./../matthewplotlib.html">matthewplotlib</a><wbr>.plots    </h1>
+
+                        <div class="docstring"><p>A collection of building blots for plotting. There are lots of options---take a
+look through this module. They are roughly grouped as follows.</p>
+
+<p>Base class:</p>
+
+<ul>
+<li><code><a href="#plot">plot</a></code>: Every plot object inherits from this one. See this class for methods,
+properties, and shortcut operators available with every plot object.</li>
+</ul>
+
+<p>Data plots:</p>
+
+<ul>
+<li><code><a href="#scatter">scatter</a></code></li>
+<li><code>function</code></li>
+<li><code><a href="#scatter3">scatter3</a></code></li>
+<li><code><a href="#image">image</a></code></li>
+<li><code><a href="#function2">function2</a></code></li>
+<li><code><a href="#histogram2">histogram2</a></code></li>
+<li><code><a href="#progress">progress</a></code></li>
+<li><code><a href="#bars">bars</a></code></li>
+<li><code><a href="#histogram">histogram</a></code></li>
+<li><code><a href="#columns">columns</a></code></li>
+<li><code><a href="#vistogram">vistogram</a></code></li>
+<li><code><a href="#hilbert">hilbert</a></code></li>
+</ul>
+
+<p>Furnishing plots:</p>
+
+<ul>
+<li><code><a href="#text">text</a></code></li>
+<li><code><a href="#border">border</a></code></li>
+<li><code><a href="#axes">axes</a></code></li>
+</ul>
+
+<p>Arrangement plots:</p>
+
+<ul>
+<li><code><a href="#blank">blank</a></code></li>
+<li><code><a href="#hstack">hstack</a></code></li>
+<li><code><a href="#vstack">vstack</a></code></li>
+<li><code><a href="#dstack">dstack</a></code></li>
+<li><code><a href="#wrap">wrap</a></code></li>
+<li><code><a href="#center">center</a></code></li>
+</ul>
+</div>
+
+                
+                
+                
+            </section>
+                <section id="plot">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">plot</span>:
+
+        
+    </div>
+    <a class="headerlink" href="#plot"></a>
+    
+            <div class="docstring"><p>Abstract base class for all plot objects.</p>
+
+<p>A plot is essentially a 2D grid of coloured characters. This class provides
+the core functionality for rendering and composing plots. It is not
+typically instantiated directly, but it's useful to know its properties and
+methods.</p>
+</div>
+
+
+                            <div id="plot.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">plot</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">chars</span><span class="p">:</span> <span class="n"><a href="core.html#CharArray">matthewplotlib.core.CharArray</a></span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#plot.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="plot.chars" class="classattr">
+                                <div class="attr variable">
+            <span class="name">chars</span>
+
+        
+    </div>
+    <a class="headerlink" href="#plot.chars"></a>
+    
+    
+
+                            </div>
+                            <div id="plot.height" class="classattr">
+                                <div class="attr variable">
+            <span class="name">height</span><span class="annotation">: int</span>
+
+        
+    </div>
+    <a class="headerlink" href="#plot.height"></a>
+    
+            <div class="docstring"><p>Number of character rows in the plot.</p>
+</div>
+
+
+                            </div>
+                            <div id="plot.width" class="classattr">
+                                <div class="attr variable">
+            <span class="name">width</span><span class="annotation">: int</span>
+
+        
+    </div>
+    <a class="headerlink" href="#plot.width"></a>
+    
+            <div class="docstring"><p>Number of character columns in the plot.</p>
+</div>
+
+
+                            </div>
+                            <div id="plot.renderstr" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">renderstr</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#plot.renderstr"></a>
+    
+            <div class="docstring"><p>Convert the plot into a string for printing to the terminal.</p>
+
+<p>Note: <a href="#plot.renderstr">plot.renderstr()</a> is equivalent to str(plot).</p>
+</div>
+
+
+                            </div>
+                            <div id="plot.clearstr" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">clearstr</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span><span class="p">:</span> <span class="n">Self</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#plot.clearstr"></a>
+    
+            <div class="docstring"><p>Convert the plot into a string that, if printed immediately after
+<a href="#plot.renderstr">plot.renderstr()</a>, will clear that plot from the terminal.</p>
+</div>
+
+
+                            </div>
+                            <div id="plot.renderimg" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">renderimg</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">upscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">downscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#plot.renderimg"></a>
+    
+            <div class="docstring"><p>Convert the plot into an RGBA array for rendering with Pillow.</p>
+</div>
+
+
+                            </div>
+                            <div id="plot.saveimg" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">saveimg</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">filename</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">upscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">downscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#plot.saveimg"></a>
+    
+            <div class="docstring"><p>Render the plot as an RGBA image and save it as a PNG file at the path
+<code>filename</code>.</p>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="scatter">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">scatter</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#scatter"></a>
+    
+            <div class="docstring"><p>Render a scatterplot using a grid of braille unicode characters.</p>
+
+<p>Each character cell in the plot corresponds to a 2x4 grid of sub-pixels,
+represented by braille dots.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>series : Series.
+X Y data, for example a tuple (xs, ys) or triple (xs, ys, cs) where
+cs is a ColorLike or a list of RGB triples. See documentation for more
+examples.</li>
+<li>*etc.
+Further series.</li>
+<li>xrange : optional (number, number).
+The x-axis limits <code>(xmin, xmax)</code>. If not provided, the limits are
+inferred from the min and max x-values in the data.</li>
+<li>yrange : optional (number, number).
+The y-axis limits <code>(ymin, ymax)</code>. If not provided, the limits are
+inferred from the min and max y-values in the data.</li>
+<li>width : int (default: 30).
+The width of the plot in characters. The effective pixel width will be
+2 * width.</li>
+<li>height : int (default: 10).
+The height of the plot in rows. The effective pixel height will be 4 *
+height.</li>
+</ul>
+</div>
+
+
+                            <div id="scatter.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">scatter</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">series</span><span class="p">:</span> <span class="n">Series</span>,</span><span class="param">	<span class="o">*</span><span class="n">etc</span><span class="p">:</span> <span class="n">Series</span>,</span><span class="param">	<span class="n">xrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">yrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#scatter.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="scatter.xrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">xrange</span>
+
+        
+    </div>
+    <a class="headerlink" href="#scatter.xrange"></a>
+    
+    
+
+                            </div>
+                            <div id="scatter.yrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">yrange</span>
+
+        
+    </div>
+    <a class="headerlink" href="#scatter.yrange"></a>
+    
+    
+
+                            </div>
+                            <div id="scatter.num_points" class="classattr">
+                                <div class="attr variable">
+            <span class="name">num_points</span>
+
+        
+    </div>
+    <a class="headerlink" href="#scatter.num_points"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="scatter.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="scatter.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="scatter.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="scatter.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="scatter.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="scatter.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="scatter.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="scatter3">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">scatter3</span><wbr>(<span class="base"><a href="#scatter">scatter</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#scatter3"></a>
+    
+            <div class="docstring"><p>Scatter plot representing a 3d point cloud.</p>
+
+<ul>
+<li>series : Series3.
+X Y Z data, for example a triple (xs, ys, zs) or quad (xs, ys, zs, cs)
+where cs is a ColorLike or a list of RGB triples. See documentation
+for more examples.</li>
+<li>*etc.: Series3
+Further series.</li>
+<li>camera_position: float[3] (default: [0. 0. 2.]).
+The position at which the camera is placed.</li>
+<li>camera_target: float[3] (default: [0. 0. 0.]).
+The position towards which the camera is facing. Should be distinct
+from camera position. The default is that the camera is facing towards
+the origin.</li>
+<li>scene_up: float[3] (default: [0. 1. 0.]).
+The unit vector designating the 'up' direction for the scene. The
+default is the positive Y direction. Should not have the same direction
+as camera_target - camera_position.</li>
+<li>vertical_fov_degrees: float (default 90).
+Vertical field of view. Points within a vertical cone of this angle are
+projected into the viewing area. The horizontal field of view is then
+determined based on the aspect ratio.</li>
+<li>aspect_ratio: optional float.
+Aspect ratio for the set of points, as a fraction (W:H represented as
+W/H). If not provided, uses W=width, H=2*height, which is uniform given
+the resolution of the plot.</li>
+<li>width : int.
+The number of character columns in the plot.</li>
+<li>height : int.
+The number of character rows in the plot.</li>
+</ul>
+
+<p>TODO:</p>
+
+<ul>
+<li>Maybe allow configurable xyz ranges with clipping prior to projection?</li>
+<li>Make sure this is not a subclass of scatter for the purposes of labelling
+axes as that would use projected coordinates.</li>
+</ul>
+</div>
+
+
+                            <div id="scatter3.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">scatter3</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">series</span><span class="p">:</span> <span class="n">Series3</span>,</span><span class="param">	<span class="o">*</span><span class="n">etc</span><span class="p">:</span> <span class="n">Series3</span>,</span><span class="param">	<span class="n">camera_position</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>,</span><span class="param">	<span class="n">camera_target</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">scene_up</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">vertical_fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span>,</span><span class="param">	<span class="n">aspect_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#scatter3.__init__"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#scatter">scatter</a></dt>
+                                <dd id="scatter3.xrange" class="variable"><a href="#scatter.xrange">xrange</a></dd>
+                <dd id="scatter3.yrange" class="variable"><a href="#scatter.yrange">yrange</a></dd>
+                <dd id="scatter3.num_points" class="variable"><a href="#scatter.num_points">num_points</a></dd>
+
+            </div>
+            <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="scatter3.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="scatter3.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="scatter3.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="scatter3.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="scatter3.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="scatter3.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="scatter3.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="image">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">image</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#image"></a>
+    
+            <div class="docstring"><p>Render a small image or 2d array using a grid of unicode half-block
+characters.</p>
+
+<p>Represents an image by mapping pairs of vertically adjacent pixels to the
+foreground and background colors of a single character cell (this
+effectively doubles the vertical resolution in the terminal).</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li><p>im : float[h,w,3] | int[h,w,3] | float[h,w] | int[h,w].
+The image data. An array-like matching any of the following formats:</p>
+
+<ul>
+<li><code>float[h,w,3]</code>: A 2D array of RGB triples of floats in range [0,1].</li>
+<li><code>int[h,w,3]</code>: A 2D array of RGB triples of ints in range [0,255].</li>
+<li><code>float[h,w]</code>: A 2D array of scalars in the range [0,1]. If no
+colormap is provided, values are treated as greyscale (uniform
+colorisation). If a continuous colormap is provided, values are
+mapped to RGB values.</li>
+<li><code>int[h,w]</code>: A 2D array of ints. If no colormap is provided, values
+should be in the range [0,255], they are treated as greyscale
+(uniform colorisation). If a discrete colormap is provided, values
+should be in range as indices for the colormap, they will be mapped
+to RGB triples as such.</li>
+</ul></li>
+<li><p>colormap : optional ColorMap.
+Function mapping (batches of) scalars to (batches of) RGB triples.
+Examples are provided by this library, such as:</p>
+
+<ul>
+<li>continuous colormaps like <code>viridis : float[...] -&gt; uint8[...,3]</code>, and</li>
+<li>discrete colormaps like <code>pico8 : int[...] -&gt; uint8[...,3]</code>.
+If <code>im</code> has no RGB dimension, it is transformed to a grid of RGB
+triples using one of these colormaps.</li>
+</ul></li>
+</ul>
+
+<p>TODO:</p>
+
+<ul>
+<li>Offer normalisation?</li>
+</ul>
+</div>
+
+
+                            <div id="image.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">image</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">im</span><span class="p">:</span> <span class="n">ArrayLike</span>, </span><span class="param"><span class="n">colormap</span><span class="p">:</span> <span class="n">ColorMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#image.__init__"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="image.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="image.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="image.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="image.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="image.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="image.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="image.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="function2">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">function2</span><wbr>(<span class="base"><a href="#image">image</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#function2"></a>
+    
+            <div class="docstring"><p>Heatmap representing the image of a 2d function over a square.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>F : float[batch, 2] -> number[batch].
+The (vectorised) function to plot. The input should be a batch of
+(x, y) vectors. The output should be a batch of scalars f(x, y).</li>
+<li>xrange : (float, float).
+Lower and upper bounds on the x values to pass into the function.</li>
+<li>yrange : (float, float).
+Lower and upper bounds on the y values to pass into the function.</li>
+<li>width : int.
+The number of character columns in the plot. This will also become the
+number of grid squares along the x axis.</li>
+<li>height : int.
+The number of character rows in the plot. This will also be half of the
+number of grid squares, since the result is an image plot with two
+half-character-pixels per row.</li>
+<li>zrange : optional (float, float).
+Expected lower and upper bounds on the f(x, y) values. Used for
+determining the bounds of the colour scale. By default, the minimum and
+maximum output over the grid are used.</li>
+<li>colormap : optional colormap (e.g. mp.viridis).
+By default, the output will be in greyscale, with black corresponding
+to zrange[0] and white corresponding to zrange[1]. You can choose a
+different colormap (e.g. mp.reds, mp.viridis, etc.) here.</li>
+<li><p>endpoints : bool (default: False).
+If true, endpoints are included from the linspaced inputs, and so the
+grid elements in each corner will represent the different combinations
+of xrange/yrange.</p>
+
+<p>If false (default), the endpoints are excluded, so the lower bounds are
+met but the upper bounds are not, meaning each grid square color shows
+the value of the function precisely at its lower left corner.</p></li>
+</ul>
+</div>
+
+
+                            <div id="function2.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">function2</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">F</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>,</span><span class="param">	<span class="n">xrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>,</span><span class="param">	<span class="n">yrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">zrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">colormap</span><span class="p">:</span> <span class="n">ColorMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">endpoints</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#function2.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="function2.name" class="classattr">
+                                <div class="attr variable">
+            <span class="name">name</span>
+
+        
+    </div>
+    <a class="headerlink" href="#function2.name"></a>
+    
+    
+
+                            </div>
+                            <div id="function2.xrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">xrange</span>
+
+        
+    </div>
+    <a class="headerlink" href="#function2.xrange"></a>
+    
+    
+
+                            </div>
+                            <div id="function2.yrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">yrange</span>
+
+        
+    </div>
+    <a class="headerlink" href="#function2.yrange"></a>
+    
+    
+
+                            </div>
+                            <div id="function2.zrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">zrange</span>
+
+        
+    </div>
+    <a class="headerlink" href="#function2.zrange"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="function2.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="function2.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="function2.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="function2.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="function2.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="function2.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="function2.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="histogram2">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">histogram2</span><wbr>(<span class="base"><a href="#image">image</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#histogram2"></a>
+    
+            <div class="docstring"><p>Heatmap representing the density of a collection of 2d points.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>x : number[n].
+X coordinates of 2d points to bin and count.</li>
+<li>y : number[n].
+Y coordinates of 2d points to bin and count.</li>
+<li>width : int (default 24).
+Specifies the width of the plot in characters. This is also the number
+of bins in the x direction.</li>
+<li>height : int (default 12).
+Specifies the height of the plot in characters. This is also half the
+number of bins in the y direction.</li>
+<li>xrange : optional (number, number).
+The x-axis limits <code>(xmin, xmax)</code>. If not provided, the limits are
+inferred from the min and max x-values in the data.</li>
+<li>yrange : optional (number, number).
+The y-axis limits <code>(ymin, ymax)</code>. If not provided, the limits are
+inferred from the min and max y-values in the data.</li>
+<li>weights : optional number[n].
+If provided, each 2d point in data contributes this amount to the count
+for its bin (rather than the default 1). See np.histogram2d's weights
+argument for details.</li>
+<li>density : bool (default False).
+If true, normalise bin counts so that they sum to 1,0. See
+np.histogram2d's density argument for details.</li>
+<li>max_count : optional number.
+If provided, cell colours are scaled so that only bars matching or
+exceeding this count max out the colour. Otherwise, the colours are
+scaled so that the bin with the highest count has the colour maxed out.</li>
+<li>colormap : optional colormap (e.g. mp.viridis).
+By default, the output will be in greyscale, with black corresponding
+to zero density and white corresponding to max_count. You can choose a
+different colormap (e.g. mp.reds, mp.viridis, etc.) here.</li>
+</ul>
+</div>
+
+
+                            <div id="histogram2.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">histogram2</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span>,</span><span class="param">	<span class="n">y</span><span class="p">:</span> <span class="n">ArrayLike</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">24</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span>,</span><span class="param">	<span class="n">xrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span><span class="p">,</span> <span class="n">number</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">yrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span><span class="p">,</span> <span class="n">number</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">weights</span><span class="o">=</span><span class="kc">None</span>,</span><span class="param">	<span class="n">density</span><span class="o">=</span><span class="kc">False</span>,</span><span class="param">	<span class="n">max_count</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">number</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">colormap</span><span class="p">:</span> <span class="n">ColorMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#histogram2.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="histogram2.xrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">xrange</span>
+
+        
+    </div>
+    <a class="headerlink" href="#histogram2.xrange"></a>
+    
+    
+
+                            </div>
+                            <div id="histogram2.yrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">yrange</span>
+
+        
+    </div>
+    <a class="headerlink" href="#histogram2.yrange"></a>
+    
+    
+
+                            </div>
+                            <div id="histogram2.xbins" class="classattr">
+                                <div class="attr variable">
+            <span class="name">xbins</span>
+
+        
+    </div>
+    <a class="headerlink" href="#histogram2.xbins"></a>
+    
+    
+
+                            </div>
+                            <div id="histogram2.ybins" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ybins</span>
+
+        
+    </div>
+    <a class="headerlink" href="#histogram2.ybins"></a>
+    
+    
+
+                            </div>
+                            <div id="histogram2.num_points" class="classattr">
+                                <div class="attr variable">
+            <span class="name">num_points</span>
+
+        
+    </div>
+    <a class="headerlink" href="#histogram2.num_points"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="histogram2.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="histogram2.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="histogram2.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="histogram2.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="histogram2.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="histogram2.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="histogram2.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="progress">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">progress</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#progress"></a>
+    
+            <div class="docstring"><p>A single-line progress bar.</p>
+
+<p>Construct a progress bar with a percentage label. The bar is rendered using
+Unicode block element characters to show fractional progress with finer
+granularity.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>progress : float.
+The progress to display, as a float between 0.0 and 1.0. Values outside
+this range will be clipped.</li>
+<li>width : int (default: 40).
+The total width of the progress bar plot in character columns,
+including the label and brackets.</li>
+<li>height: int (default: 1).
+The height of the progress bar in character rows.</li>
+<li>color : optional ColorLike.
+The color of the filled portion of the progress bar. Defaults to the
+terminal's default foreground color.</li>
+</ul>
+</div>
+
+
+                            <div id="progress.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">progress</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">progress</span><span class="p">:</span> <span class="nb">float</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">40</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#progress.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="progress.progress" class="classattr">
+                                <div class="attr variable">
+            <span class="name">progress</span>
+
+        
+    </div>
+    <a class="headerlink" href="#progress.progress"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="progress.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="progress.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="progress.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="progress.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="progress.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="progress.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="progress.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="bars">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">bars</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#bars"></a>
+    
+            <div class="docstring"><p>A multi-line bar chart.</p>
+
+<p>Transform a list of values into horizontal bars with width indicating the
+values. The bars are rendered using Unicode block element characters for
+finer granularity.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>values : float[n].
+An array of non-negative values to display.</li>
+<li>width : int (default: 30).
+The total width of full bars.</li>
+<li>bar_height: int (default: 1).
+The number of rows comprising each bar.</li>
+<li>bar_spacing: int (default: 0).
+The number of rows between each bar.</li>
+<li>vrange : None | float | (float, float).
+Determine the scaling of the bars.
+<ul>
+<li>If omitted, the bars are scaled such that the bar(s) with the largest
+value occupy the whole width.</li>
+<li>If a single number, then the bars are scaled so that bars with that
+value (or greater) would occupy the whole width.</li>
+<li>If a pair of numbers, the bars are scaled so that bars with the first
+value (or less) would have zero width and bars with the second value
+(or greater) would occupy the whole width.</li>
+</ul></li>
+<li>color : optional ColorLike.
+The color of the filled portion of the bars. Defaults to the terminal's
+default foreground color.</li>
+<li>colors : optional ColorLike[n].
+The colours of the filled portion of each bar. Should be an array or
+list of the same length as <code>values</code>.</li>
+</ul>
+
+<p>TODO:</p>
+
+<ul>
+<li>Make it possible to draw bars to the left for values below 0.</li>
+<li>Make it possible to align all bars to the right rather than left.</li>
+</ul>
+</div>
+
+
+                            <div id="bars.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">bars</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">values</span><span class="p">:</span> <span class="n">ArrayLike</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span>,</span><span class="param">	<span class="n">bar_height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">bar_spacing</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">vrange</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">number</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span><span class="p">,</span> <span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">colors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#bars.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="bars.vmin" class="classattr">
+                                <div class="attr variable">
+            <span class="name">vmin</span>
+
+        
+    </div>
+    <a class="headerlink" href="#bars.vmin"></a>
+    
+    
+
+                            </div>
+                            <div id="bars.vmax" class="classattr">
+                                <div class="attr variable">
+            <span class="name">vmax</span>
+
+        
+    </div>
+    <a class="headerlink" href="#bars.vmax"></a>
+    
+    
+
+                            </div>
+                            <div id="bars.num_bars" class="classattr">
+                                <div class="attr variable">
+            <span class="name">num_bars</span>
+
+        
+    </div>
+    <a class="headerlink" href="#bars.num_bars"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="bars.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="bars.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="bars.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="bars.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="bars.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="bars.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="bars.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="histogram">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">histogram</span><wbr>(<span class="base"><a href="#bars">bars</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#histogram"></a>
+    
+            <div class="docstring"><p>A histogram bar chart.</p>
+
+<p>Transform a sequence of values into horizontal bars representing the
+density in different bins. The bars are rendered using Unicode block
+element characters for finer granularity.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>data : number[n].
+An array of values to count.</li>
+<li>xrange : optional (float, float).
+If provided, bins range over this interval, and values outside the
+range are discarded. Same as np.histogram's range argument.</li>
+<li>bins : int (default: 10).
+Used to determine number of bins. Bins are evenly spaced as if this
+number if provided to np.histogram's bins argument.</li>
+<li>weights : optional number[n].
+If provided, each element in data contributes this amount to the count
+for its bin (rather than the default 1). See np.histogram's weights
+argument for details.</li>
+<li>density : bool (default False).
+If true, normalise bin counts so that they sum to 1,0. See
+np.histogram's density argument for details.</li>
+<li>max_count : optional number.
+If provided, the bars are scaled so that only bars matching or
+exceeding this count are full. Otherwise, the bars are scaled so that
+the bin with the highest count has a full bar.</li>
+<li>width : int (default: 22).
+The total width of full bars.</li>
+<li>color : optional ColorLike.
+The color of the filled portion of the bars. Defaults to the terminal's
+default foreground color.</li>
+</ul>
+</div>
+
+
+                            <div id="histogram.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">histogram</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">ArrayLike</span>,</span><span class="param">	<span class="n">bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>,</span><span class="param">	<span class="n">xrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">weights</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">density</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">max_count</span><span class="p">:</span> <span class="n">number</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22</span>,</span><span class="param">	<span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#histogram.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="histogram.bins" class="classattr">
+                                <div class="attr variable">
+            <span class="name">bins</span>
+
+        
+    </div>
+    <a class="headerlink" href="#histogram.bins"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#bars">bars</a></dt>
+                                <dd id="histogram.vmin" class="variable"><a href="#bars.vmin">vmin</a></dd>
+                <dd id="histogram.vmax" class="variable"><a href="#bars.vmax">vmax</a></dd>
+                <dd id="histogram.num_bars" class="variable"><a href="#bars.num_bars">num_bars</a></dd>
+
+            </div>
+            <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="histogram.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="histogram.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="histogram.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="histogram.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="histogram.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="histogram.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="histogram.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="columns">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">columns</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#columns"></a>
+    
+            <div class="docstring"><p>A column chart.</p>
+
+<p>Transform a list of values into vertical columns with height indicating the
+values. The columns are rendered using Unicode block element characters for
+finer granularity.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>values : number[n].
+An array of non-negative values to display.</li>
+<li>height : int (default: 10).
+The total width of full columns.</li>
+<li>column_width: int (default 1).</li>
+<li>column_spacing: int (default 0).</li>
+<li>vrange : None | number | (number, number).
+Determine the scaling of the columns.
+<ul>
+<li>If omitted, the columns are scaled such that the columns(s) with the
+largest value occupy the whole width.</li>
+<li>If a single number, then the columns are scaled so that columns with
+that value (or greater) would occupy the whole width.</li>
+<li>If a pair of numbers, the columns are scaled so that columns with the
+first value (or less) would have zero width and columns with the
+second value (or greater) would occupy the whole width.</li>
+</ul></li>
+<li>color : optional ColorLike.
+The color of the filled portion of the columns. Defaults to the
+terminal's default foreground color.</li>
+<li>colors : optional ColorLike[n].
+The colours of the filled portion of each column. Should be an array or
+list of the same length as <code>values</code>.</li>
+</ul>
+
+<p>TODO:</p>
+
+<ul>
+<li>Make it possible to draw columns downward for values below 0.</li>
+<li>Make it possible to align all columns to the top rather than bottom.</li>
+</ul>
+</div>
+
+
+                            <div id="columns.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">columns</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">values</span><span class="p">:</span> <span class="n">ArrayLike</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>,</span><span class="param">	<span class="n">column_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">column_spacing</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">vrange</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">number</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span><span class="p">,</span> <span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">colors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#columns.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="columns.vmin" class="classattr">
+                                <div class="attr variable">
+            <span class="name">vmin</span>
+
+        
+    </div>
+    <a class="headerlink" href="#columns.vmin"></a>
+    
+    
+
+                            </div>
+                            <div id="columns.vmax" class="classattr">
+                                <div class="attr variable">
+            <span class="name">vmax</span>
+
+        
+    </div>
+    <a class="headerlink" href="#columns.vmax"></a>
+    
+    
+
+                            </div>
+                            <div id="columns.num_cols" class="classattr">
+                                <div class="attr variable">
+            <span class="name">num_cols</span>
+
+        
+    </div>
+    <a class="headerlink" href="#columns.num_cols"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="columns.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="columns.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="columns.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="columns.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="columns.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="columns.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="columns.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="vistogram">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">vistogram</span><wbr>(<span class="base"><a href="#columns">columns</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#vistogram"></a>
+    
+            <div class="docstring"><p>A histogram column chart ("vertical histogram", referring to the direction
+of the bars rather than the bins).</p>
+
+<p>Transform a sequence of values into columns representing the density in
+different bins. The columns are rendered using Unicode block element
+characters for finer granularity.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>data : number[n].
+An array of values to count.</li>
+<li>xrange : optional (float, float).
+If provided, bins range over this interval, and values outside the
+range are discarded. Same as np.histogram's range argument.</li>
+<li>bins : int (default: 10).
+Used to determine number of bins. Bins are evenly spaced as if this
+number if provided to np.histogram's bins argument.</li>
+<li>weights : optional number[n].
+If provided, each element in data contributes this amount to the count
+for its bin (rather than the default 1). See np.histogram's weights
+argument for details.</li>
+<li>density : bool (default False).
+If true, normalise bin counts so that they sum to 1,0. See
+np.histogram's density argument for details.</li>
+<li>max_count : optional number.
+If provided, the bars are scaled so that only bars matching or
+exceeding this count are full. Otherwise, the bars are scaled so that
+the bin with the highest count has a full bar.</li>
+<li>height : int (default: 22).
+The total height of full bars.</li>
+<li>color : optional ColorLike.
+The color of the filled portion of the bars. Defaults to the terminal's
+default foreground color.</li>
+</ul>
+</div>
+
+
+                            <div id="vistogram.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">vistogram</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">ArrayLike</span>,</span><span class="param">	<span class="n">bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>,</span><span class="param">	<span class="n">xrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">weights</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">density</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">max_count</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">number</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>,</span><span class="param">	<span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#vistogram.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="vistogram.bins" class="classattr">
+                                <div class="attr variable">
+            <span class="name">bins</span>
+
+        
+    </div>
+    <a class="headerlink" href="#vistogram.bins"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#columns">columns</a></dt>
+                                <dd id="vistogram.vmin" class="variable"><a href="#columns.vmin">vmin</a></dd>
+                <dd id="vistogram.vmax" class="variable"><a href="#columns.vmax">vmax</a></dd>
+                <dd id="vistogram.num_cols" class="variable"><a href="#columns.num_cols">num_cols</a></dd>
+
+            </div>
+            <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="vistogram.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="vistogram.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="vistogram.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="vistogram.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="vistogram.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="vistogram.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="vistogram.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="hilbert">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">hilbert</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#hilbert"></a>
+    
+            <div class="docstring"><p>Visualize a 1D boolean array along a 2D Hilbert curve.</p>
+
+<p>Maps a 1D sequence of data points to a 2D grid using a space-filling
+Hilbert curve, which helps preserve locality. The curve is rendered using
+braille unicode characters for increased resolution.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>data : bool[N].
+A 1D array of booleans. The length <code>N</code> determines the order of the
+Hilbert curve required to fit all points. True values are rendered as
+dots, and False values are rendered as blank spaces.</li>
+<li>color : optional ColorLike.
+The foreground color used for dots (points along the curve where <code>data</code>
+is <code>True</code>). Defaults to the terminal's default foreground color.</li>
+</ul>
+</div>
+
+
+                            <div id="hilbert.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">hilbert</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">data</span><span class="p">:</span> <span class="n">ArrayLike</span>, </span><span class="param"><span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#hilbert.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="hilbert.num_points" class="classattr">
+                                <div class="attr variable">
+            <span class="name">num_points</span>
+
+        
+    </div>
+    <a class="headerlink" href="#hilbert.num_points"></a>
+    
+    
+
+                            </div>
+                            <div id="hilbert.all_points" class="classattr">
+                                <div class="attr variable">
+            <span class="name">all_points</span>
+
+        
+    </div>
+    <a class="headerlink" href="#hilbert.all_points"></a>
+    
+    
+
+                            </div>
+                            <div id="hilbert.n" class="classattr">
+                                <div class="attr variable">
+            <span class="name">n</span>
+
+        
+    </div>
+    <a class="headerlink" href="#hilbert.n"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="hilbert.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="hilbert.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="hilbert.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="hilbert.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="hilbert.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="hilbert.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="hilbert.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="text">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">text</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#text"></a>
+    
+            <div class="docstring"><p>A plot object containing one or more lines of text.</p>
+
+<p>This class wraps a string in the plot interface, allowing it to be
+composed with other plot objects. It handles multi-line strings by
+splitting them at newline characters.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>text : str.
+The text to be displayed. Newline characters will create separate lines
+in the plot.</li>
+<li>color : optional ColorLike.
+The foreground color of the text. Defaults to the terminal's default
+foreground color.</li>
+<li>bgcolor : optional ColorLike.
+The background color for the text. Defaults to a transparent
+background.</li>
+</ul>
+
+<p>TODO:</p>
+
+<ul>
+<li>Allow alignment and resizing.</li>
+<li>Account for non-printable and wide characters.</li>
+</ul>
+</div>
+
+
+                            <div id="text.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">text</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">text</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">fgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#text.__init__"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="text.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="text.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="text.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="text.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="text.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="text.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="text.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="border">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">border</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#border"></a>
+    
+            <div class="docstring"><p>Add a border around a plot using box-drawing characters.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>plot : plot.
+The plot object to be enclosed by the border.</li>
+<li>title: str.
+An optional title for the box. Placed centrally along the top row of
+the box. Truncated to fit.</li>
+<li>style : BoxStyle (default: BoxStyle.ROUND).
+The style of the border. Predefined styles are available in <code>BoxStyle</code>.</li>
+<li>color : optional ColorLike.
+The color of the border characters. Defaults to the terminal's
+default foreground color.</li>
+</ul>
+</div>
+
+
+                            <div id="border.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">border</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">plot</span><span class="p">:</span> <span class="n"><a href="#plot">plot</a></span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">style</span><span class="p">:</span> <span class="n"><a href="core.html#BoxStyle">matthewplotlib.core.BoxStyle</a></span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">BoxStyle</span><span class="o">.</span><span class="n">ROUND</span><span class="p">:</span> <span class="s1">&#39;╭─╮││╰─╯&#39;</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#border.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="border.style" class="classattr">
+                                <div class="attr variable">
+            <span class="name">style</span>
+
+        
+    </div>
+    <a class="headerlink" href="#border.style"></a>
+    
+    
+
+                            </div>
+                            <div id="border.plot" class="classattr">
+                                <div class="attr variable">
+            <span class="name">plot</span>
+
+        
+    </div>
+    <a class="headerlink" href="#border.plot"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="border.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="border.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="border.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="border.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="border.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="border.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="border.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="axes">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">axes</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#axes"></a>
+    
+            <div class="docstring"><p>Add an annotated border around a 2d plot using box-drawing characters.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>plot : scatter | function2 | histogram2 | dstack2.
+The plot object to be enclosed by the axes. Must have an xrange and a
+yrange.</li>
+<li>title: optional str.
+An optional title for the axes. Placed centrally along the top row of
+the axes. Truncated to fit.</li>
+<li>xlabel: optional str.
+String to be used as label under the x axis. Truncated to fit between
+min and max labels.</li>
+<li>ylabel: optional str.
+String to be used as label next to the y axis. Written vertically, and
+truncated to fit between min and max labels.</li>
+<li>xfmt: str (default "{x:.2f}").
+Format string for x labels. Should have one keyword argument with the
+key 'x'.</li>
+<li>yfmt: str (default "{y:.2f}").
+Format string for y labels. Should have one keyword argument with the
+key 'y'.</li>
+<li>ypad: int (default 1).
+How many columns between the y axis and the vertical y axis label.</li>
+<li>style : BoxStyle (default: BoxStyle.ROUND).
+The style of the border. Predefined styles are available in <code>BoxStyle</code>.</li>
+<li>color : optional ColorLike.
+The color of the border characters and labels. Defaults to 50% gray.
+Set to <code>None</code> to use foreground color.</li>
+</ul>
+</div>
+
+
+                            <div id="axes.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">axes</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">plot</span><span class="p">:</span> <span class="n"><a href="#scatter">scatter</a></span> <span class="o">|</span> <span class="n"><a href="#function2">function2</a></span> <span class="o">|</span> <span class="n"><a href="#histogram2">histogram2</a></span> <span class="o">|</span> <span class="n"><a href="#dstack2">dstack2</a></span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">xfmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{x:.1f}</span><span class="s1">&#39;</span>,</span><span class="param">	<span class="n">yfmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{y:.1f}</span><span class="s1">&#39;</span>,</span><span class="param">	<span class="n">ypad</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">style</span><span class="p">:</span> <span class="n"><a href="core.html#BoxStyle">matthewplotlib.core.BoxStyle</a></span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">BoxStyle</span><span class="o">.</span><span class="n">LIGHTX</span><span class="p">:</span> <span class="s1">&#39;┬─┐││┼─┤&#39;</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#axes.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="axes.style" class="classattr">
+                                <div class="attr variable">
+            <span class="name">style</span>
+
+        
+    </div>
+    <a class="headerlink" href="#axes.style"></a>
+    
+    
+
+                            </div>
+                            <div id="axes.plot" class="classattr">
+                                <div class="attr variable">
+            <span class="name">plot</span>
+
+        
+    </div>
+    <a class="headerlink" href="#axes.plot"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="axes.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="axes.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="axes.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="axes.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="axes.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="axes.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="axes.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="blank">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">blank</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#blank"></a>
+    
+            <div class="docstring"><p>Creates a rectangular plot composed entirely of blank space.</p>
+
+<p>Useful for adding padding or aligning items in a complex layout.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>height : optional int.
+The height of the blank area in character rows. Default 1.</li>
+<li>width : optional int.
+The width of the blank area in character columns. Default 1.</li>
+</ul>
+</div>
+
+
+                            <div id="blank.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">blank</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>, </span><span class="param"><span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#blank.__init__"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="blank.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="blank.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="blank.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="blank.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="blank.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="blank.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="blank.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="hstack">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">hstack</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#hstack"></a>
+    
+            <div class="docstring"><p>Horizontally arrange one or more plots side-by-side.</p>
+
+<p>If the plots have different heights, the shorter plots will be padded with
+blank space at the bottom to match the height of the tallest plot.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>*plots : plot.
+A sequence of plot objects to be horizontally stacked.</li>
+</ul>
+</div>
+
+
+                            <div id="hstack.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">hstack</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">plots</span><span class="p">:</span> <span class="n"><a href="#plot">plot</a></span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#hstack.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="hstack.plots" class="classattr">
+                                <div class="attr variable">
+            <span class="name">plots</span>
+
+        
+    </div>
+    <a class="headerlink" href="#hstack.plots"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="hstack.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="hstack.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="hstack.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="hstack.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="hstack.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="hstack.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="hstack.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="vstack">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">vstack</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#vstack"></a>
+    
+            <div class="docstring"><p>Vertically arrange one or more plots, one above the other.</p>
+
+<p>If the plots have different widths, the narrower plots will be padded with
+blank space on the right to match the width of the widest plot.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>*plots : plot.
+A sequence of plot objects to be vertically stacked.</li>
+</ul>
+</div>
+
+
+                            <div id="vstack.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">vstack</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">plots</span><span class="p">:</span> <span class="n"><a href="#plot">plot</a></span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#vstack.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="vstack.plots" class="classattr">
+                                <div class="attr variable">
+            <span class="name">plots</span>
+
+        
+    </div>
+    <a class="headerlink" href="#vstack.plots"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="vstack.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="vstack.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="vstack.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="vstack.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="vstack.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="vstack.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="vstack.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="dstack">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">dstack</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#dstack"></a>
+    
+            <div class="docstring"><p>Overlay one or more plots on top of each other.</p>
+
+<p>The plots are layered in the order they are given, with later plots in the
+sequence drawn on top of earlier ones. The final size of the plot is
+determined by the maximum width and height among all input plots. Non-blank
+characters from upper layers will obscure characters from lower layers.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>*plots : plot.
+A sequence of plot objects to be overlaid.</li>
+</ul>
+</div>
+
+
+                            <div id="dstack.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">dstack</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">plots</span><span class="p">:</span> <span class="n"><a href="#plot">plot</a></span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#dstack.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="dstack.plots" class="classattr">
+                                <div class="attr variable">
+            <span class="name">plots</span>
+
+        
+    </div>
+    <a class="headerlink" href="#dstack.plots"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="dstack.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="dstack.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="dstack.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="dstack.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="dstack.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="dstack.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="dstack.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="dstack2">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">dstack2</span><wbr>(<span class="base"><a href="#dstack">dstack</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#dstack2"></a>
+    
+            <div class="docstring"><p>Overlay one or more plots on top of each other.</p>
+
+<p>The plots are layered in the order they are given, with later plots in the
+sequence drawn on top of earlier ones. The final size of the plot is
+determined by the maximum width and height among all input plots. Non-blank
+characters from upper layers will obscure characters from lower layers.</p>
+
+<p>Unlike dstack, the plots must have xrange and range attributes, and these
+must all match. The allowable types are scatter, function2, histogram2, and
+dstack2.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>*plots : scatter | function2 | histogram2 | dstack2.
+A sequence of plot objects to be overlaid. Must have matching xrange
+and yrange.</li>
+</ul>
+</div>
+
+
+                            <div id="dstack2.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">dstack2</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">plots</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#scatter">scatter</a></span><span class="p">,</span> <span class="n"><a href="#function2">function2</a></span><span class="p">,</span> <span class="n"><a href="#histogram2">histogram2</a></span><span class="p">,</span> <span class="n">Self</span><span class="p">]</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#dstack2.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="dstack2.xrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">xrange</span><span class="annotation">: tuple[number, number]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#dstack2.xrange"></a>
+    
+    
+
+                            </div>
+                            <div id="dstack2.yrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">yrange</span><span class="annotation">: tuple[number, number]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#dstack2.yrange"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#dstack">dstack</a></dt>
+                                <dd id="dstack2.plots" class="variable"><a href="#dstack.plots">plots</a></dd>
+
+            </div>
+            <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="dstack2.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="dstack2.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="dstack2.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="dstack2.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="dstack2.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="dstack2.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="dstack2.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="wrap">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">wrap</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#wrap"></a>
+    
+            <div class="docstring"><p>Arrange a sequence of plots into a grid.</p>
+
+<p>The plots are arranged from left to right, wrapping to a new line when
+the specified number of columns is reached. All cells in the grid are
+padded to the size of the largest plot in the sequence.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>*plots : plot.
+A sequence of plot objects to be arranged in a grid.</li>
+<li>cols : optional int.
+The number of columns in the grid. If not provided, it is automatically
+determined based on the terminal width and the width of the largest
+plot.</li>
+<li>transpose: optional bool (default False).
+If False (default), the plots are arranged in reading order, from left
+to right and then from top to bottom. If True, the plots are arranged
+in column order, from top to bottom and then from left to right.</li>
+</ul>
+</div>
+
+
+                            <div id="wrap.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">wrap</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">plots</span><span class="p">:</span> <span class="n"><a href="#plot">plot</a></span>,</span><span class="param">	<span class="n">cols</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">transpose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#wrap.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="wrap.plots" class="classattr">
+                                <div class="attr variable">
+            <span class="name">plots</span>
+
+        
+    </div>
+    <a class="headerlink" href="#wrap.plots"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="wrap.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="wrap.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="wrap.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="wrap.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="wrap.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="wrap.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="wrap.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="center">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">center</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#center"></a>
+    
+            <div class="docstring"><p>Pad a plot with blank space to center it within a larger area.</p>
+
+<p>If the specified <code><a href="#center.height">height</a></code> or <code><a href="#center.width">width</a></code> is smaller than the plot's dimensions,
+the larger dimension is used, effectively preventing the plot from being
+cropped.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>plot : plot.
+The plot object to be centered.</li>
+<li>height : optional int.
+The target height of the new padded plot. If not provided, it defaults
+to the original plot's height (no vertical padding).</li>
+<li>width : optional int.
+The target width of the new padded plot. If not provided, it defaults
+to the original plot's width (no horizontal padding).</li>
+</ul>
+</div>
+
+
+                            <div id="center.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">center</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">plot</span><span class="p">:</span> <span class="n"><a href="#plot">plot</a></span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#center.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="center.plot" class="classattr">
+                                <div class="attr variable">
+            <span class="name">plot</span>
+
+        
+    </div>
+    <a class="headerlink" href="#center.plot"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="center.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="center.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="center.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="center.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="center.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="center.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="center.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="save_animation">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">save_animation</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">plots</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n"><a href="#plot">plot</a></span><span class="p">]</span>,</span><span class="param">	<span class="n">filename</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">upscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">downscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">fps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span>,</span><span class="param">	<span class="n">repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#save_animation"></a>
+    
+            <div class="docstring"><p>Supply a list of plots and a filename and this method will create an
+animated gif.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>plots : list[plot].
+The list of plots forming the frames of the animation.</li>
+<li>filename : str.
+Where to save the gif. Should usually include a '.gif' extension.</li>
+<li>upscale : int (&gt;=1, default is 1).
+Represent each pixel with a square of side-length <code>upscale</code> pixels.</li>
+<li>downscale : int (&gt;=1, default is 1).
+Keep every <code>downscale</code>th pixel. Does not need to evenly divide the
+image height or width (think slice(0, height or width, downscale)).
+Applied after upscaling.</li>
+<li>bgcolor : ColorLike | None.
+Default background colour. If none, a transparent background is used.</li>
+<li>fps : int.
+Approximate frames per second encoded into the gif.</li>
+<li>repeat : bool (default True).
+If true (default), the gif loops indefinitely. If false, the gif only
+plays once.</li>
+</ul>
+
+<p>Notes:</p>
+
+<ul>
+<li>All plots should be the same size. If they are not, they will be aligned
+at the top left corner (padded with transparent pixels on the bottom and
+right). If you want different padding, add blank blocks before passing to
+this function.</li>
+</ul>
+
+<p>TODO:</p>
+
+<ul>
+<li>Consider making this a plot aggregator and overriding .saveimg(). The
+only problem is that it's unclear what to use for renderimg and
+renderstr.</li>
+<li>Duration is currently broken, seems to be due to Image internally doing a
+format conversion from RGBA -> P while saving the gif. Should convert
+beforehand?</li>
+</ul>
+</div>
+
+
+                </section>
+    </main>
+<script>
+    function escapeHTML(html) {
+        return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
+    }
+
+    const originalContent = document.querySelector("main.pdoc");
+    let currentContent = originalContent;
+
+    function setContent(innerHTML) {
+        let elem;
+        if (innerHTML) {
+            elem = document.createElement("main");
+            elem.classList.add("pdoc");
+            elem.innerHTML = innerHTML;
+        } else {
+            elem = originalContent;
+        }
+        if (currentContent !== elem) {
+            currentContent.replaceWith(elem);
+            currentContent = elem;
+        }
+    }
+
+    function getSearchTerm() {
+        return (new URL(window.location)).searchParams.get("search");
+    }
+
+    const searchBox = document.querySelector(".pdoc input[type=search]");
+    searchBox.addEventListener("input", function () {
+        let url = new URL(window.location);
+        if (searchBox.value.trim()) {
+            url.hash = "";
+            url.searchParams.set("search", searchBox.value);
+        } else {
+            url.searchParams.delete("search");
+        }
+        history.replaceState("", "", url.toString());
+        onInput();
+    });
+    window.addEventListener("popstate", onInput);
+
+
+    let search, searchErr;
+
+    async function initialize() {
+        try {
+            search = await new Promise((resolve, reject) => {
+                const script = document.createElement("script");
+                script.type = "text/javascript";
+                script.async = true;
+                script.onload = () => resolve(window.pdocSearch);
+                script.onerror = (e) => reject(e);
+                script.src = "../search.js";
+                document.getElementsByTagName("head")[0].appendChild(script);
+            });
+        } catch (e) {
+            console.error("Cannot fetch pdoc search index");
+            searchErr = "Cannot fetch search index.";
+        }
+        onInput();
+
+        document.querySelector("nav.pdoc").addEventListener("click", e => {
+            if (e.target.hash) {
+                searchBox.value = "";
+                searchBox.dispatchEvent(new Event("input"));
+            }
+        });
+    }
+
+    function onInput() {
+        setContent((() => {
+            const term = getSearchTerm();
+            if (!term) {
+                return null
+            }
+            if (searchErr) {
+                return `<h3>Error: ${searchErr}</h3>`
+            }
+            if (!search) {
+                return "<h3>Searching...</h3>"
+            }
+
+            window.scrollTo({top: 0, left: 0, behavior: 'auto'});
+
+            const results = search(term);
+
+            let html;
+            if (results.length === 0) {
+                html = `No search results for '${escapeHTML(term)}'.`
+            } else {
+                html = `<h4>${results.length} search result${results.length > 1 ? "s" : ""} for '${escapeHTML(term)}'.</h4>`;
+            }
+            for (let result of results.slice(0, 10)) {
+                let doc = result.doc;
+                let url = `../${doc.modulename.replaceAll(".", "/")}.html`;
+                if (doc.qualname) {
+                    url += `#${doc.qualname}`;
+                }
+
+                let heading;
+                switch (result.doc.kind) {
+                    case "function":
+                        if (doc.fullname.endsWith(".__init__")) {
+                            heading = `<span class="name">${doc.fullname.replace(/\.__init__$/, "")}</span>${doc.signature}`;
+                        } else {
+                            heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span>${doc.signature}`;
+                        }
+                        break;
+                    case "class":
+                        heading = `<span class="def">class</span> <span class="name">${doc.fullname}</span>`;
+                        if (doc.bases)
+                            heading += `<wbr>(<span class="base">${doc.bases}</span>)`;
+                        heading += `:`;
+                        break;
+                    case "variable":
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        if (doc.annotation)
+                            heading += `<span class="annotation">${doc.annotation}</span>`;
+                        if (doc.default_value)
+                            heading += `<span class="default_value"> = ${doc.default_value}</span>`;
+                        break;
+                    default:
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        break;
+                }
+                html += `
+                        <section class="search-result">
+                        <a href="${url}" class="attr ${doc.kind}">${heading}</a>
+                        <div class="docstring">${doc.doc}</div>
+                        </section>
+                    `;
+
+            }
+            return html;
+        })());
+    }
+
+    if (getSearchTerm()) {
+        initialize();
+        searchBox.value = getSearchTerm();
+        onInput();
+    } else {
+        searchBox.addEventListener("focus", initialize, {once: true});
+    }
+
+    searchBox.addEventListener("keydown", e => {
+        if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
+            let focused = currentContent.querySelector(".search-result.focused");
+            if (!focused) {
+                currentContent.querySelector(".search-result").classList.add("focused");
+            } else if (
+                e.key === "ArrowDown"
+                && focused.nextElementSibling
+                && focused.nextElementSibling.classList.contains("search-result")
+            ) {
+                focused.classList.remove("focused");
+                focused.nextElementSibling.classList.add("focused");
+                focused.nextElementSibling.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            } else if (
+                e.key === "ArrowUp"
+                && focused.previousElementSibling
+                && focused.previousElementSibling.classList.contains("search-result")
+            ) {
+                focused.classList.remove("focused");
+                focused.previousElementSibling.classList.add("focused");
+                focused.previousElementSibling.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            } else if (
+                e.key === "Enter"
+            ) {
+                focused.querySelector("a").click();
+            }
+        }
+    });
+</script>
+    <script>
+    (function() {
+        function getPreferred() {
+            var saved = localStorage.getItem('pdoc-theme');
+            if (saved) return saved;
+            return window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light' : 'dark';
+        }
+        function apply(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            var moon = document.querySelector('.theme-icon-moon');
+            var sun = document.querySelector('.theme-icon-sun');
+            if (moon) moon.style.display = theme === 'dark' ? 'inline' : 'none';
+            if (sun) sun.style.display = theme === 'light' ? 'inline' : 'none';
+        }
+        window.toggleTheme = function() {
+            var current = document.documentElement.getAttribute('data-theme') || 'dark';
+            var next = current === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('pdoc-theme', next);
+            apply(next);
+        };
+        apply(getPreferred());
+    })();
+    </script>
+</body>
+</html>

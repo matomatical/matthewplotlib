@@ -3,7 +3,7 @@ Matthew's plotting library (matthewplotlib)
 
 A Python plotting library that aspires to *not be painful.*
 
-*Status:* Work in progress. See [roadmap](#roadmap-to-version-1). Currently,
+*Status:* Work in progress. See [roadmap](https://matthewplotlib.far.in.net/roadmap.html). Currently,
 still generally painful, due to lack of generated documentation and lack of
 common plot types. However, for personal use, I'm already finding what limited
 functionality it does have delightful.
@@ -39,7 +39,7 @@ Rough edges:
 * API for compositions not final.
 * API for axes not final.
 * No labels available for bars/columns/histograms yet.
-* No HTML documentation (but see WIP markdown [DOCS.md](DOCS.md)).
+* Limited [documentation](https://matthewplotlib.far.in.net/).
 * Limited input validation, error handling.
 
 Install:
