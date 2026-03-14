@@ -16,7 +16,7 @@ folder for source code.
     </td>
     <td>
       <p><strong>Calendar heatmap</strong></p>
-      <p>GitHub-inspired calendar visualisation with custom colouring.</p>
+      <p>Calendar heatmap of daily maximum temperatures in Oxford, 2025.</p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/calendar_heatmap.py">Source</a></p>
     </td>
   </tr>
