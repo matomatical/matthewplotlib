@@ -267,7 +267,12 @@ nav.pdoc .nav-active {
     font-weight: bold;
 }
 
-/* Smaller nav headings to prevent wrapping */
+/* Nav section headings — match nav-title size */
 nav.pdoc h2 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+/* Extra space above first nav heading (after search box) */
+nav.pdoc h2:first-of-type {
+    margin-top: 1.5rem;
 }

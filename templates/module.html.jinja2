@@ -9,9 +9,9 @@
 
 {% block search_box %}
     {{ super() }}
-    <h2>Getting Started</h2>
+    <h2>Overview</h2>
     <ul>
-        <li><a href="{{ "../" * module.modulename.count(".") }}index.html">Home</a></li>
+        <li><a href="{{ "../" * module.modulename.count(".") }}index.html">README</a></li>
         <li><a href="{{ "../" * module.modulename.count(".") }}quickstart.html">Quickstart</a></li>
         <li><a href="{{ "../" * module.modulename.count(".") }}examples.html">Examples</a></li>
         <li><a href="{{ "../" * module.modulename.count(".") }}roadmap.html">Roadmap</a></li>
@@ -22,7 +22,7 @@
 {% block nav_submodules %}
     {% set root = all_modules.get("matthewplotlib") %}
     {% if root %}
-        <h2>API Reference</h2>
+        <h2>Reference</h2>
         <ul>
             <li>
                 <a class="module{% if module.modulename == 'matthewplotlib' %} nav-active{% endif %}"
