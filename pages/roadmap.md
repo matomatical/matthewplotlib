@@ -142,6 +142,11 @@ More elaborate documentation:
   (automatically linked to relevant release).
 * [x] Documentation search.
 
+More examples:
+
+* [x] Something to show bar/column plots and histograms.
+* [ ] Game of life, following https://github.com/matomatical/life
+
 Future design directions.
 
 * [ ] Reactive plots.

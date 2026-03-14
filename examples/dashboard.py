@@ -20,6 +20,8 @@ def main(
     time_points = -np.linspace(history_seconds, 0, history_size)
     plot = None
     frame = 0
+    if save and num_frames > 0:
+        all_frames = []
     while num_frames == 0 or frame < num_frames:
         # collect data
         cpu_percent = psutil.cpu_percent(percpu=False)
@@ -84,12 +86,19 @@ def main(
             print(-plot, end="")
         plot = dashboard
         print(plot)
+        if save and num_frames > 0:
+            all_frames.append(plot)
 
         frame += 1
         time.sleep(1 / fps)
 
-    if save and plot:
-        plot.saveimg(save)
+    if save and all_frames:
+        mp.save_animation(
+            plots=all_frames,
+            filename=save,
+            fps=fps,
+            bgcolor='black',
+        )
 
 
 if __name__ == "__main__":

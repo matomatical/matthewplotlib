@@ -32,7 +32,7 @@ folder for source code.
   </tr>
   <tr>
     <td align="center">
-      <img src="images/dashboard.png">
+      <img src="images/dashboard.gif">
     </td>
     <td>
       <p><strong>Dashboard</strong></p>
