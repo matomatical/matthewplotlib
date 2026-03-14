@@ -15,7 +15,7 @@ def main(
     width: int = 80,
     height: int = 40,
     max_iter: int = 2000,
-    filename: str = "images/mandelbrot.gif",
+    save: str | None = None,
 ):
     """Mandelbrot set zoom animation."""
     frames = []
@@ -54,9 +54,8 @@ def main(
         # wait
         time.sleep(max(0, start + 1/fps - time.perf_counter()))
 
-    print(f"saving to '{filename}'...")
-    mp.save_animation(frames, filename, fps=fps, downscale=8)
-    print("Done!")
+    if save:
+        mp.save_animation(frames, save, fps=fps, downscale=8)
 
 
 def escape_time(c: np.ndarray, max_iter: int) -> np.ndarray:

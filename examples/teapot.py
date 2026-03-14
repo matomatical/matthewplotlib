@@ -16,12 +16,12 @@ def main(
     fps: int = 10,
     width: int = 80,
     height: int = 20,
+    save: str | None = None,
 ):
     """Rotating 3D teapot with orbiting camera."""
     plot = None
-    # frames = []
+    frames = [] if save else None
     frame = 0
-    # for frame in range(35):
     while num_frames == 0 or frame < num_frames:
         # sweep camera
         p = camera_pos(frame / fps)
@@ -40,12 +40,13 @@ def main(
             width=width,
         )
         print(plot)
-        # frames.append(plot)
+        if frames is not None: frames.append(plot)
 
         frame += 1
         time.sleep(1/fps)
 
-    # mp.save_animation(frames, 'images/teapot.gif', bgcolor="black")
+    if save and frames:
+        mp.save_animation(frames, save, bgcolor="black", fps=fps)
 
    
 

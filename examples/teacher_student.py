@@ -5,15 +5,16 @@ Train a teacher--student linear regression model with gradient descent.
 import time
 import tyro
 import matthewplotlib as mp
-from jaxtyping import Float, Array
+from jaxtyping import Float, Array # pip install jaxtyping
 
-import jax
+import jax # pip install jax
 import jax.numpy as jnp
 
 
 def main(
     num_steps: int = 400,
     learning_rate: float = 0.01,
+    save: str | None = None,
 ):
     # initialise teacher
     w_teacher = jnp.array([.5, -1.])
@@ -26,7 +27,7 @@ def main(
 
     # training loop
     plot = vis(w_student, w_teacher, x, 0)
-    plots = [plot]
+    plots = [plot] if save else None
     print(plot)
     for t in range(num_steps):
         l = loss(w_student, w_teacher, x)
@@ -34,15 +35,11 @@ def main(
         w_student = w_student - learning_rate * g_student
         plot = vis(w_student, w_teacher, x, t+1)
         print(f"{-plot}{plot}")
-        plots.append(plot)
+        if plots is not None: plots.append(plot)
         time.sleep(0.02)
 
-    mp.save_animation(
-        plots,
-        "images/teacher_student.gif",
-        bgcolor="black",
-        fps=50,
-    )
+    if save and plots:
+        mp.save_animation(plots, save, bgcolor="black", fps=50)
 
 
 def forward(

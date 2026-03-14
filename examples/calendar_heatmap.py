@@ -2,6 +2,7 @@
 GitHub-inspired calendar visualisation.
 """
 
+import tyro
 import matthewplotlib as mp
 import calendar
 import datetime
@@ -62,8 +63,8 @@ EMPTY_DAY = "▘ "
 NOT_A_DAY = "  "
 
 
-
-def main():
+def main(save: str | None = None):
+    """GitHub-inspired calendar visualisation."""
     # normalise counts
     max_count = max(DATA.values())
     norm_data = {date: count/max_count for date, count in DATA.items()}
@@ -101,7 +102,7 @@ def main():
             mp.vstack(title, daynames, *week_plots)
             + mp.blank(2,2),
         )
-        
+
         # increment month
         month += 1
         if month == 13:
@@ -110,13 +111,11 @@ def main():
 
     # combine
     plot = mp.wrap(*month_plots, cols=3)
-    
-    print("printing plot...")
+
     print(plot)
-    print("saving to 'images/calendar_heatmap.png'...")
-    plot.saveimg('images/calendar_heatmap.png')
+    if save:
+        plot.saveimg(save)
 
 
 if __name__ == "__main__":
-    main()
-
+    tyro.cli(main)

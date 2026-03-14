@@ -12,6 +12,7 @@ def main(
     num_frames: int = 0,
     fps: int = 10,
     history_seconds: int = 30,
+    save: str | None = None,
 ):
     """Live system dashboard showing CPU and memory usage."""
     history_size = history_seconds * fps
@@ -86,6 +87,9 @@ def main(
 
         frame += 1
         time.sleep(1 / fps)
+
+    if save and plot:
+        plot.saveimg(save)
 
 
 if __name__ == "__main__":
