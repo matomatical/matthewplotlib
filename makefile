@@ -45,27 +45,27 @@ GITHUB := https://github.com/matomatical/matthewplotlib/blob/main
 
 docs/index.html: README.md templates/page.html docs/pdoc.css docs/api
 	pandoc README.md -o $@ --template=templates/page.html \
-		-V title="Home" \
+		--metadata title="Home" \
 		-V source="$(GITHUB)/README.md"
 
 docs/changelog.html: CHANGELOG.md templates/page.html docs/pdoc.css
 	pandoc CHANGELOG.md -o $@ --template=templates/page.html \
-		-V title="Changelog" \
+		--metadata title="Changelog" \
 		-V source="$(GITHUB)/CHANGELOG.md"
 
 docs/quickstart.html: pages/quickstart.md templates/page.html docs/pdoc.css
 	pandoc $< -o $@ --template=templates/page.html \
-		-V title="Quickstart" \
+		--metadata title="Quickstart" \
 		-V source="$(GITHUB)/pages/quickstart.md"
 
 docs/examples.html: pages/examples.md templates/page.html docs/pdoc.css
 	pandoc $< -o $@ --template=templates/page.html \
-		-V title="Examples" \
+		--metadata title="Examples" \
 		-V source="$(GITHUB)/pages/examples.md"
 
 docs/roadmap.html: pages/roadmap.md templates/page.html docs/pdoc.css
 	pandoc $< -o $@ --template=templates/page.html \
-		-V title="Roadmap" \
+		--metadata title="Roadmap" \
 		-V source="$(GITHUB)/pages/roadmap.md"
 
 docs/images: images

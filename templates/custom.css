@@ -262,6 +262,11 @@ nav.pdoc .nav-active {
 .page-content {
     clear: both;
 }
+.page-content img {
+    max-width: 100%;
+    height: auto;
+    background: #1a1c2c; /* sweetie 0: dark navy for transparent PNGs */
+}
 .page-content > h1:first-child {
     margin-top: 0;
     font-weight: bold;
