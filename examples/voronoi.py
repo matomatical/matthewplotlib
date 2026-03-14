@@ -1,3 +1,4 @@
+import tyro
 import numpy as np
 import matthewplotlib as mp
 from scipy.spatial import KDTree
@@ -7,7 +8,8 @@ WIDTH = 70
 HEIGHT = 20
 
 
-def main():
+def main(save: str | None = None):
+    """Voronoi diagram with rainbow colormap."""
     np.random.seed(42)
     seeds = np.random.rand(NUM_SEEDS, 2) * [WIDTH, 2 * HEIGHT]
     plot = (
@@ -34,8 +36,9 @@ def main():
     )
 
     print(plot)
-    plot.saveimg("images/voronoi.png")
+    if save:
+        plot.saveimg(save)
 
 
 if __name__ == "__main__":
-    main()
+    tyro.cli(main)

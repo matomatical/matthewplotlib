@@ -8,15 +8,15 @@ def main(
     num_frames: int = 0,
     fps: int = 20,
     period: float = 3.0,
+    save: str | None = None,
 ):
     """Animated cosine wave with shifting phase and amplitude."""
     x = np.linspace(-2*np.pi, +2*np.pi, 150)
 
     plot = None
-    # frames = []
+    frames = [] if save else None
 
     frame = 0
-    # for frame in range(49):
     while num_frames == 0 or frame < num_frames:
         k = (frame / fps % period) / period * 6
         A = 0.85 + 0.15 * np.cos(k)
@@ -36,15 +36,12 @@ def main(
             ylabel="y",
         )
         print(plot)
-        # frames.append(plot)
+        if frames is not None: frames.append(plot)
         frame += 1
         time.sleep(1/fps)
-    # mp.save_animation(
-    #     frames,
-    #     "images/quickstart.gif",
-    #     bgcolor="black",
-    #     fps=20,
-    # )
+
+    if save and frames:
+        mp.save_animation(frames, save, bgcolor="black", fps=fps)
 
 
 if __name__ == "__main__":

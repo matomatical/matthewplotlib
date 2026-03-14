@@ -44,27 +44,27 @@ docs/pdoc.css: templates/custom.css
 GITHUB := https://github.com/matomatical/matthewplotlib/blob/main
 
 docs/index.html: README.md templates/page.html docs/pdoc.css docs/api
-	pandoc README.md -o $@ --template=templates/page.html \
+	pandoc README.md -o $@ --template=templates/page.html --wrap none \
 		--metadata title="Home" \
 		-V source="$(GITHUB)/README.md"
 
 docs/changelog.html: CHANGELOG.md templates/page.html docs/pdoc.css
-	pandoc CHANGELOG.md -o $@ --template=templates/page.html \
+	pandoc CHANGELOG.md -o $@ --template=templates/page.html --wrap none \
 		--metadata title="Changelog" \
 		-V source="$(GITHUB)/CHANGELOG.md"
 
 docs/quickstart.html: pages/quickstart.md templates/page.html docs/pdoc.css
-	pandoc $< -o $@ --template=templates/page.html \
+	pandoc $< -o $@ --template=templates/page.html --wrap none \
 		--metadata title="Quickstart" \
 		-V source="$(GITHUB)/pages/quickstart.md"
 
 docs/examples.html: pages/examples.md templates/page.html docs/pdoc.css
-	pandoc $< -o $@ --template=templates/page.html \
+	pandoc $< -o $@ --template=templates/page.html --wrap none \
 		--metadata title="Examples" \
 		-V source="$(GITHUB)/pages/examples.md"
 
 docs/roadmap.html: pages/roadmap.md templates/page.html docs/pdoc.css
-	pandoc $< -o $@ --template=templates/page.html \
+	pandoc $< -o $@ --template=templates/page.html --wrap none \
 		--metadata title="Roadmap" \
 		-V source="$(GITHUB)/pages/roadmap.md"
 

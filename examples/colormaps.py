@@ -1,70 +1,71 @@
+import tyro
 import numpy as np
 import matthewplotlib as mp
 import hilbert
 
 
-print("preparing test images...")
-coords = hilbert.decode(
-    hilberts=np.arange(256),
-    num_dims=2,
-    num_bits=4,
-)
-im_continuous = np.zeros((16,16), dtype=float)
-im_continuous[coords[:,0], coords[:,1]] = np.linspace(0.0, 1.0, 256)
-im_discrete16 = np.zeros((16, 16), dtype=int)
-im_discrete16[coords[:,0], coords[:,1]] = np.arange(256) // 16
-im_discrete10 = np.zeros((16, 16), dtype=int)
-im_discrete10[coords[:,0], coords[:,1]] = np.arange(256) // 25.6
+def main(save: str | None = None):
+    """Colormap gallery with continuous and discrete colormaps."""
+    coords = hilbert.decode(
+        hilberts=np.arange(256),
+        num_dims=2,
+        num_bits=4,
+    )
+    im_continuous = np.zeros((16,16), dtype=float)
+    im_continuous[coords[:,0], coords[:,1]] = np.linspace(0.0, 1.0, 256)
+    im_discrete16 = np.zeros((16, 16), dtype=int)
+    im_discrete16[coords[:,0], coords[:,1]] = np.arange(256) // 16
+    im_discrete10 = np.zeros((16, 16), dtype=int)
+    im_discrete10[coords[:,0], coords[:,1]] = np.arange(256) // 25.6
 
-print("generating plot...")
-plot = mp.vstack(
-    mp.text("test images:"),
-    mp.hstack(
-        mp.border(
-            mp.image(im_continuous),
-            title="linspace(0,1,256",
+    plot = mp.vstack(
+        mp.text("test images:"),
+        mp.hstack(
+            mp.border(
+                mp.image(im_continuous),
+                title="linspace(0,1,256",
+            ),
+            mp.border(
+                mp.image(im_discrete16 / 16),
+                title="arange(256)/16",
+            ),
+            mp.border(
+                mp.image(im_discrete10 / 10),
+                title="arange(256)/25.6",
+            )
         ),
-        mp.border(
-            mp.image(im_discrete16 / 16),
-            title="arange(256)/16",
-        ),
-        mp.border(
-            mp.image(im_discrete10 / 10),
-            title="arange(256)/25.6",
-        )
-    ),
-    mp.text("continuous colormaps:"),
-    mp.wrap(*[
-        mp.border(
-            mp.image(im_continuous, colormap=c),
-            title=c.__name__,
-        )
-        for c in [
-            mp.reds, mp.greens, mp.blues, mp.rainbow,
-            mp.yellows, mp.magentas, mp.cyans, mp.cyber,
-            mp.magma, mp.inferno, mp.plasma, mp.viridis,
-            mp.divreds, mp.divgreens, mp.divblues,
-        ]
-    ], cols=4),
-    mp.text("discrete colormaps:"),
-    mp.wrap(*[
-        mp.border(
-            mp.image(im_discrete16, colormap=c),
-            title=c.__name__,
-        )
-        for c in [ mp.sweetie16, mp.pico8 ]
-    ], *[
-        mp.border(
-            mp.image(im_discrete10, colormap=c),
-            title=c.__name__,
-        )
-        for c in [ mp.tableau, mp.nouveau ]
-    ], cols=4),
-)
+        mp.text("continuous colormaps:"),
+        mp.wrap(*[
+            mp.border(
+                mp.image(im_continuous, colormap=c),
+                title=c.__name__,
+            )
+            for c in [
+                mp.reds, mp.greens, mp.blues, mp.rainbow,
+                mp.yellows, mp.magentas, mp.cyans, mp.cyber,
+                mp.magma, mp.inferno, mp.plasma, mp.viridis,
+                mp.divreds, mp.divgreens, mp.divblues,
+            ]
+        ], cols=4),
+        mp.text("discrete colormaps:"),
+        mp.wrap(*[
+            mp.border(
+                mp.image(im_discrete16, colormap=c),
+                title=c.__name__,
+            )
+            for c in [ mp.sweetie16, mp.pico8 ]
+        ], *[
+            mp.border(
+                mp.image(im_discrete10, colormap=c),
+                title=c.__name__,
+            )
+            for c in [ mp.tableau, mp.nouveau ]
+        ], cols=4),
+    )
 
-print("rendering plot...")
-print(plot)
+    print(plot)
+    if save:
+        plot.saveimg(save)
 
-print("saving plot to images/colormaps.png ...")
-plot.saveimg("images/colormaps.png")
-
+if __name__ == "__main__":
+    tyro.cli(main)
