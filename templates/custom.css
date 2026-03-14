@@ -247,6 +247,15 @@ nav.pdoc .nav-active {
 .theme-toggle {
     background: transparent;
     margin-left: 0.5rem;
+    color: var(--link);
+}
+
+/* SVG icons in buttons */
+.pdoc .git-button {
+    color: var(--link);
+}
+.pdoc .git-button svg {
+    vertical-align: middle;
 }
 
 /* Pandoc page content — clear floated buttons, match pdoc .modulename for title */
