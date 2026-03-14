@@ -1,0 +1,1083 @@
+/*!
+ * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/)
+ * Copyright 2011-2021 The Bootstrap Authors
+ * Copyright 2011-2021 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
+ * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md)
+ */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}
+/* auto-generated, see templates/README.md */
+pre { line-height: 125%; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 20px; }
+.pdoc-code .hll { background-color: #ffffcc }
+.pdoc-code { background: #f8f8f8; }
+.pdoc-code .c { color: #3D7B7B; font-style: italic } /* Comment */
+.pdoc-code .err { border: 1px solid #FF0000 } /* Error */
+.pdoc-code .k { color: #008000; font-weight: bold } /* Keyword */
+.pdoc-code .o { color: #666666 } /* Operator */
+.pdoc-code .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.pdoc-code .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.pdoc-code .cp { color: #9C6500 } /* Comment.Preproc */
+.pdoc-code .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.pdoc-code .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.pdoc-code .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.pdoc-code .gd { color: #A00000 } /* Generic.Deleted */
+.pdoc-code .ge { font-style: italic } /* Generic.Emph */
+.pdoc-code .gr { color: #E40000 } /* Generic.Error */
+.pdoc-code .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.pdoc-code .gi { color: #008400 } /* Generic.Inserted */
+.pdoc-code .go { color: #717171 } /* Generic.Output */
+.pdoc-code .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.pdoc-code .gs { font-weight: bold } /* Generic.Strong */
+.pdoc-code .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.pdoc-code .gt { color: #0044DD } /* Generic.Traceback */
+.pdoc-code .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.pdoc-code .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.pdoc-code .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.pdoc-code .kp { color: #008000 } /* Keyword.Pseudo */
+.pdoc-code .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.pdoc-code .kt { color: #B00040 } /* Keyword.Type */
+.pdoc-code .m { color: #666666 } /* Literal.Number */
+.pdoc-code .s { color: #BA2121 } /* Literal.String */
+.pdoc-code .na { color: #687822 } /* Name.Attribute */
+.pdoc-code .nb { color: #008000 } /* Name.Builtin */
+.pdoc-code .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.pdoc-code .no { color: #880000 } /* Name.Constant */
+.pdoc-code .nd { color: #AA22FF } /* Name.Decorator */
+.pdoc-code .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.pdoc-code .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.pdoc-code .nf { color: #0000FF } /* Name.Function */
+.pdoc-code .nl { color: #767600 } /* Name.Label */
+.pdoc-code .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.pdoc-code .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.pdoc-code .nv { color: #19177C } /* Name.Variable */
+.pdoc-code .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.pdoc-code .w { color: #bbbbbb } /* Text.Whitespace */
+.pdoc-code .mb { color: #666666 } /* Literal.Number.Bin */
+.pdoc-code .mf { color: #666666 } /* Literal.Number.Float */
+.pdoc-code .mh { color: #666666 } /* Literal.Number.Hex */
+.pdoc-code .mi { color: #666666 } /* Literal.Number.Integer */
+.pdoc-code .mo { color: #666666 } /* Literal.Number.Oct */
+.pdoc-code .sa { color: #BA2121 } /* Literal.String.Affix */
+.pdoc-code .sb { color: #BA2121 } /* Literal.String.Backtick */
+.pdoc-code .sc { color: #BA2121 } /* Literal.String.Char */
+.pdoc-code .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.pdoc-code .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.pdoc-code .s2 { color: #BA2121 } /* Literal.String.Double */
+.pdoc-code .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.pdoc-code .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.pdoc-code .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.pdoc-code .sx { color: #008000 } /* Literal.String.Other */
+.pdoc-code .sr { color: #A45A77 } /* Literal.String.Regex */
+.pdoc-code .s1 { color: #BA2121 } /* Literal.String.Single */
+.pdoc-code .ss { color: #19177C } /* Literal.String.Symbol */
+.pdoc-code .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.pdoc-code .fm { color: #0000FF } /* Name.Function.Magic */
+.pdoc-code .vc { color: #19177C } /* Name.Variable.Class */
+.pdoc-code .vg { color: #19177C } /* Name.Variable.Global */
+.pdoc-code .vi { color: #19177C } /* Name.Variable.Instance */
+.pdoc-code .vm { color: #19177C } /* Name.Variable.Magic */
+.pdoc-code .il { color: #666666 } /* Literal.Number.Integer.Long */
+/* pdoc color scheme (see also: examples/dark-mode) */
+:root {
+    --pdoc-background: #fff;
+}
+
+.pdoc {
+    --text: #212529;
+    --muted: #6c757d;
+    --link: #3660a5;
+    --link-hover: #1659c5;
+    --code: #f8f8f8;
+    --active: #fff598;
+
+    --accent: #eee;
+    --accent2: #c1c1c1;
+
+    --nav-hover: rgba(255, 255, 255, 0.5);
+    --name: #0066BB;
+    --def: #008800;
+    --annotation: #007020;
+}
+/*
+This CSS file contains all style definitions for the global page layout.
+
+When pdoc is embedded into other systems, it may be left out (or overwritten with an empty file) entirely.
+ */
+
+/* Responsive Layout */
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+html, main {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--pdoc-background);
+}
+
+@media (max-width: 769px) {
+    #navtoggle {
+        cursor: pointer;
+        position: absolute;
+        width: 50px;
+        height: 40px;
+        top: 1rem;
+        right: 1rem;
+        border-color: var(--text);
+        color: var(--text);
+        display: flex;
+        opacity: 0.8;
+        z-index: 999;
+    }
+
+    #navtoggle:hover {
+        opacity: 1;
+    }
+
+    #togglestate + div {
+        display: none;
+    }
+
+    #togglestate:checked + div {
+        display: inherit;
+    }
+
+    main, header {
+        padding: 2rem 3vw;
+    }
+
+    header + main {
+        margin-top: -3rem;
+    }
+
+    .git-button {
+        display: none !important;
+    }
+
+    nav input[type="search"] {
+        /* don't overflow into menu button */
+        max-width: 77%;
+    }
+
+    nav input[type="search"]:first-child {
+        /* align vertically with the hamburger menu */
+        margin-top: -6px;
+    }
+
+    nav input[type="search"]:valid ~ * {
+        /* hide rest of the menu when search has contents */
+        display: none !important;
+    }
+}
+
+@media (min-width: 770px) {
+    :root {
+        --sidebar-width: clamp(12.5rem, 28vw, 22rem);
+    }
+
+    nav {
+        position: fixed;
+        overflow: auto;
+        height: 100vh;
+        width: var(--sidebar-width);
+    }
+
+    main, header {
+        padding: 3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);
+        width: calc(54rem + var(--sidebar-width));
+        max-width: 100%;
+    }
+
+    header + main {
+        margin-top: -4rem;
+    }
+
+    #navtoggle {
+        display: none;
+    }
+}
+
+#togglestate {
+    /*
+    Don't do `display: none` here.
+    When a mobile browser is not scrolled all the way to the top,
+    clicking the label would insert the menu above the scrolling position
+    and it would stay out of view. By making the checkbox technically
+    visible it jumps up first and we always get the menu into view when clicked.
+    */
+    position: absolute;
+    height: 0;
+    /* height:0 isn't enough in Firefox, so we hide it extra well */
+    opacity: 0;
+}
+
+/* Nav */
+nav.pdoc {
+    --pad: clamp(0.5rem, 2vw, 1.75rem);
+    --indent: 1.5rem;
+    background-color: var(--accent);
+    border-right: 1px solid var(--accent2);
+    box-shadow: 0 0 20px rgba(50, 50, 50, .2) inset;
+    padding: 0 0 0 var(--pad);
+    overflow-wrap: anywhere;
+    scrollbar-width: thin; /* Scrollbar width on Firefox */
+    scrollbar-color: var(--accent2) transparent; /* Scrollbar color on Firefox */
+    z-index: 1
+}
+
+nav.pdoc::-webkit-scrollbar {
+    width: .4rem; /* Scrollbar width on Chromium-based browsers */
+}
+
+nav.pdoc::-webkit-scrollbar-thumb {
+    background-color: var(--accent2); /* Scrollbar color on Chromium-based browsers */
+}
+
+nav.pdoc > div {
+    padding: var(--pad) 0;
+}
+
+nav.pdoc .module-list-button {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text);
+    border-color: var(--muted);
+    margin-bottom: 1rem;
+}
+
+nav.pdoc .module-list-button:hover {
+    border-color: var(--text);
+}
+
+nav.pdoc input[type=search] {
+    display: block;
+    outline-offset: 0;
+    width: calc(100% - var(--pad));
+}
+
+nav.pdoc .logo {
+    max-width: calc(100% - var(--pad));
+    max-height: 35vh;
+    display: block;
+    margin: 0 auto 1rem;
+    transform: translate(calc(-.5 * var(--pad)), 0);
+}
+
+nav.pdoc ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+nav.pdoc > div > ul {
+    /* undo padding here so that links span entire width */
+    margin-left: calc(0px - var(--pad));
+}
+
+nav.pdoc li a {
+    /* re-add padding (+indent) here */
+    padding: .2rem 0 .2rem calc(var(--pad) + var(--indent));
+}
+
+nav.pdoc > div > ul > li > a {
+    /* no padding for top-level */
+    padding-left: var(--pad);
+}
+
+nav.pdoc li {
+    transition: all 100ms;
+}
+
+nav.pdoc li:hover {
+    background-color: var(--nav-hover);
+}
+
+nav.pdoc a, nav.pdoc a:hover {
+    color: var(--text);
+}
+
+nav.pdoc a {
+    display: block;
+}
+
+nav.pdoc > h2:first-of-type {
+    margin-top: 1.5rem;
+}
+
+nav.pdoc .class:before {
+    content: "class ";
+    color: var(--muted);
+}
+
+nav.pdoc .function:after {
+    content: "()";
+    color: var(--muted);
+}
+
+nav.pdoc footer:before {
+    content: "";
+    display: block;
+    width: calc(100% - var(--pad));
+    border-top: solid var(--accent2) 1px;
+    margin-top: 1.5rem;
+    padding-top: .5rem;
+}
+
+nav.pdoc footer {
+    font-size: small;
+}
+/*
+This CSS file contains all style definitions for documentation content.
+
+All selectors are scoped with ".pdoc".
+This makes sure that the pdoc styling doesn't leak to the rest of the page when pdoc is embedded.
+*/
+
+.pdoc {
+    color: var(--text);
+    /* enforce some styling even if bootstrap reboot is not included */
+    box-sizing: border-box;
+    line-height: 1.5;
+    /* override background from pygments */
+    /*unnecessary since pdoc 10, only left here to keep old custom templates working. */
+    background: none;
+}
+
+.pdoc .pdoc-button {
+    cursor: pointer;
+    display: inline-block;
+    border: solid black 1px;
+    border-radius: 2px;
+    font-size: .75rem;
+    padding: calc(0.5em - 1px) 1em;
+    transition: 100ms all;
+}
+
+
+/* Admonitions */
+.pdoc .alert {
+    padding: 1rem 1rem 1rem calc(1.5rem + 24px);
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    background-repeat: no-repeat;
+    background-position: .75rem center;
+    margin-bottom: 1rem;
+}
+
+.pdoc .alert > em {
+    display: none;
+}
+
+.pdoc .alert > *:last-child {
+    margin-bottom: 0;
+}
+
+/* Admonitions are currently not stylable via theme.css */
+.pdoc .alert.note {
+    color: #084298;
+    background-color: #cfe2ff;
+    border-color: #b6d4fe;
+    background-image: url("data:image/svg+xml,{% filter urlencode %}{% include 'resources/info-circle-fill.svg' %}{% endfilter %}");
+}
+
+.pdoc .alert.tip {
+    color: #0a3622;
+    background-color: #d1e7dd;
+    border-color: #a3cfbb;
+    background-image: url("data:image/svg+xml,{% filter urlencode %}{% include 'resources/lightbulb.svg' %}{% endfilter %}");
+}
+
+.pdoc .alert.important {
+    color: #055160;
+    background-color: #cff4fc;
+    border-color: #9eeaf9;
+    background-image: url("data:image/svg+xml,{% filter urlencode %}{% include 'resources/exclamation-square-fill.svg' %}{% endfilter %}");
+}
+
+.pdoc .alert.warning {
+    color: #664d03;
+    background-color: #fff3cd;
+    border-color: #ffecb5;
+    background-image: url("data:image/svg+xml,{% filter urlencode %}{% include 'resources/exclamation-triangle-fill.svg' %}{% endfilter %}");
+}
+
+.pdoc .alert.caution {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+    background-image: url("data:image/svg+xml,{% filter urlencode %}{% include 'resources/exclamation-octagon-fill.svg' %}{% endfilter %}");
+}
+
+.pdoc .alert.danger {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+    background-image: url("data:image/svg+xml,{% filter urlencode %}{% include 'resources/lightning-fill.svg' %}{% endfilter %}");
+}
+
+.pdoc .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+.pdoc h1, .pdoc h2, .pdoc h3 {
+    font-weight: 300;
+    margin: .3em 0;
+    padding: .2em 0;
+}
+
+.pdoc > section:not(.module-info) h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+.pdoc > section:not(.module-info) h2 {
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+.pdoc > section:not(.module-info) h3 {
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+.pdoc > section:not(.module-info) h4 {
+    font-size: 1.2rem;
+}
+.pdoc > section:not(.module-info) h5 {
+    font-size: 1.1rem;
+}
+
+.pdoc a {
+    text-decoration: none;
+    color: var(--link);
+}
+
+.pdoc a:hover {
+    color: var(--link-hover);
+}
+
+.pdoc blockquote {
+    margin-left: 2rem;
+}
+
+.pdoc pre {
+    border-top: 1px solid var(--accent2);
+    border-bottom: 1px solid var(--accent2);
+    margin-top: 0;
+    margin-bottom: 1em;
+    padding: .5rem 0 .5rem .5rem;
+    overflow-x: auto;
+    /*unnecessary since pdoc 10, only left here to keep old custom templates working. */
+    background-color: var(--code);
+}
+
+.pdoc code {
+    color: var(--text);
+    padding: .2em .4em;
+    margin: 0;
+    font-size: 85%;
+    background-color: var(--accent);
+    border-radius: 6px;
+}
+
+.pdoc a > code {
+    color: inherit;
+}
+
+.pdoc pre > code {
+    display: inline-block;
+    font-size: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.pdoc > section:not(.module-info) {
+    /* this margin should collapse with docstring margin,
+       but not for the module docstr which is followed by view_source. */
+    margin-bottom: 1.5rem;
+}
+
+/* Page Heading */
+.pdoc .modulename {
+    margin-top: 0;
+    font-weight: bold;
+}
+
+.pdoc .modulename a {
+    color: var(--link);
+    transition: 100ms all;
+}
+
+/* GitHub Button */
+.pdoc .git-button {
+    float: right;
+    border: solid var(--link) 1px;
+}
+
+.pdoc .git-button:hover {
+    background-color: var(--link);
+    color: var(--pdoc-background);
+}
+
+.view-source-toggle-state,
+.view-source-toggle-state ~ .pdoc-code {
+    display: none;
+}
+.view-source-toggle-state:checked ~ .pdoc-code {
+    display: block;
+}
+
+.view-source-button {
+    display: inline-block;
+    float: right;
+    font-size: .75rem;
+    line-height: 1.5rem;
+    color: var(--muted);
+    padding: 0 .4rem 0 1.3rem;
+    cursor: pointer;
+    /* odd hack to reduce space between "bullet" and text */
+    text-indent: -2px;
+}
+.view-source-button > span {
+    visibility: hidden;
+}
+.module-info .view-source-button {
+    float: none;
+    display: flex;
+    justify-content: flex-end;
+    margin: -1.2rem .4rem -.2rem 0;
+}
+.view-source-button::before {
+    /* somewhat awkward recreation of a <summary> element. ideally we'd just use `display: inline list-item`, but
+     that does not work in Chrome (yet), see https://crbug.com/995106. */
+    position: absolute;
+    content: "View Source";
+    display: list-item;
+    list-style-type: disclosure-closed;
+}
+.view-source-toggle-state:checked ~ .attr .view-source-button::before,
+.view-source-toggle-state:checked ~ .view-source-button::before {
+    list-style-type: disclosure-open;
+}
+
+/* Docstrings */
+.pdoc .docstring {
+    margin-bottom: 1.5rem;
+}
+
+.pdoc section:not(.module-info) .docstring {
+    margin-left: clamp(0rem, 5vw - 2rem, 1rem);
+}
+
+.pdoc .docstring .pdoc-code {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+/* Highlight focused element */
+.pdoc h1:target,
+.pdoc h2:target,
+.pdoc h3:target,
+.pdoc h4:target,
+.pdoc h5:target,
+.pdoc h6:target,
+.pdoc .pdoc-code > pre > span:target {
+    background-color: var(--active);
+    box-shadow: -1rem 0 0 0 var(--active);
+}
+
+.pdoc .pdoc-code > pre > span:target {
+    /* make the highlighted line full width so that the background extends */
+    display: block;
+}
+
+.pdoc div:target > .attr,
+.pdoc section:target > .attr,
+.pdoc dd:target > a {
+    background-color: var(--active);
+}
+
+.pdoc * {
+    scroll-margin: 2rem;
+}
+
+.pdoc .pdoc-code .linenos {
+    user-select: none;
+}
+
+.pdoc .attr:hover {
+    filter: contrast(0.95);
+}
+
+/* Header link */
+.pdoc section, .pdoc .classattr {
+    position: relative;
+}
+
+.pdoc .headerlink {
+    --width: clamp(1rem, 3vw, 2rem);
+    position: absolute;
+    top: 0;
+    left: calc(0rem - var(--width));
+    transition: all 100ms ease-in-out;
+    opacity: 0;
+}
+.pdoc .headerlink::before {
+    content: "#";
+    display: block;
+    text-align: center;
+    width: var(--width);
+    height: 2.3rem;
+    line-height: 2.3rem;
+    font-size: 1.5rem;
+}
+
+.pdoc .attr:hover ~ .headerlink,
+.pdoc *:target > .headerlink,
+.pdoc .headerlink:hover {
+    opacity: 1;
+}
+
+/* Attributes */
+.pdoc .attr {
+    display: block;
+    margin: .5rem 0 .5rem;
+    padding: .4rem .4rem .4rem 1rem;
+    background-color: var(--accent);
+    overflow-x: auto;
+}
+
+.pdoc .classattr {
+    margin-left: 2rem;
+}
+
+.pdoc .decorator-deprecated {
+    color: #842029;
+}
+.pdoc .decorator-deprecated ~ span {
+    filter: grayscale(1) opacity(0.8);
+}
+
+.pdoc .name {
+    color: var(--name);
+    font-weight: bold;
+}
+
+.pdoc .def {
+    color: var(--def);
+    font-weight: bold;
+}
+
+.pdoc .signature {
+    /* override pygments background color */
+    background-color: transparent;
+}
+
+.pdoc .param, .pdoc .return-annotation {
+    white-space: pre;
+}
+.pdoc .signature.multiline .param {
+    display: block;
+}
+.pdoc .signature.condensed .param {
+    display:inline-block;
+}
+
+.pdoc .annotation {
+    color: var(--annotation);
+}
+
+/* Show/Hide buttons for long default values */
+.pdoc .view-value-toggle-state,
+.pdoc .view-value-toggle-state ~ .default_value {
+    display: none;
+}
+.pdoc .view-value-toggle-state:checked ~ .default_value {
+    display: inherit;
+}
+.pdoc .view-value-button {
+    font-size: .5rem;
+    vertical-align: middle;
+    border-style: dashed;
+    margin-top: -0.1rem;
+}
+.pdoc .view-value-button:hover {
+    background: white;
+}
+.pdoc .view-value-button::before {
+    content: "show";
+    text-align: center;
+    width: 2.2em;
+    display: inline-block;
+}
+.pdoc .view-value-toggle-state:checked ~ .view-value-button::before {
+    content: "hide";
+}
+
+/* Inherited Members */
+.pdoc .inherited {
+    margin-left: 2rem;
+}
+
+.pdoc .inherited dt {
+    font-weight: 700;
+}
+
+.pdoc .inherited dt, .pdoc .inherited dd {
+    display: inline;
+    margin-left: 0;
+    margin-bottom: .5rem;
+}
+
+.pdoc .inherited dd:not(:last-child):after {
+    content: ", ";
+}
+
+.pdoc .inherited .class:before {
+    content: "class ";
+}
+
+.pdoc .inherited .function a:after {
+    content: "()";
+}
+
+/* Search results */
+.pdoc .search-result .docstring {
+    overflow: auto;
+    max-height: 25vh;
+}
+
+.pdoc .search-result.focused > .attr {
+    background-color: var(--active);
+}
+
+/* "built with pdoc" attribution */
+.pdoc .attribution {
+    margin-top: 2rem;
+    display: block;
+    opacity: 0.5;
+    transition: all 200ms;
+    filter: grayscale(100%);
+}
+
+.pdoc .attribution:hover {
+    opacity: 1;
+    filter: grayscale(0%);
+}
+
+.pdoc .attribution img {
+    margin-left: 5px;
+    height: 27px;
+    vertical-align: bottom;
+    width: 50px;
+    transition: all 200ms;
+}
+
+/* Tables */
+.pdoc table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+    margin-bottom: 1rem;
+}
+
+.pdoc table th {
+    font-weight: 600;
+}
+
+.pdoc table th, .pdoc table td {
+    padding: 6px 13px;
+    border: 1px solid var(--accent2);
+}
+/* matthewplotlib docs theme — sweetie16 palette */
+/* https://lospec.com/palette-list/sweetie-16 */
+
+/* # # # Dark theme (default) # # # */
+
+:root {
+    --pdoc-background: #1a1c2c;  /* sweetie 0: dark navy */
+}
+
+.pdoc {
+    --text: #f4f4f4;             /* sweetie 12: white */
+    --muted: #94b0c2;            /* sweetie 13: light gray-blue */
+    --link: #41a6f6;             /* sweetie 10: light blue */
+    --link-hover: #73eff7;       /* sweetie 11: cyan */
+    --code: #29366f;             /* sweetie 8: navy */
+    --active: rgba(93, 39, 93, 0.35); /* sweetie 1 */
+    --accent: #333c57;           /* sweetie 15: dark gray-blue */
+    --accent2: #566c86;          /* sweetie 14: gray-blue */
+    --nav-hover: rgba(65, 166, 246, 0.15); /* sweetie 10 */
+    --name: #73eff7;             /* sweetie 11: cyan */
+    --def: #a7f070;              /* sweetie 5: lime */
+    --annotation: #41a6f6;       /* sweetie 10: light blue */
+}
+
+/* Dark syntax highlighting — sweetie16 */
+.pdoc-code { background: #29366f; }      /* sweetie 8 */
+.pdoc-code .c,
+.pdoc-code .ch,
+.pdoc-code .cm,
+.pdoc-code .cpf,
+.pdoc-code .c1,
+.pdoc-code .cs { color: #566c86; font-style: italic; }   /* sweetie 14 */
+.pdoc-code .k,
+.pdoc-code .kc,
+.pdoc-code .kd,
+.pdoc-code .kn,
+.pdoc-code .kr,
+.pdoc-code .kt { color: #a7f070; font-weight: bold; }    /* sweetie 5 */
+.pdoc-code .kp { color: #a7f070; }
+.pdoc-code .s,
+.pdoc-code .sa,
+.pdoc-code .sb,
+.pdoc-code .sc,
+.pdoc-code .dl,
+.pdoc-code .sd,
+.pdoc-code .s2,
+.pdoc-code .sh,
+.pdoc-code .s1,
+.pdoc-code .ss { color: #ef7d57; }                       /* sweetie 3: orange */
+.pdoc-code .se { color: #ffcd75; font-weight: bold; }    /* sweetie 4: yellow */
+.pdoc-code .si { color: #b13e53; font-weight: bold; }    /* sweetie 2: red */
+.pdoc-code .sr { color: #b13e53; }
+.pdoc-code .sx { color: #a7f070; }
+.pdoc-code .nb,
+.pdoc-code .bp { color: #41a6f6; }                       /* sweetie 10 */
+.pdoc-code .nf,
+.pdoc-code .fm { color: #73eff7; }                       /* sweetie 11 */
+.pdoc-code .nc { color: #73eff7; font-weight: bold; }
+.pdoc-code .nn { color: #41a6f6; font-weight: bold; }    /* sweetie 10 */
+.pdoc-code .no { color: #ffcd75; }                       /* sweetie 4 */
+.pdoc-code .nd { color: #5d275d; }                       /* sweetie 1 */
+.pdoc-code .ni { color: #f4f4f4; font-weight: bold; }    /* sweetie 12 */
+.pdoc-code .ne { color: #b13e53; font-weight: bold; }    /* sweetie 2 */
+.pdoc-code .o,
+.pdoc-code .ow { color: #94b0c2; }                       /* sweetie 13 */
+.pdoc-code .m,
+.pdoc-code .mb,
+.pdoc-code .mf,
+.pdoc-code .mh,
+.pdoc-code .mi,
+.pdoc-code .mo,
+.pdoc-code .il { color: #ffcd75; }                       /* sweetie 4 */
+.pdoc-code .n { color: #f4f4f4; }                        /* sweetie 12 */
+.pdoc-code .na { color: #73eff7; }                       /* sweetie 11 */
+.pdoc-code .nv,
+.pdoc-code .vc,
+.pdoc-code .vg,
+.pdoc-code .vi,
+.pdoc-code .vm { color: #f4f4f4; }                       /* sweetie 12 */
+.pdoc-code .nl { color: #73eff7; }
+.pdoc-code .nt { color: #a7f070; font-weight: bold; }    /* sweetie 5 */
+.pdoc-code .cp { color: #ffcd75; }                       /* sweetie 4 */
+.pdoc-code .err { color: #b13e53; }                      /* sweetie 2 */
+.pdoc-code .w { color: #333c57; }                        /* sweetie 15 */
+.pdoc-code .p { color: #f4f4f4; }                        /* sweetie 12 */
+.pdoc-code .go { color: #566c86; }                       /* sweetie 14 */
+.pdoc-code .gp { color: #94b0c2; font-weight: bold; }    /* sweetie 13 */
+
+/* # # # Light theme # # # */
+
+[data-theme="light"] {
+    --pdoc-background: #f4f4f4;  /* sweetie 12: white */
+}
+
+[data-theme="light"] .pdoc {
+    --text: #1a1c2c;             /* sweetie 0: dark navy */
+    --muted: #566c86;            /* sweetie 14: gray-blue */
+    --link: #3b5dc9;             /* sweetie 9: blue */
+    --link-hover: #257179;       /* sweetie 7: teal */
+    --code: #f4f4f4;             /* sweetie 12 */
+    --active: rgba(255, 205, 117, 0.35); /* sweetie 4 */
+    --accent: #e8ebef;           /* tinted toward sweetie 13 */
+    --accent2: #94b0c2;          /* sweetie 13: light gray-blue */
+    --nav-hover: rgba(59, 93, 201, 0.1); /* sweetie 9 */
+    --name: #257179;             /* sweetie 7: teal */
+    --def: #38b764;              /* sweetie 6: green */
+    --annotation: #3b5dc9;       /* sweetie 9: blue */
+}
+
+/* Light syntax highlighting — sweetie16 tones */
+[data-theme="light"] .pdoc-code { background: #e8ebef; }
+[data-theme="light"] .pdoc-code .c,
+[data-theme="light"] .pdoc-code .ch,
+[data-theme="light"] .pdoc-code .cm,
+[data-theme="light"] .pdoc-code .cpf,
+[data-theme="light"] .pdoc-code .c1,
+[data-theme="light"] .pdoc-code .cs { color: #566c86; font-style: italic; }
+[data-theme="light"] .pdoc-code .k,
+[data-theme="light"] .pdoc-code .kc,
+[data-theme="light"] .pdoc-code .kd,
+[data-theme="light"] .pdoc-code .kn,
+[data-theme="light"] .pdoc-code .kr,
+[data-theme="light"] .pdoc-code .kt { color: #38b764; font-weight: bold; }
+[data-theme="light"] .pdoc-code .kp { color: #38b764; }
+[data-theme="light"] .pdoc-code .s,
+[data-theme="light"] .pdoc-code .sa,
+[data-theme="light"] .pdoc-code .sb,
+[data-theme="light"] .pdoc-code .sc,
+[data-theme="light"] .pdoc-code .dl,
+[data-theme="light"] .pdoc-code .sd,
+[data-theme="light"] .pdoc-code .s2,
+[data-theme="light"] .pdoc-code .sh,
+[data-theme="light"] .pdoc-code .s1,
+[data-theme="light"] .pdoc-code .ss { color: #b13e53; }
+[data-theme="light"] .pdoc-code .se { color: #ef7d57; font-weight: bold; }
+[data-theme="light"] .pdoc-code .si { color: #5d275d; font-weight: bold; }
+[data-theme="light"] .pdoc-code .sr { color: #5d275d; }
+[data-theme="light"] .pdoc-code .sx { color: #38b764; }
+[data-theme="light"] .pdoc-code .nb,
+[data-theme="light"] .pdoc-code .bp { color: #3b5dc9; }
+[data-theme="light"] .pdoc-code .nf,
+[data-theme="light"] .pdoc-code .fm { color: #257179; }
+[data-theme="light"] .pdoc-code .nc { color: #257179; font-weight: bold; }
+[data-theme="light"] .pdoc-code .nn { color: #3b5dc9; font-weight: bold; }
+[data-theme="light"] .pdoc-code .no { color: #5d275d; }
+[data-theme="light"] .pdoc-code .nd { color: #5d275d; }
+[data-theme="light"] .pdoc-code .ni { color: #1a1c2c; font-weight: bold; }
+[data-theme="light"] .pdoc-code .ne { color: #b13e53; font-weight: bold; }
+[data-theme="light"] .pdoc-code .o,
+[data-theme="light"] .pdoc-code .ow { color: #333c57; }
+[data-theme="light"] .pdoc-code .m,
+[data-theme="light"] .pdoc-code .mb,
+[data-theme="light"] .pdoc-code .mf,
+[data-theme="light"] .pdoc-code .mh,
+[data-theme="light"] .pdoc-code .mi,
+[data-theme="light"] .pdoc-code .mo,
+[data-theme="light"] .pdoc-code .il { color: #29366f; }
+[data-theme="light"] .pdoc-code .n { color: #1a1c2c; }
+[data-theme="light"] .pdoc-code .na { color: #257179; }
+[data-theme="light"] .pdoc-code .nv,
+[data-theme="light"] .pdoc-code .vc,
+[data-theme="light"] .pdoc-code .vg,
+[data-theme="light"] .pdoc-code .vi,
+[data-theme="light"] .pdoc-code .vm { color: #1a1c2c; }
+[data-theme="light"] .pdoc-code .nl { color: #257179; }
+[data-theme="light"] .pdoc-code .nt { color: #38b764; font-weight: bold; }
+[data-theme="light"] .pdoc-code .cp { color: #29366f; }
+[data-theme="light"] .pdoc-code .err { color: #b13e53; }
+[data-theme="light"] .pdoc-code .w { color: #94b0c2; }
+[data-theme="light"] .pdoc-code .p { color: #1a1c2c; }
+[data-theme="light"] .pdoc-code .go { color: #566c86; }
+[data-theme="light"] .pdoc-code .gp { color: #333c57; font-weight: bold; }
+
+/* # # # Layout tweaks # # # */
+
+/* Flat sidebar */
+nav.pdoc {
+    box-shadow: none;
+}
+
+/* Monospace headings */
+.pdoc h1, .pdoc h2, .pdoc h3,
+.pdoc .modulename,
+.pdoc .attr {
+    font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono",
+                 "Courier New", monospace;
+}
+
+/* Nav title */
+.nav-title {
+    display: block;
+    font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono",
+                 "Courier New", monospace;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--text);
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+.nav-title:hover {
+    color: var(--link);
+}
+
+/* Nav tree indentation — use padding on links (not list padding) so
+   hover backgrounds still span the full sidebar width. */
+nav.pdoc {
+    --step: 0.5rem;
+}
+/* Level 2: submodules under matthewplotlib */
+nav.pdoc > div > ul > li > ul > li > a {
+    padding-left: calc(var(--pad, 1.75rem) + var(--step));
+}
+/* Level 3: members under a submodule */
+nav.pdoc > div > ul > li > ul > li > ul {
+    padding-left: 0;
+    margin-left: 0;
+}
+nav.pdoc > div > ul > li > ul > li > ul li a {
+    padding-left: calc(var(--pad, 1.75rem) + 2 * var(--step));
+}
+/* Level 4: class members under a class */
+nav.pdoc > div > ul > li > ul > li > ul ul {
+    padding-left: 0;
+    margin-left: 0;
+}
+nav.pdoc > div > ul > li > ul > li > ul ul li a {
+    padding-left: calc(var(--pad, 1.75rem) + 3 * var(--step));
+}
+
+/* Active module in nav tree */
+nav.pdoc .nav-active {
+    font-weight: bold;
+    color: var(--link);
+}
+
+/* Back button — float left, opposite to the git/theme buttons */
+.back-button {
+    float: left !important;
+}
+
+/* Ensure module title clears the floated buttons */
+.pdoc .modulename {
+    clear: both;
+}
+
+/* Theme toggle — reuses pdoc's git-button style */
+.theme-toggle {
+    background: transparent;
+    margin-left: 0.5rem;
+    color: var(--link);
+}
+
+/* SVG icons in buttons */
+.pdoc .git-button {
+    color: var(--link);
+}
+.pdoc .git-button svg {
+    vertical-align: middle;
+}
+
+/* Pandoc page content — clear floated buttons, match pdoc .modulename for title */
+.page-content {
+    clear: both;
+}
+.page-content img {
+    max-width: 100%;
+    height: auto;
+    background: #1a1c2c; /* sweetie 0: dark navy for transparent PNGs */
+}
+.page-content > h1:first-child {
+    margin-top: 0;
+    font-weight: bold;
+}
+
+/* Nav section headings — match nav-title size */
+nav.pdoc h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+/* Extra space above first nav heading (after search box) */
+nav.pdoc h2:first-of-type {
+    margin-top: 1.5rem;
+}

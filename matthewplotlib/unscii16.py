@@ -1,5 +1,6 @@
 """
-Unscii 2.0, bitmap unicode font created by Viznut (http://viznut.fi/unscii/).
+Unscii 2.0, bitmap unicode font created by Viznut
+([http://viznut.fi/unscii/](http://viznut.fi/unscii/)).
 
 This module is a port of all non-wide characters from unscii-16 (16px by 8px).
 """
