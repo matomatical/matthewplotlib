@@ -135,17 +135,18 @@ Back end improvements:
 
 More elaborate documentation:
 
-* [ ] Tutorials and recipes.
-* [ ] Freeze documentation with each version.
 * [x] Links to source code from within documentation.
 * [x] Links to mentioned functions/classes/methods/types within documentation
   (automatically linked to relevant release).
 * [x] Documentation search.
+* [ ] Tutorials and recipes.
+* [ ] Freeze documentation with each version.
 
 More examples:
 
 * [x] Something to show bar/column plots and histograms.
 * [ ] Game of life, following https://github.com/matomatical/life
+* [ ] Webcam with ffmpeg
 
 Future design directions.
 

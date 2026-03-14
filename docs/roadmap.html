@@ -47,231 +47,158 @@
 <h2 id="roadmap-to-version-1">Roadmap to version 1</h2>
 <p>Basic plot types:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Scatter plots.</li>
-<li><input type="checkbox" disabled="" />
-Line plots (connect the dots).</li>
-<li><input type="checkbox" disabled="" checked="" />
-Image plots / matrix heatmaps.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Function heatmap plots.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Progress bars.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Basic bar charts and column charts.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Histograms.</li>
+<li><label><input type="checkbox" checked="" />Scatter plots.</label></li>
+<li><label><input type="checkbox" />Line plots (connect the dots).</label></li>
+<li><label><input type="checkbox" checked="" />Image plots / matrix heatmaps.</label></li>
+<li><label><input type="checkbox" checked="" />Function heatmap plots.</label></li>
+<li><label><input type="checkbox" checked="" />Progress bars.</label></li>
+<li><label><input type="checkbox" checked="" />Basic bar charts and column charts.</label></li>
+<li><label><input type="checkbox" checked="" />Histograms.</label></li>
 </ul>
 <p>Basic plot furnishings:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Basic text boxes.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Borders.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Axis ticks and tick labels for scatter plots.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Axis labels and titles.</li>
-<li><input type="checkbox" disabled="" />
-Labels and ticks for bar/column charts and histograms.</li>
+<li><label><input type="checkbox" checked="" />Basic text boxes.</label></li>
+<li><label><input type="checkbox" checked="" />Borders.</label></li>
+<li><label><input type="checkbox" checked="" />Axis ticks and tick labels for scatter plots.</label></li>
+<li><label><input type="checkbox" checked="" />Axis labels and titles.</label></li>
+<li><label><input type="checkbox" />Labels and ticks for bar/column charts and histograms.</label></li>
 </ul>
 <p>Basic plot arrangement:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Horizontal and vertical stacking.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Naive layering plots on top of each other.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Automatically wrapping plots into a grid.</li>
-<li><input type="checkbox" disabled="" />
-Finalise operator assignment.</li>
+<li><label><input type="checkbox" checked="" />Horizontal and vertical stacking.</label></li>
+<li><label><input type="checkbox" checked="" />Naive layering plots on top of each other.</label></li>
+<li><label><input type="checkbox" checked="" />Automatically wrapping plots into a grid.</label></li>
+<li><label><input type="checkbox" />Finalise operator assignment.</label></li>
 </ul>
 <p>Styling plots with colors:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Basic colormaps.</li>
-<li><input type="checkbox" disabled="" checked="" />
-BIDS colormaps.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Rainbow colormap.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Cyberpunk colormap.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Discrete colour palettes.</li>
+<li><label><input type="checkbox" checked="" />Basic colormaps.</label></li>
+<li><label><input type="checkbox" checked="" />BIDS colormaps.</label></li>
+<li><label><input type="checkbox" checked="" />Rainbow colormap.</label></li>
+<li><label><input type="checkbox" checked="" />Cyberpunk colormap.</label></li>
+<li><label><input type="checkbox" checked="" />Discrete colour palettes.</label></li>
 </ul>
 <p>Specifying colors:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-Consistent API for color specification.</li>
-<li><input type="checkbox" disabled="" />
-Configurable colour scales and normalisation.</li>
-<li><input type="checkbox" disabled="" />
-Color bars, vertical or horizontal.</li>
+<li><label><input type="checkbox" />Consistent API for color specification.</label></li>
+<li><label><input type="checkbox" />Configurable colour scales and normalisation.</label></li>
+<li><label><input type="checkbox" />Color bars, vertical or horizontal.</label></li>
 </ul>
 <p>Rendering:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Render to string / terminal with ANSI control codes.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Export to image with pixel font.</li>
+<li><label><input type="checkbox" checked="" />Render to string / terminal with ANSI control codes.</label></li>
+<li><label><input type="checkbox" checked="" />Export to image with pixel font.</label></li>
 </ul>
 <p>Basic code improvements:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Split up monolithic file into a small number of modules.</li>
-<li><input type="checkbox" disabled="" />
-Split up plotting module with one file per plot type.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Comprehensive type annotations, static type checking with mypy.</li>
-<li><input type="checkbox" disabled="" />
-Robust input validation and error handling.</li>
+<li><label><input type="checkbox" checked="" />Split up monolithic file into a small number of modules.</label></li>
+<li><label><input type="checkbox" />Split up plotting module with one file per plot type.</label></li>
+<li><label><input type="checkbox" checked="" />Comprehensive type annotations, static type checking with mypy.</label></li>
+<li><label><input type="checkbox" />Robust input validation and error handling.</label></li>
 </ul>
 <p>Testing:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Unit tests for core modules (colors, colormaps, data, core).</li>
-<li><input type="checkbox" disabled="" checked="" />
-Integration smoke tests (all examples run).</li>
-<li><input type="checkbox" disabled="" />
-Snapshot testing for str output and image output regression detection.</li>
+<li><label><input type="checkbox" checked="" />Unit tests for core modules (colors, colormaps, data, core).</label></li>
+<li><label><input type="checkbox" checked="" />Integration smoke tests (all examples run).</label></li>
+<li><label><input type="checkbox" />Snapshot testing for str output and image output regression detection.</label></li>
 </ul>
 <p>Documentation:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Minimal docstrings for everything user-facing.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Quick start guide.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Complete docstrings for modules, constants, etc.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Simple generated markdown documentation on GitHub.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Simple generated HTML/CSS documentation, hosted on web.</li>
+<li><label><input type="checkbox" checked="" />Minimal docstrings for everything user-facing.</label></li>
+<li><label><input type="checkbox" checked="" />Quick start guide.</label></li>
+<li><label><input type="checkbox" checked="" />Complete docstrings for modules, constants, etc.</label></li>
+<li><label><input type="checkbox" checked="" />Simple generated markdown documentation on GitHub.</label></li>
+<li><label><input type="checkbox" checked="" />Simple generated HTML/CSS documentation, hosted on web.</label></li>
 </ul>
 <p>Repository:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Set up project, installable via git.</li>
-<li><input type="checkbox" disabled="" checked="" />
-A simple example for the quick-start guide.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Changelog.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Version numbering and keep main branch working.</li>
-<li><input type="checkbox" disabled="" />
-List on PyPI.</li>
+<li><label><input type="checkbox" checked="" />Set up project, installable via git.</label></li>
+<li><label><input type="checkbox" checked="" />A simple example for the quick-start guide.</label></li>
+<li><label><input type="checkbox" checked="" />Changelog.</label></li>
+<li><label><input type="checkbox" checked="" />Version numbering and keep main branch working.</label></li>
+<li><label><input type="checkbox" />List on PyPI.</label></li>
 </ul>
 <h2 id="advanced-features-roadmap">Advanced features roadmap</h2>
 <p>More plot types:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Advanced scatter plots:<ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Different colours for each point.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Multiple point clouds on a single scatter plot.</li>
-<li><input type="checkbox" disabled="" checked="" />
-3d scatter plots.</li>
+<li><label><input type="checkbox" checked="" />Advanced scatter plots:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />Different colours for each point.</label></li>
+<li><label><input type="checkbox" checked="" />Multiple point clouds on a single scatter plot.</label></li>
+<li><label><input type="checkbox" checked="" />3d scatter plots.</label></li>
 </ul></li>
-<li><input type="checkbox" disabled="" />
-Advanced line plots:<ul class="task-list">
-<li><input type="checkbox" disabled="" />
-Error bars on line plots.</li>
-<li><input type="checkbox" disabled="" />
-Fill plots.</li>
+<li><label><input type="checkbox" />Advanced line plots:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />Error bars on line plots.</label></li>
+<li><label><input type="checkbox" />Fill plots.</label></li>
 </ul></li>
-<li><input type="checkbox" disabled="" />
-Advanced bar charts:<ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Bar/column charts with configurable sizes and spacing.</li>
-<li><input type="checkbox" disabled="" />
-Bar/column charts with other alignments.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Bar/column charts with individual colours.</li>
-<li><input type="checkbox" disabled="" />
-Negative values in bar/column charts.</li>
+<li><label><input type="checkbox" />Advanced bar charts:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />Bar/column charts with configurable sizes and spacing.</label></li>
+<li><label><input type="checkbox" />Bar/column charts with other alignments.</label></li>
+<li><label><input type="checkbox" checked="" />Bar/column charts with individual colours.</label></li>
+<li><label><input type="checkbox" />Negative values in bar/column charts.</label></li>
 </ul></li>
-<li><input type="checkbox" disabled="" />
-Hilbert curves:<ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Basic Hilbert curves.</li>
-<li><input type="checkbox" disabled="" />
-Non-square Hilbert curves.</li>
-<li><input type="checkbox" disabled="" />
-3d Hilbert curves.</li>
+<li><label><input type="checkbox" />Hilbert curves:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />Basic Hilbert curves.</label></li>
+<li><label><input type="checkbox" />Non-square Hilbert curves.</label></li>
+<li><label><input type="checkbox" />3d Hilbert curves.</label></li>
 </ul></li>
-<li><input type="checkbox" disabled="" />
-World maps:<ul class="task-list">
-<li><input type="checkbox" disabled="" />
-Some 2d projections.</li>
-<li><input type="checkbox" disabled="" />
-3d globe projection.</li>
+<li><label><input type="checkbox" />World maps:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />Some 2d projections.</label></li>
+<li><label><input type="checkbox" />3d globe projection.</label></li>
 </ul></li>
-<li><input type="checkbox" disabled="" />
-Other:<ul class="task-list">
-<li><input type="checkbox" disabled="" />
-Calendar heatmap plots (see calendar heatmap example for now).</li>
-<li><input type="checkbox" disabled="" />
-Candlestick plots.</li>
-<li><input type="checkbox" disabled="" />
-Box plots.</li>
+<li><label><input type="checkbox" />Other:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />Calendar heatmap plots (see calendar heatmap example for now).</label></li>
+<li><label><input type="checkbox" />Candlestick plots.</label></li>
+<li><label><input type="checkbox" />Box plots.</label></li>
 </ul></li>
 </ul>
 <p>Advanced plot arrangement:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-Better support for animated plots (API needs thought).</li>
+<li><label><input type="checkbox" />Better support for animated plots (API needs thought).</label></li>
 </ul>
 <p>Advanced furnishings:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-Axis transformations (e.g. logarithmic scale).</li>
-<li><input type="checkbox" disabled="" />
-Legend construction (API needs thought).</li>
-<li><input type="checkbox" disabled="" checked="" />
-Text embedded in borders.</li>
+<li><label><input type="checkbox" />Axis transformations (e.g. logarithmic scale).</label></li>
+<li><label><input type="checkbox" />Legend construction (API needs thought).</label></li>
+<li><label><input type="checkbox" checked="" />Text embedded in borders.</label></li>
 </ul>
 <p>Advanced rendering:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Export animations to gifs.</li>
-<li><input type="checkbox" disabled="" />
-Render plots to SVG (keep console aesthetic).</li>
-<li><input type="checkbox" disabled="" />
-Render plots to PDF (keep console aesthetic).</li>
+<li><label><input type="checkbox" checked="" />Export animations to gifs.</label></li>
+<li><label><input type="checkbox" />Render plots to SVG (keep console aesthetic).</label></li>
+<li><label><input type="checkbox" />Render plots to PDF (keep console aesthetic).</label></li>
 </ul>
 <p>Back end improvements:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" checked="" />
-Upgrade Char backend to use arrays of codepoints and colors.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Vectorised composition operations.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Vectorised bitmap rendering.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Intelligent ANSI rendering (only include necessary control codes and resets, e.g., if several characters in a row use the same colours).</li>
-<li><input type="checkbox" disabled="" />
-Faster animated plot redraws (e.g., differential rendering with shortcut <code>-</code>).</li>
-<li><input type="checkbox" disabled="" />
-Clean up backend code e.g. using JAX PyTrees and vectorisation.</li>
+<li><label><input type="checkbox" checked="" />Upgrade Char backend to use arrays of codepoints and colors.</label></li>
+<li><label><input type="checkbox" checked="" />Vectorised composition operations.</label></li>
+<li><label><input type="checkbox" checked="" />Vectorised bitmap rendering.</label></li>
+<li><label><input type="checkbox" checked="" />Intelligent ANSI rendering (only include necessary control codes and resets, e.g., if several characters in a row use the same colours).</label></li>
+<li><label><input type="checkbox" />Faster animated plot redraws (e.g., differential rendering with shortcut <code>-</code>).</label></li>
+<li><label><input type="checkbox" />Clean up backend code e.g. using JAX PyTrees and vectorisation.</label></li>
 </ul>
 <p>More elaborate documentation:</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-Tutorials and recipes.</li>
-<li><input type="checkbox" disabled="" />
-Freeze documentation with each version.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Links to source code from within documentation.</li>
-<li><input type="checkbox" disabled="" checked="" />
-Links to mentioned functions/classes/methods/types within documentation (automatically linked to relevant release).</li>
-<li><input type="checkbox" disabled="" checked="" />
-Documentation search.</li>
+<li><label><input type="checkbox" checked="" />Links to source code from within documentation.</label></li>
+<li><label><input type="checkbox" checked="" />Links to mentioned functions/classes/methods/types within documentation (automatically linked to relevant release).</label></li>
+<li><label><input type="checkbox" checked="" />Documentation search.</label></li>
+<li><label><input type="checkbox" />Tutorials and recipes.</label></li>
+<li><label><input type="checkbox" />Freeze documentation with each version.</label></li>
+</ul>
+<p>More examples:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />Something to show bar/column plots and histograms.</label></li>
+<li><label><input type="checkbox" />Game of life, following https://github.com/matomatical/life</label></li>
+<li><label><input type="checkbox" />Webcam with ffmpeg</label></li>
 </ul>
 <p>Future design directions.</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-Reactive plots.</li>
+<li><label><input type="checkbox" />Reactive plots.</label></li>
 </ul>
 <h2 id="related-work">Related work</h2>
 <p>Matthewplotlib aspires to achieve a similar levels of functionality as covered by the following projects.</p>
