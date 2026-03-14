@@ -1,5 +1,5 @@
-`matthewplotlib`: Matthew's plotting library
-============================================
+matthewplotlib: Matthew's plotting library
+==========================================
 
 A Python plotting library that aspires to *not be painful.*
 
