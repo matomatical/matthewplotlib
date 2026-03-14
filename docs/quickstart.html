@@ -43,69 +43,69 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 496 512" fill="currentColor"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
         </a>
         <div class="docstring page-content">
-            <h1 id="quickstart">Quickstart</h1>
-            <p>Install:</p>
-            <pre class="console"><code>pip install git+https://github.com/matomatical/matthewplotlib.git</code></pre>
-            <p>Import the library:</p>
-            <div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="im">import</span> matthewplotlib <span class="im">as</span> mp</span></code></pre></div>
-            <p>Construct a plot:</p>
-            <div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-            <span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a></span>
-            <span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>xs <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">2</span><span class="op">*</span>np.pi, <span class="op">+</span><span class="dv">2</span><span class="op">*</span>np.pi, <span class="dv">156</span>)</span>
-            <span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a></span>
-            <span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>plot <span class="op">=</span> mp.axes(</span>
-            <span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>    mp.scatter(</span>
-            <span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a>        (xs, <span class="fl">1.0</span> <span class="op">*</span> np.cos(xs), <span class="st">&quot;red&quot;</span>),</span>
-            <span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a>        (xs, <span class="fl">0.9</span> <span class="op">*</span> np.cos(xs <span class="op">-</span> <span class="fl">0.33</span> <span class="op">*</span> np.pi), <span class="st">&quot;magenta&quot;</span>),</span>
-            <span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a>        (xs, <span class="fl">0.8</span> <span class="op">*</span> np.cos(xs <span class="op">-</span> <span class="fl">0.66</span> <span class="op">*</span> np.pi), <span class="st">&quot;blue&quot;</span>),</span>
-            <span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>        (xs, <span class="fl">0.7</span> <span class="op">*</span> np.cos(xs <span class="op">-</span> <span class="fl">1.00</span> <span class="op">*</span> np.pi), <span class="st">&quot;cyan&quot;</span>),</span>
-            <span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a>        (xs, <span class="fl">0.8</span> <span class="op">*</span> np.cos(xs <span class="op">-</span> <span class="fl">1.33</span> <span class="op">*</span> np.pi), <span class="st">&quot;green&quot;</span>),</span>
-            <span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a>        (xs, <span class="fl">0.9</span> <span class="op">*</span> np.cos(xs <span class="op">-</span> <span class="fl">1.66</span> <span class="op">*</span> np.pi), <span class="st">&quot;yellow&quot;</span>),</span>
-            <span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a>        width<span class="op">=</span><span class="dv">75</span>,</span>
-            <span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a>        height<span class="op">=</span><span class="dv">10</span>,</span>
-            <span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a>        yrange<span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
-            <span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a>    ),</span>
-            <span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a>    title<span class="op">=</span><span class="st">&quot; y = cos(x + 2πk/6) &quot;</span>,</span>
-            <span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a>    xlabel<span class="op">=</span><span class="st">&quot;x&quot;</span>,</span>
-            <span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a>    ylabel<span class="op">=</span><span class="st">&quot;y&quot;</span>,</span>
-            <span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a>)</span></code></pre></div>
-            <p>Print to terminal:</p>
-            <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="bu">print</span>(plot)</span></code></pre></div>
-            <p><img src="images/quickstart-screenshot.png" /></p>
-            <p>Export to PNG image:</p>
-            <div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>plot.saveimg(<span class="st">&quot;images/quickstart.png&quot;</span>)</span></code></pre></div>
-            <p><img src="images/quickstart.png" /></p>
-            <p>Animated version:</p>
-            <div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="im">import</span> time</span>
-            <span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-            <span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="im">import</span> matthewplotlib <span class="im">as</span> mp</span>
-            <span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a></span>
-            <span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">2</span><span class="op">*</span>np.pi, <span class="op">+</span><span class="dv">2</span><span class="op">*</span>np.pi, <span class="dv">150</span>)</span>
-            <span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a></span>
-            <span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a>plot <span class="op">=</span> <span class="va">None</span></span>
-            <span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a><span class="cf">while</span> <span class="va">True</span>:</span>
-            <span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a>    k <span class="op">=</span> (time.time() <span class="op">%</span> <span class="dv">3</span>) <span class="op">*</span> <span class="dv">2</span></span>
-            <span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a>    A <span class="op">=</span> <span class="fl">0.85</span> <span class="op">+</span> <span class="fl">0.15</span> <span class="op">*</span> np.cos(k)</span>
-            <span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a>    y <span class="op">=</span> A <span class="op">*</span> np.cos(x <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>k<span class="op">/</span><span class="dv">6</span>)</span>
-            <span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a>    c <span class="op">=</span> mp.rainbow(<span class="dv">1</span><span class="op">-</span>k<span class="op">/</span><span class="dv">6</span>)</span>
-            <span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a></span>
-            <span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>    <span class="cf">if</span> plot <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-            <span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>        <span class="bu">print</span>(<span class="op">-</span>plot, end<span class="op">=</span><span class="st">&quot;&quot;</span>)</span>
-            <span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>    plot <span class="op">=</span> mp.axes(</span>
-            <span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>        mp.scatter(</span>
-            <span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a>            (x, y, c),</span>
-            <span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a>            width<span class="op">=</span><span class="dv">75</span>,</span>
-            <span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a>            height<span class="op">=</span><span class="dv">10</span>,</span>
-            <span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a>            yrange<span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
-            <span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a>        ),</span>
-            <span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>        title<span class="op">=</span><span class="ss">f&quot; y = </span><span class="sc">{A:.2f}</span><span class="ss"> cos(x + 2π*</span><span class="sc">{k:.2f}</span><span class="ss">/6) &quot;</span>,</span>
-            <span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a>        xlabel<span class="op">=</span><span class="st">&quot;x&quot;</span>,</span>
-            <span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a>        ylabel<span class="op">=</span><span class="st">&quot;y&quot;</span>,</span>
-            <span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a>    )</span>
-            <span id="cb6-27"><a href="#cb6-27" aria-hidden="true"></a>    <span class="bu">print</span>(plot)</span>
-            <span id="cb6-28"><a href="#cb6-28" aria-hidden="true"></a></span>
-            <span id="cb6-29"><a href="#cb6-29" aria-hidden="true"></a>    time.sleep(<span class="dv">1</span><span class="op">/</span><span class="dv">20</span>)</span></code></pre></div>
-            <p><img src="images/quickstart.gif" /></p>
+<h1 id="quickstart">Quickstart</h1>
+<p>Install:</p>
+<pre class="console"><code>pip install git+https://github.com/matomatical/matthewplotlib.git</code></pre>
+<p>Import the library:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="im">import</span> matthewplotlib <span class="im">as</span> mp</span></code></pre></div>
+<p>Construct a plot:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>xs <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">2</span><span class="op">*</span>np.pi, <span class="op">+</span><span class="dv">2</span><span class="op">*</span>np.pi, <span class="dv">156</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>plot <span class="op">=</span> mp.axes(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>    mp.scatter(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a>        (xs, <span class="fl">1.0</span> <span class="op">*</span> np.cos(xs), <span class="st">&quot;red&quot;</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a>        (xs, <span class="fl">0.9</span> <span class="op">*</span> np.cos(xs <span class="op">-</span> <span class="fl">0.33</span> <span class="op">*</span> np.pi), <span class="st">&quot;magenta&quot;</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a>        (xs, <span class="fl">0.8</span> <span class="op">*</span> np.cos(xs <span class="op">-</span> <span class="fl">0.66</span> <span class="op">*</span> np.pi), <span class="st">&quot;blue&quot;</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>        (xs, <span class="fl">0.7</span> <span class="op">*</span> np.cos(xs <span class="op">-</span> <span class="fl">1.00</span> <span class="op">*</span> np.pi), <span class="st">&quot;cyan&quot;</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a>        (xs, <span class="fl">0.8</span> <span class="op">*</span> np.cos(xs <span class="op">-</span> <span class="fl">1.33</span> <span class="op">*</span> np.pi), <span class="st">&quot;green&quot;</span>),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a>        (xs, <span class="fl">0.9</span> <span class="op">*</span> np.cos(xs <span class="op">-</span> <span class="fl">1.66</span> <span class="op">*</span> np.pi), <span class="st">&quot;yellow&quot;</span>),</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a>        width<span class="op">=</span><span class="dv">75</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a>        height<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a>        yrange<span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a>    ),</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a>    title<span class="op">=</span><span class="st">&quot; y = cos(x + 2πk/6) &quot;</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a>    xlabel<span class="op">=</span><span class="st">&quot;x&quot;</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a>    ylabel<span class="op">=</span><span class="st">&quot;y&quot;</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a>)</span></code></pre></div>
+<p>Print to terminal:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="bu">print</span>(plot)</span></code></pre></div>
+<p><img src="images/quickstart-screenshot.png" /></p>
+<p>Export to PNG image:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>plot.saveimg(<span class="st">&quot;images/quickstart.png&quot;</span>)</span></code></pre></div>
+<p><img src="images/quickstart.png" /></p>
+<p>Animated version:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="im">import</span> time</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="im">import</span> matthewplotlib <span class="im">as</span> mp</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">2</span><span class="op">*</span>np.pi, <span class="op">+</span><span class="dv">2</span><span class="op">*</span>np.pi, <span class="dv">150</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a>plot <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a>    k <span class="op">=</span> (time.time() <span class="op">%</span> <span class="dv">3</span>) <span class="op">*</span> <span class="dv">2</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a>    A <span class="op">=</span> <span class="fl">0.85</span> <span class="op">+</span> <span class="fl">0.15</span> <span class="op">*</span> np.cos(k)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a>    y <span class="op">=</span> A <span class="op">*</span> np.cos(x <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>k<span class="op">/</span><span class="dv">6</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a>    c <span class="op">=</span> mp.rainbow(<span class="dv">1</span><span class="op">-</span>k<span class="op">/</span><span class="dv">6</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>    <span class="cf">if</span> plot <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>        <span class="bu">print</span>(<span class="op">-</span>plot, end<span class="op">=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>    plot <span class="op">=</span> mp.axes(</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>        mp.scatter(</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a>            (x, y, c),</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a>            width<span class="op">=</span><span class="dv">75</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a>            height<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a>            yrange<span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a>        ),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>        title<span class="op">=</span><span class="ss">f&quot; y = </span><span class="sc">{A:.2f}</span><span class="ss"> cos(x + 2π*</span><span class="sc">{k:.2f}</span><span class="ss">/6) &quot;</span>,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a>        xlabel<span class="op">=</span><span class="st">&quot;x&quot;</span>,</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a>        ylabel<span class="op">=</span><span class="st">&quot;y&quot;</span>,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a>    )</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true"></a>    <span class="bu">print</span>(plot)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true"></a>    time.sleep(<span class="dv">1</span><span class="op">/</span><span class="dv">20</span>)</span></code></pre></div>
+<p><img src="images/quickstart.gif" /></p>
         </div>
     </main>
     <script>

@@ -86,6 +86,28 @@
 .pdoc-code .go { color: #566c86; }                       /* sweetie 14 */
 .pdoc-code .gp { color: #94b0c2; font-weight: bold; }    /* sweetie 13 */
 
+/* Dark syntax highlighting — pandoc sourceCode classes */
+.sourceCode { background: #29366f; color: #f4f4f4; }
+code.sourceCode span.co { color: #566c86; font-style: italic; }  /* comment */
+code.sourceCode span.kw,
+code.sourceCode span.cf,
+code.sourceCode span.im { color: #a7f070; font-weight: bold; }   /* keyword, control, import */
+code.sourceCode span.st,
+code.sourceCode span.ch,
+code.sourceCode span.vs { color: #ef7d57; }                      /* string */
+code.sourceCode span.sc { color: #ffcd75; font-weight: bold; }   /* special char */
+code.sourceCode span.dv,
+code.sourceCode span.fl,
+code.sourceCode span.bn { color: #ffcd75; }                      /* numbers */
+code.sourceCode span.bu { color: #41a6f6; }                      /* builtin */
+code.sourceCode span.fu { color: #73eff7; }                      /* function */
+code.sourceCode span.op { color: #94b0c2; }                      /* operator */
+code.sourceCode span.dt { color: #73eff7; font-weight: bold; }   /* data type */
+code.sourceCode span.at { color: #73eff7; }                      /* attribute */
+code.sourceCode span.pp { color: #ffcd75; }                      /* preprocessor */
+code.sourceCode span.er { color: #b13e53; }                      /* error */
+code.sourceCode span.va { color: #f4f4f4; }                      /* variable */
+
 /* # # # Light theme # # # */
 
 [data-theme="light"] {
@@ -170,6 +192,28 @@
 [data-theme="light"] .pdoc-code .p { color: #1a1c2c; }
 [data-theme="light"] .pdoc-code .go { color: #566c86; }
 [data-theme="light"] .pdoc-code .gp { color: #333c57; font-weight: bold; }
+
+/* Light syntax highlighting — pandoc sourceCode classes */
+[data-theme="light"] .sourceCode { background: #e8ebef; color: #1a1c2c; }
+[data-theme="light"] code.sourceCode span.co { color: #566c86; font-style: italic; }
+[data-theme="light"] code.sourceCode span.kw,
+[data-theme="light"] code.sourceCode span.cf,
+[data-theme="light"] code.sourceCode span.im { color: #38b764; font-weight: bold; }
+[data-theme="light"] code.sourceCode span.st,
+[data-theme="light"] code.sourceCode span.ch,
+[data-theme="light"] code.sourceCode span.vs { color: #b13e53; }
+[data-theme="light"] code.sourceCode span.sc { color: #ef7d57; font-weight: bold; }
+[data-theme="light"] code.sourceCode span.dv,
+[data-theme="light"] code.sourceCode span.fl,
+[data-theme="light"] code.sourceCode span.bn { color: #29366f; }
+[data-theme="light"] code.sourceCode span.bu { color: #3b5dc9; }
+[data-theme="light"] code.sourceCode span.fu { color: #257179; }
+[data-theme="light"] code.sourceCode span.op { color: #333c57; }
+[data-theme="light"] code.sourceCode span.dt { color: #257179; font-weight: bold; }
+[data-theme="light"] code.sourceCode span.at { color: #257179; }
+[data-theme="light"] code.sourceCode span.pp { color: #29366f; }
+[data-theme="light"] code.sourceCode span.er { color: #b13e53; }
+[data-theme="light"] code.sourceCode span.va { color: #1a1c2c; }
 
 /* # # # Layout tweaks # # # */
 
