@@ -12,29 +12,30 @@ For example:
 ![](images/colormaps.png)
 """
 
-from typing import Callable
+from typing import Callable, Union
+from typing_extensions import TypeAlias
 from numpy.typing import ArrayLike
 
 import numpy as np
 
 
-# # # 
+# # #
 # COLORMAP TYPES
 
 
-type ContinuousColorMap = Callable[
+ContinuousColorMap: TypeAlias = Callable[
     [ArrayLike],
     np.ndarray,
 ] # float[...] -> uint8[..., 3]
 
 
-type DiscreteColorMap = Callable[
+DiscreteColorMap: TypeAlias = Callable[
     [ArrayLike],
     np.ndarray,
 ] # int[...] -> uint8[..., 3]
 
 
-type ColorMap = ContinuousColorMap | DiscreteColorMap
+ColorMap: TypeAlias = Union[ContinuousColorMap, DiscreteColorMap]
 
 
 # # # 

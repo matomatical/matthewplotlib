@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import cast
+from typing import Union, cast
+from typing_extensions import TypeAlias
 
 import numpy as np
 import einops
@@ -10,38 +11,38 @@ from numpy.typing import NDArray, ArrayLike
 from matthewplotlib.colors import ColorLike, parse_color
 
 
-# # # 
+# # #
 # Types
 
 
-type number = int | float | np.integer | np.floating
+number: TypeAlias = Union[int, float, "np.integer", "np.floating"]
 
 
-type ColorSpec = (
-    None
-    | ColorLike
-    | ArrayLike # uint8[n, 3]
-)
+ColorSpec: TypeAlias = Union[
+    None,
+    ColorLike,
+    ArrayLike, # uint8[n, 3]
+]
 
 
-type Series = (
-    NDArray                                     # number[n,2]
-    | tuple[NDArray, ColorSpec]                 # number[n,2], colors
-    | tuple[ArrayLike, ArrayLike]               # number[n]^2
-    | tuple[ArrayLike, ArrayLike, ColorSpec]    # number[n]^2, colors
-    | axis                                      # axis
-    | tuple[axis, ColorSpec]                    # axis, colors
-)
+Series: TypeAlias = Union[
+    NDArray,                                     # number[n,2]
+    "tuple[NDArray, ColorSpec]",                 # number[n,2], colors
+    "tuple[ArrayLike, ArrayLike]",               # number[n]^2
+    "tuple[ArrayLike, ArrayLike, ColorSpec]",    # number[n]^2, colors
+    "axis",                                      # axis
+    "tuple[axis, ColorSpec]",                    # axis, colors
+]
 
 
-type Series3 = (
-    NDArray                                             # number[n,3]
-    | tuple[NDArray, ColorSpec]                         # number[n,3], colors
-    | tuple[ArrayLike, ArrayLike, ArrayLike]            # number[n]^3
-    | tuple[ArrayLike, ArrayLike, ArrayLike, ColorSpec] # number[n]^3, colors
-    | axis                                              # axis
-    | tuple[axis, ColorSpec]                            # axis, uint8[n,rgb]
-)
+Series3: TypeAlias = Union[
+    NDArray,                                                      # number[n,3]
+    "tuple[NDArray, ColorSpec]",                                  # number[n,3], colors
+    "tuple[ArrayLike, ArrayLike, ArrayLike]",                     # number[n]^3
+    "tuple[ArrayLike, ArrayLike, ArrayLike, ColorSpec]",          # number[n]^3, colors
+    "axis",                                                       # axis
+    "tuple[axis, ColorSpec]",                                     # axis, uint8[n,rgb]
+]
 
 
 # # # 

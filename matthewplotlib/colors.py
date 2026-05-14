@@ -1,24 +1,27 @@
 from __future__ import annotations
 
+from typing import Union
+from typing_extensions import TypeAlias
+
 import numpy as np
 
 from numpy.typing import NDArray
 
 
-# # # 
+# # #
 # COLOR TYPES
 
 
-type Color = NDArray # uint8[3]
+Color: TypeAlias = NDArray # uint8[3]
 
 
-type ColorLike = (
-    str
-    | NDArray # float[3] (0 to 1) or uint8[3] (0 to 255)
-    | tuple[int, int, int]
-    | tuple[float, float, float]
-    | Color
-)
+ColorLike: TypeAlias = Union[
+    str,
+    NDArray, # float[3] (0 to 1) or uint8[3] (0 to 255)
+    "tuple[int, int, int]",
+    "tuple[float, float, float]",
+    Color,
+]
 
 
 # # # 
