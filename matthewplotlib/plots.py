@@ -183,8 +183,47 @@ class plot:
         Shortcut for the string for clearing the plot.
         """
         return self.clearstr()
-    
-    
+
+
+    def updatestr(self: Self, prev: plot) -> str:
+        """
+        Convert the plot into a string that, if printed when the cursor is just
+        below `prev` (i.e. immediately after printing `prev`), updates the
+        terminal to show this plot instead -- repainting only the cells that
+        differ from `prev`, and leaving the cursor just below this plot.
+
+        This is the fast path for animation: redrawing a whole frame re-emits
+        every cell, while this re-emits only what changed, which can be far
+        fewer bytes over a slow connection. When the two plots differ in size
+        (so there is nothing to diff against), it falls back to a full clear and
+        redraw.
+
+        See `CharArray.to_ansi_diff_str` for the precise cursor contract.
+        """
+        if (self.height, self.width) != (prev.height, prev.width):
+            return prev.clearstr() + self.renderstr() + "\n"
+        return self.chars.to_ansi_diff_str(prev.chars)
+
+
+    def __sub__(self: Self, other: plot) -> str:
+        """
+        Operator shortcut for a differential redraw: the string that updates the
+        terminal from `other` to `self` in place.
+
+        ```
+        prev = None
+        for frame in frames:
+            print("" if prev is None else frame - prev, end="", flush=True)
+            if prev is None:
+                print(frame, end="", flush=True)
+            prev = frame
+        ```
+
+        Compare `-plot` (clear) and `str(plot)` (full redraw). See `updatestr`.
+        """
+        return self.updatestr(other)
+
+
     def __add__(self: Self, other: plot) -> hstack:
         """
         Operator shortcut for horizontal stack.

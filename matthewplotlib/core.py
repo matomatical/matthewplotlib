@@ -204,7 +204,98 @@ class CharArray:
             if i < self.height - 1:
                 s.append("\n")
         return "".join(s)
-    
+
+
+    def to_ansi_diff_str(self: Self, prev: CharArray) -> str:
+        """
+        Render the minimal ANSI sequence that updates a terminal already
+        showing `prev` so that it shows `self` instead, repainting only the
+        cells that differ.
+
+        This is the differential counterpart to `to_ansi_str`: where redrawing
+        a whole frame re-emits every cell, this jumps the cursor to just the
+        changed cells. For an animation whose frames are mostly stable, that is
+        dramatically fewer bytes down the wire.
+
+        Cursor contract (matching the animated-plot idiom):
+
+        * On entry, the cursor is assumed to be at column 0 on the line
+          immediately below where `prev` was rendered -- exactly where it sits
+          after `print`ing `prev`.
+        * On exit, the cursor is left at column 0 on the line immediately below
+          `self`, so the next frame can diff against this one in the same way.
+
+        Assumes `prev` was rendered starting at column 0 and that all glyphs are
+        single-width (the standard animated-plot layout). `self` and `prev` must
+        have the same shape. Returns "" when nothing changed.
+        """
+        if (self.height, self.width) != (prev.height, prev.width):
+            raise ValueError(
+                "to_ansi_diff_str requires self and prev to have the same shape"
+            )
+        H = self.height
+
+        # which cells differ in glyph or colour?
+        fg_changed = (self.fg != prev.fg) | (
+            self.fg & np.any(self.fg_rgb != prev.fg_rgb, axis=-1)
+        )
+        bg_changed = (self.bg != prev.bg) | (
+            self.bg & np.any(self.bg_rgb != prev.bg_rgb, axis=-1)
+        )
+        changed = (self.codes != prev.codes) | fg_changed | bg_changed
+        if not changed.any():
+            return ""
+
+        s: list[str] = []
+        # cursor position, in plot coordinates (row H == just below the plot)
+        cur_row = H
+        cur_col = 0
+        # SGR colour state: persists across cursor moves, so we only emit a code
+        # when the colour actually changes (as in to_ansi_str, but the running
+        # state now carries across the gaps we skip over).
+        current_fg: None | NDArray = None
+        current_bg: None | NDArray = None
+
+        for i in np.flatnonzero(changed.any(axis=1)):
+            for j in np.flatnonzero(changed[i]):
+                # step the cursor to this cell with relative moves
+                if i != cur_row:
+                    d = int(i) - cur_row
+                    s.append(f"\x1b[{abs(d)}{'B' if d > 0 else 'A'}")
+                    cur_row = int(i)
+                if j != cur_col:
+                    d = int(j) - cur_col
+                    s.append(f"\x1b[{abs(d)}{'C' if d > 0 else 'D'}")
+                    cur_col = int(j)
+                # manage colour
+                controls = []
+                fg = self.fg_rgb[i, j] if self.fg[i, j] else None
+                if fg is None and current_fg is not None:
+                    controls.append(39)  # reset fg
+                elif fg is not None and (
+                    current_fg is None or np.any(fg != current_fg)
+                ):
+                    controls.extend([38, 2, *fg])  # set fg
+                current_fg = fg
+                bg = self.bg_rgb[i, j] if self.bg[i, j] else None
+                if bg is None and current_bg is not None:
+                    controls.append(49)  # reset bg
+                elif bg is not None and (
+                    current_bg is None or np.any(bg != current_bg)
+                ):
+                    controls.extend([48, 2, *bg])  # set bg
+                current_bg = bg
+                if controls:
+                    s.append(f"\x1b[{';'.join(map(str, controls))}m")
+                s.append(chr(self.codes[i, j]))
+                cur_col += 1
+
+        # restore default colour, then drop to column 0 just below the plot
+        if current_fg is not None or current_bg is not None:
+            s.append("\x1b[0m")
+        s.append(f"\x1b[{H - cur_row}E")
+        return "".join(s)
+
 
     def to_plain_str(self: Self) -> str:
         """

@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 
+import matthewplotlib as mp
 from matthewplotlib.core import (
     CharArray,
     BoxStyle,
@@ -568,3 +569,192 @@ class TestUnicodeImage:
         assert np.array_equal(ca.bg_rgb[0, 0], [0, 255, 0])
         assert np.array_equal(ca.fg_rgb[1, 0], [0, 0, 255])
         assert np.array_equal(ca.bg_rgb[1, 0], [255, 255, 0])
+
+
+# # #
+# CharArray.to_ansi_diff_str (differential rendering)
+
+
+class _Term:
+    """A tiny ANSI screen emulator -- just enough to verify diff rendering.
+
+    Applies the escape sequences our renderer emits (cursor moves, SGR colour,
+    printable glyphs, erase-to-end) to a grid of (char, fg, bg) cells, so a test
+    can check that a diff transforms the screen exactly like a full redraw.
+    """
+
+    def __init__(self, rows, cols):
+        self.rows, self.cols = rows, cols
+        self.grid = [[(" ", None, None) for _ in range(cols)] for _ in range(rows)]
+        self.r = self.c = 0
+        self.fg = None
+        self.bg = None
+
+    def feed(self, s):
+        i = 0
+        while i < len(s):
+            ch = s[i]
+            if ch == "\x1b":
+                assert s[i + 1] == "["
+                j = i + 2
+                while s[j] not in "ABCDEFGHJKmf":
+                    j += 1
+                self._csi(s[i + 2:j], s[j])
+                i = j + 1
+            elif ch == "\n":
+                self.r += 1
+                self.c = 0
+                i += 1
+            elif ch == "\r":
+                self.c = 0
+                i += 1
+            else:
+                self.grid[self.r][self.c] = (ch, self.fg, self.bg)
+                self.c += 1
+                i += 1
+        return self
+
+    def _csi(self, params, letter):
+        if letter == "m":
+            codes = [int(x) for x in params.split(";")] if params else [0]
+            k = 0
+            while k < len(codes):
+                x = codes[k]
+                if x == 0:
+                    self.fg = self.bg = None
+                    k += 1
+                elif x == 39:
+                    self.fg = None
+                    k += 1
+                elif x == 49:
+                    self.bg = None
+                    k += 1
+                elif x == 38 and codes[k + 1] == 2:
+                    self.fg = tuple(codes[k + 2:k + 5])
+                    k += 5
+                elif x == 48 and codes[k + 1] == 2:
+                    self.bg = tuple(codes[k + 2:k + 5])
+                    k += 5
+                else:
+                    k += 1
+            return
+        n = int(params) if params else 1
+        if letter == "A":
+            self.r -= n
+        elif letter == "B":
+            self.r += n
+        elif letter == "C":
+            self.c += n
+        elif letter == "D":
+            self.c -= n
+        elif letter == "E":
+            self.r += n
+            self.c = 0
+        elif letter == "J":  # erase from cursor to end of screen
+            for cc in range(self.c, self.cols):
+                self.grid[self.r][cc] = (" ", None, None)
+            for rr in range(self.r + 1, self.rows):
+                for cc in range(self.cols):
+                    self.grid[rr][cc] = (" ", None, None)
+
+    def region(self, h, w):
+        return [row[:w] for row in self.grid[:h]]
+
+
+def _rand_chars(rng, h, w):
+    """A realistic CharArray: a random half-block image (every cell coloured)."""
+    img = rng.integers(0, 256, size=(2 * h, w, 3), dtype=np.uint8)
+    return unicode_image(img)
+
+
+def _screen_after_diff(prev, new):
+    """Emulate printing `prev`, then applying new.to_ansi_diff_str(prev)."""
+    H, W = prev.height, prev.width
+    term = _Term(H + 3, W + 2)
+    term.feed(prev.to_ansi_str()).feed("\n")   # as if print(prev) had run
+    term.feed(new.to_ansi_diff_str(prev))
+    return term
+
+
+class TestCharArrayDiffStr:
+    def test_no_change_is_empty(self):
+        rng = np.random.default_rng(0)
+        ca = _rand_chars(rng, 4, 6)
+        assert ca.to_ansi_diff_str(ca) == ""
+
+    def test_shape_mismatch_raises(self):
+        rng = np.random.default_rng(1)
+        a = _rand_chars(rng, 3, 4)
+        b = _rand_chars(rng, 3, 5)
+        with pytest.raises(ValueError):
+            b.to_ansi_diff_str(a)
+
+    def test_diff_repaints_only_changed_cell(self):
+        rng = np.random.default_rng(2)
+        prev = _rand_chars(rng, 4, 8)
+        new = unicode_image(rng.integers(0, 256, (8, 8, 3), dtype=np.uint8))
+        # force exactly one differing cell
+        new.codes = prev.codes.copy()
+        new.fg = prev.fg.copy()
+        new.fg_rgb = prev.fg_rgb.copy()
+        new.bg = prev.bg.copy()
+        new.bg_rgb = prev.bg_rgb.copy()
+        new.fg_rgb[1, 5] = (prev.fg_rgb[1, 5].astype(int) + 40) % 256
+        diff = new.to_ansi_diff_str(prev)
+        # the diff carries a single glyph, far smaller than a full redraw
+        assert diff.count("▀") == 1
+        assert len(diff) < len(new.to_ansi_str())
+
+    def test_cursor_returns_below_plot(self):
+        rng = np.random.default_rng(3)
+        prev = _rand_chars(rng, 5, 7)
+        new = _rand_chars(rng, 5, 7)
+        term = _screen_after_diff(prev, new)
+        assert (term.r, term.c) == (prev.height, 0)
+
+    def test_color_only_change(self):
+        rng = np.random.default_rng(4)
+        prev = _rand_chars(rng, 3, 5)
+        new = unicode_image(rng.integers(0, 256, (6, 5, 3), dtype=np.uint8))
+        new.codes = prev.codes.copy()  # same glyphs, different colours
+        term = _screen_after_diff(prev, new)
+        ref = _Term(new.height + 3, new.width + 2).feed(new.to_ansi_str())
+        assert term.region(new.height, new.width) == ref.region(new.height, new.width)
+
+    def test_diff_matches_full_redraw_random(self):
+        """The strong one: a diff must leave the screen identical to a fresh
+        redraw of `new`, across many random partial changes."""
+        rng = np.random.default_rng(2024)
+        for _ in range(40):
+            h = int(rng.integers(1, 9))
+            w = int(rng.integers(1, 14))
+            base = rng.integers(0, 256, (2 * h, w, 3), dtype=np.uint8)
+            after = base.copy()
+            mask = rng.random((2 * h, w)) < rng.uniform(0.0, 0.6)
+            after[mask] = rng.integers(0, 256, (int(mask.sum()), 3), dtype=np.uint8)
+            prev = unicode_image(base)
+            new = unicode_image(after)
+            term = _screen_after_diff(prev, new)
+            ref = _Term(new.height + 3, new.width + 2).feed(new.to_ansi_str())
+            assert term.region(new.height, new.width) == ref.region(new.height, new.width)
+            assert (term.r, term.c) == (new.height, 0)
+
+
+class TestPlotUpdateStr:
+    def test_sub_operator_matches_updatestr(self):
+        a = mp.image(np.random.default_rng(5).random((6, 8)))
+        b = mp.image(np.random.default_rng(6).random((6, 8)))
+        assert (b - a) == b.updatestr(a)
+
+    def test_updatestr_falls_back_on_size_change(self):
+        # different sizes -> clear + full redraw; emulate and check the screen
+        prev = mp.image(np.random.default_rng(7).random((8, 10)))   # 4 rows
+        new = mp.image(np.random.default_rng(8).random((4, 6)))     # 2 rows
+        H = max(prev.height, new.height)
+        term = _Term(H + 3, max(prev.width, new.width) + 2)
+        term.feed(prev.renderstr()).feed("\n")     # as if print(prev) had run
+        term.feed(new.updatestr(prev))
+        ref = _Term(H + 3, new.width + 2).feed(new.renderstr())
+        assert term.region(new.height, new.width) == ref.region(new.height, new.width)
+        # the old plot's extra rows must have been cleared
+        assert term.grid[prev.height - 1][0] == (" ", None, None)

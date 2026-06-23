@@ -129,7 +129,7 @@ Back end improvements:
 * [x] Vectorised bitmap rendering.
 * [x] Intelligent ANSI rendering (only include necessary control codes and
   resets, e.g., if several characters in a row use the same colours).
-* [ ] Faster animated plot redraws (e.g., differential rendering with shortcut
+* [x] Faster animated plot redraws (e.g., differential rendering with shortcut
   `-`).
 * [ ] Clean up backend code e.g. using JAX PyTrees and vectorisation.
 

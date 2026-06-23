@@ -4,7 +4,16 @@ Changelog
 In development
 --------------
 
-TODO
+New:
+
+* Add differential redraw for animated plots. `new - prev` (or, spelled out,
+  `new.updatestr(prev)`) returns an ANSI sequence that repaints only the cells
+  that changed since the previous frame, rather than clearing and redrawing the
+  whole plot. Backed by `CharArray.to_ansi_diff_str`; falls back to a full
+  clear-and-redraw when the plot size changes. Large byte savings for
+  mostly-static animations (~13x fewer bytes on a dashboard with a single
+  moving bar); modest savings for fully turbulent frames where most cells
+  change every step.
 
 Version 0.3.7
 -------------
