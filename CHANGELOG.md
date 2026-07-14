@@ -1,10 +1,12 @@
 Changelog
 =========
 
-In development
---------------
+Version 0.3.8
+-------------
 
-TODO
+Fix:
+
+* Make automatic `wrap` layout work without an attached terminal.
 
 Version 0.3.7
 -------------
