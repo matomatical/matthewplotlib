@@ -133,8 +133,17 @@ class plot:
         Requires a spare row above the plot. If the plot begins on the
         terminal's first row there is nowhere to step, and the redraw lands one
         row lower.
+
+        Erases the plot's own rows and nothing else, so anything on the screen
+        below the plot survives. That costs a few bytes per row rather than a
+        single erase-to-end-of-screen, which is nothing beside the redraw that
+        follows.
         """
-        return f"\x1b[{self.height}A\x1b[0J\x1b[1A"
+        H = self.height
+        if H == 0:
+            return "\x1b[1A"    # nothing to erase; just absorb print's newline
+        erase = "\x1b[2K" + "\x1b[B\x1b[2K" * (H - 1)
+        return f"\x1b[{H}A{erase}\x1b[{H}A"
 
 
     def renderimg(

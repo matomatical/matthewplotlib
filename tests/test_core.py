@@ -691,6 +691,15 @@ class _Term:
             for rr in range(self.r + 1, self.rows):
                 for cc in range(self.cols):
                     self.grid[rr][cc] = (" ", None, None)
+        elif letter == "K":  # erase in line: 0 to end, 1 to start, 2 all
+            n = int(params) if params else 0
+            lo = 0 if n in (1, 2) else self.c
+            hi = self.cols if n in (0, 2) else self.c + 1
+            for cc in range(lo, hi):
+                self.grid[self.r][cc] = (" ", None, None)
+        elif letter == "X":  # erase n characters from the cursor, cursor unmoved
+            for cc in range(self.c, min(self.cols, self.c + n)):
+                self.grid[self.r][cc] = (" ", None, None)
 
     def region(self, h, w):
         return [row[:w] for row in self.grid[:h]]
@@ -913,6 +922,28 @@ class TestPlotClearStr:
         term.feed(-p).feed("\n")                   # print(-plot)
         assert "".join(c for c, _, _ in term.grid[0]).rstrip() \
             == "$ python examples/wave.py"
+
+    def test_clearstr_erases_only_the_plots_own_rows(self):
+        """Content below the plot must survive the clear."""
+        p = mp.border(mp.text("frame"))
+        term = _Term(12, 30)
+        term.feed("$ prompt").feed("\n")
+        term.feed(p.renderstr()).feed("\n")
+        term.feed("footer text").feed("\r")   # below the plot, back to column 0
+        term.feed(-p).feed("\n")              # print(-plot)
+        line = lambda r: "".join(c for c, _, _ in term.grid[r]).rstrip()
+        assert line(0) == "$ prompt"          # the row stepped onto, not erased
+        assert [line(r) for r in range(1, 1 + p.height)] == [""] * p.height
+        assert line(1 + p.height) == "footer text"
+
+    def test_clearstr_of_an_empty_plot_is_a_no_op(self):
+        z = mp.blank(height=0, width=0)
+        assert z.clearstr() == "\x1b[1A"      # CSI 0 A would mean CSI 1 A
+        term = _Term(6, 12)
+        term.feed("keep me").feed("\n")
+        before = [row[:] for row in term.grid], (term.r, term.c)
+        term.feed(-z).feed("\n")              # print(-plot) of an empty plot
+        assert ([row[:] for row in term.grid], (term.r, term.c)) == before
 
     def test_clear_and_redraw_loop_is_stable(self):
         """print(-plot) then print(new) must redraw in place, frame after frame."""
