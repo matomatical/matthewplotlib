@@ -40,14 +40,14 @@ Arrangement plots:
 from __future__ import annotations
 
 import enum
-import os
+import shutil
 import numpy as np
 import einops
 import hilbert as _hilbert
 
 from PIL import Image
 
-from typing import Callable, Self, Sequence
+from typing import Callable, Literal, Self, Sequence, cast
 from numpy.typing import ArrayLike, NDArray
 from matthewplotlib.colormaps import ColorMap
 from numbers import Number
@@ -947,14 +947,15 @@ class histogram(bars):
     ):
         # prepare data
         data = np.asarray(data)
+        weights_ = None if weights is None else np.asarray(weights)
         
         # bin data
         hist, bins_ = np.histogram(
             a=data,
             bins=bins,
             range=xrange,
-            weights=weights,
-            density=density,
+            weights=weights_,
+            density=cast(Literal[True, False], density),
         )
 
         # build bar chart
@@ -1125,14 +1126,15 @@ class vistogram(columns):
     ):
         # prepare data
         data = np.asarray(data)
+        weights_ = None if weights is None else np.asarray(weights)
         
         # bin data
         hist, bins_ = np.histogram(
             a=data,
             bins=bins,
             range=xrange,
-            weights=weights,
-            density=density,
+            weights=weights_,
+            density=cast(Literal[True, False], density),
         )
 
         # build column chart
@@ -1632,7 +1634,8 @@ class wrap(plot):
 
         # determine grid size and initialise grid
         if cols is None:
-            cols = max(1, os.get_terminal_size()[0] // cell_width)
+            terminal_width = shutil.get_terminal_size(fallback=(80, 24)).columns
+            cols = max(1, terminal_width // cell_width)
         n = len(padded_chars)
         full_rows, spare = divmod(n, cols)
         rows = full_rows + bool(spare)

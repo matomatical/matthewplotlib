@@ -15,6 +15,13 @@ New:
   moving bar); modest savings for fully turbulent frames where most cells
   change every step.
 
+Version 0.3.8
+-------------
+
+Fix:
+
+* Make automatic `wrap` layout work without an attached terminal.
+
 Version 0.3.7
 -------------
 
