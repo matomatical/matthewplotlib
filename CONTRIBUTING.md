@@ -58,12 +58,13 @@ Releasing a new version
 To release a new version:
 
 1. Decide on a new version number (V).
-2. Bump `__version__` in `__init__.py` to V.
-3. Bump `version` in `pyproject.toml` to V.
-4. Move changelog items from 'In development' to a new 'Version V' section.
+2. Move changelog items from 'In development' to a new 'Version V' section.
+3. Bump `__version__` in `__init__.py` to V.
+4. Bump `version` in `pyproject.toml` to V.
+5. Rebuild the docs website: `make docs`.
 6. Commit: `git commit -m "Version V"`.
 7. Tag: `git tag vV`.
 8. Push: `git push origin main --tags`.
 9. On GitHub, create a new release from the tag.
 
-TODO: Make sure we also build docs for the new version.
+Steps 3-7 can be automated by `make release V=<new version number>`

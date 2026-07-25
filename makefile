@@ -64,20 +64,38 @@ docs/roadmap.html: pages/roadmap.md templates/page.html docs/pdoc.css
 # # # 
 # Tests
 
+mypy:
+	mypy
+
 test:
 	pytest tests/ -v
 
 
 # # #
-# Release (TODO)
+# Release
+# Usage: make release V=<new version number, e.g. "0.3.7">
 
-# release:
-# 	@test -n "$(V)" || (echo "Usage: make release V=0.3.7" && exit 1)
-# 	sed -i 's/__version__ = ".*"/__version__ = "$(V)"/' matthewplotlib/__init__.py
-# 	sed -i 's/^version = ".*"/version = "$(V)"/' pyproject.toml
-# 	$(MAKE) DOCS.md
-# 	git add matthewplotlib/__init__.py pyproject.toml DOCS.md CHANGELOG.md
-# 	git commit -m "Version $(V)"
-# 	git tag v$(V)
+release:
+	# guards
+	@test -n "$(V)" || (echo "Usage: make release V=0.3.7" && exit 1)
+	@grep -q '^Version $(V)$$' CHANGELOG.md \
+		|| (echo "CHANGELOG.md has no 'Version $(V)' section yet" && exit 1)
+	@test "$$(git rev-parse --abbrev-ref HEAD)" = main \
+		|| (echo "Must release from main (you are on $$(git rev-parse --abbrev-ref HEAD))" && exit 1)
+	$(MAKE) mypy
+	$(MAKE) test
+	# version bump
+	sed -i 's/__version__ = ".*"/__version__ = "$(V)"/' matthewplotlib/__init__.py
+	sed -i 's/^version = ".*"/version = "$(V)"/' pyproject.toml
+	# rebuild docs
+	$(MAKE) docs
+	# commit
+	git add matthewplotlib/__init__.py pyproject.toml docs CHANGELOG.md
+	git commit -m "Version $(V)"
+	git tag v$(V)
+	# prepare to push
+	@echo "ready to release:"
+	@echo "git push origin main --tags"
+	@echo "(then make the release on github)"
 
-.PHONY: test docs docs/images # release
+.PHONY: docs docs/images mypy test release
