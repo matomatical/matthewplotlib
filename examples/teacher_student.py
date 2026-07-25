@@ -32,7 +32,6 @@ def main(
     print(plot - prev)
     prev = plot
     for t in range(num_steps):
-        l = loss(w_student, w_teacher, x)
         g_student = jax.grad(loss)(w_student, w_teacher, x)
         w_student = w_student - learning_rate * g_student
         plot = vis(w_student, w_teacher, x, t+1)

@@ -109,6 +109,11 @@ More plot types:
 Advanced plot arrangement:
 
 * [ ] Better support for animated plots (API needs thought).
+  * [ ] Animation context manager, owning the printing and cursor state, with
+    opt-in frame timing and frame collection. See
+    `wip/animation-context-manager.md`.
+* [ ] Terminal-aware printing: clip plots to the terminal width and height. See
+  `wip/terminal-aware-printing.md`.
 
 Advanced furnishings:
 

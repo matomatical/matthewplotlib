@@ -187,7 +187,7 @@ class plot:
             upscale=upscale,
             downscale=downscale,
         )
-        image = Image.fromarray(image_data, mode='RGBA')
+        image = Image.fromarray(image_data)
         image.save(filename)
 
 
@@ -1833,7 +1833,7 @@ def save_animation(
     
     # convert to PIL images
     images = [
-        Image.fromarray(frame, mode='RGBA') 
+        Image.fromarray(frame)
         for frame in frames_uniform
     ]
 
