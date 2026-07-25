@@ -14,6 +14,11 @@ Change:
 * Every string the library returns is now shaped for a plain `print`. In
   particular `clearstr` (`-plot`) must no longer be printed with `end=""`.
 
+Fix:
+
+* `clearstr` (`-plot`) erases only the plot's own rows, rather than everything
+  below it on screen, and handles a plot with no rows.
+
 Version 0.3.8
 -------------
 
