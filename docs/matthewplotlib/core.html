@@ -107,6 +107,9 @@
                                 <a class="function" href="#CharArray.to_ansi_str">to_ansi_str</a>
                         </li>
                         <li>
+                                <a class="function" href="#CharArray.to_ansi_diff_str">to_ansi_diff_str</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#CharArray.to_plain_str">to_plain_str</a>
                         </li>
                         <li>
@@ -285,7 +288,7 @@ Whether to use a custom background color.</li>
                             <div id="CharArray.__init__" class="classattr">
                                 <div class="attr function">
             
-        <span class="name">CharArray</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">codes</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span>,</span><span class="param">	<span class="n">fg</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span>,</span><span class="param">	<span class="n">fg_rgb</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span>,</span><span class="param">	<span class="n">bg</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span>,</span><span class="param">	<span class="n">bg_rgb</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span></span>)</span>
+        <span class="name">CharArray</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">codes</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">fg</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">fg_rgb</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">bg</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">bg_rgb</span><span class="p">:</span> <span class="n">NDArray</span></span>)</span>
 
         
     </div>
@@ -296,7 +299,7 @@ Whether to use a custom background color.</li>
                             </div>
                             <div id="CharArray.codes" class="classattr">
                                 <div class="attr variable">
-            <span class="name">codes</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">codes</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>
@@ -307,7 +310,7 @@ Whether to use a custom background color.</li>
                             </div>
                             <div id="CharArray.fg" class="classattr">
                                 <div class="attr variable">
-            <span class="name">fg</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">fg</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>
@@ -318,7 +321,7 @@ Whether to use a custom background color.</li>
                             </div>
                             <div id="CharArray.fg_rgb" class="classattr">
                                 <div class="attr variable">
-            <span class="name">fg_rgb</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">fg_rgb</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>
@@ -329,7 +332,7 @@ Whether to use a custom background color.</li>
                             </div>
                             <div id="CharArray.bg" class="classattr">
                                 <div class="attr variable">
-            <span class="name">bg</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">bg</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>
@@ -340,7 +343,7 @@ Whether to use a custom background color.</li>
                             </div>
                             <div id="CharArray.bg_rgb" class="classattr">
                                 <div class="attr variable">
-            <span class="name">bg_rgb</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">bg_rgb</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>
@@ -376,7 +379,7 @@ Whether to use a custom background color.</li>
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">from_codes</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">codes</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span>,</span><span class="param">	<span class="n">fgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#CharArray">CharArray</a></span>:</span></span>
+        <span class="name">from_codes</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">codes</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">fgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#CharArray">CharArray</a></span>:</span></span>
 
         
     </div>
@@ -417,7 +420,7 @@ Whether to use a custom background color.</li>
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">map</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">list</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]]</span>,</span><span class="param">	<span class="n">charss</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="#CharArray">CharArray</a></span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n"><a href="#CharArray">CharArray</a></span>:</span></span>
+        <span class="name">map</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">list</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]],</span> <span class="n">NDArray</span><span class="p">]</span>,</span><span class="param">	<span class="n">charss</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n"><a href="#CharArray">CharArray</a></span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n"><a href="#CharArray">CharArray</a></span>:</span></span>
 
         
     </div>
@@ -430,7 +433,7 @@ Whether to use a custom background color.</li>
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">isblank</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span><span class="p">:</span> <span class="n">Self</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span>:</span></span>
+        <span class="name">isblank</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span><span class="p">:</span> <span class="n">Self</span></span><span class="return-annotation">) -> <span class="n">NDArray</span>:</span></span>
 
         
     </div>
@@ -445,7 +448,7 @@ Whether to use a custom background color.</li>
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">isnonblank</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span><span class="p">:</span> <span class="n">Self</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span>:</span></span>
+        <span class="name">isnonblank</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span><span class="p">:</span> <span class="n">Self</span></span><span class="return-annotation">) -> <span class="n">NDArray</span>:</span></span>
 
         
     </div>
@@ -468,6 +471,59 @@ Whether to use a custom background color.</li>
     
             <div class="docstring"><p>Render a CharArray as a sequence of characters and ANSI control codes
 (merging codes where possible).</p>
+</div>
+
+
+                            </div>
+                            <div id="CharArray.to_ansi_diff_str" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">to_ansi_diff_str</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span><span class="p">:</span> <span class="n">Self</span>, </span><span class="param"><span class="n">prev</span><span class="p">:</span> <span class="n"><a href="#CharArray">CharArray</a></span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#CharArray.to_ansi_diff_str"></a>
+    
+            <div class="docstring"><p>Render the minimal ANSI sequence that updates a terminal already
+showing <code>prev</code> so that it shows <code>self</code> instead, repainting only the
+cells that differ.</p>
+
+<p>This is the differential counterpart to <code><a href="#CharArray.to_ansi_str">to_ansi_str</a></code>: where redrawing
+a whole frame re-emits every cell, this jumps the cursor to just the
+changed cells. For an animation whose frames are mostly stable, that is
+dramatically fewer bytes down the wire.</p>
+
+<p>Cursor contract (the sequence is shaped for a plain <code>print</code>):</p>
+
+<ul>
+<li>On entry, the cursor is assumed to be at column 0 on the line
+immediately below where <code>prev</code> was rendered -- exactly where it sits
+after <code>print</code>ing <code>prev</code>.</li>
+<li>On exit, the cursor is left at column 0 on the <em>last row of the plot</em>,
+so the newline <code>print</code> appends carries it to the line below, ready for
+the next frame to diff against this one in the same way.</li>
+</ul>
+
+<p>In other words the sequence is incomplete on its own: it expects a
+trailing newline, just as <code><a href="#CharArray.to_ansi_str">to_ansi_str</a></code> does. Write it with
+<code>print(...)</code>, not <code>print(..., end="")</code>.</p>
+
+<p>Assumes <code>prev</code> was rendered starting at column 0 and that all glyphs are
+single-width (the standard animated-plot layout).</p>
+
+<p>The two need not be the same size, and only the difference is sent in
+that case too. Cells outside the region <code>prev</code> covered are always
+painted, since nothing is on screen there to keep. Rows and columns
+<code>prev</code> covered but <code>self</code> does not are erased. Growing taller overwrites
+the rows immediately below the plot: they have to be written into, and a
+string cannot push them out of the way without knowing where it sits on
+the screen. Growing shorter leaves those rows blank rather than closing
+the gap, for the same reason.</p>
+
+<p>Note that an unchanged frame does not return "": it returns a bare
+cursor-up, so that the newline <code>print</code> appends still lands the cursor
+where the contract promises rather than a row lower.</p>
 </div>
 
 
@@ -552,7 +608,7 @@ Whether to use a custom background color.</li>
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">unicode_braille_array</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">dots</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span>,</span><span class="param">	<span class="n">dotc</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">dotw</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">fgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#CharArray">CharArray</a></span>:</span></span>
+        <span class="name">unicode_braille_array</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">dots</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">dotc</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">dotw</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">fgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#CharArray">CharArray</a></span>:</span></span>
 
         
     </div>
@@ -1004,7 +1060,7 @@ and right sides of the contents. Would open up new design possibilities.</li>
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">unicode_image</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">image</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n"><a href="#CharArray">CharArray</a></span>:</span></span>
+        <span class="name">unicode_image</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">image</span><span class="p">:</span> <span class="n">NDArray</span></span><span class="return-annotation">) -> <span class="n"><a href="#CharArray">CharArray</a></span>:</span></span>
 
         
     </div>

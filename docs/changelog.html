@@ -44,6 +44,23 @@
         </a>
         <div class="docstring page-content">
 <h1 id="changelog">Changelog</h1>
+<h2 id="in-development">In development</h2>
+<p>TODO</p>
+<h2 id="version-0.4.0">Version 0.4.0</h2>
+<p>New:</p>
+<ul>
+<li>Add differential redraw for animated plots: <code>print(plot - prev)</code> repaints only the cells that changed. Subtract <code>None</code> for the first frame.</li>
+</ul>
+<p>Change:</p>
+<ul>
+<li>Every string the library returns is now shaped for a plain <code>print</code>. In particular <code>clearstr</code> (<code>-plot</code>) must no longer be printed with <code>end=""</code>.</li>
+</ul>
+<p>Fix:</p>
+<ul>
+<li><code>clearstr</code> (<code>-plot</code>) erases only the plot’s own rows, rather than everything below it on screen, and handles a plot with no rows.</li>
+<li>Stop passing the deprecated <code>mode</code> argument to Pillow, which will be an error in Pillow 13.</li>
+<li>Declare the Python version actually required (3.12, for <code>type</code> aliases); the package never supported the 3.10 it claimed.</li>
+</ul>
 <h2 id="version-0.3.8">Version 0.3.8</h2>
 <p>Fix:</p>
 <ul>

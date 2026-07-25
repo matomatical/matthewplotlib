@@ -1,6 +1,6 @@
 [project]
 name = "matthewplotlib"
-version = "0.3.8"
+version = "0.4.0"
 authors = [
     { name="Matthew Farrugia-Roberts", email="matthew@far.in.net" },
 ]
@@ -19,7 +19,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
 ]
 
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     # core
     "numpy",

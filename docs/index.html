@@ -64,6 +64,7 @@
 <ul>
 <li>Colourful unicode-based rendering of scatter plots, small images, heatmaps, bar charts, histograms, 3d plots, and more.</li>
 <li>Rendering plots to the terminal with <code>print(plot)</code>. No GUI windows to manage!</li>
+<li>Animation is a loop of <code>print(plot - prev)</code>: subtracting the previous frame repaints only the cells that changed.</li>
 <li>Plots are just expressions. Compose complex plots with horizontal (<code>+</code>) and vertical (<code>/</code>) stacking operations, as in <code>subplots = (plotA + plotB) / (plotC + plotD)</code>.</li>
 <li>If you absolutely need plots outside the terminal, you can render them to PNG using a pixel font.</li>
 </ul>

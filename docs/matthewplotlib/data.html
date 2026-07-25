@@ -229,7 +229,7 @@
                     <div class="attr variable">
             <span class="def">type</span> <span class="name">Series</span>        =
 <input id="Series-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-            <label class="view-value-button pdoc-button" for="Series-view-value"></label><span class="default_value">numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]] | tuple[numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]], ColorSpec] | tuple[ArrayLike, ArrayLike] | tuple[ArrayLike, ArrayLike, ColorSpec] | <a href="#axis">axis</a> | tuple[<a href="#axis">axis</a>, ColorSpec]</span>
+            <label class="view-value-button pdoc-button" for="Series-view-value"></label><span class="default_value">NDArray | tuple[NDArray, ColorSpec] | tuple[ArrayLike, ArrayLike] | tuple[ArrayLike, ArrayLike, ColorSpec] | <a href="#axis">axis</a> | tuple[<a href="#axis">axis</a>, ColorSpec]</span>
 
         
     </div>
@@ -242,7 +242,7 @@
                     <div class="attr variable">
             <span class="def">type</span> <span class="name">Series3</span>        =
 <input id="Series3-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-            <label class="view-value-button pdoc-button" for="Series3-view-value"></label><span class="default_value">numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]] | tuple[numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]], ColorSpec] | tuple[ArrayLike, ArrayLike, ArrayLike] | tuple[ArrayLike, ArrayLike, ArrayLike, ColorSpec] | <a href="#axis">axis</a> | tuple[<a href="#axis">axis</a>, ColorSpec]</span>
+            <label class="view-value-button pdoc-button" for="Series3-view-value"></label><span class="default_value">NDArray | tuple[NDArray, ColorSpec] | tuple[ArrayLike, ArrayLike, ArrayLike] | tuple[ArrayLike, ArrayLike, ArrayLike, ColorSpec] | <a href="#axis">axis</a> | tuple[<a href="#axis">axis</a>, ColorSpec]</span>
 
         
     </div>
@@ -255,7 +255,7 @@
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">parse_range</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span>,</span><span class="param">	<span class="nb">range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span><span class="p">,</span> <span class="n">number</span><span class="p">]</span>:</span></span>
+        <span class="name">parse_range</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="nb">range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span><span class="p">,</span> <span class="n">number</span><span class="p">]</span>:</span></span>
 
         
     </div>
@@ -268,7 +268,7 @@
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">parse_color_spec</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">cs</span><span class="p">:</span> <span class="n">ColorSpec</span>,</span><span class="param">	<span class="n">n</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]</span>:</span></span>
+        <span class="name">parse_color_spec</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">cs</span><span class="p">:</span> <span class="n">ColorSpec</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n">NDArray</span>:</span></span>
 
         
     </div>
@@ -281,7 +281,7 @@
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">parse_series</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">series</span><span class="p">:</span> <span class="n">Series</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]]</span>:</span></span>
+        <span class="name">parse_series</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">series</span><span class="p">:</span> <span class="n">Series</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span>:</span></span>
 
         
     </div>
@@ -294,7 +294,7 @@
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">parse_multiple_series</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">seriess</span><span class="p">:</span> <span class="n">Series</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]]</span>:</span></span>
+        <span class="name">parse_multiple_series</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">seriess</span><span class="p">:</span> <span class="n">Series</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span>:</span></span>
 
         
     </div>
@@ -307,7 +307,7 @@
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">parse_series3</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">series</span><span class="p">:</span> <span class="n">Series3</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]]</span>:</span></span>
+        <span class="name">parse_series3</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">series</span><span class="p">:</span> <span class="n">Series3</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span>:</span></span>
 
         
     </div>
@@ -320,7 +320,7 @@
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">parse_multiple_series3</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">seriess</span><span class="p">:</span> <span class="n">Series3</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">[</span><span class="o">~</span><span class="n">_ScalarT</span><span class="p">]]]</span>:</span></span>
+        <span class="name">parse_multiple_series3</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">seriess</span><span class="p">:</span> <span class="n">Series3</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span>:</span></span>
 
         
     </div>
@@ -392,7 +392,7 @@
                             </div>
                             <div id="axis.xs" class="classattr">
                                 <div class="attr variable">
-            <span class="name">xs</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">xs</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>
@@ -403,7 +403,7 @@
                             </div>
                             <div id="axis.ys" class="classattr">
                                 <div class="attr variable">
-            <span class="name">ys</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">ys</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>
@@ -414,7 +414,7 @@
                             </div>
                             <div id="axis.zs" class="classattr">
                                 <div class="attr variable">
-            <span class="name">zs</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">zs</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>
@@ -440,7 +440,7 @@
 
                             <div id="xaxis.xs" class="classattr">
                                 <div class="attr variable">
-            <span class="name">xs</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">xs</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>
@@ -480,7 +480,7 @@
 
                             <div id="yaxis.ys" class="classattr">
                                 <div class="attr variable">
-            <span class="name">ys</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">ys</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>
@@ -520,7 +520,7 @@
 
                             <div id="zaxis.zs" class="classattr">
                                 <div class="attr variable">
-            <span class="name">zs</span><span class="annotation">: numpy.ndarray[tuple[typing.Any, ...], numpy.dtype[~_ScalarT]]</span>
+            <span class="name">zs</span><span class="annotation">: numpy._typing._array_like.NDArray</span>
 
         
     </div>

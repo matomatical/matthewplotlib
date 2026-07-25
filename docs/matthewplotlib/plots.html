@@ -97,6 +97,9 @@
                         <li>
                                 <a class="function" href="#plot.saveimg">saveimg</a>
                         </li>
+                        <li>
+                                <a class="function" href="#plot.updatestr">updatestr</a>
+                        </li>
                 </ul>
 
             </li>
@@ -584,6 +587,22 @@ methods.</p>
     
             <div class="docstring"><p>Convert the plot into a string that, if printed immediately after
 <a href="#plot.renderstr">plot.renderstr()</a>, will clear that plot from the terminal.</p>
+
+<p>Like every string in this library, the result is shaped for a plain
+<code>print</code>: it erases the plot and then steps one row above it, so the
+newline <code>print</code> appends leaves the cursor where the plot began, ready
+to be overdrawn. Printing it with <code>end=""</code> instead leaves the cursor a
+row high, and in an animation loop the plot then climbs the screen one
+row per frame.</p>
+
+<p>Requires a spare row above the plot. If the plot begins on the
+terminal's first row there is nowhere to step, and the redraw lands one
+row lower.</p>
+
+<p>Erases the plot's own rows and nothing else, so anything on the screen
+below the plot survives. That costs a few bytes per row rather than a
+single erase-to-end-of-screen, which is nothing beside the redraw that
+follows.</p>
 </div>
 
 
@@ -615,6 +634,42 @@ methods.</p>
     
             <div class="docstring"><p>Render the plot as an RGBA image and save it as a PNG file at the path
 <code>filename</code>.</p>
+</div>
+
+
+                            </div>
+                            <div id="plot.updatestr" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">updatestr</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span><span class="p">:</span> <span class="n">Self</span>, </span><span class="param"><span class="n">prev</span><span class="p">:</span> <span class="n"><a href="#plot">plot</a></span> <span class="o">|</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#plot.updatestr"></a>
+    
+            <div class="docstring"><p>Convert the plot into a string that, if printed when the cursor is just
+below <code>prev</code> (i.e. immediately after printing <code>prev</code>), updates the
+terminal to show this plot instead -- repainting only the cells that
+differ from <code>prev</code>, and leaving the cursor just below this plot.</p>
+
+<p>This is the fast path for animation: redrawing a whole frame re-emits
+every cell, while this re-emits only what changed, which can be far
+fewer bytes over a slow connection.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>prev : plot | None.
+The plot currently on screen. Pass None for the first frame of an
+animation, when the screen is still empty, and the whole plot is
+rendered. A plot of a different size is fine: the overlapping region is
+still diffed, while the rows and columns only one of them covers are
+painted or erased as needed.</li>
+</ul>
+
+<p>As everywhere in this library the result is shaped for a plain <code>print</code>.
+See <code>CharArray.to_ansi_diff_str</code> for the precise cursor contract.</p>
 </div>
 
 
@@ -716,6 +771,7 @@ height.</li>
                 <dd id="scatter.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="scatter.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="scatter.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="scatter.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -803,6 +859,7 @@ axes as that would use projected coordinates.</li>
                 <dd id="scatter3.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="scatter3.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="scatter3.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="scatter3.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -887,6 +944,7 @@ triples using one of these colormaps.</li>
                 <dd id="image.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="image.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="image.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="image.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1008,6 +1066,7 @@ the value of the function precisely at its lower left corner.</p></li>
                 <dd id="function2.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="function2.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="function2.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="function2.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1141,6 +1200,7 @@ different colormap (e.g. mp.reds, mp.viridis, etc.) here.</li>
                 <dd id="histogram2.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="histogram2.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="histogram2.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="histogram2.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1214,6 +1274,7 @@ terminal's default foreground color.</li>
                 <dd id="progress.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="progress.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="progress.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="progress.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1330,6 +1391,7 @@ list of the same length as <code>values</code>.</li>
                 <dd id="bars.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="bars.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="bars.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="bars.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1422,6 +1484,7 @@ default foreground color.</li>
                 <dd id="histogram.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="histogram.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="histogram.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="histogram.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1536,6 +1599,7 @@ list of the same length as <code>values</code>.</li>
                 <dd id="columns.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="columns.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="columns.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="columns.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1629,6 +1693,7 @@ default foreground color.</li>
                 <dd id="vistogram.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="vistogram.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="vistogram.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="vistogram.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1720,6 +1785,7 @@ is <code>True</code>). Defaults to the terminal's default foreground color.</li>
                 <dd id="hilbert.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="hilbert.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="hilbert.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="hilbert.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1787,6 +1853,7 @@ background.</li>
                 <dd id="text.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="text.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="text.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="text.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1866,6 +1933,7 @@ default foreground color.</li>
                 <dd id="border.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="border.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="border.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="border.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1960,6 +2028,7 @@ Set to <code>None</code> to use foreground color.</li>
                 <dd id="axes.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="axes.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="axes.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="axes.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -2013,6 +2082,7 @@ The width of the blank area in character columns. Default 1.</li>
                 <dd id="blank.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="blank.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="blank.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="blank.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -2076,6 +2146,7 @@ A sequence of plot objects to be horizontally stacked.</li>
                 <dd id="hstack.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="hstack.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="hstack.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="hstack.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -2139,6 +2210,7 @@ A sequence of plot objects to be vertically stacked.</li>
                 <dd id="vstack.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="vstack.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="vstack.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="vstack.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -2204,6 +2276,7 @@ A sequence of plot objects to be overlaid.</li>
                 <dd id="dstack.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="dstack.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="dstack.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="dstack.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -2289,6 +2362,7 @@ and yrange.</li>
                 <dd id="dstack2.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="dstack2.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="dstack2.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="dstack2.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -2361,6 +2435,7 @@ in column order, from top to bottom and then from left to right.</li>
                 <dd id="wrap.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="wrap.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="wrap.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="wrap.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -2431,6 +2506,7 @@ to the original plot's width (no horizontal padding).</li>
                 <dd id="center.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
                 <dd id="center.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="center.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="center.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>

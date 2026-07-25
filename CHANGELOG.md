@@ -4,6 +4,11 @@ Changelog
 In development
 --------------
 
+TODO
+
+Version 0.4.0
+-------------
+
 New:
 
 * Add differential redraw for animated plots: `print(plot - prev)` repaints only
@@ -18,6 +23,10 @@ Fix:
 
 * `clearstr` (`-plot`) erases only the plot's own rows, rather than everything
   below it on screen, and handles a plot with no rows.
+* Stop passing the deprecated `mode` argument to Pillow, which will be an error
+  in Pillow 13.
+* Declare the Python version actually required (3.12, for `type` aliases); the
+  package never supported the 3.10 it claimed.
 
 Version 0.3.8
 -------------
