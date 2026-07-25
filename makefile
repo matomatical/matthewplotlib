@@ -1,35 +1,21 @@
-DOCS.md: generate_docs.py README.md $(wildcard matthewplotlib/*.py)
-	python generate_docs.py \
-		README.md \
-		matthewplotlib/__init__.py \
-		matthewplotlib/plots.py \
-		matthewplotlib/colormaps.py \
-		matthewplotlib/core.py \
-		matthewplotlib/unscii16.py \
-	> $@
-
-
-copy:
-	tail -n +1 pyproject.toml README.md matthewplotlib/*.py examples/*.py | pbcopy
-
-# release:
-# 	@test -n "$(V)" || (echo "Usage: make release V=0.3.7" && exit 1)
-# 	sed -i 's/__version__ = ".*"/__version__ = "$(V)"/' matthewplotlib/__init__.py
-# 	sed -i 's/^version = ".*"/version = "$(V)"/' pyproject.toml
-# 	$(MAKE) DOCS.md
-# 	git add matthewplotlib/__init__.py pyproject.toml DOCS.md CHANGELOG.md
-# 	git commit -m "Version $(V)"
-# 	git tag v$(V)
+# # # 
+# Documentation website
 
 PDOC_CSS := $(shell python -c "import pdoc; from pathlib import Path; print(Path(pdoc.__file__).parent / 'templates')")
-
-# One target per image, rather than one for the directory: replacing a file in
-# place leaves the directory's own timestamp untouched, so a directory target
-# never notices a regenerated image.
 IMAGES := $(wildcard images/*)
 DOCS_IMAGES := $(IMAGES:images/%=docs/images/%)
 
-docs: docs/api docs/index.html docs/changelog.html docs/quickstart.html docs/examples.html docs/roadmap.html $(DOCS_IMAGES) docs/pdoc.css
+docs: docs/api docs/index.html docs/changelog.html docs/quickstart.html docs/examples.html docs/roadmap.html docs/images docs/pdoc.css
+
+# Copies the images, then drops any left over from a deleted source image.
+# Phony, because the timestamp of a directory says nothing about whether its
+# contents are stale -- which is the trap the per-image targets exist to avoid.
+docs/images: $(DOCS_IMAGES)
+	@rm -f $(filter-out $(DOCS_IMAGES),$(wildcard docs/images/*))
+
+docs/images/%: images/%
+	@mkdir -p $(@D)
+	cp $< $@
 
 docs/api: templates/custom.css templates/module.html.jinja2 $(wildcard matthewplotlib/*.py)
 	pdoc matthewplotlib/ \
@@ -74,11 +60,24 @@ docs/roadmap.html: pages/roadmap.md templates/page.html docs/pdoc.css
 		--metadata title="Roadmap" \
 		-V source="$(GITHUB)/pages/roadmap.md"
 
-docs/images/%: images/%
-	@mkdir -p $(@D)
-	cp $< $@
+
+# # # 
+# Tests
 
 test:
 	pytest tests/ -v
 
-.PHONY: copy test docs # release
+
+# # #
+# Release (TODO)
+
+# release:
+# 	@test -n "$(V)" || (echo "Usage: make release V=0.3.7" && exit 1)
+# 	sed -i 's/__version__ = ".*"/__version__ = "$(V)"/' matthewplotlib/__init__.py
+# 	sed -i 's/^version = ".*"/version = "$(V)"/' pyproject.toml
+# 	$(MAKE) DOCS.md
+# 	git add matthewplotlib/__init__.py pyproject.toml DOCS.md CHANGELOG.md
+# 	git commit -m "Version $(V)"
+# 	git tag v$(V)
+
+.PHONY: test docs docs/images # release
