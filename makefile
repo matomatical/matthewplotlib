@@ -23,7 +23,13 @@ copy:
 
 PDOC_CSS := $(shell python -c "import pdoc; from pathlib import Path; print(Path(pdoc.__file__).parent / 'templates')")
 
-docs: docs/api docs/index.html docs/changelog.html docs/quickstart.html docs/examples.html docs/roadmap.html docs/images docs/pdoc.css
+# One target per image, rather than one for the directory: replacing a file in
+# place leaves the directory's own timestamp untouched, so a directory target
+# never notices a regenerated image.
+IMAGES := $(wildcard images/*)
+DOCS_IMAGES := $(IMAGES:images/%=docs/images/%)
+
+docs: docs/api docs/index.html docs/changelog.html docs/quickstart.html docs/examples.html docs/roadmap.html $(DOCS_IMAGES) docs/pdoc.css
 
 docs/api: templates/custom.css templates/module.html.jinja2 $(wildcard matthewplotlib/*.py)
 	pdoc matthewplotlib/ \
@@ -68,9 +74,9 @@ docs/roadmap.html: pages/roadmap.md templates/page.html docs/pdoc.css
 		--metadata title="Roadmap" \
 		-V source="$(GITHUB)/pages/roadmap.md"
 
-docs/images: images
-	rm -rf $@
-	cp -r $< $@
+docs/images/%: images/%
+	@mkdir -p $(@D)
+	cp $< $@
 
 test:
 	pytest tests/ -v
