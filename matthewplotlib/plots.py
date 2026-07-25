@@ -213,11 +213,16 @@ class plot:
         ```
         prev = None
         for frame in frames:
-            print("" if prev is None else frame - prev, end="", flush=True)
             if prev is None:
-                print(frame, end="", flush=True)
+                print(frame, flush=True)
+            else:
+                print(frame - prev, end="", flush=True)
             prev = frame
         ```
+
+        Note that the seed frame is printed *with* its trailing newline (no
+        `end=""`) while each update is printed *without* one: an update expects
+        the cursor at column 0 just below the plot, and leaves it there again.
 
         Compare `-plot` (clear) and `str(plot)` (full redraw). See `updatestr`.
         """

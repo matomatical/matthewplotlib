@@ -581,12 +581,21 @@ class _Term:
     Applies the escape sequences our renderer emits (cursor moves, SGR colour,
     printable glyphs, erase-to-end) to a grid of (char, fg, bg) cells, so a test
     can check that a diff transforms the screen exactly like a full redraw.
+
+    Models *deferred wrap* (VT/xterm behaviour): writing the glyph in the final
+    column leaves the cursor on that column with a wrap flag set, rather than
+    moving it past the edge. The flag is cleared by any cursor movement, and
+    resolved into an actual line-wrap by the next glyph. Cursor moves clamp at
+    the screen edges. Both matter only when a plot is exactly as wide as the
+    screen -- which is when a renderer's own column bookkeeping can drift out of
+    step with the terminal's.
     """
 
     def __init__(self, rows, cols):
         self.rows, self.cols = rows, cols
         self.grid = [[(" ", None, None) for _ in range(cols)] for _ in range(rows)]
         self.r = self.c = 0
+        self.wrap_pending = False
         self.fg = None
         self.bg = None
 
@@ -604,13 +613,22 @@ class _Term:
             elif ch == "\n":
                 self.r += 1
                 self.c = 0
+                self.wrap_pending = False
                 i += 1
             elif ch == "\r":
                 self.c = 0
+                self.wrap_pending = False
                 i += 1
             else:
+                if self.wrap_pending:
+                    self.r += 1
+                    self.c = 0
+                    self.wrap_pending = False
                 self.grid[self.r][self.c] = (ch, self.fg, self.bg)
-                self.c += 1
+                if self.c == self.cols - 1:
+                    self.wrap_pending = True
+                else:
+                    self.c += 1
                 i += 1
         return self
 
@@ -639,16 +657,19 @@ class _Term:
                     k += 1
             return
         n = int(params) if params else 1
+        self.wrap_pending = False  # any cursor movement clears the wrap flag
         if letter == "A":
-            self.r -= n
+            self.r = max(0, self.r - n)
         elif letter == "B":
-            self.r += n
+            self.r = min(self.rows - 1, self.r + n)
         elif letter == "C":
-            self.c += n
+            self.c = min(self.cols - 1, self.c + n)
         elif letter == "D":
-            self.c -= n
+            self.c = max(0, self.c - n)
+        elif letter == "G":  # absolute column (1-indexed)
+            self.c = min(self.cols - 1, max(0, n - 1))
         elif letter == "E":
-            self.r += n
+            self.r = min(self.rows - 1, self.r + n)
             self.c = 0
         elif letter == "J":  # erase from cursor to end of screen
             for cc in range(self.c, self.cols):
@@ -667,10 +688,14 @@ def _rand_chars(rng, h, w):
     return unicode_image(img)
 
 
-def _screen_after_diff(prev, new):
-    """Emulate printing `prev`, then applying new.to_ansi_diff_str(prev)."""
+def _screen_after_diff(prev, new, slack=2):
+    """Emulate printing `prev`, then applying new.to_ansi_diff_str(prev).
+
+    `slack` is the number of spare columns beyond the plot's width; pass 0 to
+    put the plot flush against the right edge of the screen.
+    """
     H, W = prev.height, prev.width
-    term = _Term(H + 3, W + 2)
+    term = _Term(H + 3, W + slack)
     term.feed(prev.to_ansi_str()).feed("\n")   # as if print(prev) had run
     term.feed(new.to_ansi_diff_str(prev))
     return term
@@ -739,6 +764,40 @@ class TestCharArrayDiffStr:
             assert term.region(new.height, new.width) == ref.region(new.height, new.width)
             assert (term.r, term.c) == (new.height, 0)
 
+    def test_diff_at_right_edge_of_screen(self):
+        """A plot exactly as wide as the screen still diffs correctly.
+
+        Writing the final column leaves the terminal's cursor on that column
+        with a wrap pending, not one past it, so a renderer tracking the column
+        by counting glyphs is off by one from there on.
+        """
+        # minimal case: change the last column of row 0, then an interior cell
+        # of row 1, so the second cell needs a move made from the edge.
+        base = np.zeros((4, 6, 3), dtype=np.uint8)
+        after = base.copy()
+        after[0, 5] = (1, 2, 3)     # row 0, final column
+        after[3, 3] = (4, 5, 6)     # row 1, column 3
+        prev, new = unicode_image(base), unicode_image(after)
+        term = _screen_after_diff(prev, new, slack=0)
+        ref = _Term(new.height + 3, new.width).feed(new.to_ansi_str())
+        assert term.region(new.height, new.width) == ref.region(new.height, new.width)
+        assert (term.r, term.c) == (new.height, 0)
+
+    def test_diff_at_right_edge_of_screen_random(self):
+        rng = np.random.default_rng(99)
+        for _ in range(40):
+            h = int(rng.integers(1, 9))
+            w = int(rng.integers(2, 14))
+            base = rng.integers(0, 256, (2 * h, w, 3), dtype=np.uint8)
+            after = base.copy()
+            mask = rng.random((2 * h, w)) < rng.uniform(0.0, 0.6)
+            after[mask] = rng.integers(0, 256, (int(mask.sum()), 3), dtype=np.uint8)
+            prev, new = unicode_image(base), unicode_image(after)
+            term = _screen_after_diff(prev, new, slack=0)
+            ref = _Term(new.height + 3, new.width).feed(new.to_ansi_str())
+            assert term.region(new.height, new.width) == ref.region(new.height, new.width)
+            assert (term.r, term.c) == (new.height, 0)
+
 
 class TestPlotUpdateStr:
     def test_sub_operator_matches_updatestr(self):
@@ -758,3 +817,30 @@ class TestPlotUpdateStr:
         assert term.region(new.height, new.width) == ref.region(new.height, new.width)
         # the old plot's extra rows must have been cleared
         assert term.grid[prev.height - 1][0] == (" ", None, None)
+
+    def test_documented_animation_loop(self):
+        """Replay the animation loop exactly as documented on `plot.__sub__`.
+
+        The seed frame must be printed *with* its newline: `renderstr` does not
+        end in one, so `print(frame, end="")` would leave the cursor at the end
+        of the last row instead of at column 0 below the plot, and every
+        subsequent diff would be applied at the wrong place.
+        """
+        rng = np.random.default_rng(11)
+        frames = [mp.image(rng.random((6, 9))) for _ in range(4)]
+        term = _Term(frames[0].height + 3, frames[0].width + 2)
+
+        prev = None
+        for frame in frames:
+            if prev is None:
+                term.feed(frame.renderstr()).feed("\n")   # print(frame)
+                assert (term.r, term.c) == (frame.height, 0), \
+                    "seed frame must leave the cursor at column 0 below the plot"
+            else:
+                term.feed(frame - prev)                   # print(frame - prev, end="")
+            prev = frame
+
+        last = frames[-1]
+        ref = _Term(last.height + 3, last.width + 2).feed(last.renderstr())
+        assert term.region(last.height, last.width) == ref.region(last.height, last.width)
+        assert (term.r, term.c) == (last.height, 0)

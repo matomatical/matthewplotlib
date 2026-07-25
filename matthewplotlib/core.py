@@ -228,6 +228,11 @@ class CharArray:
         Assumes `prev` was rendered starting at column 0 and that all glyphs are
         single-width (the standard animated-plot layout). `self` and `prev` must
         have the same shape. Returns "" when nothing changed.
+
+        Unlike a full redraw, the returned sequence contains no newlines, so it
+        never scrolls the screen. A plot whose last row sits on the last line of
+        the terminal therefore stays put here, where a clear-and-redraw would
+        scroll it up by a line.
         """
         if (self.height, self.width) != (prev.height, prev.width):
             raise ValueError(
@@ -247,9 +252,10 @@ class CharArray:
             return ""
 
         s: list[str] = []
-        # cursor position, in plot coordinates (row H == just below the plot)
+        # cursor position, in plot coordinates (row H == just below the plot).
+        # cur_col is None when the true column is unknown (see the wrap note).
         cur_row = H
-        cur_col = 0
+        cur_col: int | None = 0
         # SGR colour state: persists across cursor moves, so we only emit a code
         # when the colour actually changes (as in to_ansi_str, but the running
         # state now carries across the gaps we skip over).
@@ -263,10 +269,12 @@ class CharArray:
                     d = int(i) - cur_row
                     s.append(f"\x1b[{abs(d)}{'B' if d > 0 else 'A'}")
                     cur_row = int(i)
-                if j != cur_col:
-                    d = int(j) - cur_col
+                col = int(j)
+                if cur_col is None:
+                    s.append(f"\x1b[{col + 1}G")  # absolute column
+                elif col != cur_col:
+                    d = col - cur_col
                     s.append(f"\x1b[{abs(d)}{'C' if d > 0 else 'D'}")
-                    cur_col = int(j)
                 # manage colour
                 controls = []
                 fg = self.fg_rgb[i, j] if self.fg[i, j] else None
@@ -288,7 +296,13 @@ class CharArray:
                 if controls:
                     s.append(f"\x1b[{';'.join(map(str, controls))}m")
                 s.append(chr(self.codes[i, j]))
-                cur_col += 1
+                # That glyph advanced the cursor one column -- unless it filled
+                # the final column, in which case terminals defer the wrap: the
+                # cursor stays put with a wrap flag rather than moving past the
+                # edge, so on a screen exactly this wide it is not where
+                # counting glyphs says. Forget the column and address the next
+                # cell absolutely rather than relatively.
+                cur_col = col + 1 if col + 1 < self.width else None
 
         # restore default colour, then drop to column 0 just below the plot
         if current_fg is not None or current_bg is not None:
