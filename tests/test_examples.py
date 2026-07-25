@@ -17,6 +17,7 @@ EXAMPLES = [
     ("hilbert_curve.py",         ["--save", "images/hilbert_curve.png"],                        "images/hilbert_curve.png"),
     ("image.py",                 ["--save", "images/image.png"],                                "images/image.png"),
     ("jointplot.py",             ["--save", "images/jointplot.png"],                            "images/jointplot.png"),
+    ("life.py",                  ["--num-frames", "5", "--save", "images/life.gif"],            "images/life.gif"),
     ("lissajous.py",             ["--save", "images/lissajous.png"],                            "images/lissajous.png"),
     ("mandelbrot.py",            ["--num-frames", "5", "--save", "images/mandelbrot.gif"],      "images/mandelbrot.gif"),
     ("quickstart1.py",           ["--save", "images/quickstart.png"],                           "images/quickstart.png"),
