@@ -100,6 +100,8 @@
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Unit tests for core modules (colors, colormaps, data, core).</label></li>
 <li><label><input type="checkbox" checked="" />Integration smoke tests (all examples run).</label></li>
+<li><label><input type="checkbox" />Adopt a more well-tested virtual terminal for testing ANSI control codes: drive a real terminal (tmux) and retire the hand-written emulator in the tests. See <code>wip/terminal-test-backend.md</code>.</label></li>
+<li><label><input type="checkbox" />Audit the escape sequences we emit, preferring ones that do not vary between terminals over testing that they did not.</label></li>
 <li><label><input type="checkbox" />Snapshot testing for str output and image output regression detection.</label></li>
 </ul>
 <p>Documentation:</p>
@@ -159,11 +161,15 @@
 </ul>
 <p>Advanced plot arrangement:</p>
 <ul class="task-list">
-<li><label><input type="checkbox" />Better support for animated plots (API needs thought).</label>
+<li><label><input type="checkbox" />Animation context manager, owning the printing and cursor state.</label>
 <ul class="task-list">
-<li><label><input type="checkbox" />Animation context manager, owning the printing and cursor state, with opt-in frame timing and frame collection. See <code>wip/animation-context-manager.md</code>.</label></li>
+<li><label><input type="checkbox" />Opt-in frame timing.</label></li>
+<li><label><input type="checkbox" />Opt-in frame collection.</label></li>
 </ul></li>
-<li><label><input type="checkbox" />Terminal-aware printing: clip plots to the terminal width and height. See <code>wip/terminal-aware-printing.md</code>.</label></li>
+<li><label><input type="checkbox" />Crop plot composition primitive.</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />By default, clip plots to terminal width and (almost) height, to enable terminal-aware printing.</label></li>
+</ul></li>
 </ul>
 <p>Advanced furnishings:</p>
 <ul class="task-list">
@@ -177,7 +183,7 @@
 <li><label><input type="checkbox" />Render plots to SVG (keep console aesthetic).</label></li>
 <li><label><input type="checkbox" />Render plots to PDF (keep console aesthetic).</label></li>
 </ul>
-<p>Back end improvements:</p>
+<p>Backend improvements:</p>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Upgrade Char backend to use arrays of codepoints and colors.</label></li>
 <li><label><input type="checkbox" checked="" />Vectorised composition operations.</label></li>
@@ -193,6 +199,7 @@
 <li><label><input type="checkbox" checked="" />Documentation search.</label></li>
 <li><label><input type="checkbox" />Tutorials and recipes.</label></li>
 <li><label><input type="checkbox" />Freeze documentation with each version.</label></li>
+<li><label><input type="checkbox" />Terminal support matrix: the escape sequences and behaviours the library relies on, against the terminals people actually use. Tells a reader whether their terminal will work, and doubles as the specification of what the library is allowed to emit. See <code>wip/terminal-test-backend.md</code>.</label></li>
 </ul>
 <p>More examples:</p>
 <ul class="task-list">

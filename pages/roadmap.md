@@ -59,6 +59,11 @@ Testing:
 
 * [x] Unit tests for core modules (colors, colormaps, data, core).
 * [x] Integration smoke tests (all examples run).
+* [ ] Adopt a more well-tested virtual terminal for testing ANSI control codes:
+  drive a real terminal (tmux) and retire the hand-written emulator in the
+  tests. See `wip/terminal-test-backend.md`.
+* [ ] Audit the escape sequences we emit, preferring ones that do not vary
+  between terminals over testing that they did not.
 * [ ] Snapshot testing for str output and image output regression detection.
 
 Documentation:
@@ -108,12 +113,12 @@ More plot types:
 
 Advanced plot arrangement:
 
-* [ ] Better support for animated plots (API needs thought).
-  * [ ] Animation context manager, owning the printing and cursor state, with
-    opt-in frame timing and frame collection. See
-    `wip/animation-context-manager.md`.
-* [ ] Terminal-aware printing: clip plots to the terminal width and height. See
-  `wip/terminal-aware-printing.md`.
+* [ ] Animation context manager, owning the printing and cursor state.
+  * [ ] Opt-in frame timing.
+  * [ ] Opt-in frame collection.
+* [ ] Crop plot composition primitive.
+  * [ ] By default, clip plots to terminal width and (almost) height, to enable
+    terminal-aware printing.
 
 Advanced furnishings:
 
@@ -127,7 +132,7 @@ Advanced rendering:
 * [ ] Render plots to SVG (keep console aesthetic).
 * [ ] Render plots to PDF (keep console aesthetic).
 
-Back end improvements:
+Backend improvements:
 
 * [x] Upgrade Char backend to use arrays of codepoints and colors.
 * [x] Vectorised composition operations.
@@ -146,6 +151,10 @@ More elaborate documentation:
 * [x] Documentation search.
 * [ ] Tutorials and recipes.
 * [ ] Freeze documentation with each version.
+* [ ] Terminal support matrix: the escape sequences and behaviours the library
+  relies on, against the terminals people actually use. Tells a reader whether
+  their terminal will work, and doubles as the specification of what the
+  library is allowed to emit. See `wip/terminal-test-backend.md`.
 
 More examples:
 
