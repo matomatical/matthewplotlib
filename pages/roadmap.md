@@ -142,6 +142,7 @@ Backend improvements:
 * [x] Faster animated plot redraws (e.g., differential rendering with shortcut
   `-`).
 * [ ] Clean up backend code e.g. using JAX PyTrees and vectorisation.
+* [ ] Automatically optimise saved gifs (lossless compression).
 
 More elaborate documentation:
 
@@ -159,7 +160,7 @@ More elaborate documentation:
 More examples:
 
 * [x] Something to show bar/column plots and histograms.
-* [ ] Game of life, following https://github.com/matomatical/life
+* [x] Game of life as a demonstration of differential rendering.
 * [ ] Webcam with ffmpeg
 
 Future design directions.

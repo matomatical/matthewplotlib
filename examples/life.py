@@ -74,19 +74,14 @@ def axes_overhead(height: int, ylabel: str, ymax: float) -> int:
 def main(
     num_frames: int = 0,
     fps: int = 12,
-    width: int = 76,
-    height: int = 12,
-    panel_height: int = 5,
+    width: int = 72,
+    height: int = 16,
+    panel_height: int = 4,
     density: float = 0.28,
     seed: int = 0,
     save: str | None = None,
 ):
     """Conway's Game of Life, as a showcase for differential rendering.
-
-    Half-block characters give one cell per half-row, so the board is twice as
-    tall as its panel. Braille would pack in four times as many cells again,
-    but a braille cell carries no colour of its own, and here the colour is the
-    point.
 
     Underneath, two time series say what the board is doing and what it costs
     to draw. The right-hand panel is the whole argument for differential
@@ -166,7 +161,7 @@ def main(
                 xrange=(0, span), yrange=(0, kb_max),
                 width=right_width, height=panel_height,
             ),
-            xlabel="redraw cost · bytes sent", ylabel="kB",
+            xlabel="redraw (grey) · diff (orng)", ylabel="kB",
             xfmt="{x:.0f}", yfmt=YFMT,
         )
         plot = board / (cells_panel + bytes_panel)

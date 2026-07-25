@@ -4,7 +4,9 @@ Changelog
 In development
 --------------
 
-TODO
+New:
+
+* `life.py` example: Conway's Game of Life, demonstrating differential redraw.
 
 Version 0.4.0
 -------------
