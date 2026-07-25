@@ -58,15 +58,13 @@ import matthewplotlib as mp
 
 x = np.linspace(-2*np.pi, +2*np.pi, 150)
 
-plot = None
+prev = None
 while True:
     k = (time.time() % 3) * 2
     A = 0.85 + 0.15 * np.cos(k)
     y = A * np.cos(x - 2*np.pi*k/6)
     c = mp.rainbow(1-k/6)
 
-    if plot is not None:
-        print(-plot, end="")
     plot = mp.axes(
         mp.scatter(
             (x, y, c),
@@ -78,8 +76,14 @@ while True:
         xlabel="x",
         ylabel="y",
     )
-    print(plot)
+    print(plot - prev)
+    prev = plot
 
     time.sleep(1/20)
 ```
+
+Subtracting the previous frame repaints only the cells that changed, which is
+far fewer bytes than redrawing the whole plot. On the first pass `prev` is None
+-- there is nothing on screen yet -- so the whole plot is drawn.
+
 ![](images/quickstart.gif)

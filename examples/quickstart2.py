@@ -13,7 +13,7 @@ def main(
     """Animated cosine wave with shifting phase and amplitude."""
     x = np.linspace(-2*np.pi, +2*np.pi, 150)
 
-    plot = None
+    prev = None
     frames = [] if save else None
 
     frame = 0
@@ -22,8 +22,6 @@ def main(
         A = 0.85 + 0.15 * np.cos(k)
         y = A * np.cos(x - 2*np.pi*k/6)
         c = mp.rainbow(1-k/6)
-        if plot is not None:
-            print(-plot, end="")
         plot = mp.axes(
             mp.scatter(
                 (x, y, c),
@@ -35,7 +33,8 @@ def main(
             xlabel="x",
             ylabel="y",
         )
-        print(plot)
+        print(plot - prev)
+        prev = plot
         if frames is not None: frames.append(plot)
         frame += 1
         time.sleep(1/fps)

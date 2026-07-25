@@ -122,8 +122,19 @@ class plot:
         """
         Convert the plot into a string that, if printed immediately after
         plot.renderstr(), will clear that plot from the terminal.
+
+        Like every string in this library, the result is shaped for a plain
+        `print`: it erases the plot and then steps one row above it, so the
+        newline `print` appends leaves the cursor where the plot began, ready
+        to be overdrawn. Printing it with `end=""` instead leaves the cursor a
+        row high, and in an animation loop the plot then climbs the screen one
+        row per frame.
+
+        Requires a spare row above the plot. If the plot begins on the
+        terminal's first row there is nowhere to step, and the redraw lands one
+        row lower.
         """
-        return f"\x1b[{self.height}A\x1b[0J"
+        return f"\x1b[{self.height}A\x1b[0J\x1b[1A"
 
 
     def renderimg(
@@ -185,7 +196,7 @@ class plot:
         return self.clearstr()
 
 
-    def updatestr(self: Self, prev: plot) -> str:
+    def updatestr(self: Self, prev: plot | None) -> str:
         """
         Convert the plot into a string that, if printed when the cursor is just
         below `prev` (i.e. immediately after printing `prev`), updates the
@@ -194,35 +205,40 @@ class plot:
 
         This is the fast path for animation: redrawing a whole frame re-emits
         every cell, while this re-emits only what changed, which can be far
-        fewer bytes over a slow connection. When the two plots differ in size
-        (so there is nothing to diff against), it falls back to a full clear and
-        redraw.
+        fewer bytes over a slow connection.
 
+        Inputs:
+
+        * prev : plot | None.
+          The plot currently on screen. Pass None for the first frame of an
+          animation, when the screen is still empty, and the whole plot is
+          rendered. A plot of a different size is also fine -- there is nothing
+          to diff against, so it falls back to a full clear and redraw.
+
+        As everywhere in this library the result is shaped for a plain `print`.
         See `CharArray.to_ansi_diff_str` for the precise cursor contract.
         """
+        if prev is None:
+            return self.renderstr()
         if (self.height, self.width) != (prev.height, prev.width):
-            return prev.clearstr() + self.renderstr() + "\n"
+            return prev.clearstr() + "\n" + self.renderstr()
         return self.chars.to_ansi_diff_str(prev.chars)
 
 
-    def __sub__(self: Self, other: plot) -> str:
+    def __sub__(self: Self, other: plot | None) -> str:
         """
         Operator shortcut for a differential redraw: the string that updates the
         terminal from `other` to `self` in place.
 
+        Subtracting None means there is nothing on screen yet, so the whole plot
+        is drawn. That makes every frame of an animation the same statement:
+
         ```
         prev = None
         for frame in frames:
-            if prev is None:
-                print(frame, flush=True)
-            else:
-                print(frame - prev, end="", flush=True)
+            print(frame - prev)
             prev = frame
         ```
-
-        Note that the seed frame is printed *with* its trailing newline (no
-        `end=""`) while each update is printed *without* one: an update expects
-        the cursor at column 0 just below the plot, and leaves it there again.
 
         Compare `-plot` (clear) and `str(plot)` (full redraw). See `updatestr`.
         """

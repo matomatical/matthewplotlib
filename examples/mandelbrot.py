@@ -23,7 +23,7 @@ def main(
 
     print(f"Generating {num_frames} frames for Mandelbrot zoom...")
     
-    plot = None
+    prev = None
     for i, zoom in enumerate(zoom_factors):
         start = time.perf_counter()
 
@@ -46,10 +46,9 @@ def main(
         frames.append(frame)
 
         # plot
-        if plot is not None:
-            print(-plot, end="")
         plot = mp.vstack(mp.progress((i+1)/num_frames, width=width), frame)
-        print(plot, sep="")
+        print(plot - prev)
+        prev = plot
 
         # wait
         time.sleep(max(0, start + 1/fps - time.perf_counter()))

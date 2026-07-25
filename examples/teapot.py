@@ -19,7 +19,7 @@ def main(
     save: str | None = None,
 ):
     """Rotating 3D teapot with orbiting camera."""
-    plot = None
+    prev = None
     frames = [] if save else None
     frame = 0
     while num_frames == 0 or frame < num_frames:
@@ -27,8 +27,6 @@ def main(
         p = camera_pos(frame / fps)
 
         # plot
-        if plot:
-            print(-plot, end="")
         plot = mp.scatter3(
             (mp.xaxis(), "red"),
             (mp.yaxis(), "green"),
@@ -39,7 +37,8 @@ def main(
             height=height,
             width=width,
         )
-        print(plot)
+        print(plot - prev)
+        prev = plot
         if frames is not None: frames.append(plot)
 
         frame += 1

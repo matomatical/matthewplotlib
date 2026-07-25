@@ -596,6 +596,7 @@ class _Term:
         self.grid = [[(" ", None, None) for _ in range(cols)] for _ in range(rows)]
         self.r = self.c = 0
         self.wrap_pending = False
+        self.scrolled = 0
         self.fg = None
         self.bg = None
 
@@ -611,9 +612,8 @@ class _Term:
                 self._csi(s[i + 2:j], s[j])
                 i = j + 1
             elif ch == "\n":
-                self.r += 1
+                self._linefeed()
                 self.c = 0
-                self.wrap_pending = False
                 i += 1
             elif ch == "\r":
                 self.c = 0
@@ -621,9 +621,8 @@ class _Term:
                 i += 1
             else:
                 if self.wrap_pending:
-                    self.r += 1
+                    self._linefeed()
                     self.c = 0
-                    self.wrap_pending = False
                 self.grid[self.r][self.c] = (ch, self.fg, self.bg)
                 if self.c == self.cols - 1:
                     self.wrap_pending = True
@@ -631,6 +630,21 @@ class _Term:
                     self.c += 1
                 i += 1
         return self
+
+    def _linefeed(self):
+        """Advance a line, scrolling the screen if already on the last one.
+
+        A line feed is the only thing here that scrolls: cursor-down and
+        cursor-next-line clamp at the bottom margin instead (which is what lets
+        a diff sequence stay put where a full redraw would scroll).
+        """
+        self.wrap_pending = False
+        if self.r == self.rows - 1:
+            self.grid.pop(0)
+            self.grid.append([(" ", None, None) for _ in range(self.cols)])
+            self.scrolled += 1
+        else:
+            self.r += 1
 
     def _csi(self, params, letter):
         if letter == "m":
@@ -688,24 +702,33 @@ def _rand_chars(rng, h, w):
     return unicode_image(img)
 
 
-def _screen_after_diff(prev, new, slack=2):
-    """Emulate printing `prev`, then applying new.to_ansi_diff_str(prev).
+def _screen_after_diff(prev, new, slack=2, rows_below=3):
+    """Emulate print(prev), then print(new.to_ansi_diff_str(prev)).
 
-    `slack` is the number of spare columns beyond the plot's width; pass 0 to
-    put the plot flush against the right edge of the screen.
+    Both are printed the way the library intends -- plainly, so `print` supplies
+    the trailing newline each sequence is shaped to expect.
+
+    `slack` is the number of spare columns beyond the plot's width; pass 0 to put
+    the plot flush against the right edge of the screen. `rows_below` is the
+    spare rows beneath it; pass 1 for the tightest layout that still animates.
     """
     H, W = prev.height, prev.width
-    term = _Term(H + 3, W + slack)
-    term.feed(prev.to_ansi_str()).feed("\n")   # as if print(prev) had run
-    term.feed(new.to_ansi_diff_str(prev))
+    term = _Term(H + rows_below, W + slack)
+    term.feed(prev.to_ansi_str()).feed("\n")            # print(prev)
+    term.feed(new.to_ansi_diff_str(prev)).feed("\n")    # print(new - prev)
     return term
 
 
 class TestCharArrayDiffStr:
-    def test_no_change_is_empty(self):
+    def test_no_change_still_holds_the_cursor(self):
+        """An unchanged frame must not return "": printed, that would add a
+        newline and walk the cursor a row further down every frame."""
         rng = np.random.default_rng(0)
         ca = _rand_chars(rng, 4, 6)
-        assert ca.to_ansi_diff_str(ca) == ""
+        term = _screen_after_diff(ca, ca)
+        ref = _Term(ca.height + 3, ca.width + 2).feed(ca.to_ansi_str())
+        assert term.region(ca.height, ca.width) == ref.region(ca.height, ca.width)
+        assert (term.r, term.c) == (ca.height, 0)
 
     def test_shape_mismatch_raises(self):
         rng = np.random.default_rng(1)
@@ -798,6 +821,26 @@ class TestCharArrayDiffStr:
             assert term.region(new.height, new.width) == ref.region(new.height, new.width)
             assert (term.r, term.c) == (new.height, 0)
 
+    def test_diff_at_bottom_edge_of_screen(self):
+        """One spare row below the plot is enough -- the diff needs no more.
+
+        That row is where the newline `print` appends goes, so a plot of height
+        R-1 on an R-row screen animates without ever scrolling. (A plot of the
+        full screen height cannot animate at all, by either path: printing H rows
+        plus a newline into H rows must scroll, and the plot's top row is then
+        lost off the screen.)
+        """
+        rng = np.random.default_rng(7)
+        base = rng.integers(0, 256, (6, 9, 3), dtype=np.uint8)
+        after = base.copy()
+        after[rng.random((6, 9)) < 0.4] = 200
+        prev, new = unicode_image(base), unicode_image(after)
+        term = _screen_after_diff(prev, new, rows_below=1)
+        ref = _Term(new.height + 1, new.width + 2).feed(new.to_ansi_str())
+        assert term.region(new.height, new.width) == ref.region(new.height, new.width)
+        assert (term.r, term.c) == (new.height, 0)
+        assert term.scrolled == 0
+
 
 class TestPlotUpdateStr:
     def test_sub_operator_matches_updatestr(self):
@@ -805,42 +848,84 @@ class TestPlotUpdateStr:
         b = mp.image(np.random.default_rng(6).random((6, 8)))
         assert (b - a) == b.updatestr(a)
 
+    def test_updatestr_of_none_renders_the_whole_plot(self):
+        """The seed frame of an animation: nothing on screen to diff against."""
+        p = mp.image(np.random.default_rng(9).random((6, 8)))
+        assert p.updatestr(None) == p.renderstr()
+        assert (p - None) == p.renderstr()
+
     def test_updatestr_falls_back_on_size_change(self):
         # different sizes -> clear + full redraw; emulate and check the screen
         prev = mp.image(np.random.default_rng(7).random((8, 10)))   # 4 rows
         new = mp.image(np.random.default_rng(8).random((4, 6)))     # 2 rows
         H = max(prev.height, new.height)
-        term = _Term(H + 3, max(prev.width, new.width) + 2)
-        term.feed(prev.renderstr()).feed("\n")     # as if print(prev) had run
-        term.feed(new.updatestr(prev))
-        ref = _Term(H + 3, new.width + 2).feed(new.renderstr())
-        assert term.region(new.height, new.width) == ref.region(new.height, new.width)
-        # the old plot's extra rows must have been cleared
-        assert term.grid[prev.height - 1][0] == (" ", None, None)
+        term = _Term(H + 4, max(prev.width, new.width) + 2)
+        term.feed("\n")                            # a spare row above the plot
+        term.feed(prev.renderstr()).feed("\n")     # print(prev)
+        term.feed(new.updatestr(prev)).feed("\n")  # print(new - prev)
+        ref = _Term(H + 4, new.width + 2).feed("\n").feed(new.renderstr())
+        assert term.region(new.height + 1, new.width) \
+            == ref.region(new.height + 1, new.width)
+        # the old plot's taller remains must have been cleared
+        assert term.grid[prev.height][0] == (" ", None, None)
 
-    def test_documented_animation_loop(self):
-        """Replay the animation loop exactly as documented on `plot.__sub__`.
+    def test_animation_loop_is_one_uniform_print(self):
+        """Replay the loop documented on `plot.__sub__`, verbatim.
 
-        The seed frame must be printed *with* its newline: `renderstr` does not
-        end in one, so `print(frame, end="")` would leave the cursor at the end
-        of the last row instead of at column 0 below the plot, and every
-        subsequent diff would be applied at the wrong place.
+        Every frame -- including the seed, where prev is None -- is the single
+        statement `print(frame - prev)`, with no `end=""` anywhere.
         """
         rng = np.random.default_rng(11)
-        frames = [mp.image(rng.random((6, 9))) for _ in range(4)]
+        frames = [mp.image(rng.random((6, 9))) for _ in range(5)]
         term = _Term(frames[0].height + 3, frames[0].width + 2)
 
         prev = None
         for frame in frames:
-            if prev is None:
-                term.feed(frame.renderstr()).feed("\n")   # print(frame)
-                assert (term.r, term.c) == (frame.height, 0), \
-                    "seed frame must leave the cursor at column 0 below the plot"
-            else:
-                term.feed(frame - prev)                   # print(frame - prev, end="")
+            term.feed(frame - prev).feed("\n")     # print(frame - prev)
+            assert (term.r, term.c) == (frame.height, 0)
             prev = frame
 
         last = frames[-1]
         ref = _Term(last.height + 3, last.width + 2).feed(last.renderstr())
         assert term.region(last.height, last.width) == ref.region(last.height, last.width)
-        assert (term.r, term.c) == (last.height, 0)
+        assert term.scrolled == 0
+
+    def test_animation_loop_holds_still_when_nothing_changes(self):
+        """A repeated frame must not creep down the screen."""
+        p = mp.image(np.random.default_rng(12).random((6, 9)))
+        term = _Term(p.height + 3, p.width + 2)
+        prev = None
+        for _ in range(5):
+            term.feed(p - prev).feed("\n")
+            prev = p
+        assert (term.r, term.c) == (p.height, 0)
+        assert term.scrolled == 0
+
+
+class TestPlotClearStr:
+    def test_clearstr_preserves_the_row_above_the_plot(self):
+        """The clear erases the plot, then steps above it -- it must not erase
+        the row it steps onto, which is typically the shell's command line."""
+        p = mp.border(mp.text("frame"))
+        term = _Term(10, 30)
+        term.feed("$ python examples/wave.py").feed("\n")
+        term.feed(p.renderstr()).feed("\n")
+        term.feed(-p).feed("\n")                   # print(-plot)
+        assert "".join(c for c, _, _ in term.grid[0]).rstrip() \
+            == "$ python examples/wave.py"
+
+    def test_clear_and_redraw_loop_is_stable(self):
+        """print(-plot) then print(new) must redraw in place, frame after frame."""
+        frames = [mp.border(mp.text(f"F{n}")) for n in range(1, 5)]
+        term = _Term(10, 30)
+        term.feed("\n\n")                          # start partway down
+        term.feed(frames[0].renderstr()).feed("\n")
+        rows = lambda: [r for r, row in enumerate(term.grid)
+                        if any(c != " " for c, _, _ in row)]
+        occupied = [rows()]
+        for f in frames[1:]:
+            term.feed(-f).feed("\n")               # print(-plot)
+            term.feed(f.renderstr()).feed("\n")    # print(plot)
+            occupied.append(rows())
+        assert all(o == occupied[0] for o in occupied), occupied
+        assert term.scrolled == 0

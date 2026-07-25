@@ -32,6 +32,8 @@ Key features:
 * Colourful unicode-based rendering of scatter plots, small images, heatmaps,
   bar charts, histograms, 3d plots, and more.
 * Rendering plots to the terminal with `print(plot)`. No GUI windows to manage!
+* Animation is a loop of `print(plot - prev)`: subtracting the previous frame
+  repaints only the cells that changed.
 * Plots are just expressions. Compose complex plots with horizontal (`+`) and
   vertical (`/`) stacking operations, as in
     `subplots = (plotA + plotB) / (plotC + plotD)`.

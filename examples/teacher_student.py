@@ -26,15 +26,18 @@ def main(
     x = jnp.linspace(-4, 4, 80)
 
     # training loop
+    prev = None
     plot = vis(w_student, w_teacher, x, 0)
     plots = [plot] if save else None
-    print(plot)
+    print(plot - prev)
+    prev = plot
     for t in range(num_steps):
         l = loss(w_student, w_teacher, x)
         g_student = jax.grad(loss)(w_student, w_teacher, x)
         w_student = w_student - learning_rate * g_student
         plot = vis(w_student, w_teacher, x, t+1)
-        print(f"{-plot}{plot}")
+        print(plot - prev)
+        prev = plot
         if plots is not None: plots.append(plot)
         time.sleep(0.02)
 

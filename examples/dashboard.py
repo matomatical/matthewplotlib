@@ -18,7 +18,7 @@ def main(
     history_size = history_seconds * fps
     cpu_history = collections.deque(maxlen=history_size)
     time_points = -np.linspace(history_seconds, 0, history_size)
-    plot = None
+    prev = None
     frame = 0
     if save and num_frames > 0:
         all_frames = []
@@ -82,10 +82,9 @@ def main(
         right_panel = core_title / core_plot
         dashboard = left_panel + right_panel
 
-        if plot:
-            print(-plot, end="")
         plot = dashboard
-        print(plot)
+        print(plot - prev)
+        prev = plot
         if save and num_frames > 0:
             all_frames.append(plot)
 

@@ -217,22 +217,26 @@ class CharArray:
         changed cells. For an animation whose frames are mostly stable, that is
         dramatically fewer bytes down the wire.
 
-        Cursor contract (matching the animated-plot idiom):
+        Cursor contract (the sequence is shaped for a plain `print`):
 
         * On entry, the cursor is assumed to be at column 0 on the line
           immediately below where `prev` was rendered -- exactly where it sits
           after `print`ing `prev`.
-        * On exit, the cursor is left at column 0 on the line immediately below
-          `self`, so the next frame can diff against this one in the same way.
+        * On exit, the cursor is left at column 0 on the *last row of the plot*,
+          so the newline `print` appends carries it to the line below, ready for
+          the next frame to diff against this one in the same way.
+
+        In other words the sequence is incomplete on its own: it expects a
+        trailing newline, just as `to_ansi_str` does. Write it with
+        `print(...)`, not `print(..., end="")`.
 
         Assumes `prev` was rendered starting at column 0 and that all glyphs are
         single-width (the standard animated-plot layout). `self` and `prev` must
-        have the same shape. Returns "" when nothing changed.
+        have the same shape.
 
-        Unlike a full redraw, the returned sequence contains no newlines, so it
-        never scrolls the screen. A plot whose last row sits on the last line of
-        the terminal therefore stays put here, where a clear-and-redraw would
-        scroll it up by a line.
+        Note that an unchanged frame does not return "": it returns a bare
+        cursor-up, so that the newline `print` appends still lands the cursor
+        where the contract promises rather than a row lower.
         """
         if (self.height, self.width) != (prev.height, prev.width):
             raise ValueError(
@@ -249,7 +253,9 @@ class CharArray:
         )
         changed = (self.codes != prev.codes) | fg_changed | bg_changed
         if not changed.any():
-            return ""
+            # nothing to repaint, but still step up so print's newline is
+            # absorbed rather than pushing the cursor a row further down
+            return "\x1b[1A"
 
         s: list[str] = []
         # cursor position, in plot coordinates (row H == just below the plot).
@@ -304,10 +310,14 @@ class CharArray:
                 # cell absolutely rather than relatively.
                 cur_col = col + 1 if col + 1 < self.width else None
 
-        # restore default colour, then drop to column 0 just below the plot
+        # restore default colour, then park at column 0 of the plot's last row,
+        # leaving the newline that `print` appends to complete the frame
         if current_fg is not None or current_bg is not None:
             s.append("\x1b[0m")
-        s.append(f"\x1b[{H - cur_row}E")
+        if cur_row == H - 1:
+            s.append("\r")
+        else:
+            s.append(f"\x1b[{H - 1 - cur_row}E")
         return "".join(s)
 
 
