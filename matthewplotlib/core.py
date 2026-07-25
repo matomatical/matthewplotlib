@@ -231,36 +231,56 @@ class CharArray:
         `print(...)`, not `print(..., end="")`.
 
         Assumes `prev` was rendered starting at column 0 and that all glyphs are
-        single-width (the standard animated-plot layout). `self` and `prev` must
-        have the same shape.
+        single-width (the standard animated-plot layout).
+
+        The two need not be the same size, and only the difference is sent in
+        that case too. Cells outside the region `prev` covered are always
+        painted, since nothing is on screen there to keep. Rows and columns
+        `prev` covered but `self` does not are erased. Growing taller overwrites
+        the rows immediately below the plot: they have to be written into, and a
+        string cannot push them out of the way without knowing where it sits on
+        the screen. Growing shorter leaves those rows blank rather than closing
+        the gap, for the same reason.
 
         Note that an unchanged frame does not return "": it returns a bare
         cursor-up, so that the newline `print` appends still lands the cursor
         where the contract promises rather than a row lower.
         """
-        if (self.height, self.width) != (prev.height, prev.width):
+        H, W = self.height, self.width
+        PH, PW = prev.height, prev.width
+        if H == 0 or PH == 0:
             raise ValueError(
-                "to_ansi_diff_str requires self and prev to have the same shape"
+                "to_ansi_diff_str needs a row in each plot; plot.updatestr "
+                "handles the empty cases"
             )
-        H = self.height
+        oh, ow = min(H, PH), min(W, PW)
 
-        # which cells differ in glyph or colour?
-        fg_changed = (self.fg != prev.fg) | (
-            self.fg & np.any(self.fg_rgb != prev.fg_rgb, axis=-1)
-        )
-        bg_changed = (self.bg != prev.bg) | (
-            self.bg & np.any(self.bg_rgb != prev.bg_rgb, axis=-1)
-        )
-        changed = (self.codes != prev.codes) | fg_changed | bg_changed
-        if not changed.any():
-            # nothing to repaint, but still step up so print's newline is
-            # absorbed rather than pushing the cursor a row further down
-            return "\x1b[1A"
+        # Which cells of self need painting? Within the region prev also covered,
+        # those that differ from it. Outside that region, all of them: either the
+        # screen is blank there (self is wider) or the row is not on screen yet
+        # (self is taller).
+        changed = np.ones((H, W), dtype=bool)
+        if ow:
+            sl = (slice(None, oh), slice(None, ow))
+            fg_changed = (self.fg[sl] != prev.fg[sl]) | (
+                self.fg[sl] & np.any(self.fg_rgb[sl] != prev.fg_rgb[sl], axis=-1)
+            )
+            bg_changed = (self.bg[sl] != prev.bg[sl]) | (
+                self.bg[sl] & np.any(self.bg_rgb[sl] != prev.bg_rgb[sl], axis=-1)
+            )
+            changed[sl] = (
+                (self.codes[sl] != prev.codes[sl]) | fg_changed | bg_changed
+            )
+
+        trailing = max(0, PW - W)    # columns prev covered on each shared row
+        lost_rows = max(0, PH - H)   # rows prev covered and self does not
+        new_rows = max(0, H - PH)    # rows self covers and prev did not
 
         s: list[str] = []
-        # cursor position, in plot coordinates (row H == just below the plot).
+        # Cursor position in plot coordinates -- shared by both plots, since they
+        # start at the same corner. On entry it is one row below prev.
         # cur_col is None when the true column is unknown (see the wrap note).
-        cur_row = H
+        cur_row = PH
         cur_col: int | None = 0
         # SGR colour state: persists across cursor moves, so we only emit a code
         # when the colour actually changes (as in to_ansi_str, but the running
@@ -268,56 +288,99 @@ class CharArray:
         current_fg: None | NDArray = None
         current_bg: None | NDArray = None
 
-        for i in np.flatnonzero(changed.any(axis=1)):
-            for j in np.flatnonzero(changed[i]):
-                # step the cursor to this cell with relative moves
-                if i != cur_row:
-                    d = int(i) - cur_row
-                    s.append(f"\x1b[{abs(d)}{'B' if d > 0 else 'A'}")
-                    cur_row = int(i)
-                col = int(j)
-                if cur_col is None:
-                    s.append(f"\x1b[{col + 1}G")  # absolute column
-                elif col != cur_col:
-                    d = col - cur_col
-                    s.append(f"\x1b[{abs(d)}{'C' if d > 0 else 'D'}")
-                # manage colour
-                controls = []
-                fg = self.fg_rgb[i, j] if self.fg[i, j] else None
-                if fg is None and current_fg is not None:
-                    controls.append(39)  # reset fg
-                elif fg is not None and (
-                    current_fg is None or np.any(fg != current_fg)
-                ):
-                    controls.extend([38, 2, *fg])  # set fg
-                current_fg = fg
-                bg = self.bg_rgb[i, j] if self.bg[i, j] else None
-                if bg is None and current_bg is not None:
-                    controls.append(49)  # reset bg
-                elif bg is not None and (
-                    current_bg is None or np.any(bg != current_bg)
-                ):
-                    controls.extend([48, 2, *bg])  # set bg
-                current_bg = bg
-                if controls:
-                    s.append(f"\x1b[{';'.join(map(str, controls))}m")
-                s.append(chr(self.codes[i, j]))
-                # That glyph advanced the cursor one column -- unless it filled
-                # the final column, in which case terminals defer the wrap: the
-                # cursor stays put with a wrap flag rather than moving past the
-                # edge, so on a screen exactly this wide it is not where
-                # counting glyphs says. Forget the column and address the next
-                # cell absolutely rather than relatively.
-                cur_col = col + 1 if col + 1 < self.width else None
+        def goto_row(i: int) -> None:
+            nonlocal cur_row
+            if i != cur_row:
+                d = i - cur_row
+                s.append(f"\x1b[{abs(d)}{'B' if d > 0 else 'A'}")
+                cur_row = i
 
-        # restore default colour, then park at column 0 of the plot's last row,
-        # leaving the newline that `print` appends to complete the frame
-        if current_fg is not None or current_bg is not None:
-            s.append("\x1b[0m")
-        if cur_row == H - 1:
-            s.append("\r")
+        def reset_colour() -> None:
+            # erasing paints in the current background on many terminals, so the
+            # colour must be back to default before any erase (and at the end)
+            nonlocal current_fg, current_bg
+            if current_fg is not None or current_bg is not None:
+                s.append("\x1b[0m")
+                current_fg = current_bg = None
+
+        def paint(i: int, col: int) -> None:
+            nonlocal cur_col, current_fg, current_bg
+            if cur_col is None:
+                s.append(f"\x1b[{col + 1}G")  # absolute column
+            elif col != cur_col:
+                d = col - cur_col
+                s.append(f"\x1b[{abs(d)}{'C' if d > 0 else 'D'}")
+            controls = []
+            fg = self.fg_rgb[i, col] if self.fg[i, col] else None
+            if fg is None and current_fg is not None:
+                controls.append(39)  # reset fg
+            elif fg is not None and (
+                current_fg is None or np.any(fg != current_fg)
+            ):
+                controls.extend([38, 2, *fg])  # set fg
+            current_fg = fg
+            bg = self.bg_rgb[i, col] if self.bg[i, col] else None
+            if bg is None and current_bg is not None:
+                controls.append(49)  # reset bg
+            elif bg is not None and (
+                current_bg is None or np.any(bg != current_bg)
+            ):
+                controls.extend([48, 2, *bg])  # set bg
+            current_bg = bg
+            if controls:
+                s.append(f"\x1b[{';'.join(map(str, controls))}m")
+            s.append(chr(self.codes[i, col]))
+            # That glyph advanced the cursor one column -- unless it filled the
+            # final column, in which case terminals defer the wrap: the cursor
+            # stays put with a wrap flag rather than moving past the edge, so on
+            # a screen exactly this wide it is not where counting glyphs says.
+            # Forget the column and address the next cell absolutely.
+            cur_col = col + 1 if col + 1 < W else None
+
+        # repaint the rows that are already on screen
+        for i in range(oh):
+            cols = np.flatnonzero(changed[i])
+            if not len(cols) and not trailing:
+                continue
+            goto_row(i)
+            for j in cols:
+                paint(i, int(j))
+            if trailing:
+                reset_colour()
+                if cur_col != W:
+                    s.append(f"\x1b[{W + 1}G")
+                    cur_col = W
+                s.append(f"\x1b[{trailing}X")
+
+        # erase the rows prev covered and self does not
+        if lost_rows:
+            reset_colour()
+            goto_row(H)
+            s.append("\x1b[2K" + "\x1b[B\x1b[2K" * (lost_rows - 1))
+            cur_row = H + lost_rows - 1
+
+        # Append the rows self covers and prev did not. These need newlines
+        # rather than cursor moves: cursor-down clamps at the bottom margin,
+        # where a newline scrolls.
+        if new_rows:
+            goto_row(PH - 1)
+            for i in range(PH, H):
+                s.append("\n")
+                cur_row, cur_col = i, 0
+                for col in range(W):
+                    paint(i, col)
+
+        reset_colour()
+        # park at column 0 of the plot's last row, leaving the newline that
+        # `print` appends to complete the frame
+        d = (H - 1) - cur_row
+        if d > 0:
+            s.append(f"\x1b[{d}E")       # down, and to column 0
         else:
-            s.append(f"\x1b[{H - 1 - cur_row}E")
+            if d < 0:
+                s.append(f"\x1b[{-d}A")  # up, column preserved
+            if cur_col != 0:
+                s.append("\r")
         return "".join(s)
 
 

@@ -607,7 +607,7 @@ class _Term:
             if ch == "\x1b":
                 assert s[i + 1] == "["
                 j = i + 2
-                while s[j] not in "ABCDEFGHJKmf":
+                while s[j] not in "ABCDEFGHJKXmf":
                     j += 1
                 self._csi(s[i + 2:j], s[j])
                 i = j + 1
@@ -739,12 +739,22 @@ class TestCharArrayDiffStr:
         assert term.region(ca.height, ca.width) == ref.region(ca.height, ca.width)
         assert (term.r, term.c) == (ca.height, 0)
 
-    def test_shape_mismatch_raises(self):
+    def test_different_shapes_are_diffed_not_rejected(self):
         rng = np.random.default_rng(1)
         a = _rand_chars(rng, 3, 4)
         b = _rand_chars(rng, 3, 5)
+        assert b.to_ansi_diff_str(a)          # no exception; see the resize tests
+
+    def test_empty_plot_raises(self):
+        """updatestr owns the empty cases, so the array-level call rejects them
+        rather than silently emitting a sequence for a plot with no rows."""
+        rng = np.random.default_rng(1)
+        a = _rand_chars(rng, 3, 4)
+        empty = CharArray.from_size(height=0, width=0)
         with pytest.raises(ValueError):
-            b.to_ansi_diff_str(a)
+            a.to_ansi_diff_str(empty)
+        with pytest.raises(ValueError):
+            empty.to_ansi_diff_str(a)
 
     def test_diff_repaints_only_changed_cell(self):
         rng = np.random.default_rng(2)
@@ -863,20 +873,11 @@ class TestPlotUpdateStr:
         assert p.updatestr(None) == p.renderstr()
         assert (p - None) == p.renderstr()
 
-    def test_updatestr_falls_back_on_size_change(self):
-        # different sizes -> clear + full redraw; emulate and check the screen
-        prev = mp.image(np.random.default_rng(7).random((8, 10)))   # 4 rows
-        new = mp.image(np.random.default_rng(8).random((4, 6)))     # 2 rows
-        H = max(prev.height, new.height)
-        term = _Term(H + 4, max(prev.width, new.width) + 2)
-        term.feed("\n")                            # a spare row above the plot
-        term.feed(prev.renderstr()).feed("\n")     # print(prev)
-        term.feed(new.updatestr(prev)).feed("\n")  # print(new - prev)
-        ref = _Term(H + 4, new.width + 2).feed("\n").feed(new.renderstr())
-        assert term.region(new.height + 1, new.width) \
-            == ref.region(new.height + 1, new.width)
-        # the old plot's taller remains must have been cleared
-        assert term.grid[prev.height][0] == (" ", None, None)
+    def test_updatestr_handles_an_empty_previous_plot(self):
+        p = mp.image(np.random.default_rng(7).random((6, 8)))
+        empty = mp.blank(height=0, width=0)
+        assert p.updatestr(empty) == p.renderstr()   # nothing on screen to diff
+        assert empty.updatestr(p) == p.clearstr()    # nothing left to show
 
     def test_animation_loop_is_one_uniform_print(self):
         """Replay the loop documented on `plot.__sub__`, verbatim.
@@ -909,6 +910,124 @@ class TestPlotUpdateStr:
             prev = p
         assert (term.r, term.c) == (p.height, 0)
         assert term.scrolled == 0
+
+
+def _screen_after_resize(prev, new, footer=None, slack=2, rows_below=4):
+    """print(prev), optionally a footer line beneath it, then print(new - prev).
+
+    The footer is written on the row the cursor already occupies -- one below
+    prev -- and the carriage return puts the cursor back where the contract
+    wants it. It must fit on one screen row, or it would wrap and leave the
+    cursor somewhere the contract does not expect.
+    """
+    UH = max(prev.height, new.height)
+    UW = max(prev.width, new.width)
+    assert footer is None or len(footer) <= UW + slack
+    term = _Term(UH + rows_below, UW + slack)
+    term.feed(prev.to_ansi_str()).feed("\n")
+    if footer is not None:
+        term.feed(footer).feed("\r")
+    term.feed(new.to_ansi_diff_str(prev)).feed("\n")
+    return term
+
+
+class TestCharArrayDiffStrResize:
+    """A resize is still a diff: the overlap is compared, the rest painted or
+    erased. Afterwards the screen must look exactly as a fresh render of `new`
+    does -- i.e. the new plot, and blanks everywhere the old one reached."""
+
+    SIZES = [
+        ((4, 8), (4, 8), "same"),
+        ((4, 8), (6, 8), "taller"),
+        ((6, 8), (4, 8), "shorter"),
+        ((4, 8), (4, 12), "wider"),
+        ((4, 12), (4, 8), "narrower"),
+        ((4, 8), (6, 12), "taller and wider"),
+        ((6, 12), (4, 8), "shorter and narrower"),
+        ((6, 8), (4, 12), "shorter and wider"),
+        ((4, 12), (6, 8), "taller and narrower"),
+        ((1, 1), (5, 9), "from a single cell"),
+        ((5, 9), (1, 1), "down to a single cell"),
+    ]
+
+    @pytest.mark.parametrize("pshape,nshape,label", SIZES)
+    def test_resize_matches_a_fresh_render(self, pshape, nshape, label):
+        rng = np.random.default_rng(abs(hash(label)) % 2**32)
+        prev = _rand_chars(rng, *pshape)
+        new = _rand_chars(rng, *nshape)
+        term = _screen_after_resize(prev, new)
+        UH = max(prev.height, new.height)
+        UW = max(prev.width, new.width)
+        ref = _Term(UH + 4, UW + 2).feed(new.to_ansi_str())
+        assert term.region(UH, UW) == ref.region(UH, UW), label
+        assert (term.r, term.c) == (new.height, 0), label
+        assert term.scrolled == 0, label
+
+    def test_resize_random(self):
+        rng = np.random.default_rng(4242)
+        for _ in range(120):
+            ph, pw = int(rng.integers(1, 7)), int(rng.integers(1, 11))
+            nh, nw = int(rng.integers(1, 7)), int(rng.integers(1, 11))
+            prev, new = _rand_chars(rng, ph, pw), _rand_chars(rng, nh, nw)
+            term = _screen_after_resize(prev, new)
+            UH, UW = max(ph, nh), max(pw, nw)
+            ref = _Term(UH + 4, UW + 2).feed(new.to_ansi_str())
+            assert term.region(UH, UW) == ref.region(UH, UW), (ph, pw, nh, nw)
+            assert (term.r, term.c) == (nh, 0), (ph, pw, nh, nw)
+
+    def test_shrinking_leaves_content_below_alone(self):
+        """Losing rows erases exactly those rows -- a gap, not a bulldozer."""
+        rng = np.random.default_rng(5)
+        prev, new = _rand_chars(rng, 6, 8), _rand_chars(rng, 3, 8)
+        term = _screen_after_resize(prev, new, footer="below")
+        line = lambda r: "".join(c for c, _, _ in term.grid[r]).rstrip()
+        assert [line(r) for r in range(3, 6)] == ["", "", ""]   # the gap
+        assert line(6) == "below"                              # untouched
+
+    def test_growing_taller_overwrites_content_below(self):
+        """The documented cost of growth: those rows have to be written into."""
+        rng = np.random.default_rng(6)
+        prev, new = _rand_chars(rng, 3, 8), _rand_chars(rng, 5, 8)
+        term = _screen_after_resize(prev, new, footer="below")
+        line = lambda r: "".join(c for c, _, _ in term.grid[r]).rstrip()
+        assert line(3) != "below"             # row 3 now belongs to the plot
+        ref = _Term(9, 10).feed(new.to_ansi_str())
+        assert term.region(5, 8) == ref.region(5, 8)
+
+    def test_growing_taller_scrolls_at_the_bottom_of_the_screen(self):
+        """Appended rows use newlines, so they scroll rather than clamp.
+
+        Cursor-down would have stopped at the bottom margin and painted the
+        appended rows on top of each other.
+        """
+        rng = np.random.default_rng(8)
+        prev, new = _rand_chars(rng, 3, 8), _rand_chars(rng, 5, 8)
+        # screen fits prev plus the row its trailing newline needs, and no more
+        term = _Term(prev.height + 1, new.width + 2)
+        term.feed(prev.to_ansi_str()).feed("\n")
+        term.feed(new.to_ansi_diff_str(prev)).feed("\n")
+        assert term.scrolled == 2             # once per appended row past the end
+        assert (term.r, term.c) == (term.rows - 1, 0)
+        # the screen now shows the plot's tail: its top rows scrolled away
+        ref = _Term(new.height, new.width + 2).feed(new.to_ansi_str())
+        visible = term.rows - 1               # the bottom row is the cursor's
+        offset = new.height - visible
+        for r in range(visible):
+            assert term.grid[r][:new.width] == ref.grid[r + offset][:new.width]
+
+    def test_narrowing_erases_only_the_lost_columns(self):
+        """Trailing columns are erased with ECH, which cannot reach past them."""
+        rng = np.random.default_rng(9)
+        prev, new = _rand_chars(rng, 3, 10), _rand_chars(rng, 3, 6)
+        term = _Term(8, 14)
+        term.feed(prev.to_ansi_str()).feed("\n")
+        # mark the columns to the right of both plots
+        for r in range(3):
+            term.grid[r][12] = ("|", None, None)
+        term.feed(new.to_ansi_diff_str(prev)).feed("\n")
+        for r in range(3):
+            assert [c for c, _, _ in term.grid[r][6:12]] == [" "] * 6
+            assert term.grid[r][12] == ("|", None, None)
 
 
 class TestPlotClearStr:

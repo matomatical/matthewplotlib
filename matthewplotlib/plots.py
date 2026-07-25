@@ -221,16 +221,17 @@ class plot:
         * prev : plot | None.
           The plot currently on screen. Pass None for the first frame of an
           animation, when the screen is still empty, and the whole plot is
-          rendered. A plot of a different size is also fine -- there is nothing
-          to diff against, so it falls back to a full clear and redraw.
+          rendered. A plot of a different size is fine: the overlapping region is
+          still diffed, while the rows and columns only one of them covers are
+          painted or erased as needed.
 
         As everywhere in this library the result is shaped for a plain `print`.
         See `CharArray.to_ansi_diff_str` for the precise cursor contract.
         """
-        if prev is None:
-            return self.renderstr()
-        if (self.height, self.width) != (prev.height, prev.width):
-            return prev.clearstr() + "\n" + self.renderstr()
+        if prev is None or prev.height == 0:
+            return self.renderstr()     # nothing on screen to diff against
+        if self.height == 0:
+            return prev.clearstr()      # nothing left to show
         return self.chars.to_ansi_diff_str(prev.chars)
 
 
