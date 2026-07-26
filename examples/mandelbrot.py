@@ -1,4 +1,3 @@
-import time
 import tyro
 import numpy as np
 import matthewplotlib as mp
@@ -18,43 +17,41 @@ def main(
     save: str | None = None,
 ):
     """Mandelbrot set zoom animation."""
+    # The gif is of the fractal alone, so the frames are collected here rather
+    # than with mp.animate(record=True) -- what is shown includes a progress bar
+    # that would be meaningless in a saved animation.
     frames = []
     zoom_factors = np.geomspace(ZOOM_START, ZOOM_END, num_frames)
 
     print(f"Generating {num_frames} frames for Mandelbrot zoom...")
-    
-    prev = None
-    for i, zoom in enumerate(zoom_factors):
-        start = time.perf_counter()
 
-        # zoom
-        xrange = (CX - zoom, CX + zoom)
-        aspect_ratio = width / (2 * height)
-        yzoom = zoom / aspect_ratio
-        yrange = (CY - yzoom, CY + yzoom)
-        
-        # compute
-        frame = mp.function2(
-            lambda xy: max_iter-escape_time(xy[:,0] + 1j * xy[:,1], max_iter),
-            xrange=xrange,
-            yrange=yrange,
-            width=width,
-            height=height,
-            zrange=(0, max_iter),
-            colormap=mp.magma,
-        )
-        frames.append(frame)
+    with mp.animate(fps=fps, stop_on_interrupt=True) as anim:
+        for i, zoom in enumerate(zoom_factors):
+            # zoom
+            xrange = (CX - zoom, CX + zoom)
+            aspect_ratio = width / (2 * height)
+            yzoom = zoom / aspect_ratio
+            yrange = (CY - yzoom, CY + yzoom)
 
-        # plot
-        plot = mp.vstack(mp.progress((i+1)/num_frames, width=width), frame)
-        print(plot - prev)
-        prev = plot
+            # compute
+            frame = mp.function2(
+                lambda xy: max_iter-escape_time(xy[:,0] + 1j * xy[:,1], max_iter),
+                xrange=xrange,
+                yrange=yrange,
+                width=width,
+                height=height,
+                zrange=(0, max_iter),
+                colormap=mp.magma,
+            )
+            frames.append(frame)
 
-        # wait
-        time.sleep(max(0, start + 1/fps - time.perf_counter()))
+            # plot
+            anim.update(
+                mp.vstack(mp.progress((i+1)/num_frames, width=width), frame)
+            )
 
-    if save:
-        mp.save_animation(frames, save, fps=fps, downscale=8)
+    if save and frames:
+        mp.tstack(*frames, fps=fps).savegif(save, downscale=8)
 
 
 def escape_time(c: np.ndarray, max_iter: int) -> np.ndarray:

@@ -1,4 +1,3 @@
-import time
 import tyro
 import numpy as np
 
@@ -19,33 +18,32 @@ def main(
     save: str | None = None,
 ):
     """Rotating 3D teapot with orbiting camera."""
-    prev = None
-    frames = [] if save else None
-    frame = 0
-    while num_frames == 0 or frame < num_frames:
-        # sweep camera
-        p = camera_pos(frame / fps)
+    animation = mp.animate(
+        fps=fps,
+        record=save is not None,
+        stop_on_interrupt=True,
+    )
+    with animation as anim:
+        frame = 0
+        while num_frames == 0 or frame < num_frames:
+            # sweep camera
+            p = camera_pos(frame / fps)
 
-        # plot
-        plot = mp.scatter3(
-            (mp.xaxis(), "red"),
-            (mp.yaxis(), "green"),
-            (mp.zaxis(), "blue"),
-            TEAPOT,
-            camera_position=p,
-            vertical_fov_degrees=55,
-            height=height,
-            width=width,
-        )
-        print(plot - prev)
-        prev = plot
-        if frames is not None: frames.append(plot)
+            # plot
+            anim.update(mp.scatter3(
+                (mp.xaxis(), "red"),
+                (mp.yaxis(), "green"),
+                (mp.zaxis(), "blue"),
+                TEAPOT,
+                camera_position=p,
+                vertical_fov_degrees=55,
+                height=height,
+                width=width,
+            ))
+            frame += 1
 
-        frame += 1
-        time.sleep(1/fps)
-
-    if save and frames:
-        mp.save_animation(frames, save, bgcolor="black", fps=fps)
+    if save:
+        anim.frames.savegif(save, bgcolor="black")
 
    
 
@@ -667,7 +665,4 @@ TEAPOT = np.array([
 
 
 if __name__ == "__main__":
-    try:
-        tyro.cli(main)
-    except KeyboardInterrupt:
-        print()
+    tyro.cli(main)

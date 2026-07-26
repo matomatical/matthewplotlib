@@ -40,7 +40,7 @@ def main(
         time.sleep(1/fps)
 
     if save and frames:
-        mp.save_animation(frames, save, bgcolor="black", fps=fps)
+        mp.tstack(*frames, fps=fps).savegif(save, bgcolor="black")
 
 
 if __name__ == "__main__":

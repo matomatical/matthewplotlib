@@ -1,4 +1,3 @@
-import time
 import collections
 
 import tyro
@@ -18,90 +17,78 @@ def main(
     history_size = history_seconds * fps
     cpu_history = collections.deque(maxlen=history_size)
     time_points = -np.linspace(history_seconds, 0, history_size)
-    prev = None
-    frame = 0
-    if save and num_frames > 0:
-        all_frames = []
-    while num_frames == 0 or frame < num_frames:
-        # collect data
-        cpu_percent = psutil.cpu_percent(percpu=False)
-        cpu_percents_core = psutil.cpu_percent(percpu=True)
-        mem = psutil.virtual_memory()
-        cpu_history.append(cpu_percent)
 
-        padded_history = np.pad(
-            cpu_history, 
-            (history_size - len(cpu_history), 0), 
-            'constant', 
-            constant_values=np.nan
-        )
+    # A dashboard with no frame limit runs until interrupted, so recording it
+    # would grow without bound. Only a bounded run keeps its frames.
+    recording = save is not None and num_frames > 0
+    animation = mp.animate(fps=fps, record=recording, stop_on_interrupt=True)
+    with animation as anim:
+        frame = 0
+        while num_frames == 0 or frame < num_frames:
+            # collect data
+            cpu_percent = psutil.cpu_percent(percpu=False)
+            cpu_percents_core = psutil.cpu_percent(percpu=True)
+            mem = psutil.virtual_memory()
+            cpu_history.append(cpu_percent)
 
-        # CPU utilisation
-        cpu_plot = mp.border(mp.scatter(
-            (time_points, padded_history, "cyan"),
-            width=40,
-            height=7,
-            xrange=(-history_seconds, 0),
-            yrange=(0, 100),
-        ))
-        cpu_title = mp.center(
-            mp.text(f"CPU History ({history_seconds}s)"),
-            width=cpu_plot.width,
-        )
+            padded_history = np.pad(
+                cpu_history,
+                (history_size - len(cpu_history), 0),
+                'constant',
+                constant_values=np.nan
+            )
 
-        # memory usage
-        mem_plot = mp.border(mp.progress(
-            mem.percent / 100, 
-            width=cpu_plot.width - 2, 
-            color="magenta"
-        ))
-        mem_title = mp.center(
-            mp.text(f"Memory: {mem.percent:.1f}%"),
-            width=cpu_plot.width,
-        )
-        left_panel = mp.vstack(
-            cpu_title,
-            cpu_plot,
-            mem_title,
-            mem_plot,
-        )
+            # CPU utilisation
+            cpu_plot = mp.border(mp.scatter(
+                (time_points, padded_history, "cyan"),
+                width=40,
+                height=7,
+                xrange=(-history_seconds, 0),
+                yrange=(0, 100),
+            ))
+            cpu_title = mp.center(
+                mp.text(f"CPU History ({history_seconds}s)"),
+                width=cpu_plot.width,
+            )
 
-        # per-core CPU usage
-        core_plot = mp.border(mp.columns(
-            cpu_percents_core,
-            height=left_panel.height - 3,
-            vrange=100,
-            column_width=1,
-            column_spacing=1,
-            colors=mp.rainbow(np.linspace(0,1,len(cpu_percents_core))),
-        ))
-        core_title = mp.center(
-            mp.text("CPU Core Usage"),
-            width=core_plot.width,
-        )
-        right_panel = core_title / core_plot
-        dashboard = left_panel + right_panel
+            # memory usage
+            mem_plot = mp.border(mp.progress(
+                mem.percent / 100,
+                width=cpu_plot.width - 2,
+                color="magenta"
+            ))
+            mem_title = mp.center(
+                mp.text(f"Memory: {mem.percent:.1f}%"),
+                width=cpu_plot.width,
+            )
+            left_panel = mp.vstack(
+                cpu_title,
+                cpu_plot,
+                mem_title,
+                mem_plot,
+            )
 
-        plot = dashboard
-        print(plot - prev)
-        prev = plot
-        if save and num_frames > 0:
-            all_frames.append(plot)
+            # per-core CPU usage
+            core_plot = mp.border(mp.columns(
+                cpu_percents_core,
+                height=left_panel.height - 3,
+                vrange=100,
+                column_width=1,
+                column_spacing=1,
+                colors=mp.rainbow(np.linspace(0,1,len(cpu_percents_core))),
+            ))
+            core_title = mp.center(
+                mp.text("CPU Core Usage"),
+                width=core_plot.width,
+            )
+            right_panel = core_title / core_plot
 
-        frame += 1
-        time.sleep(1 / fps)
+            anim.update(left_panel + right_panel)
+            frame += 1
 
-    if save and all_frames:
-        mp.save_animation(
-            plots=all_frames,
-            filename=save,
-            fps=fps,
-            bgcolor='black',
-        )
+    if recording:
+        anim.frames.savegif(save, bgcolor='black')
 
 
 if __name__ == "__main__":
-    try:
-        tyro.cli(main)
-    except KeyboardInterrupt:
-        print()
+    tyro.cli(main)
