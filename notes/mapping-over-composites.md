@@ -1,8 +1,9 @@
 # Mapping over composites — framing notes
 
-Raised 2026-07-26 (Matthew), on seeing `tstack.map` land with the animation work
-(`notes/animations.md`). Not designed. This note pins down what the question
-actually is, because the obvious phrasing hides two different operations.
+Raised 2026-07-26 by Matthew, on seeing `tstack.map` land with the animation
+work (`notes/animations.md`); written by Claude. Not designed. This note pins
+down what the question actually is, because the obvious phrasing hides two
+different operations.
 
 ## The ask
 

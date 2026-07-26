@@ -100,9 +100,12 @@ with mp.animate(fps=20) as anim:
 ```
 
 `animate` keeps the previous frame for you, and sleeps off whatever is left of
-each frame's budget rather than a flat `1/fps`, so the time you spend computing
-a frame counts towards its budget instead of being added to it. Inside the block,
-`anim.print(...)` puts a line above the plot instead of through it:
+each frame's budget rather than a flat `1/fps` -- so the time you spend computing
+a frame, and the time the library spends drawing it, both come out of the frame's
+budget instead of being added to it.
+
+A bare `print` inside an animated loop lands in the middle of the plot. Inside the
+block there is somewhere to put it instead, as a method or as a file:
 
 ```python
 with mp.animate(fps=20) as anim:
@@ -110,6 +113,16 @@ with mp.animate(fps=20) as anim:
         anim.update(vis(params))
         if step % 100 == 0:
             anim.print(f"step {step}: loss {loss:.4f}")
+            # or: print(..., file=anim.out), or logging.StreamHandler(anim.out)
+```
+
+Either way the line goes above the plot, and the plot carries on below it. To
+route prints from code that knows nothing about any of this -- somebody else's
+training loop -- redirect stdout into `anim.out` for the block:
+
+```python
+with mp.animate(fps=20) as anim, contextlib.redirect_stdout(anim.out):
+    ...
 ```
 
 Ask it to `record=True` and it keeps every frame, as an animation you can save:
@@ -118,6 +131,7 @@ Ask it to `record=True` and it keeps every frame, as an animation you can save:
 with mp.animate(fps=20, record=True) as anim:
     ...
 anim.frames.savegif("wave.gif")
+print("wanted 20 fps, managed", anim.achieved_fps)
 ```
 
 That recording is an `mp.tstack`, which is what an animation looks like as a
@@ -130,4 +144,12 @@ a = mp.tstack(*[frame(t) for t in np.linspace(0, 1, 60)], fps=30)
 
 a.map(lambda p: mp.border(p, title=" diffusion ")).play(loop=True)
 a[30:][::-1].savegif("backwards.gif")
+```
+
+If your frames are already an array, `mp.animation` is `mp.image` with a time
+axis, and skips the loop entirely:
+
+```python
+mp.animation(field, colormap=mp.viridis, fps=30).play()   # float[t,h,w]
+mp.animation(video).savegif("video.gif")                  # uint8[t,h,w,rgb]
 ```

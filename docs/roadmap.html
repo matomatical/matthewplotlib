@@ -68,7 +68,7 @@
 <li><label><input type="checkbox" checked="" />Horizontal and vertical stacking.</label></li>
 <li><label><input type="checkbox" checked="" />Naive layering plots on top of each other.</label></li>
 <li><label><input type="checkbox" checked="" />Automatically wrapping plots into a grid.</label></li>
-<li><label><input type="checkbox" />Finalise operator assignment.</label></li>
+<li><label><input type="checkbox" />Finalise operator assignment, including an operator for temporal stacking (<code>tstack</code>), which the pre-library sketch spelled <code>|</code>.</label></li>
 </ul>
 <p>Styling plots with colors:</p>
 <ul class="task-list">
@@ -169,17 +169,17 @@
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Animation context manager (<code>animate</code>), owning the printing state. See <code>notes/animations.md</code>.</label>
 <ul class="task-list">
-<li><label><input type="checkbox" checked="" />Opt-in frame timing, drift corrected.</label></li>
-<li><label><input type="checkbox" checked="" />Opt-in frame collection, with the achieved frame rate.</label></li>
-<li><label><input type="checkbox" checked="" />A way to print from inside a running animation without corrupting it.</label></li>
-<li><label><input type="checkbox" />Decide whether catching <code>KeyboardInterrupt</code> should be the default.</label></li>
-<li><label><input type="checkbox" />Routing third-party prints, by redirecting stdout for the block.</label></li>
+<li><label><input type="checkbox" checked="" />Opt-in frame timing, drift corrected, with the frame’s own render and write time inside its budget.</label></li>
+<li><label><input type="checkbox" checked="" />Opt-in frame collection, reporting the achieved frame rate.</label></li>
+<li><label><input type="checkbox" checked="" />A way to print from inside a running animation without corrupting it, as a method (<code>anim.print</code>) and as a stream (<code>anim.out</code>).</label></li>
 </ul></li>
 <li><label><input type="checkbox" checked="" />Temporal stacking (<code>tstack</code>): animations as first-class values.</label>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Indexing, slicing and mapping over frames.</label></li>
-<li><label><input type="checkbox" />Padding frames to a common size, so an animation cannot jitter.</label></li>
-<li><label><input type="checkbox" />An operator, folded into “finalise operator assignment” below.</label></li>
+<li><label><input type="checkbox" checked="" />Padding frames to a common size, so an animation cannot jitter.</label></li>
+<li><label><input type="checkbox" checked="" />Building one straight from an array with a time axis (<code>animation</code>).</label></li>
+<li><label><input type="checkbox" />An operator for temporal stacking. <code>|</code> is vstack’s; <code>&gt;&gt;</code> reads as “then”. Part of “finalise operator assignment” above.</label></li>
+<li><label><input type="checkbox" />Per-frame durations as the primitive instead of a single frame rate, so that concatenating animations of different rates keeps each part at its own speed, and a gif can be written with non-uniform frame delays throughout rather than only from a recording.</label></li>
 </ul></li>
 <li><label><input type="checkbox" />Mapping over the other composites, <code>hstack</code> and friends. See <code>notes/mapping-over-composites.md</code>.</label></li>
 <li><label><input type="checkbox" />Indexing and slicing of plots.</label></li>
@@ -211,6 +211,7 @@
 <li><label><input type="checkbox" checked="" />Intelligent ANSI rendering (only include necessary control codes and resets, e.g., if several characters in a row use the same colours).</label></li>
 <li><label><input type="checkbox" checked="" />Faster animated plot redraws (e.g., differential rendering with shortcut <code>-</code>).</label></li>
 <li><label><input type="checkbox" />Clean up backend code e.g. using JAX PyTrees and vectorisation.</label></li>
+<li><label><input type="checkbox" />A 3-D <code>CharArray</code> (<code>codes[T,H,W]</code>), so animations vectorise the way plots do rather than being a tuple of them. See <code>notes/animations.md</code>.</label></li>
 <li><label><input type="checkbox" />Automatically optimise saved gifs (lossless compression). See <code>notes/gif-size.md</code>.</label></li>
 </ul>
 <p>More elaborate documentation:</p>

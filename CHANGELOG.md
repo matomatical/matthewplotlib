@@ -10,7 +10,10 @@ New:
   arranging plots in time rather than across the screen. Supports `len`,
   indexing and slicing (`a[0]`, `a[10:20]`, `a[::-1]`), `map` for applying a
   combinator to every frame, `play` for showing it in the terminal, and
-  `savegif`.
+  `savegif`. Frames are padded to a common size, so an animation cannot change
+  shape while it plays.
+* `mp.animation(array)`: a `tstack` straight from an array with a time axis,
+  taking what `mp.image` takes with a leading frame index.
 * `mp.animate()`: a context manager that runs an animation loop.
   `anim.update(plot)` writes one frame and returns the string it wrote.
   Optionally caps the frame rate (`fps=`), keeps the frames (`record=True`,
@@ -18,7 +21,8 @@ New:
   (`stop_on_interrupt=True`). Reports the rate actually achieved as
   `anim.achieved_fps`.
 * `anim.print(...)`: print a line above a running animation instead of through
-  it.
+  it. Also available as a stream, `anim.out`, for `print(file=...)`,
+  `logging.StreamHandler`, or redirecting `sys.stdout` for the block.
 * `mp.tstack(...).savegif(f, fps="achieved")` encodes a recorded animation at
   the frame rate it really ran at, rather than the one that was requested.
 * `life.py` example: Conway's Game of Life, demonstrating differential redraw.

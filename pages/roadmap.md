@@ -28,7 +28,8 @@ Basic plot arrangement:
 * [x] Horizontal and vertical stacking.
 * [x] Naive layering plots on top of each other.
 * [x] Automatically wrapping plots into a grid.
-* [ ] Finalise operator assignment.
+* [ ] Finalise operator assignment, including an operator for temporal
+  stacking (`tstack`), which the pre-library sketch spelled `|`.
 
 Styling plots with colors:
 
@@ -124,15 +125,21 @@ Advanced plot arrangement:
 
 * [x] Animation context manager (`animate`), owning the printing state. See
   `notes/animations.md`.
-  * [x] Opt-in frame timing, drift corrected.
-  * [x] Opt-in frame collection, with the achieved frame rate.
-  * [x] A way to print from inside a running animation without corrupting it.
-  * [ ] Decide whether catching `KeyboardInterrupt` should be the default.
-  * [ ] Routing third-party prints, by redirecting stdout for the block.
+  * [x] Opt-in frame timing, drift corrected, with the frame's own render and
+    write time inside its budget.
+  * [x] Opt-in frame collection, reporting the achieved frame rate.
+  * [x] A way to print from inside a running animation without corrupting it,
+    as a method (`anim.print`) and as a stream (`anim.out`).
 * [x] Temporal stacking (`tstack`): animations as first-class values.
   * [x] Indexing, slicing and mapping over frames.
-  * [ ] Padding frames to a common size, so an animation cannot jitter.
-  * [ ] An operator, folded into "finalise operator assignment" below.
+  * [x] Padding frames to a common size, so an animation cannot jitter.
+  * [x] Building one straight from an array with a time axis (`animation`).
+  * [ ] An operator for temporal stacking. `|` is vstack's; `>>` reads as
+    "then". Part of "finalise operator assignment" above.
+  * [ ] Per-frame durations as the primitive instead of a single frame rate, so
+    that concatenating animations of different rates keeps each part at its own
+    speed, and a gif can be written with non-uniform frame delays throughout
+    rather than only from a recording.
 * [ ] Mapping over the other composites, `hstack` and friends. See
   `notes/mapping-over-composites.md`.
 * [ ] Indexing and slicing of plots.
@@ -167,6 +174,8 @@ Backend improvements:
 * [x] Faster animated plot redraws (e.g., differential rendering with shortcut
   `-`).
 * [ ] Clean up backend code e.g. using JAX PyTrees and vectorisation.
+* [ ] A 3-D `CharArray` (`codes[T,H,W]`), so animations vectorise the way
+  plots do rather than being a tuple of them. See `notes/animations.md`.
 * [ ] Automatically optimise saved gifs (lossless compression). See
   `notes/gif-size.md`.
 
