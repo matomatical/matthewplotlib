@@ -63,18 +63,36 @@ def main(
     height: int = 24,
     bounces: int = 2,
     spins: int = 1,
+    palette_strip: bool = True,
     loop: bool = True,
     save: str | None = None,
 ):
     """The Amiga Boing Ball, bouncing.
 
     The animation is periodic in `num_frames`, so it loops seamlessly however
-    many frames you ask for.
+    many frames you ask for. Pass `--no-palette-strip` for the ball on its own.
     """
     animation = mp.animation(
         boing(num_frames, height, width, bounces=bounces, spins=spins),
         fps=fps,
     )
+
+    if palette_strip:
+        # The mechanism, made visible. The strip is the ball's own palette
+        # entries, one per longitude cell, in order -- so what slides sideways
+        # under the ball is exactly what is turning it.
+        #
+        # Each frame needs its *own* strip, which is why this is a zip and not a
+        # `map`: `map` applies one function to every frame, and there is no one
+        # function here. Building the result back up with `tstack` is what the
+        # library asks for in exchange.
+        animation = mp.tstack(*[
+            frame / strip(colours)
+            for frame, colours in zip(animation, cycling(num_frames, spins))
+        ], fps=fps)
+        # Whereas the caption *is* the same on every frame, so that one is a map.
+        label = mp.center(mp.text("palette, cycling"), width=animation.width)
+        animation = animation.map(lambda frame: frame / label)
 
     animation.play(loop=loop)
 
@@ -120,11 +138,28 @@ def boing(
     index = composite(index, shadow, shadow_mask, top=floor, left=left)
     index = composite(index, ball, ball_mask, top=top, left=left)
 
-    # Colour cycling: one palette per frame, the ball's entries rolled round by a
-    # whole number of longitude cells. This is the only thing that turns the ball.
-    roll = np.round(spins * CELLS * phase).astype(int) % CELLS
-    palettes = np.stack([palette(r) for r in roll])         # [frames, entries, 3]
+    # Colour cycling: one palette per frame, and a lookup to colour every pixel.
+    palettes = cycling(num_frames, spins)
     return palettes[np.arange(num_frames)[:, None, None], index]
+
+
+def cycling(num_frames: int, spins: int) -> np.ndarray:  # uint8[frames, entries, 3]
+    """One palette per frame, the ball's entries rolled round a whole cell at a
+    time. This, and nothing else, is what turns the ball."""
+    phase = np.arange(num_frames) / num_frames
+    roll = np.round(spins * CELLS * phase).astype(int) % CELLS
+    return np.stack([palette(r) for r in roll])
+
+
+def strip(colours: np.ndarray) -> mp.plot:      # uint8[entries, 3] -> plot
+    """One palette, as a row of colour: the ball's cells in longitude order.
+
+    Two image rows because half-block rendering pairs them into one character
+    row, and only every second entry because the two latitude parities of a cell
+    are the same two colours the other way round.
+    """
+    cells = colours[BALL:BALL + 2 * CELLS:2]
+    return mp.image(np.repeat(cells[None], 2, axis=0))
 
 
 def ball_sprite(diameter: int) -> tuple[np.ndarray, np.ndarray]:
