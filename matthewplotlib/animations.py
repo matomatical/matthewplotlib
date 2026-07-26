@@ -514,11 +514,13 @@ class animate:
         `plot.updatestr(prev)` the `-` operator gives, with `prev` looked after
         here.
 
-        If the session has an `fps`, this is also where it waits: the sleep
-        happens *before* the write, so the time the caller spent computing this
-        frame counts towards the frame's budget instead of being added to it.
-        Four of the six animated examples got that wrong with a flat
-        `sleep(1/fps)` before this existed.
+        If the session has an `fps`, this is also where it waits. Everything a
+        frame costs is spent inside its budget rather than on top of it: the time
+        the caller spent computing it, because the sleep happens before the
+        write, and the time spent working out the diff and pushing the bytes
+        down the wire, because the next frame is scheduled from the moment this
+        one's slot opened rather than from the moment its write finished. A flat
+        `sleep(1/fps)` gets both wrong, and runs slow by their sum.
 
         The return value is the frame's exact bytes, which is what makes the
         cost of differential rendering measurable from user code -- see
@@ -530,6 +532,10 @@ class animate:
             if delay > 0:
                 time.sleep(delay)
 
+        # This frame's slot opens here. Everything below -- the diff, the write,
+        # and then the caller's compute for the next frame -- is spent within it.
+        due = time.perf_counter()
+
         self._check_fits(plot)
 
         # write, in exactly one print
@@ -538,24 +544,27 @@ class animate:
         self._prev = plot
 
         # book-keeping: timings, recording, and the next deadline
-        now = time.perf_counter()
         self._count += 1
         if self._first is None:
-            self._first = now
-        self._last = now
+            self._first = due
+        self._last = due
         if self._recording is not None:
             self._recording.append(plot)
-            self._times.append(now)
+            self._times.append(due)
         if self.fps is not None:
-            # The next frame is due a period after this one was *due*, which is
-            # what keeps a millisecond of overshoot per frame from adding up.
-            # But never earlier than a period from now: a frame that overran has
-            # already cost its own slot, and taking the following frame's slot
-            # as well would pay the overrun back by writing two frames
-            # back-to-back, which reads as a stutter rather than as recovery.
             period = 1 / self.fps
-            due = now if self._deadline is None else max(now, self._deadline)
-            self._deadline = due + period
+            if self._deadline is None:
+                self._deadline = due + period
+            else:
+                # Nominally a period after the last frame was due, not after it
+                # actually went out: that is what stops a millisecond of sleep
+                # overshoot per frame from accumulating into seconds.
+                self._deadline += period
+                if self._deadline < due:
+                    # More than a whole frame behind. Resynchronise from now
+                    # rather than pay the overrun back, which would write the
+                    # next frames back-to-back and read as a stutter.
+                    self._deadline = due + period
 
         return update
 

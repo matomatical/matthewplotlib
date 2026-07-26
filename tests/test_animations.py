@@ -32,10 +32,17 @@ class Writes(io.TextIOBase):
     example harness.
     """
 
-    def __init__(self, fd: int | None = None) -> None:
+    def __init__(
+        self,
+        fd: int | None = None,
+        clock: "Clock | None" = None,
+        write_cost: float = 0.0,
+    ) -> None:
         self.prints: list[str] = []
         self._pending: list[str] = []
         self._fd = fd
+        self._clock = clock
+        self._write_cost = write_cost
 
     def write(self, s: str) -> int:
         if s == "\n":
@@ -43,6 +50,11 @@ class Writes(io.TextIOBase):
             self._pending = []
         else:
             self._pending.append(s)
+            # Writing to a terminal is not free, and on a fake clock it would
+            # otherwise be, which would hide whether the time a frame spends
+            # being rendered and written is inside its budget or on top of it.
+            if self._clock is not None:
+                self._clock.work(self._write_cost)
         return len(s)
 
     def fileno(self) -> int:
@@ -94,9 +106,13 @@ def frames(n: int, height: int = 2, width: int = 4) -> list[plot]:
 
 
 @contextlib.contextmanager
-def capture(fd: int | None = None):
+def capture(
+    fd: int | None = None,
+    clock: Clock | None = None,
+    write_cost: float = 0.0,
+):
     """Run a block with stdout replaced by a `Writes`."""
-    writes = Writes(fd=fd)
+    writes = Writes(fd=fd, clock=clock, write_cost=write_cost)
     with contextlib.redirect_stdout(writes):    # type: ignore[arg-type]
         yield writes
 
@@ -580,6 +596,41 @@ class TestPacing:
 
         assert clock.now - start == pytest.approx(0.330)   # 30 + 3 * 100
         assert anim.achieved_fps == pytest.approx(10.0)
+
+    def test_the_time_spent_writing_is_inside_the_budget(self, clock):
+        # A frame costs time to diff and to push down the wire, and that has to
+        # come out of its own budget rather than being added to it -- otherwise a
+        # heavy plot or a slow connection silently runs below the requested rate.
+        # Scheduling from when the frame's slot opened rather than from when its
+        # write finished is what buys this.
+        with capture(clock=clock, write_cost=0.030), animate(fps=10) as anim:
+            start = clock.now
+            for _ in range(4):
+                anim.update(frames(1)[0])
+
+        # three full periods, plus the last frame's own write
+        assert clock.now - start == pytest.approx(0.030 + 3 * 0.100)
+        assert anim.achieved_fps == pytest.approx(10.0)
+
+    def test_writing_and_computing_share_one_budget(self, clock):
+        # 30ms of compute and 30ms of writing, in a 100ms frame: still 10fps
+        with capture(clock=clock, write_cost=0.030), animate(fps=10) as anim:
+            start = clock.now
+            for _ in range(4):
+                clock.work(0.030)
+                anim.update(frames(1)[0])
+
+        assert clock.now - start == pytest.approx(0.060 + 3 * 0.100)
+        assert anim.achieved_fps == pytest.approx(10.0)
+
+    def test_writing_for_longer_than_the_budget_just_runs_slow(self, clock):
+        # and does not sleep, and does not try to make the time back
+        with capture(clock=clock, write_cost=0.250), animate(fps=10) as anim:
+            for _ in range(4):
+                anim.update(frames(1)[0])
+
+        assert clock.slept == []
+        assert anim.achieved_fps == pytest.approx(4.0)
 
     def test_an_overrun_does_not_sleep(self, clock):
         with capture(), animate(fps=10) as anim:

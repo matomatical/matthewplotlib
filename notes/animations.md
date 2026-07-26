@@ -1,7 +1,7 @@
 # Animations — design notes
 
-Written 2026-07-26 (Matthew + Claude), alongside building the roadmap's
-animation entries, once differential rendering had been confirmed against a real
+Written 2026-07-26 (Claude), alongside building the roadmap's animation
+entries, once differential rendering had been confirmed against a real
 terminal (`tests/test_terminal.py`). Covers `matthewplotlib.animations`:
 `tstack` and `animate`.
 
@@ -125,22 +125,38 @@ the same idea and would compose with `logging`.
 
 ## Frame rate, requested and achieved
 
-`fps` is an upper bound. The session schedules each write for
-`max(now, previous_deadline) + 1/fps` and sleeps until then *before* writing, so
-the caller's compute counts towards the frame's budget rather than being added to
-it. Four of the six examples used a flat `sleep(1/fps)` after the write, which
-runs slow by exactly the compute time.
+`fps` is an upper bound, and the whole of a frame's cost is spent *inside* its
+budget rather than on top of it. There are three costs, and getting all three
+inside took two goes:
 
-Both halves of that expression are load-bearing, and the first draft got the
-brackets wrong — `max(now, previous_deadline + 1/fps)` — which a test caught:
+* the caller's compute, which is inside because the sleep happens at the top of
+  `update`, before the write, rather than at the bottom;
+* the diff and the write — working out `updatestr` and pushing the bytes down the
+  wire — which are inside because the next frame is scheduled from the moment
+  this frame's slot *opened*, not from the moment its write finished;
+* the sleep's own overshoot, which does not accumulate because the schedule
+  advances by exactly one period from the last deadline.
 
-* scheduling from the previous *deadline* rather than from the previous *write*
-  is what stops a millisecond of overshoot per frame from accumulating;
-* but never scheduling earlier than a period from now is what stops a frame that
-  overran from being paid back out of the following frame's slot. Under the
-  wrong bracketing a 250ms frame at 20fps was followed immediately by the next
-  write with no delay at all, so one slow frame turned into a visible stutter
-  rather than a recovery.
+So: sleep until `deadline`; take `due = now`; write; then
+`deadline += 1/fps`, and only if that lands before `due` — meaning the frame ran
+more than a whole period late — resynchronise to `due + 1/fps`.
+
+Both of the later two were bugs the tests caught, and both are invisible without
+a clock that charges for things:
+
+* The first draft scheduled from `max(now, previous_deadline + 1/fps)` with `now`
+  read *after* the write. Wrong brackets: a 250ms frame at 20fps was followed
+  immediately by the next write with no delay at all, because the overrun was
+  paid back out of the following frame's slot, so one slow frame became a
+  stutter rather than a recovery.
+* Reading the clock after the write also put the write's own cost outside the
+  budget, so the achieved period was `1/fps` *plus* the render and write time —
+  the same flaw as the flat `sleep(1/fps)` the examples used, one term smaller.
+  A fake clock only catches this if writing to it costs something, which is why
+  `tests/test_animations.py` has a stdout that charges the clock per write.
+
+Four of the six examples used a flat `sleep(1/fps)` after the write, which runs
+slow by the sum of all three.
 
 The session times every frame whether or not it is recording, since that costs
 two floats, and exposes `anim.achieved_fps` — the rate the animation actually
