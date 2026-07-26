@@ -35,6 +35,7 @@ from matthewplotlib.plots import (
 
 from matthewplotlib.animations import (
     tstack,
+    animation,
     animate,
 )
 
