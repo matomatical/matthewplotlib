@@ -198,13 +198,22 @@ design with its own note: `notes/mapping-over-composites.md`.
   would have absorbed the `frame = 0` / `while num_frames == 0 or frame <
   num_frames` / `frame += 1` trio that all six examples also duplicate. It reads
   badly at the call site, and the loop bound is the caller's business.
-* **No tty detection.** Nothing in the tree needs it now that the example tests
-  replay into a real terminal, and adding it would quietly damage them: examples
-  run under `contextlib.redirect_stdout` (`tests/examples.py`), so
+* **No tty detection.** That is, nothing changes *what is written* depending on
+  whether a terminal is attached. Nothing in the tree needs it now that the
+  example tests replay into a real terminal, and adding it would quietly damage
+  them: examples run under `contextlib.redirect_stdout` (`tests/examples.py`), so
   `sys.stdout.isatty()` is false inside every example the goldens cover, and a
   library that branched on it would have its whole example suite exercising the
   degraded path. If it is ever wanted, the test recorder needs `isatty()` to
   answer true and the degraded path needs tests of its own.
+
+  The height check below is the one place that asks, and it asks a different
+  question: not "should the output differ" but "is there a terminal here to
+  measure". `_terminal_rows` reads the descriptor rather than calling
+  `shutil.get_terminal_size`, because the latter's whole job is to substitute a
+  fallback size, and a fallback must not be mistaken for a measurement -- it
+  would have the session warning about a 40-row plot in a redirected run on the
+  strength of an invented 24-row terminal.
 * **No alternate screen buffer.** `\x1b[?1049h` gives full-screen-application
   mode and restores the terminal perfectly on exit — including erasing the plot,
   which is the wrong model here. Every string this library emits assumes inline

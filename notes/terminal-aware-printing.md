@@ -58,5 +58,5 @@ of a `with` block; `str(plot)` could not.
   what existing programs print.
 * Does it warn? Silent truncation of a plot is the kind of thing that wastes an
   afternoon.
-* Interaction with image export: `saveimg`/`save_animation` have no terminal,
+* Interaction with image export: `saveimg`/`tstack.savegif` have no terminal,
   so clipping must not apply there.

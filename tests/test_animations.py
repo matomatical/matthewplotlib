@@ -101,6 +101,23 @@ def capture(fd: int | None = None):
         yield writes
 
 
+def interrupt_on_sleep(n: int):
+    """A `time.sleep` that raises KeyboardInterrupt on its nth call.
+
+    Where a Ctrl-C usually lands: an animation waiting out a frame's budget is
+    what the keypress interrupts, not the compute between frames.
+    """
+    calls = 0
+
+    def sleep(_seconds: float) -> None:
+        nonlocal calls
+        calls += 1
+        if calls == n:
+            raise KeyboardInterrupt
+
+    return sleep
+
+
 # # #
 # tstack: CONSTRUCTION
 
@@ -234,6 +251,77 @@ class TestTStackMap:
         a.map(lambda p: border(p))
 
         assert list(a) == before
+
+
+# # #
+# tstack: PLAYING
+
+
+class TestPlay:
+    def test_every_frame_is_written_once(self):
+        ps = frames(4)
+
+        with capture() as out:
+            tstack(*ps).play()
+
+        assert len(out.prints) == 4
+        assert out.prints[0] == ps[0].renderstr()
+        assert out.prints[1] == ps[1] - ps[0]
+
+    def test_playing_goes_through_the_same_path_as_a_live_loop(self):
+        # pull is implemented as push, so the bytes have to agree exactly
+        ps = frames(4)
+
+        with capture() as pulled:
+            tstack(*ps).play()
+        with capture() as pushed, animate() as anim:
+            for p in ps:
+                anim.update(p)
+
+        assert pulled.prints == pushed.prints
+
+    def test_the_animations_own_rate_paces_it(self, clock):
+        with capture():
+            tstack(*frames(3), fps=25).play()
+
+        assert clock.slept == [pytest.approx(0.040), pytest.approx(0.040)]
+
+    def test_an_explicit_rate_overrides_it(self, clock):
+        with capture():
+            tstack(*frames(2), fps=25).play(fps=10)
+
+        assert clock.slept == [pytest.approx(0.100)]
+
+    def test_looping_repeats_until_interrupted(self, monkeypatch):
+        # the only way out of loop=True, which is why play catches it by default
+        ps = frames(2)
+
+        monkeypatch.setattr(time, "sleep", interrupt_on_sleep(3))
+
+        with capture() as out:
+            tstack(*ps, fps=100).play(loop=True)
+
+        # the first frame does not wait, so the third sleep falls in the second
+        # round: the third print being the first frame again is the loop going
+        # round rather than returning after one pass
+        assert out.prints[:3] == [
+            ps[0].renderstr(), ps[1] - ps[0], ps[0] - ps[1],
+        ]
+        assert out.prints[-1] == ""     # the blank line __exit__ leaves behind
+
+    def test_an_interrupt_can_be_allowed_out(self, monkeypatch):
+        monkeypatch.setattr(time, "sleep", interrupt_on_sleep(1))
+
+        with pytest.raises(KeyboardInterrupt):
+            with capture():
+                tstack(*frames(3), fps=100).play(stop_on_interrupt=False)
+
+    def test_playing_nothing_is_not_an_error(self):
+        # and in particular loop=True must not spin forever on no frames
+        with capture() as out:
+            tstack().play(loop=True)
+
+        assert out.prints == []
 
 
 # # #
