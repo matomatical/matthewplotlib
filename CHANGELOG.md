@@ -29,7 +29,7 @@ New:
 * `quickstart3.py` example: `quickstart2.py` with the animation loop handed to
   `mp.animate`.
 * `boing.py` example: the Amiga Boing Ball, built with `mp.animation` from a
-  computed array of frames.
+  computed array of frames, spinning by palette cycling as the original did.
 
 Change:
 

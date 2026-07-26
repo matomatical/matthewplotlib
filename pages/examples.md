@@ -16,7 +16,7 @@ folder for source code.
     </td>
     <td>
       <p><strong>Boing</strong></p>
-      <p>The Amiga Boing Ball, 1984. Every frame is arithmetic on a coordinate grid, so the whole animation is one array with a time axis, built with <code>mp.animation</code> and played as a value rather than a loop.</p>
+      <p>The Amiga Boing Ball, 1984, animated the way the Amiga animated it: the ball is drawn once as colour <em>indices</em> and spins because the palette is rewritten between frames, while the bounce moves a rigid sprite to whole-pixel positions. Two lookups, so the whole animation is one array with a time axis &mdash; built with <code>mp.animation</code> and played as a value rather than a loop.</p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/boing.py">Source</a></p>
     </td>
   </tr>

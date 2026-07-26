@@ -18,9 +18,8 @@ functionality it does have delightful.
     <img src="images/scatter.png" width="100%">
   </td>
   <td width="40%">
-    <img src="images/boing.gif" width="100%">
     <img src="images/teapot.gif" width="100%">
-    <img src="images/mandelbrot.gif" width="50%">
+    <img src="images/mandelbrot.gif" width="50%"><img src="images/boing.gif" width="50%">
     <img src="images/life.gif" width="100%">
   </td>
   <td width="30%">
