@@ -49,6 +49,10 @@ Fix:
 
 Dev:
 
+* `tests/test_exports.py` checks that everything `plots`, `colormaps` and
+  `animations` define is reachable as `mp.something`, deriving the expectation
+  from the modules rather than from a list, so adding a feature does not mean
+  editing a third file.
 * Add module docstrings for `core`, `colors` and `data`, so every module now
   introduces itself in the API reference.
 * Escape sequences are now tested against a real terminal (a tmux pane, see

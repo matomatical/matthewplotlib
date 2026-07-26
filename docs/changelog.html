@@ -68,6 +68,7 @@
 </ul>
 <p>Dev:</p>
 <ul>
+<li><code>tests/test_exports.py</code> checks that everything <code>plots</code>, <code>colormaps</code> and <code>animations</code> define is reachable as <code>mp.something</code>, deriving the expectation from the modules rather than from a list, so adding a feature does not mean editing a third file.</li>
 <li>Add module docstrings for <code>core</code>, <code>colors</code> and <code>data</code>, so every module now introduces itself in the API reference.</li>
 <li>Escape sequences are now tested against a real terminal (a tmux pane, see <code>tests/test_terminal.py</code> and <code>tests/tmux.py</code>) rather than a hand-written emulator, which retires the emulator and makes tmux a development dependency. See <code>notes/terminal-test-backend.md</code>.</li>
 <li>The example smoke tests are replaced by snapshot tests. Every example is replayed into a real terminal print by print and compared against a golden in <code>tests/goldens/</code>, cell by cell in both glyph and colour, along with the byte cost of each print and a digest of the image it saved. Regenerate with <code>make   goldens</code>. See <code>notes/closed/example-snapshot-tests.md</code>.</li>

@@ -37,7 +37,11 @@ To work on a new feature:
    * Docs up to date (`make docs`).
    * Roadmap (`pages/roadmap.md`) is up to date.
    * Changelog (`CHANGELOG.md`) is up to date.
-   * All new features are exported in `__init__.py`.
+   * All new features are exported in `__init__.py`. For `plots`, `colormaps`
+     and `animations` this is checked by `tests/test_exports.py`, which derives
+     what to expect from what those modules define. `data`, `colors` and `core`
+     keep some things back deliberately and are not covered; covering them wants
+     an `__all__` per module.
 3. Then merge into main
 
 Notes:

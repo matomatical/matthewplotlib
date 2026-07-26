@@ -137,23 +137,6 @@ def interrupt_on_sleep(n: int):
 
 
 # # #
-# EXPORTS
-
-
-def test_everything_public_is_exported():
-    """`mp.x` has to work for everything this module means people to use.
-
-    A checklist item in CONTRIBUTING.md until it was missed: the export is a
-    second place to edit, and nothing else in the suite reaches for these through
-    the top-level namespace, so leaving one out breaks no test.
-    """
-    import matthewplotlib as mp
-
-    for name in ("tstack", "animation", "animate"):
-        assert getattr(mp, name, None) is not None, f"mp.{name} is not exported"
-
-
-# # #
 # tstack: CONSTRUCTION
 
 
