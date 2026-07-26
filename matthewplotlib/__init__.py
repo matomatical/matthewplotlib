@@ -30,7 +30,12 @@ from matthewplotlib.plots import (
     dstack2,
     wrap,
     center,
-    save_animation,
+)
+
+
+from matthewplotlib.animations import (
+    tstack,
+    animate,
 )
 
 

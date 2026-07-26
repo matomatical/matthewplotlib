@@ -36,6 +36,10 @@ Arrangement plots:
 * `dstack`
 * `wrap`
 * `center`
+
+The third stacking operation, `tstack`, arranges plots in time rather than
+across the screen, and lives with the rest of the animation machinery in
+`matthewplotlib.animations`.
 """
 from __future__ import annotations
 
@@ -47,7 +51,7 @@ import hilbert as _hilbert
 
 from PIL import Image
 
-from typing import Callable, Literal, Self, Sequence, cast
+from typing import Callable, Literal, Self, cast
 from numpy.typing import ArrayLike, NDArray
 from matthewplotlib.colormaps import ColorMap
 from numbers import Number
@@ -1761,94 +1765,3 @@ class center(plot):
             f"center(height={self.height}, width={self.width}, "
             f"plot={self.plot!r})"
         )
-
-
-# # # 
-# ANIMATIONS
-
-
-def save_animation(
-    plots: Sequence[plot], # non-empty
-    filename: str,
-    upscale: int = 1,
-    downscale: int = 1,
-    bgcolor: ColorLike | None = None,
-    fps: int = 12,
-    repeat: bool = True,
-):
-    """
-    Supply a list of plots and a filename and this method will create an
-    animated gif.
-    
-    Inputs:
-
-    * plots : list[plot].
-        The list of plots forming the frames of the animation.
-    * filename : str.
-        Where to save the gif. Should usually include a '.gif' extension.
-    * upscale : int (>=1, default is 1).
-        Represent each pixel with a square of side-length `upscale` pixels.
-    * downscale : int (>=1, default is 1).
-        Keep every `downscale`th pixel. Does not need to evenly divide the
-        image height or width (think slice(0, height or width, downscale)).
-        Applied after upscaling.
-    * bgcolor : ColorLike | None.
-        Default background colour. If none, a transparent background is used.
-    * fps : int.
-        Approximate frames per second encoded into the gif.
-    * repeat : bool (default True).
-        If true (default), the gif loops indefinitely. If false, the gif only
-        plays once.
-
-    Notes:
-
-    * All plots should be the same size. If they are not, they will be aligned
-      at the top left corner (padded with transparent pixels on the bottom and
-      right). If you want different padding, add blank blocks before passing to
-      this function.
-
-    TODO:
-
-    * Consider making this a plot aggregator and overriding .saveimg(). The
-      only problem is that it's unclear what to use for renderimg and
-      renderstr.
-    * Duration is currently broken, seems to be due to Image internally doing a
-      format conversion from RGBA -> P while saving the gif. Should convert
-      beforehand?
-    """
-    # render plots as image arrays
-    frames = [
-        plot.renderimg(
-            upscale=upscale,
-            downscale=downscale,
-            bgcolor=bgcolor,
-        ) for plot in plots
-    ]
-    
-    # pad them to u8[height, width, RGBA]
-    h = max(frame.shape[0] for frame in frames)
-    w = max(frame.shape[1] for frame in frames)
-    frames_uniform = [
-        np.pad(
-            frame,
-            pad_width=((0,h-frame.shape[0]),(0,w-frame.shape[1]),(0,0)),
-            mode='constant',
-            constant_values=0,
-        ) for frame in frames
-    ]
-    
-    # convert to PIL images
-    images = [
-        Image.fromarray(frame)
-        for frame in frames_uniform
-    ]
-
-    # save
-    loop = 0 if repeat else None  # 0 = loop forever, None = play once
-    images[0].save(
-        filename,
-        save_all=True,
-        append_images=images[1:],
-        duration=1000 // fps,
-        loop=loop,
-    )
