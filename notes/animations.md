@@ -126,10 +126,21 @@ the same idea and would compose with `logging`.
 ## Frame rate, requested and achieved
 
 `fps` is an upper bound. The session schedules each write for
-`max(now, previous_deadline + 1/fps)`: a frame that overruns its budget does not
-accumulate drift, and does not then burst to catch up. Four of the six examples
-used a flat `sleep(1/fps)`, which pays the sleep *on top of* the compute and so
-runs slower than asked by exactly the compute time.
+`max(now, previous_deadline) + 1/fps` and sleeps until then *before* writing, so
+the caller's compute counts towards the frame's budget rather than being added to
+it. Four of the six examples used a flat `sleep(1/fps)` after the write, which
+runs slow by exactly the compute time.
+
+Both halves of that expression are load-bearing, and the first draft got the
+brackets wrong — `max(now, previous_deadline + 1/fps)` — which a test caught:
+
+* scheduling from the previous *deadline* rather than from the previous *write*
+  is what stops a millisecond of overshoot per frame from accumulating;
+* but never scheduling earlier than a period from now is what stops a frame that
+  overran from being paid back out of the following frame's slot. Under the
+  wrong bracketing a 250ms frame at 20fps was followed immediately by the next
+  write with no delay at all, so one slow frame turned into a visible stutter
+  rather than a recovery.
 
 The session times every frame whether or not it is recording, since that costs
 two floats, and exposes `anim.achieved_fps` — the rate the animation actually

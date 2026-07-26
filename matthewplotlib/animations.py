@@ -547,11 +547,15 @@ class animate:
             self._recording.append(plot)
             self._times.append(now)
         if self.fps is not None:
+            # The next frame is due a period after this one was *due*, which is
+            # what keeps a millisecond of overshoot per frame from adding up.
+            # But never earlier than a period from now: a frame that overran has
+            # already cost its own slot, and taking the following frame's slot
+            # as well would pay the overrun back by writing two frames
+            # back-to-back, which reads as a stutter rather than as recovery.
             period = 1 / self.fps
-            self._deadline = (
-                now + period if self._deadline is None
-                else max(now, self._deadline + period)
-            )
+            due = now if self._deadline is None else max(now, self._deadline)
+            self._deadline = due + period
 
         return update
 
