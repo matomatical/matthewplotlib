@@ -34,7 +34,10 @@ Key features:
   bar charts, histograms, 3d plots, and more.
 * Rendering plots to the terminal with `print(plot)`. No GUI windows to manage!
 * Animation is a loop of `print(plot - prev)`: subtracting the previous frame
-  repaints only the cells that changed.
+  repaints only the cells that changed. Or hand the loop to `mp.animate()`,
+  which owns the frame clock and lets you print a line without tearing the plot.
+* Animations are values too: `mp.tstack(*frames)` slices, composes, plays, and
+  saves to a gif.
 * Plots are just expressions. Compose complex plots with horizontal (`+`) and
   vertical (`/`) stacking operations, as in
     `subplots = (plotA + plotB) / (plotC + plotD)`.

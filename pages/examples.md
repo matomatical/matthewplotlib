@@ -141,8 +141,18 @@ folder for source code.
     </td>
     <td>
       <p><strong>Quickstart 2</strong></p>
-      <p>Animated cosine wave with shifting phase and amplitude.</p>
+      <p>Animated cosine wave with shifting phase and amplitude, as a loop of <code>print(plot - prev)</code>.</p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart2.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="images/quickstart3.gif">
+    </td>
+    <td>
+      <p><strong>Quickstart 3</strong></p>
+      <p>The same animation with the loop handed to <code>mp.animate</code>, which keeps the previous frame and the frame clock.</p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart3.py">Source</a></p>
     </td>
   </tr>
   <tr>

@@ -42,6 +42,12 @@
                     <ul>
                             <li>
                                 <a class="module"
+                                   href="../matthewplotlib/animations.html">
+                                    animations
+                                </a>
+                            </li>
+                            <li>
+                                <a class="module"
                                    href="../matthewplotlib/colormaps.html">
                                     colormaps
                                 </a>
@@ -397,9 +403,6 @@
                 </ul>
 
             </li>
-            <li>
-                    <a class="function" href="#save_animation">save_animation</a>
-            </li>
     </ul>
 
                             </li>
@@ -484,6 +487,10 @@ properties, and shortcut operators available with every plot object.</li>
 <li><code><a href="#wrap">wrap</a></code></li>
 <li><code><a href="#center">center</a></code></li>
 </ul>
+
+<p>The third stacking operation, <code>tstack</code>, arranges plots in time rather than
+across the screen, and lives with the rest of the animation machinery in
+<code><a href="animations.html">matthewplotlib.animations</a></code>.</p>
 </div>
 
                 
@@ -2511,64 +2518,6 @@ to the original plot's width (no horizontal padding).</li>
             </div>
                                 </dl>
                             </div>
-                </section>
-                <section id="save_animation">
-                    <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">save_animation</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">plots</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n"><a href="#plot">plot</a></span><span class="p">]</span>,</span><span class="param">	<span class="n">filename</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">upscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">downscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">fps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span>,</span><span class="param">	<span class="n">repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span><span class="return-annotation">):</span></span>
-
-        
-    </div>
-    <a class="headerlink" href="#save_animation"></a>
-    
-            <div class="docstring"><p>Supply a list of plots and a filename and this method will create an
-animated gif.</p>
-
-<p>Inputs:</p>
-
-<ul>
-<li>plots : list[plot].
-The list of plots forming the frames of the animation.</li>
-<li>filename : str.
-Where to save the gif. Should usually include a '.gif' extension.</li>
-<li>upscale : int (&gt;=1, default is 1).
-Represent each pixel with a square of side-length <code>upscale</code> pixels.</li>
-<li>downscale : int (&gt;=1, default is 1).
-Keep every <code>downscale</code>th pixel. Does not need to evenly divide the
-image height or width (think slice(0, height or width, downscale)).
-Applied after upscaling.</li>
-<li>bgcolor : ColorLike | None.
-Default background colour. If none, a transparent background is used.</li>
-<li>fps : int.
-Approximate frames per second encoded into the gif.</li>
-<li>repeat : bool (default True).
-If true (default), the gif loops indefinitely. If false, the gif only
-plays once.</li>
-</ul>
-
-<p>Notes:</p>
-
-<ul>
-<li>All plots should be the same size. If they are not, they will be aligned
-at the top left corner (padded with transparent pixels on the bottom and
-right). If you want different padding, add blank blocks before passing to
-this function.</li>
-</ul>
-
-<p>TODO:</p>
-
-<ul>
-<li>Consider making this a plot aggregator and overriding .saveimg(). The
-only problem is that it's unclear what to use for renderimg and
-renderstr.</li>
-<li>Duration is currently broken, seems to be due to Image internally doing a
-format conversion from RGBA -> P while saving the gif. Should convert
-beforehand?</li>
-</ul>
-</div>
-
-
                 </section>
     </main>
 <script>

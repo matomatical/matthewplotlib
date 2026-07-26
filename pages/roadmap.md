@@ -122,12 +122,19 @@ More plot types:
 
 Advanced plot arrangement:
 
-* [ ] Animation context manager, owning the printing and cursor state. See
-  `notes/animation-context-manager.md`.
-  * [ ] Opt-in frame timing.
-  * [ ] Opt-in frame collection.
-  * [ ] A way to print from inside a running animation without corrupting it.
-* [ ] Temporal stacking (`tstack`): animations as first-class values.
+* [x] Animation context manager (`animate`), owning the printing state. See
+  `notes/animations.md`.
+  * [x] Opt-in frame timing, drift corrected.
+  * [x] Opt-in frame collection, with the achieved frame rate.
+  * [x] A way to print from inside a running animation without corrupting it.
+  * [ ] Decide whether catching `KeyboardInterrupt` should be the default.
+  * [ ] Routing third-party prints, by redirecting stdout for the block.
+* [x] Temporal stacking (`tstack`): animations as first-class values.
+  * [x] Indexing, slicing and mapping over frames.
+  * [ ] Padding frames to a common size, so an animation cannot jitter.
+  * [ ] An operator, folded into "finalise operator assignment" below.
+* [ ] Mapping over the other composites, `hstack` and friends. See
+  `notes/mapping-over-composites.md`.
 * [ ] Indexing and slicing of plots.
 * [ ] Crop plot composition primitive. See `notes/terminal-aware-printing.md`.
   * [ ] By default, clip plots to terminal width and (almost) height, to enable
@@ -145,7 +152,7 @@ Advanced furnishings:
 
 Advanced rendering:
 
-* [x] Export animations to gifs.
+* [x] Export animations to gifs, at the requested or the achieved frame rate.
 * [ ] Render plots to SVG (keep console aesthetic).
 * [ ] Render plots to PDF (keep console aesthetic).
 * [ ] Render plots to TikZ/pgfplots source.

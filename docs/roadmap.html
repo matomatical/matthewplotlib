@@ -167,13 +167,21 @@
 </ul>
 <p>Advanced plot arrangement:</p>
 <ul class="task-list">
-<li><label><input type="checkbox" />Animation context manager, owning the printing and cursor state. See <code>notes/animation-context-manager.md</code>.</label>
+<li><label><input type="checkbox" checked="" />Animation context manager (<code>animate</code>), owning the printing state. See <code>notes/animations.md</code>.</label>
 <ul class="task-list">
-<li><label><input type="checkbox" />Opt-in frame timing.</label></li>
-<li><label><input type="checkbox" />Opt-in frame collection.</label></li>
-<li><label><input type="checkbox" />A way to print from inside a running animation without corrupting it.</label></li>
+<li><label><input type="checkbox" checked="" />Opt-in frame timing, drift corrected.</label></li>
+<li><label><input type="checkbox" checked="" />Opt-in frame collection, with the achieved frame rate.</label></li>
+<li><label><input type="checkbox" checked="" />A way to print from inside a running animation without corrupting it.</label></li>
+<li><label><input type="checkbox" />Decide whether catching <code>KeyboardInterrupt</code> should be the default.</label></li>
+<li><label><input type="checkbox" />Routing third-party prints, by redirecting stdout for the block.</label></li>
 </ul></li>
-<li><label><input type="checkbox" />Temporal stacking (<code>tstack</code>): animations as first-class values.</label></li>
+<li><label><input type="checkbox" checked="" />Temporal stacking (<code>tstack</code>): animations as first-class values.</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />Indexing, slicing and mapping over frames.</label></li>
+<li><label><input type="checkbox" />Padding frames to a common size, so an animation cannot jitter.</label></li>
+<li><label><input type="checkbox" />An operator, folded into “finalise operator assignment” below.</label></li>
+</ul></li>
+<li><label><input type="checkbox" />Mapping over the other composites, <code>hstack</code> and friends. See <code>notes/mapping-over-composites.md</code>.</label></li>
 <li><label><input type="checkbox" />Indexing and slicing of plots.</label></li>
 <li><label><input type="checkbox" />Crop plot composition primitive. See <code>notes/terminal-aware-printing.md</code>.</label>
 <ul class="task-list">
@@ -190,7 +198,7 @@
 </ul>
 <p>Advanced rendering:</p>
 <ul class="task-list">
-<li><label><input type="checkbox" checked="" />Export animations to gifs.</label></li>
+<li><label><input type="checkbox" checked="" />Export animations to gifs, at the requested or the achieved frame rate.</label></li>
 <li><label><input type="checkbox" />Render plots to SVG (keep console aesthetic).</label></li>
 <li><label><input type="checkbox" />Render plots to PDF (keep console aesthetic).</label></li>
 <li><label><input type="checkbox" />Render plots to TikZ/pgfplots source.</label></li>

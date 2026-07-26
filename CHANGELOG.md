@@ -6,9 +6,36 @@ In development
 
 New:
 
+* `mp.tstack(*plots)`: animations as values. The third stacking operation,
+  arranging plots in time rather than across the screen. Supports `len`,
+  indexing and slicing (`a[0]`, `a[10:20]`, `a[::-1]`), `map` for applying a
+  combinator to every frame, `play` for showing it in the terminal, and
+  `savegif`.
+* `mp.animate()`: a context manager that runs an animation loop.
+  `anim.update(plot)` writes one frame and returns the string it wrote.
+  Optionally caps the frame rate (`fps=`), keeps the frames (`record=True`,
+  readable as `anim.frames`), and ends quietly on Ctrl-C
+  (`stop_on_interrupt=True`). Reports the rate actually achieved as
+  `anim.achieved_fps`.
+* `anim.print(...)`: print a line above a running animation instead of through
+  it.
+* `mp.tstack(...).savegif(f, fps="achieved")` encodes a recorded animation at
+  the frame rate it really ran at, rather than the one that was requested.
 * `life.py` example: Conway's Game of Life, demonstrating differential redraw.
+* `quickstart3.py` example: `quickstart2.py` with the animation loop handed to
+  `mp.animate`.
+
+Change:
+
+* `mp.save_animation(plots, filename, ...)` is retired in favour of
+  `mp.tstack(*plots).savegif(filename, ...)`.
+* `teacher_student.py` takes a `--log-every` argument, and logs its loss with
+  `anim.print`.
 
 Fix:
+
+* `dashboard.py` no longer raises `NameError` when asked to save an unbounded
+  run.
 
 * `axes` no longer paints the `ylabel` down the plot's right-hand border when
   the y tick labels are narrower than `ypad + 1`. The tick gutter now widens to

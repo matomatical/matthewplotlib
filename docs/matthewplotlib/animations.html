@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="pdoc 16.0.0"/>
-    <title>matthewplotlib.colors API documentation</title>
+    <title>matthewplotlib.animations API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
     <style>/*! syntax-highlighting.css */pre{line-height:125%;}span.linenos{color:inherit; background-color:transparent; padding-left:5px; padding-right:20px;}.pdoc-code .hll{background-color:#ffffcc}.pdoc-code{background:#f8f8f8;}.pdoc-code .c{color:#3D7B7B; font-style:italic}.pdoc-code .err{border:1px solid #FF0000}.pdoc-code .k{color:#008000; font-weight:bold}.pdoc-code .o{color:#666666}.pdoc-code .ch{color:#3D7B7B; font-style:italic}.pdoc-code .cm{color:#3D7B7B; font-style:italic}.pdoc-code .cp{color:#9C6500}.pdoc-code .cpf{color:#3D7B7B; font-style:italic}.pdoc-code .c1{color:#3D7B7B; font-style:italic}.pdoc-code .cs{color:#3D7B7B; font-style:italic}.pdoc-code .gd{color:#A00000}.pdoc-code .ge{font-style:italic}.pdoc-code .gr{color:#E40000}.pdoc-code .gh{color:#000080; font-weight:bold}.pdoc-code .gi{color:#008400}.pdoc-code .go{color:#717171}.pdoc-code .gp{color:#000080; font-weight:bold}.pdoc-code .gs{font-weight:bold}.pdoc-code .gu{color:#800080; font-weight:bold}.pdoc-code .gt{color:#0044DD}.pdoc-code .kc{color:#008000; font-weight:bold}.pdoc-code .kd{color:#008000; font-weight:bold}.pdoc-code .kn{color:#008000; font-weight:bold}.pdoc-code .kp{color:#008000}.pdoc-code .kr{color:#008000; font-weight:bold}.pdoc-code .kt{color:#B00040}.pdoc-code .m{color:#666666}.pdoc-code .s{color:#BA2121}.pdoc-code .na{color:#687822}.pdoc-code .nb{color:#008000}.pdoc-code .nc{color:#0000FF; font-weight:bold}.pdoc-code .no{color:#880000}.pdoc-code .nd{color:#AA22FF}.pdoc-code .ni{color:#717171; font-weight:bold}.pdoc-code .ne{color:#CB3F38; font-weight:bold}.pdoc-code .nf{color:#0000FF}.pdoc-code .nl{color:#767600}.pdoc-code .nn{color:#0000FF; font-weight:bold}.pdoc-code .nt{color:#008000; font-weight:bold}.pdoc-code .nv{color:#19177C}.pdoc-code .ow{color:#AA22FF; font-weight:bold}.pdoc-code .w{color:#bbbbbb}.pdoc-code .mb{color:#666666}.pdoc-code .mf{color:#666666}.pdoc-code .mh{color:#666666}.pdoc-code .mi{color:#666666}.pdoc-code .mo{color:#666666}.pdoc-code .sa{color:#BA2121}.pdoc-code .sb{color:#BA2121}.pdoc-code .sc{color:#BA2121}.pdoc-code .dl{color:#BA2121}.pdoc-code .sd{color:#BA2121; font-style:italic}.pdoc-code .s2{color:#BA2121}.pdoc-code .se{color:#AA5D1F; font-weight:bold}.pdoc-code .sh{color:#BA2121}.pdoc-code .si{color:#A45A77; font-weight:bold}.pdoc-code .sx{color:#008000}.pdoc-code .sr{color:#A45A77}.pdoc-code .s1{color:#BA2121}.pdoc-code .ss{color:#19177C}.pdoc-code .bp{color:#008000}.pdoc-code .fm{color:#0000FF}.pdoc-code .vc{color:#19177C}.pdoc-code .vg{color:#19177C}.pdoc-code .vi{color:#19177C}.pdoc-code .vm{color:#19177C}.pdoc-code .il{color:#666666}</style>
@@ -41,10 +41,70 @@
                 </a>
                     <ul>
                             <li>
-                                <a class="module"
+                                <a class="module nav-active"
                                    href="../matthewplotlib/animations.html">
                                     animations
                                 </a>
+                                        <ul class="memberlist">
+            <li>
+                    <a class="class" href="#tstack">tstack</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#tstack.__init__">tstack</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#tstack.plots">plots</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#tstack.durations">durations</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#tstack.height">height</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#tstack.width">width</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#tstack.map">map</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#tstack.play">play</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#tstack.savegif">savegif</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#animate">animate</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#animate.__init__">animate</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#animate.fps">fps</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#animate.stop_on_interrupt">stop_on_interrupt</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#animate.update">update</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#animate.print">print</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#animate.achieved_fps">achieved_fps</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#animate.frames">frames</a>
+                        </li>
+                </ul>
+
+            </li>
+    </ul>
+
                             </li>
                             <li>
                                 <a class="module"
@@ -53,25 +113,10 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="module nav-active"
+                                <a class="module"
                                    href="../matthewplotlib/colors.html">
                                     colors
                                 </a>
-                                        <ul class="memberlist">
-            <li>
-                    <a class="variable" href="#Color">Color</a>
-            </li>
-            <li>
-                    <a class="variable" href="#ColorLike">ColorLike</a>
-            </li>
-            <li>
-                    <a class="function" href="#parse_color">parse_color</a>
-            </li>
-            <li>
-                    <a class="variable" href="#NAMED_COLORS">NAMED_COLORS</a>
-            </li>
-    </ul>
-
                             </li>
                             <li>
                                 <a class="module"
@@ -121,112 +166,501 @@
         <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     </button>
-        <a class="pdoc-button git-button" href="https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py" title="Edit on GitHub">
+        <a class="pdoc-button git-button" href="https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/animations.py" title="Edit on GitHub">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 496 512" fill="currentColor"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
         </a>
                     <h1 class="modulename">
-<a href="./../matthewplotlib.html">matthewplotlib</a><wbr>.colors    </h1>
+<a href="./../matthewplotlib.html">matthewplotlib</a><wbr>.animations    </h1>
 
-                        <div class="docstring"><p>Specifying individual colors.</p>
+                        <div class="docstring"><p>Animations: a sequence of plots, and the terminal session that shows them.</p>
 
-<p>Wherever a plot takes a color, it accepts any of several convenient spellings,
-and converts to a single internal representation.</p>
-
-<p>Types:</p>
+<p>There are two things in this module and they are two halves of one loop.</p>
 
 <ul>
-<li><code><a href="#Color">Color</a></code>: The internal representation, an RGB triple of bytes.</li>
-<li><code><a href="#ColorLike">ColorLike</a></code>: Anything accepted in place of one---a named color, a hex string,
-or a triple of ints in 0 to 255 or floats in 0.0 to 1.0.</li>
+<li><p><code><a href="#tstack">tstack</a></code> is an animation as a <strong>value</strong>: a sequence of plots with a frame
+rate. It has no terminal and no clock, and like any other plot expression it
+composes -- slice it, map a combinator over its frames, save it as a gif.</p></li>
+<li><p><code><a href="#animate">animate</a></code> is an animation as a <strong>session</strong>: a context manager that owns the
+terminal for the duration of a <code>with</code> block. Inside it, <code>anim.update(plot)</code>
+writes one frame, the previous-frame bookkeeping of <code>print(plot - prev)</code>
+disappears, frames are paced, and <code>anim.print(...)</code> can log a line without
+corrupting the plot.</p></li>
 </ul>
 
-<p>Conversion:</p>
+<p>Each produces the other, so there is one code path rather than two:</p>
 
-<ul>
-<li><code><a href="#parse_color">parse_color</a></code>: Turn a <code><a href="#ColorLike">ColorLike</a></code> into a <code><a href="#Color">Color</a></code>. See this function for the
-full list of accepted formats.</li>
-<li><code><a href="#NAMED_COLORS">NAMED_COLORS</a></code>: The recognised color names.</li>
-</ul>
+<pre><code># push a live animation into the terminal, keeping the frames
+with mp.animate(fps=20, record=True) as anim:
+    while running:
+        anim.update(compute_frame())
+anim.frames.savegif("out.gif")
 
-<p>For mapping data to colors, rather than naming one color, see
-<code><a href="colormaps.html">matthewplotlib.colormaps</a></code>.</p>
+# pull a finished animation back out of a value
+mp.tstack(*frames).play(fps=20)
+</code></pre>
+
+<p>Note that neither is required. Animation is a loop of <code>print(plot - prev)</code> and
+that stays fully supported; <code><a href="#animate">animate</a></code> is there to own the parts of it that are
+about terminals rather than about plots.</p>
 </div>
 
                 
                 
                 
             </section>
-                <section id="Color">
-                    <div class="attr variable">
-            <span class="def">type</span> <span class="name">Color</span>        =
-<span class="default_value">NDArray</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Color"></a>
-    
-    
-
-                </section>
-                <section id="ColorLike">
-                    <div class="attr variable">
-            <span class="def">type</span> <span class="name">ColorLike</span>        =
-<span class="default_value">str | NDArray | tuple[int, int, int] | tuple[float, float, float] | Color</span>
-
-        
-    </div>
-    <a class="headerlink" href="#ColorLike"></a>
-    
-    
-
-                </section>
-                <section id="parse_color">
-                    <div class="attr function">
+                <section id="tstack">
+                    <div class="attr class">
             
-        <span class="def">def</span>
-        <span class="name">parse_color</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Color</span> <span class="o">|</span> <span class="kc">None</span>:</span></span>
+    <span class="def">class</span>
+    <span class="name">tstack</span>:
 
         
     </div>
-    <a class="headerlink" href="#parse_color"></a>
+    <a class="headerlink" href="#tstack"></a>
     
-            <div class="docstring"><p>Accept and standardise RGB triples in any of the following 'color like'
-formats:</p>
+            <div class="docstring"><p>Temporally stack plots into an animation.</p>
 
-<ol>
-<li><p><strong>Named colours:</strong> The following strings are recognised and translated
-to RGB triples: <code>"black"</code>, <code>"red"</code>, <code>"green"</code>, <code>"blue"</code>, <code>"cyan"</code>,
-<code>"magenta"</code>, <code>"yellow"</code>, <code>"white"</code>.</p></li>
-<li><p><strong>Hexadecimal:</strong> A hexadecimal string like <code>"#ff0000"</code> specifying the
-RGB values in the usual manner.</p></li>
-<li><p><strong>Short hexadecimal:</strong> A three-character hexadecimal string like
-<code>"#f00"</code>, where <code>"#RGB"</code> is equivalent to <code>"#RRGGBB"</code> in the usual
-hexadecimal format.</p></li>
-<li><p><strong>Integer triple:</strong> An array or tuple of three integers in the range 0
-to 255, converted directly to an RGB triple.</p></li>
-<li><p><strong>Float triple:</strong> An array or tuple of three floats in the range 0.0 to
-1.0, converted to an RGB triple by multiplying by 255 and rounding down
-to the nearest integer.</p></li>
-</ol>
+<p>The third stacking operation, alongside <code>hstack</code> (<code>+</code>) and <code>vstack</code> (<code>/</code>):
+where those lay plots out across the screen, this one lays them out in
+time. The result is a value, not an action -- nothing is printed until you
+<code><a href="#tstack.play">play</a></code> it or <code><a href="#tstack.savegif">savegif</a></code> it.</p>
 
-<p>(Arrays or tuples with mixed integers and floats are promoted by NumPy to
-become float triples.)</p>
+<p>Inputs:</p>
+
+<ul>
+<li>*plots : plot | tstack.
+The frames, in order. Any <code><a href="#tstack">tstack</a></code> among them is spliced in frame by
+frame, so <code>tstack(a, b)</code> concatenates two animations and
+<code>tstack(a, still)</code> appends a frame to one.</li>
+<li>fps : optional float.
+The rate this animation is meant to play at, used as the default by
+both <code><a href="#tstack.play">play</a></code> and <code><a href="#tstack.savegif">savegif</a></code>. An upper bound rather than a promise: see
+<code><a href="#animate">animate</a></code>. Defaults to the frame rate of the first <code><a href="#tstack">tstack</a></code> among the
+inputs, so concatenating and slicing preserve it, or to 12.0 if there
+is none.</li>
+<li>durations : optional sequence of float.
+How long each frame was on screen, in milliseconds, if this animation
+was recorded from a live run. Supplied by <code><a href="#animate.frames">animate.frames</a></code>, which is
+the only thing that can know it, and read back by
+<code>savegif(fps="achieved")</code>. Must have one entry per frame.</li>
+</ul>
+
+<p>Examples:</p>
+
+<pre><code># build one frame at a time
+a = mp.tstack(*[
+    mp.image(field(t)) for t in np.linspace(0, 1, 60)
+], fps=30)
+
+# 60 frames, 20 rows, 40 columns
+len(a), a.height, a.width
+
+# every frame, in a titled border
+a = a.map(lambda p: mp.border(p, title=" diffusion "))
+
+# the second half, backwards
+a[len(a)//2:][::-1].play()
+</code></pre>
+
+<p>Notes:</p>
+
+<ul>
+<li>Frames do not have to be the same size. <code><a href="#tstack.savegif">savegif</a></code> pads them to the
+largest, aligned at the top left, and the terminal renders each frame
+correctly -- but a plot that changes size visibly jitters, so it is
+usually worth pinning whatever makes it move (axis ranges, label widths).</li>
+</ul>
 </div>
 
 
-                </section>
-                <section id="NAMED_COLORS">
-                    <div class="attr variable">
-            <span class="name">NAMED_COLORS</span><span class="annotation">: dict[str, Color]</span>        =
-<input id="NAMED_COLORS-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-            <label class="view-value-button pdoc-button" for="NAMED_COLORS-view-value"></label><span class="default_value">{&#39;black&#39;: array([0, 0, 0], dtype=uint8), &#39;red&#39;: array([255,   0,   0], dtype=uint8), &#39;green&#39;: array([  0, 255,   0], dtype=uint8), &#39;blue&#39;: array([  0,   0, 255], dtype=uint8), &#39;cyan&#39;: array([  0, 255, 255], dtype=uint8), &#39;magenta&#39;: array([255,   0, 255], dtype=uint8), &#39;yellow&#39;: array([255, 255,   0], dtype=uint8), &#39;white&#39;: array([255, 255, 255], dtype=uint8)}</span>
+                            <div id="tstack.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">tstack</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">plots</span><span class="p">:</span> <span class="n"><a href="plots.html#plot">matthewplotlib.plots.plot</a></span> <span class="o">|</span> <span class="n"><a href="#tstack">tstack</a></span>,</span><span class="param">	<span class="n">fps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">durations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
 
         
     </div>
-    <a class="headerlink" href="#NAMED_COLORS"></a>
+    <a class="headerlink" href="#tstack.__init__"></a>
     
     
 
+                            </div>
+                            <div id="tstack.plots" class="classattr">
+                                <div class="attr variable">
+            <span class="name">plots</span><span class="annotation">: tuple[<a href="plots.html#plot">matthewplotlib.plots.plot</a>, ...]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#tstack.plots"></a>
+    
+    
+
+                            </div>
+                            <div id="tstack.durations" class="classattr">
+                                <div class="attr variable">
+            <span class="name">durations</span><span class="annotation">: tuple[float, ...] | None</span>
+
+        
+    </div>
+    <a class="headerlink" href="#tstack.durations"></a>
+    
+    
+
+                            </div>
+                            <div id="tstack.height" class="classattr">
+                                <div class="attr variable">
+            <span class="name">height</span><span class="annotation">: int</span>
+
+        
+    </div>
+    <a class="headerlink" href="#tstack.height"></a>
+    
+            <div class="docstring"><p>Number of character rows in the tallest frame (0 if there are none).</p>
+</div>
+
+
+                            </div>
+                            <div id="tstack.width" class="classattr">
+                                <div class="attr variable">
+            <span class="name">width</span><span class="annotation">: int</span>
+
+        
+    </div>
+    <a class="headerlink" href="#tstack.width"></a>
+    
+            <div class="docstring"><p>Number of character columns in the widest frame (0 if there are none).</p>
+</div>
+
+
+                            </div>
+                            <div id="tstack.map" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">map</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n"><a href="plots.html#plot">matthewplotlib.plots.plot</a></span><span class="p">],</span> <span class="n"><a href="plots.html#plot">matthewplotlib.plots.plot</a></span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n"><a href="#tstack">tstack</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#tstack.map"></a>
+    
+            <div class="docstring"><p>Apply a function to every frame, giving a new animation.</p>
+
+<p>This is how an animation composes: any of the combinators in
+<code><a href="plots.html">matthewplotlib.plots</a></code> can be lifted over the time axis by passing it
+through here, which is usually how a static furnishing gets wrapped
+around a moving interior.</p>
+
+<pre><code>a.map(lambda p: mp.border(p, title=" gen 0 "))   # a border on each
+a.map(lambda p: p + legend)                      # a panel beside each
+</code></pre>
+
+<p>The frame rate and recorded durations carry over unchanged, since
+neither depends on what the frames contain.</p>
+
+<p>For combining two animations frame by frame there is no method: zip
+them and rebuild, as in
+<code>mp.tstack(*[x + y for x, y in zip(a, b)])</code>.</p>
+</div>
+
+
+                            </div>
+                            <div id="tstack.play" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">play</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">fps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">loop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">stop_on_interrupt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#tstack.play"></a>
+    
+            <div class="docstring"><p>Print the frames to the terminal, in order, one frame at a time.</p>
+
+<p>A thin wrapper around <code><a href="#animate">animate</a></code>: this pushes the animation's own frames
+through a session, so playing a finished animation and driving a live
+one go down exactly the same path.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>fps : optional float.
+Frame rate to play at, defaulting to the animation's own <code>fps</code>.</li>
+<li>loop : bool (default False).
+If true, start again from the first frame instead of returning,
+forever. Interrupt to stop.</li>
+<li>stop_on_interrupt : bool (default True).
+Whether Ctrl-C ends playback quietly rather than raising
+<code>KeyboardInterrupt</code>. Unlike <code><a href="#animate">animate</a></code>, this defaults to true: there
+is no caller loop here whose control flow could be taken over, and
+interrupting playback is the only way to end <code>loop=True</code>.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="tstack.savegif" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">savegif</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">filename</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">fps</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;achieved&#39;</span><span class="p">],</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">upscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">downscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#tstack.savegif"></a>
+    
+            <div class="docstring"><p>Render the frames and save them as an animated gif.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>filename : str.
+Where to save the gif. Should usually include a '.gif' extension.</li>
+<li>fps : optional float or the string "achieved".
+Frame rate to encode. By default the animation's own <code>fps</code>, which
+for a recording is the rate that was <em>asked</em> for. Pass a number to
+override it, or "achieved" to use the durations actually measured
+while recording -- faithful right down to reproducing a frame that
+stalled, which is honest but rarely what a showcase gif wants.
+Requires <code><a href="#tstack.durations">durations</a></code>, so only a recorded animation can use it.</li>
+<li>upscale : int (&gt;=1, default 1).
+Represent each pixel with a square of side-length <code>upscale</code> pixels.</li>
+<li>downscale : int (&gt;=1, default 1).
+Keep every <code>downscale</code>th pixel. Does not need to evenly divide the
+image height or width (think slice(0, height or width, downscale)).
+Applied after upscaling.</li>
+<li>bgcolor : optional ColorLike.
+Default background colour. If none, a transparent background is
+used.</li>
+<li>repeat : bool (default True).
+If true (default), the gif loops indefinitely. If false, the gif
+only plays once.</li>
+</ul>
+
+<p>Notes:</p>
+
+<ul>
+<li>Frames of different sizes are aligned at the top left corner and
+padded with transparent pixels on the bottom and right. For different
+padding, compose the frames with <code>blank</code> blocks first.</li>
+<li>A gif stores its frame delays in hundredths of a second, so the rate
+in the file is quantised to 10ms steps: 12 fps asks for 83ms, gets
+80ms, and plays at 12.5. Delays are clamped to 10ms, the shortest a
+gif can express, so above 100 fps the file stops getting faster --
+and above roughly 50 fps the number is fiction anyway, since many
+viewers refuse delays under 20ms.</li>
+</ul>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="animate">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">animate</span>:
+
+        
+    </div>
+    <a class="headerlink" href="#animate"></a>
+    
+            <div class="docstring"><p>A context manager that owns the terminal while an animation runs.</p>
+
+<p>Inside the block, each call to <code><a href="#animate.update">update</a></code> writes one frame:</p>
+
+<pre><code>with mp.animate(fps=20) as anim:
+    while running:
+        anim.update(mp.axes(...))
+</code></pre>
+
+<p>which is the <code>print(plot - prev)</code> loop with the parts that are about
+terminals rather than about plots taken over: the <code>prev</code> sentinel and the
+assignment that maintains it, the frame clock, and separating whatever comes
+next on the screen from the plot on the way out.</p>
+
+<p>Everything beyond that first job is opt-in, because a context manager takes
+over the caller's control flow and this library would rather be a library
+than a framework. The plain loop remains fully supported and is what the
+quickstart teaches.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>fps : optional float.
+If given, cap the frame rate: <code><a href="#animate.update">update</a></code> sleeps off whatever is left of
+the previous frame's budget before writing. An upper bound, not a
+guarantee -- a frame that takes longer than <code>1/fps</code> to compute simply
+takes longer, and the clock picks up from there rather than trying to
+catch up. If omitted, <code><a href="#animate.update">update</a></code> returns as soon as it has written.</li>
+<li>record : bool (default False).
+If true, keep every frame, readable afterwards as <code>anim.frames</code>. Opt-in
+because holding an entire animation in memory is a real cost and a
+<code>while True</code> loop would never stop paying it.</li>
+<li>stop_on_interrupt : bool (default False).
+If true, Ctrl-C ends the animation quietly: the <code>with</code> block exits and
+the statements after it still run, so a recording survives to be saved.
+Off by default because swallowing <code>KeyboardInterrupt</code> is precisely the
+kind of control flow a library should not take without being asked.</li>
+</ul>
+
+<p>Attributes, readable during the block and after it:</p>
+
+<ul>
+<li>frames : tstack.
+The recorded animation, with the frame timings attached. Raises unless
+<code>record=True</code> was passed.</li>
+<li>achieved_fps : float | None.
+The frame rate actually managed so far, or None before the second
+frame. Worth printing after a run that felt sluggish: asking for 20 and
+getting 6 is not otherwise visible.</li>
+</ul>
+
+<p>Notes:</p>
+
+<ul>
+<li>A plot has to fit the terminal with a row to spare for the newline that
+<code><a href="#animate.print">print</a></code> appends, so at most <code>rows - 1</code> of it will render. If the first
+frame does not fit, and stdout is a terminal that can be measured, this
+warns once.</li>
+<li>The cursor is left visible. It sits in the plot and blinks there, which is
+a fair trade for never leaving a terminal with an invisible cursor.</li>
+</ul>
+</div>
+
+
+                            <div id="animate.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">animate</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">fps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">record</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">stop_on_interrupt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#animate.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="animate.fps" class="classattr">
+                                <div class="attr variable">
+            <span class="name">fps</span>
+
+        
+    </div>
+    <a class="headerlink" href="#animate.fps"></a>
+    
+    
+
+                            </div>
+                            <div id="animate.stop_on_interrupt" class="classattr">
+                                <div class="attr variable">
+            <span class="name">stop_on_interrupt</span>
+
+        
+    </div>
+    <a class="headerlink" href="#animate.stop_on_interrupt"></a>
+    
+    
+
+                            </div>
+                            <div id="animate.update" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">update</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">plot</span><span class="p">:</span> <span class="n"><a href="plots.html#plot">matthewplotlib.plots.plot</a></span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#animate.update"></a>
+    
+            <div class="docstring"><p>Write one frame, and return the string that was written.</p>
+
+<p>The first call renders the whole plot; each later call repaints only the
+cells that differ from the frame before it, which is the same
+<code>plot.updatestr(prev)</code> the <code>-</code> operator gives, with <code>prev</code> looked after
+here.</p>
+
+<p>If the session has an <code><a href="#animate.fps">fps</a></code>, this is also where it waits: the sleep
+happens <em>before</em> the write, so the time the caller spent computing this
+frame counts towards the frame's budget instead of being added to it.
+Four of the six animated examples got that wrong with a flat
+<code>sleep(1/fps)</code> before this existed.</p>
+
+<p>The return value is the frame's exact bytes, which is what makes the
+cost of differential rendering measurable from user code -- see
+<code>examples/life.py</code>, which plots it.</p>
+</div>
+
+
+                            </div>
+                            <div id="animate.print" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">print</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">object</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#animate.print"></a>
+    
+            <div class="docstring"><p>Print a line above the animation, without corrupting it.</p>
+
+<p>A bare <code><a href="#animate.print">print</a></code> from inside an animated loop lands in the middle of the
+plot, which leaves debugging an animated program a choice between not
+printing and not animating. This routes the line instead: the plot is
+erased, the message takes the row the plot's first row was on, and the
+plot is redrawn one row lower.</p>
+
+<pre><code>with mp.animate(fps=20) as anim:
+    for step in range(1000):
+        anim.update(vis(params))
+        if step % 100 == 0:
+            anim.print(f"step {step}: loss {loss:.4f}")
+</code></pre>
+
+<p>So messages pile up above the plot and scroll off the top of the screen
+in the usual way, with the plot pinned below them. Takes the same
+arguments as the builtin <code><a href="#animate.print">print</a></code>, except that <code>end</code> must stay a newline:
+the redraw has to start at the beginning of a line.</p>
+
+<p>Costs a full repaint, rather than the differential redraw a frame gets.
+Printing happens at human speed, so this is not worth optimising.</p>
+</div>
+
+
+                            </div>
+                            <div id="animate.achieved_fps" class="classattr">
+                                <div class="attr variable">
+            <span class="name">achieved_fps</span><span class="annotation">: float | None</span>
+
+        
+    </div>
+    <a class="headerlink" href="#animate.achieved_fps"></a>
+    
+            <div class="docstring"><p>Frames per second actually achieved so far, or None before frame two.</p>
+</div>
+
+
+                            </div>
+                            <div id="animate.frames" class="classattr">
+                                <div class="attr variable">
+            <span class="name">frames</span><span class="annotation">: <a href="#tstack">tstack</a></span>
+
+        
+    </div>
+    <a class="headerlink" href="#animate.frames"></a>
+    
+            <div class="docstring"><p>The recorded frames, as a <code><a href="#tstack">tstack</a></code>, with their measured durations.</p>
+
+<p>The animation's <code><a href="#animate.fps">fps</a></code> is the rate that was requested, so
+<code>anim.frames.savegif(...)</code> writes a gif at the intended speed by
+default, and <code>savegif(fps="achieved")</code> writes one at the speed the run
+actually managed.</p>
+
+<p>Raises ValueError unless the session was created with <code>record=True</code>.</p>
+</div>
+
+
+                            </div>
                 </section>
     </main>
 <script>
