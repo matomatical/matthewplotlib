@@ -64,10 +64,10 @@
 <ul>
 <li>Colourful unicode-based rendering of scatter plots, small images, heatmaps, bar charts, histograms, 3d plots, and more.</li>
 <li>Rendering plots to the terminal with <code>print(plot)</code>. No GUI windows to manage!</li>
-<li>Animation is a loop of <code>print(plot - prev)</code>: subtracting the previous frame repaints only the cells that changed. Or hand the loop to <code>mp.animate()</code>, which owns the frame clock and lets you print a line without tearing the plot.</li>
-<li>Animations are values too: <code>mp.tstack(*frames)</code> slices, composes, plays, and saves to a gif.</li>
 <li>Plots are just expressions. Compose complex plots with horizontal (<code>+</code>) and vertical (<code>/</code>) stacking operations, as in <code>subplots = (plotA + plotB) / (plotC + plotD)</code>.</li>
 <li>If you absolutely need plots outside the terminal, you can render them to PNG using a pixel font.</li>
+<li>In-place <strong>animated plots</strong> can be as simple as a loop of <code>print(new_plot - prev_plot)</code>. Or, we offer a context manager with an <code>.update(new_plot)</code> method and <code>.print()</code> for pass-through printing.</li>
+<li>Animations support recording and saving to GIF, again using pixel fonts.</li>
 </ul>
 <p>Rough edges:</p>
 <ul>
