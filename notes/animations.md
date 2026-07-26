@@ -1,9 +1,9 @@
 # Animations — design notes
 
 Written 2026-07-26 (Claude), alongside building the roadmap's animation
-entries, once differential rendering had been confirmed against a real
-terminal (`tests/test_terminal.py`). Covers `matthewplotlib.animations`:
-`tstack` and `animate`.
+entries, once differential rendering had been confirmed against a real terminal
+(`tests/test_terminal.py`). Covers `matthewplotlib.animations`: `tstack`,
+`animation` and `animate`.
 
 ## Two halves of one loop
 
@@ -115,13 +115,25 @@ Rejected: scroll regions (`\x1b[r`) and insert-line (`\x1b[L`). Both are
 narrower in terminal support than the handful of sequences the library already
 relies on, and neither buys anything over a repaint that costs nothing.
 
-Deferred: redirecting `sys.stdout` for the duration of the block. It is the only
-option that fixes *third-party* code that prints — a training loop deep in
-someone else's library — which is a real pull. But it makes the session's
-behaviour depend on global state, and it cannot tell a stray print apart from
-the session's own writes. If it is built it should be an explicit opt-in, not
-the default. A file-like `anim.out` for `print(file=...)` is the cheaper half of
-the same idea and would compose with `logging`.
+`anim.out` is the same thing as a file, for the callers that want somewhere to
+write rather than something to call — `print(..., file=anim.out)`,
+`logging.StreamHandler(anim.out)`. Line buffered, because the plot can only be
+moved out of the way a whole line at a time, and flushed on the way out of the
+block so a `print(..., end="")` is not silently swallowed.
+
+Having it also settles the question of routing *third-party* prints, without the
+library making that decision for anyone. A caller who wants a print from deep
+inside someone else's training loop to land above the plot writes:
+
+    with mp.animate(fps=20) as anim, contextlib.redirect_stdout(anim.out):
+
+which is explicit, scoped, and theirs to opt into. The one thing that has to be
+true for it to work is that the session must not write frames through
+`sys.stdout` at the time it writes them, or its own output would recurse back
+through `anim.out` forever. So the session captures the real stdout in
+`__enter__` and writes there for the rest of the block. That is a better rule
+independently: an animation should be drawn where it started being drawn, whatever
+the program does to `sys.stdout` in the meantime.
 
 ## Frame rate, requested and achieved
 
@@ -240,23 +252,34 @@ design with its own note: `notes/mapping-over-composites.md`.
   over a small window is worse than a torn frame. Clipping proper is a layout
   pass, not a session feature.
 
+## Settled
+
+* **`stop_on_interrupt` stays opt-in**, defaulting off, even though every
+  converted example turns it on. Catching `KeyboardInterrupt` is the one service
+  here that changes what the *program* does rather than what the terminal shows,
+  and a library should be asked before it does that. The examples passing it
+  explicitly is the API working, not evidence against the default.
+* **Frames are padded to a common size** on construction, top-left aligned.
+  Differential rendering is what makes this free: the padding is blank in every
+  frame, so no cell of it is ever sent twice, and the alternative was every
+  caller having to know to pin whatever made the plot change size — as
+  `examples/life.py` pins its axis ranges.
+
 ## Open
 
-* Whether `stop_on_interrupt` is opt-in by the right default. It is off here on
-  principle, and every example turns it on, which is mild evidence that the
-  default is backwards.
-* An operator for `tstack`. The old sketch wanted `|`, which vstack has. `>>`
-  reads as "then" and would give time-concatenation a spelling, but the operator
-  budget is nearly spent — folded into the roadmap's "finalise operator
-  assignment".
-* A 3-D `CharArray` (`codes[T,H,W]`) instead of a tuple of plots. It would
+Roadmap entries exist for each of these.
+
+* **An operator for `tstack`.** The old sketch wanted `|`, which vstack has.
+  `>>` reads as "then" and would give time-concatenation a spelling. Part of
+  finalising operator assignment, since the budget is nearly spent.
+* **A 3-D `CharArray`** (`codes[T,H,W]`) instead of a tuple of plots. It would
   vectorise composition and fits the "clean up the backend with pytrees and
-  vectorisation" entry, at the cost of forcing uniform frame sizes and losing
-  the per-frame plot subclass. Worth revisiting only if building a long `tstack`
-  shows up in a profile.
-* Frames of differing sizes. `savegif` pads to the largest, top-left aligned, as
-  `save_animation` did; the terminal path renders them correctly frame to frame
-  (that is what `plot - prev` falls back to) but the plot visibly jitters, and
-  `examples/life.py` pins its axis ranges specifically to avoid it. A `tstack`
-  that padded its frames to a common size on construction would fix the jitter
-  for everyone, and is probably the right default.
+  vectorisation" entry, at the cost of losing the per-frame plot subclass. Worth
+  doing when building a long `tstack` shows up in a profile.
+* **Per-frame durations as the primitive, instead of one frame rate.** A `tstack`
+  carries a scalar `fps` plus, if it was recorded, a duration per frame; only
+  `savegif(fps="achieved")` reads the latter. If durations were the primitive,
+  concatenating a 30fps animation onto a 5fps one would keep both parts playing
+  at their own speed instead of flattening to the first one's rate, and
+  `savegif` would need no special case. Gifs already support it — a per-frame
+  delay list round-trips exactly (measured above) — and so could `play`.

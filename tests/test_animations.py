@@ -6,6 +6,7 @@ book-keeping and the clock.
 """
 
 import io
+import logging
 import os
 import time
 import warnings
@@ -15,7 +16,8 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from matthewplotlib.animations import animate, tstack, _terminal_rows
+from matthewplotlib.animations import animate, animation, tstack, _terminal_rows
+from matthewplotlib.colormaps import viridis
 from matthewplotlib.plots import blank, border, image, plot, text
 
 
@@ -174,7 +176,12 @@ class TestTStackConstruction:
         a = tstack(*frames(3))
         end = text("done")
 
-        assert list(tstack(a, end)) == list(a) + [end]
+        both = tstack(a, end)
+
+        assert len(both) == 4
+        assert list(both)[:3] == list(a)
+        assert both[3].chars.to_plain_str().startswith("done")
+
 
     def test_frame_rate_defaults_to_twelve(self):
         assert tstack(*frames(2)).fps == 12.0
@@ -202,6 +209,43 @@ class TestTStackConstruction:
         r = repr(tstack(*frames(200), fps=25))
 
         assert r == "tstack(frames=200, height=2, width=4, fps=25)"
+
+
+class TestTStackPadding:
+    # An animation whose frames differ in size renders correctly -- that is what
+    # `plot - prev` falls back to -- but it jitters, and the caller has to know
+    # to pin whatever makes it move. Squaring the frames up removes the trap.
+
+    def test_frames_are_squared_up_to_the_largest(self):
+        a = tstack(blank(height=1, width=2), blank(height=3, width=5))
+
+        assert [(p.height, p.width) for p in a] == [(3, 5), (3, 5)]
+
+    def test_the_padding_is_blank(self):
+        # so the differential redraw never sends a cell of it twice, which is
+        # what makes squaring the frames up free
+        a = tstack(text("a"), text("b\nc\nd"))
+
+        assert a[0].chars.to_plain_str().splitlines() == ["a", " ", " "]
+
+    def test_frames_already_the_right_size_are_left_alone(self):
+        # the common case: no copying, and each frame keeps its own class
+        ps = frames(3)
+
+        a = tstack(*ps)
+
+        assert list(a) == ps
+        assert all(type(p) is type(q) for p, q in zip(a, ps))
+
+    def test_mapping_squares_up_again(self):
+        # a mapped function is free to push the sizes back apart
+        a = tstack(text("a"), text("b"))
+
+        mapped = a.map(
+            lambda p: p if p.chars.to_plain_str() == "a" else border(p)
+        )
+
+        assert len({(p.height, p.width) for p in mapped}) == 1
 
 
 # # #
@@ -267,6 +311,71 @@ class TestTStackMap:
         a.map(lambda p: border(p))
 
         assert list(a) == before
+
+
+# # #
+# animation: A tstack FROM AN ARRAY
+
+
+class TestAnimationFromArray:
+    def test_a_scalar_tensor_becomes_one_frame_per_slice(self):
+        # [t,h,w], and two image rows to a character row
+        a = animation(np.zeros((5, 8, 6)))
+
+        assert isinstance(a, tstack)
+        assert len(a) == 5
+        assert (a.height, a.width) == (4, 6)
+
+    def test_an_rgb_tensor_is_accepted(self):
+        a = animation(np.zeros((3, 4, 6, 3), dtype=np.uint8))
+
+        assert len(a) == 3
+        assert (a.height, a.width) == (2, 6)
+
+    def test_it_matches_building_the_frames_by_hand(self):
+        rng = np.random.default_rng(3)
+        field = rng.random((4, 6, 5))
+
+        auto = animation(field, colormap=viridis)
+        manual = tstack(*[image(f, colormap=viridis) for f in field])
+
+        assert [p.renderstr() for p in auto] == [p.renderstr() for p in manual]
+
+    def test_the_colormap_is_applied_on_one_scale_for_every_frame(self):
+        # a frame of all 0.5 must come out the same colour whether the rest of
+        # the animation is dark or bright, which is why the colormap is applied
+        # to the whole tensor rather than frame by frame
+        dim = animation(np.stack([np.full((2, 3), 0.5), np.zeros((2, 3))]),
+                        colormap=viridis)
+        bright = animation(np.stack([np.full((2, 3), 0.5), np.ones((2, 3))]),
+                           colormap=viridis)
+
+        assert dim[0].renderstr() == bright[0].renderstr()
+
+    def test_the_frame_rate_is_carried(self):
+        assert animation(np.zeros((3, 2, 2)), fps=25).fps == 25
+        assert animation(np.zeros((3, 2, 2))).fps == 12.0
+
+    def test_a_plain_image_shaped_array_is_refused(self):
+        # the commonest mistake: forgetting the time axis
+        with pytest.raises(ValueError, match=r"\[t,h,w\]"):
+            animation(np.zeros((8, 6)))
+
+    def test_a_bad_channel_count_is_refused(self):
+        with pytest.raises(ValueError, match="3 channels, not 4"):
+            animation(np.zeros((5, 4, 6, 4)))
+
+    def test_no_frames_is_refused(self):
+        with pytest.raises(ValueError, match="at least one frame"):
+            animation(np.zeros((0, 4, 6)))
+
+    def test_it_is_a_tstack_all_the_way_down(self):
+        # so everything tstack offers works on it without further thought
+        a = animation(np.zeros((6, 4, 5)), fps=20)
+
+        assert isinstance(a[::2], tstack)
+        assert a[::2].fps == 20
+        assert len(a.map(lambda p: border(p))) == 6
 
 
 # # #
@@ -748,6 +857,92 @@ class TestPrint:
 
         assert after == ps[1] - ps[0]
         assert out.prints[-1] == after
+
+
+# # #
+# animate: PRINTING TO A FILE
+
+
+class TestOut:
+    def test_print_to_it_routes_like_anim_print(self):
+        p = frames(1)[0]
+
+        with capture() as out, animate() as anim:
+            anim.update(p)
+            print("hello", file=anim.out)
+
+        assert out.prints[1:] == [p.clearstr(), "hello", p.renderstr()]
+
+    def test_it_buffers_until_a_newline(self):
+        # the plot can only be moved out of the way a whole line at a time
+        p = frames(1)[0]
+
+        with capture() as out, animate() as anim:
+            anim.update(p)
+            anim.out.write("half a ")
+            assert len(out.prints) == 1          # nothing yet
+            anim.out.write("line\n")
+
+        assert out.prints[2] == "half a line"
+
+    def test_several_lines_in_one_write_each_get_their_own_row(self):
+        p = frames(1)[0]
+
+        with capture() as out, animate() as anim:
+            anim.update(p)
+            anim.out.write("one\ntwo\n")
+
+        assert [out.prints[2], out.prints[5]] == ["one", "two"]
+
+    def test_an_unterminated_line_goes_out_when_the_block_ends(self):
+        # otherwise a print(..., end="") would be silently swallowed
+        p = frames(1)[0]
+
+        with capture() as out, animate() as anim:
+            anim.update(p)
+            print("no newline", end="", file=anim.out)
+
+        assert out.prints[2] == "no newline"
+
+    def test_flush_emits_a_partial_line(self):
+        p = frames(1)[0]
+
+        with capture() as out, animate() as anim:
+            anim.update(p)
+            anim.out.write("partial")
+            anim.out.flush()
+            assert out.prints[2] == "partial"
+
+    def test_redirecting_stdout_into_it_does_not_recurse(self):
+        # the session captured the real stdout on the way in, so its own writes
+        # do not come back round through anim.out
+        p = frames(1)[0]
+
+        with capture() as out, animate() as anim:
+            with contextlib.redirect_stdout(anim.out):   # type: ignore[arg-type]
+                anim.update(p)
+                print("a library's own print")
+
+        assert out.prints[1:] == [p.clearstr(), "a library's own print",
+                                 p.renderstr()]
+
+    def test_it_works_as_a_logging_stream(self):
+        p = frames(1)[0]
+        logger = logging.getLogger("test_animations")
+        logger.setLevel(logging.INFO)
+        logger.propagate = False
+
+        with capture() as out, animate() as anim:
+            anim.update(p)
+            handler = logging.StreamHandler(anim.out)    # type: ignore[arg-type]
+            handler.setFormatter(logging.Formatter("%(levelname)s %(message)s"))
+            logger.addHandler(handler)
+            try:
+                logger.info("training started")
+            finally:
+                logger.removeHandler(handler)
+
+        assert out.prints[2] == "INFO training started"
 
 
 # # #
