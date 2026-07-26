@@ -51,9 +51,9 @@ def step(alive: np.ndarray) -> np.ndarray:
     return (alive & (n == 2)) | (n == 3)
 
 
-# Two digits minimum, so that `mp.axes` always has a gutter at least as wide as
-# the vertical ylabel it draws there. With a one-character gutter the label
-# lands on the right-hand border instead.
+# Two digits minimum, so the y tick gutter is the same width whether the counts
+# are in single or double digits. Otherwise the panels would change width as
+# the population crosses ten, and the whole dashboard would jiggle.
 YFMT = "{y:2.0f}"
 
 

@@ -1405,6 +1405,12 @@ class axes(plot):
         xmin_label = xfmt.format(x=plot.xrange[0])
         xmax_label = xfmt.format(x=plot.xrange[1])
 
+        # size of left gutter to fit tick labels and y label
+        has_ylabel = bool(ylabel)
+        L = max(len(ymin_label), len(ymax_label))
+        if has_ylabel:
+            L = max(L, ypad + 1)
+
         # truncate axis labels
         xroom = plot.width + 2 - len(xmin_label) - len(xmax_label)
         xlabel = xlabel[:xroom].center(xroom)
@@ -1420,12 +1426,12 @@ class axes(plot):
         )
 
         # pad chars to make space for labels
-        L = max(len(ymin_label), len(ymax_label))
         chars_padded = chars_boxed.pad(left=L, below=1, fgcolor=color)
         # paint ylabels
         chars_padded.codes[0,L-len(ymax_label):L] = ords(ymax_label)
         chars_padded.codes[-2,L-len(ymin_label):L] = ords(ymin_label)
-        chars_padded.codes[1:-2,L-1-ypad] = ords(ylabel)
+        if has_ylabel:
+            chars_padded.codes[1:-2,L-1-ypad] = ords(ylabel)
         # paint xlabels
         chars_padded.codes[-1,L:L+len(xmin_label)] = ords(xmin_label)
         chars_padded.codes[-1,-len(xmax_label):] = ords(xmax_label)

@@ -8,6 +8,12 @@ New:
 
 * `life.py` example: Conway's Game of Life, demonstrating differential redraw.
 
+Fix:
+
+* `axes` no longer paints the `ylabel` down the plot's right-hand border when
+  the y tick labels are narrower than `ypad + 1`. The tick gutter now widens to
+  make room. An absent `ylabel` no longer erases that border either.
+
 Version 0.4.0
 -------------
 

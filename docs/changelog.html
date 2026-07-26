@@ -49,6 +49,10 @@
 <ul>
 <li><code>life.py</code> example: Conway’s Game of Life, demonstrating differential redraw.</li>
 </ul>
+<p>Fix:</p>
+<ul>
+<li><code>axes</code> no longer paints the <code>ylabel</code> down the plot’s right-hand border when the y tick labels are narrower than <code>ypad + 1</code>. The tick gutter now widens to make room. An absent <code>ylabel</code> no longer erases that border either.</li>
+</ul>
 <h2 id="version-0.4.0">Version 0.4.0</h2>
 <p>New:</p>
 <ul>
