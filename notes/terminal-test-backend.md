@@ -1,7 +1,8 @@
 # Testing ANSI output against a real terminal
 
 Investigated 2026-07-25 (Matthew + Claude), after the differential rendering
-work. Plan agreed, not implemented.
+work. Steps 1-3 of the plan built 2026-07-26 (see "What was built", below);
+steps 4 and 5 remain, and have their own roadmap entries.
 
 ## The problem
 
@@ -62,8 +63,9 @@ newline-terminated input -- so it is not evidence of anything.)
    `capture-pane -S` against the pane history.
 
 2. **Require tmux as a development dependency.** Documented in CONTRIBUTING
-   alongside uv, make and pandoc; tests skip with a message telling you to
-   install it. Reasonable to assume a developer can install tmux.
+   alongside uv, make and pandoc. Reasonable to assume a developer can install
+   tmux. (Written up as "tests skip with a message"; corrected on
+   implementation to a hard dependency -- see below.)
 
 3. **Watch the cost.** The property sweeps are the valuable tests -- 120 random
    resizes, 40 random diffs, 40 random right-edge cases -- and at ~24 ms plus a
@@ -100,6 +102,67 @@ newline-terminated input -- so it is not evidence of anything.)
    most informative *because* it is wrong in a known way, so it acts as a
    canary for terminals that simplify wrap the same way) or collecting reports
    from real users on real terminals.
+
+## What was built
+
+`tests/tmux.py`: one tmux server on a socket private to the test process, one
+session whose single pane runs `sleep` to hold a pty open, created on first use
+and killed (socket unlinked) at exit. `Terminal(height, width)` claims that
+pane; `Screen` is a snapshot of it. `tests/test_terminal.py` holds every test
+that needs one; `_Term` is gone. 394 tests in 17.3s, from 381 in 13.8s.
+
+tmux is a **hard** dependency, deliberately (Matthew, on review): importing the
+harness without it raises, so the suite fails with an install prompt rather than
+skipping. A suite that quietly skips the only tests of what we emit reports
+success while checking nothing. The terminal cost is worth paying every run; if
+it ever stops being worth it, optimise then.
+
+Four mechanism choices, each measured rather than assumed:
+
+* **Feeding** writes bytes straight to the pane's slave tty (`#{pane_tty}`), so
+  there is no `send-keys` escaping, no terminal echo, and no line-discipline
+  fight. It is also more faithful: ONLCR turns `"\n"` into CR LF exactly as it
+  does for a program calling `print`. (The in-session feed that measured 296 ms
+  was `send-keys` into a raw-mode reader; that whole approach is unnecessary.)
+* **Synchronising.** A tty write returns before tmux has read it, so a read
+  first appends `\x1b]2;...\x07` (OSC 2, set title) and polls `#{pane_title}`.
+  tmux applies pty bytes in order, so an arrived title proves everything before
+  it has been applied. The first poll always succeeded in practice. OSC 2 was
+  chosen for being inert; `TestTheHarness` pins down that it does not disturb
+  the last-column flag, which would otherwise hide the bug this work began with.
+* **Resetting** between cases is `send-keys -R ; clear-history ; resize-window`
+  in one invocation -- screen cleared, cursor homed, attributes dropped, scroll
+  count back to zero, any size from 1x1 up (with `window-size manual`, which a
+  detached session needs). Note `\x1b[2J` is *not* a usable reset: in tmux it
+  pushes the screen into the history, which is what the scroll count reads.
+* **Reading** is `capture-pane -p -e -N` plus one `display-message` for
+  `#{cursor_y}`, `#{cursor_x}`, `#{history_size}` and `#{pane_dead}`, batched
+  into a single tmux invocation. Two subtleties: the capture is one continuous
+  SGR stream, so colour set on one row carries to the next and the parser must
+  not reset per line; and rows are emitted only as far as tmux tracks them used,
+  so short rows pad with default cells (`-N` is what keeps a *coloured* blank at
+  the right margin from being trimmed away, which plain `-e` does trim).
+
+Cost is 4 ms per tmux invocation and ~7 ms per observation (claim + read), so a
+test case that compares a screen against a reference screen costs ~15 ms. The
+per-case spawn the original timings assumed (23.6 ms) is avoided by reusing one
+pane. If it ever needs to be faster, a control-mode client (`tmux -C`) removes
+the fork+exec from every invocation; the sweeps did not need it.
+
+**What this catches that the emulator did not.** tmux paints erases in the
+active background colour (BCE) -- `EL`, `ECH` and `ED` all do. `_Term` always
+erased to default, so it could not see the invariant `to_ansi_diff_str` observes
+in `reset_colour`: colour must be back to default before any erase. Deleting
+that call is caught by 6 of the new tests and by none of the old ones (the whole
+old suite passed with the bug present). Reintroducing the original cursor bug
+fails the two right-edge tests, and swapping the appended-row newlines for
+cursor-down fails the bottom-of-screen scroll test.
+
+`TestTheHarness` is where tmux's behaviour is written down as the specification:
+deferred wrap at the margin (and that the reported column is then the width, not
+width - 1), clamping on every cursor move, line feed at the bottom scrolling and
+being counted, BCE, 24-bit colour round-tripping. It is the natural place to add
+rows as step 5's support matrix grows.
 
 ## Caveat
 

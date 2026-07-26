@@ -57,6 +57,7 @@
 <p>Dev:</p>
 <ul>
 <li>Add module docstrings for <code>core</code>, <code>colors</code> and <code>data</code>, so every module now introduces itself in the API reference.</li>
+<li>Escape sequences are now tested against a real terminal (a tmux pane, see <code>tests/test_terminal.py</code> and <code>tests/tmux.py</code>) rather than a hand-written emulator, which retires the emulator and makes tmux a development dependency. See <code>notes/terminal-test-backend.md</code>.</li>
 </ul>
 <h2 id="version-0.4.0">Version 0.4.0</h2>
 <p>New:</p>

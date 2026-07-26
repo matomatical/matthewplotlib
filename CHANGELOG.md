@@ -20,6 +20,10 @@ Dev:
 
 * Add module docstrings for `core`, `colors` and `data`, so every module now
   introduces itself in the API reference.
+* Escape sequences are now tested against a real terminal (a tmux pane, see
+  `tests/test_terminal.py` and `tests/tmux.py`) rather than a hand-written
+  emulator, which retires the emulator and makes tmux a development dependency.
+  See `notes/terminal-test-backend.md`.
 
 Version 0.4.0
 -------------

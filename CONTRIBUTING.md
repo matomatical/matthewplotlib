@@ -1,24 +1,27 @@
 Contributing to matthewplotlib
 ==============================
 
-BThis is a personal project developed by MFR. It's best to discuss with me
+This is a personal project developed by MFR. It's best to discuss with me
 before attempting to contribute, for example by raising an issue. Before that,
 please read the following.
 
 Development dependencies
 ------------------------
 
-Dependencies:
+System dependencies:
 
 * uv for managing virtual environment
 * make for building docs, running tests, making releases
 * pandoc for building some parts of docs
+* tmux for the tests that drive a real terminal
 
-Install the package and its development dependencies into your uv venv with:
+Then, install the package and its (Python) development dependencies into your uv venv
+with:
 
 ```
 uv pip install -e ".[dev]"
 ```
+
 
 Workflow
 --------
@@ -57,6 +60,10 @@ Testing
 Unit tests live in `tests/test_*.py` for the core modules (colors, data,
 colormaps, core). Integration tests in `tests/test_examples.py` run every
 example script as a subprocess and check for successful execution and output.
+
+Tests in `tests/test_terminal.py` check what the library's escape sequences do
+to a real terminal, driving a tmux pane through the harness in `tests/tmux.py`.
+Claims about the sequences as strings go in `test_core.py` instead.
 
 When adding a new example to `examples/`, add a corresponding entry to the
 `EXAMPLES` list in `test_examples.py`. The `test_all_examples_covered` test

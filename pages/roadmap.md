@@ -60,7 +60,7 @@ Testing:
 
 * [x] Unit tests for core modules (colors, colormaps, data, core).
 * [x] Integration smoke tests (all examples run).
-* [ ] Adopt a more well-tested virtual terminal for testing ANSI control codes:
+* [x] Adopt a more well-tested virtual terminal for testing ANSI control codes:
   drive a real terminal (tmux) and retire the hand-written emulator in the
   tests. See `notes/terminal-test-backend.md`.
 * [ ] Audit the escape sequences we emit, preferring ones that do not vary
