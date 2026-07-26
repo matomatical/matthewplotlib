@@ -1,17 +1,20 @@
 Contributing to matthewplotlib
 ==============================
 
-Best to discuss before attempting to contribute. This file contains some notes
-to self.
+BThis is a personal project developed by MFR. It's best to discuss with me
+before attempting to contribute, for example by raising an issue. Before that,
+please read the following.
 
 Development dependencies
 ------------------------
+
+Dependencies:
 
 * uv for managing virtual environment
 * make for building docs, running tests, making releases
 * pandoc for building some parts of docs
 
-Install the package and its development dependencies with:
+Install the package and its development dependencies into your uv venv with:
 
 ```
 uv pip install -e ".[dev]"
@@ -37,8 +40,6 @@ Notes:
 
 * CHANGELOG entries should be concise and describe API-level changes, not
   implementation details.
-* Important notes on implementation should be documented in the code, or, if
-  there's no appropriate place for that, in commit notes or PR or something.
 * Longer design notes and investigations live in `notes/`, and the roadmap
   entries they belong to link to them. See `notes/README.md`.
 
@@ -73,6 +74,7 @@ Releasing a new version
 
 To release a new version:
 
+0. Make sure the checklist above is complete.
 1. Decide on a new version number (V).
 2. Move changelog items from 'In development' to a new 'Version V' section.
 3. Bump `__version__` in `__init__.py` to V.

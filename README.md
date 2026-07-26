@@ -62,12 +62,18 @@ Documentation
   list of what to build next.
 * [Changelog](https://matthewplotlib.far.in.net/changelog.html).
 
-Working on the library
-----------------------
+Contributing
+------------
 
-Start with `CONTRIBUTING.md`: development dependencies, the checklist a change
-has to pass, and how a release is made.
+This is a personal project developed by MFR. It's best to discuss with me
+before attempting to contribute, for example by raising an issue. Before that,
+please read the following.
 
-Longer design notes and investigations live in `notes/` — what was measured,
-what was chosen, and what was rejected. Roadmap entries link to the note that
-covers them, so read that note before starting the work. See `notes/README.md`.
+* Some notes on my coding/development style are in `CONTRIBUTING.md`, please
+  start there.
+
+* Longer design notes and investigations live in `notes/`. See
+  `notes/README.md`.
+
+* Ideas for new features live in the roadmap entries link to the note that
+  covers them, so read that note before starting the work.
