@@ -75,5 +75,5 @@ please read the following.
 * Longer design notes and investigations live in `notes/`. See
   `notes/README.md`.
 
-* Ideas for new features live in the roadmap entries link to the note that
+* Ideas for new features live in the roadmap. Entries link to the note that
   covers them, so read that note before starting the work.
