@@ -91,8 +91,11 @@ def main(
     board settles into still lifes and blinkers, because a frame costs in
     proportion to the cells that *changed*, not to the size of the board.
     """
-    rng = np.random.default_rng(seed)
-    alive = rng.random((2 * height, width)) < density
+    # np.random.seed rather than default_rng: NumPy guarantees the legacy
+    # stream across releases and explicitly does not guarantee Generator's, and
+    # this board is pinned by the example snapshot tests.
+    np.random.seed(seed)
+    alive = np.random.rand(2 * height, width) < density
     was_alive = np.zeros_like(alive)
     died_recently = np.zeros_like(alive)
 
