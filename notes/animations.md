@@ -204,6 +204,12 @@ Two roads not taken, both worth naming so they are not re-proposed:
 * **Teaching the existing combinators to dispatch on animations**, so
   `mp.border(anim)` works directly. That is a change to every class in
   `plots.py`, and `map` gets the same result for the price of a lambda.
+
+  This is what the README is waiting for. Its feature list advertises animated
+  plots and gif export but deliberately says nothing about animations being
+  values, because until an animation composes with a plot as cleanly as two plots
+  compose with each other, the claim would promise more than `map` and a
+  comprehension deliver. The bullet goes in when that is true.
 * **Making `tstack` a subclass of `plot`** whose `chars` is the first frame.
   Composition would work for free, and `hstack(anim, anim)` would silently
   collapse to two static first frames. It is the obvious shortcut and it is a
