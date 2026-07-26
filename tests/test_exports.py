@@ -25,8 +25,9 @@ import matthewplotlib as mp
 # keeps its parsers back (`parse_range`, `parse_multiple_series`, ...), `colors`
 # keeps `Color` and `parse_color`, and `core` is the character-array backend,
 # where only `BoxStyle` is meant to be reached for. Covering those needs an
-# explicit `__all__` per module, which would also stop pdoc documenting the
-# internals -- worth doing, but a bigger change than this file.
+# explicit `__all__` per module, or a leading underscore on each internal name.
+# Both would also stop pdoc documenting the internals. The trade-offs, and the
+# counts to decide with, are in `notes/export-policy.md`.
 FULLY_PUBLIC = ("plots", "colormaps", "animations")
 
 

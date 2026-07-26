@@ -40,8 +40,8 @@ To work on a new feature:
    * All new features are exported in `__init__.py`. For `plots`, `colormaps`
      and `animations` this is checked by `tests/test_exports.py`, which derives
      what to expect from what those modules define. `data`, `colors` and `core`
-     keep some things back deliberately and are not covered; covering them wants
-     an `__all__` per module.
+     keep some things back deliberately and are not covered; widening the rule
+     to them is open, see `notes/export-policy.md`.
 3. Then merge into main
 
 Notes:
