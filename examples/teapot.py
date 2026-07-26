@@ -1,3 +1,4 @@
+import time
 import tyro
 import numpy as np
 
@@ -17,33 +18,40 @@ def main(
     height: int = 20,
     save: str | None = None,
 ):
-    """Rotating 3D teapot with orbiting camera."""
-    animation = mp.animate(
-        fps=fps,
-        record=save is not None,
-        stop_on_interrupt=True,
-    )
-    with animation as anim:
-        frame = 0
-        while num_frames == 0 or frame < num_frames:
-            # sweep camera
-            p = camera_pos(frame / fps)
+    """Rotating 3D teapot with orbiting camera.
 
-            # plot
-            anim.update(mp.scatter3(
-                (mp.xaxis(), "red"),
-                (mp.yaxis(), "green"),
-                (mp.zaxis(), "blue"),
-                TEAPOT,
-                camera_position=p,
-                vertical_fov_degrees=55,
-                height=height,
-                width=width,
-            ))
-            frame += 1
+    A plain animation loop: subtract the previous frame, print, sleep. This is
+    all animating in a terminal requires. `mp.animate` would keep the previous
+    frame and the clock instead -- see `quickstart3.py` -- but it is an offer,
+    not a prerequisite.
+    """
+    prev = None
+    frames = [] if save else None
+    frame = 0
+    while num_frames == 0 or frame < num_frames:
+        # sweep camera
+        p = camera_pos(frame / fps)
 
-    if save:
-        anim.frames.savegif(save, bgcolor="black")
+        # plot
+        plot = mp.scatter3(
+            (mp.xaxis(), "red"),
+            (mp.yaxis(), "green"),
+            (mp.zaxis(), "blue"),
+            TEAPOT,
+            camera_position=p,
+            vertical_fov_degrees=55,
+            height=height,
+            width=width,
+        )
+        print(plot - prev)
+        prev = plot
+        if frames is not None: frames.append(plot)
+
+        frame += 1
+        time.sleep(1/fps)
+
+    if save and frames:
+        mp.tstack(*frames, fps=fps).savegif(save, bgcolor="black")
 
    
 
@@ -665,4 +673,7 @@ TEAPOT = np.array([
 
 
 if __name__ == "__main__":
-    tyro.cli(main)
+    try:
+        tyro.cli(main)
+    except KeyboardInterrupt:
+        print()
