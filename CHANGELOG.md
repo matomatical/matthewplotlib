@@ -24,6 +24,14 @@ Dev:
   `tests/test_terminal.py` and `tests/tmux.py`) rather than a hand-written
   emulator, which retires the emulator and makes tmux a development dependency.
   See `notes/terminal-test-backend.md`.
+* The example smoke tests are replaced by snapshot tests. Every example is
+  replayed into a real terminal print by print and compared against a golden in
+  `tests/goldens/`, cell by cell in both glyph and colour, along with the byte
+  cost of each print and a digest of the image it saved. Regenerate with `make
+  goldens`. See `notes/closed/example-snapshot-tests.md`.
+* `life.py` seeds `np.random.seed` rather than `np.random.default_rng`, whose
+  stream NumPy does not guarantee across releases. Its initial board, and
+  `images/life.gif`, change accordingly.
 
 Version 0.4.0
 -------------

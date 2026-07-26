@@ -1,0 +1,3290 @@
+example: mandelbrot.py
+args: --num-frames 5
+terminal: 43x80
+image: 5 frames, 80x80, sha256:deba8410428b2d74
+
+# Regenerate with `make goldens`. One frame per print; the text and
+# colour grids are the terminal screen, cropped to its content.
+
+frame 0: 43 bytes, 1x42, cursor 1,0, scrolled 0
+palette:
+  . default default
+text:
+  Generating 5 frames for Mandelbrot zoom...
+colour:
+  ..........................................
+
+frame 1: 8719 bytes, 42x80, cursor 42,0, scrolled 0
+palette:
+  . default default
+  0 #fbfcbf #fbfcbf
+  1 #fbfcbf #fbfabd
+  2 #fbfabd #fbfabd
+  3 #fbfabd #fbf9bb
+  4 #fbf9bb #fbf7b9
+  5 #000003 #000003
+  6 #fbf9bb #fbf9bb
+  7 #fbf7b9 #fbf9bb
+  8 #fbf9bb #000003
+  9 #fbfabd #fbf7b9
+  a #fcf1b3 #000003
+  b #fcf0b1 #000003
+  c #fcf5b7 #000003
+  d #fbf7b9 #feb97f
+  e #fbf9bb #febb80
+  f #000003 #0d0a28
+  g #fbf7b9 #fbfabd
+  h #fbfabd #fcf5b7
+  i #fcf3b5 #000003
+  j #000003 #fbf7b9
+  k #fbf9bb #fbfabd
+  l #fbf7b9 #000003
+  m #000003 #fcecae
+  n #000003 #fbf9bb
+  o #000003 #fc9064
+  p #fceaac #fbf7b9
+  q #fcf5b7 #fbf9bb
+  r #fceaac #fbf9bb
+  s #fbf9bb #fceeb0
+  t #fbfabd #fbfcbf
+  u #fbf9bb #fcf3b5
+  v #000003 #fcf5b7
+  w #000003 #fceeb0
+  x #fcf5b7 #fbfabd
+  y #fce6a8 #fceeb0
+  z #fcf1b3 #fbf9bb
+text:
+  Generating 5 frames for Mandelbrot zoom...
+   20%[██████████████▊                                                           ]
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+colour:
+  ................................................................................
+  ................................................................................
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000112222222222222111000000000000000000000000000
+  00000000000000000000000000000001122222222222222232222221000000000000000000000000
+  00000000000000000000000000000122222222222222222344222222221000000000000000000000
+  00000000000000000000000000012222222222222222223555622222222200000000000000000000
+  000000000000000000000000002222222222222222789abb5cc8d993222221000000000000000000
+  000000000000000000000000022222222222222229e55555555555f2222222100000000000000000
+  000000000000000000000000222222222g3h73336i5555555555555jk22222200000000000000000
+  000000000000000000000000222222232685555li55555555555555m222222220000000000000000
+  000000000000000000000000222233365c55555555555555555555n2222222220000000000000000
+  0000000000000000000000002222222kk6o55555m555555555555554222222220000000000000000
+  0000000000000000000000002222222222pnnnqkr55555555555555l222222200000000000000000
+  000000000000000000000000022222222k2222222sj55555555555nkg22222t00000000000000000
+  0000000000000000000000000t2222222222222222uvn555555wwqn622222t000000000000000000
+  0000000000000000000000000002222222222222222x22ky556222222222t0000000000000000000
+  0000000000000000000000000000t22222222222222222kkz7g2222222t000000000000000000000
+  000000000000000000000000000000tt2222222222222222kk222222t00000000000000000000000
+  0000000000000000000000000000000000tt2222222222222222tt00000000000000000000000000
+  000000000000000000000000000000000000000ttttttttt00000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+frame 2: 44876 bytes, 42x80, cursor 42,0, scrolled 0
+palette:
+  .. default default
+  00 #fecb8e #fce5a6
+  01 #fddd9f #fce5a6
+  02 #fce5a6 #fce5a6
+  03 #fddd9f #fda26f
+  04 #fec085 #fd9b6a
+  05 #fdd295 #fdcf92
+  06 #fddfa1 #fde1a3
+  07 #fddfa1 #fddd9f
+  08 #fddd9f #feb97f
+  09 #fdd193 #fdda9c
+  0a #fec085 #fdd89a
+  0b #fddd9f #fddfa1
+  0c #fdd295 #fddd9f
+  0d #feaa74 #fddc9d
+  0e #febc82 #feb97f
+  0f #fea873 #fdd193
+  0g #fddd9f #fddd9f
+  0h #fc8e63 #fddd9f
+  0i #fda470 #fdd698
+  0j #feae76 #febb80
+  0k #feb57c #fec286
+  0l #fddd9f #fdd89a
+  0m #fddd9f #fddc9d
+  0n #fec689 #feb97f
+  0o #fec689 #fdd193
+  0p #feb97f #fd9d6b
+  0q #fdcd90 #fec98d
+  0r #fdd497 #fea873
+  0s #fdcd90 #f97d5d
+  0t #fde1a3 #fde1a3
+  0u #fce3a5 #fce3a5
+  0v #fde1a3 #fdd698
+  0w #fddc9d #fdd295
+  0x #fdd497 #fdd698
+  0y #fdd295 #fecb8e
+  0z #fec98d #febc82
+  0A #fdd89a #fecb8e
+  0B #fecb8e #ee5d5d
+  0C #fda26f #a6317d
+  0D #fd9567 #fa805e
+  0E #fdda9c #fce5a6
+  0F #fce6a8 #fce6a8
+  0G #fce6a8 #fce8aa
+  0H #fc8e63 #fde1a3
+  0I #fddc9d #fa825f
+  0J #fddfa1 #fddc9d
+  0K #febe83 #feb179
+  0L #fdcd90 #fd9969
+  0M #d7456b #ef5e5d
+  0N #f66e5b #ed595f
+  0O #fea873 #fecb8e
+  0P #fddd9f #feac75
+  0Q #febc82 #fce3a5
+  0R #feb57c #fde1a3
+  0S #fdd89a #fdd193
+  0T #fdd698 #fddd9f
+  0U #fa7f5e #fdd193
+  0V #fdd698 #fde1a3
+  0W #fdd295 #fce8aa
+  0X #fcecae #fcecae
+  0Y #fce5a6 #fddfa1
+  0Z #fdcd90 #fce3a5
+  10 #fec488 #fdd698
+  11 #c83d72 #ec585f
+  12 #fce3a5 #fdd698
+  13 #fda16e #fce3a5
+  14 #fdd89a #fde1a3
+  15 #fd9f6c #fb8460
+  16 #fdda9c #fdd193
+  17 #fddd9f #fdd295
+  18 #febe83 #fdd698
+  19 #febb80 #fec98d
+  1a #fdda9c #ee5d5d
+  1b #fddfa1 #fddfa1
+  1c #fddd9f #fec286
+  1d #fddd9f #fec488
+  1e #fc8e63 #fdda9c
+  1f #fec78b #fec085
+  1g #fea873 #fea671
+  1h #fdd698 #fec085
+  1i #fde1a3 #fce3a5
+  1j #fec78b #fde1a3
+  1k #febc82 #f3655c
+  1l #fec488 #fddd9f
+  1m #fdcd90 #fdcd90
+  1n #fce3a5 #fddd9f
+  1o #fce3a5 #fce5a6
+  1p #fde1a3 #feaa74
+  1q #fdcf92 #fddfa1
+  1r #fde1a3 #fce6a8
+  1s #fdda9c #fce6a8
+  1t #febc82 #fec689
+  1u #fb8861 #f9795c
+  1v #fdd89a #fce5a6
+  1w #fdda9c #fce3a5
+  1x #fdd89a #fec78b
+  1y #fec78b #fddd9f
+  1z #fce6a8 #c83d72
+  1A #fce8aa #fce8aa
+  1B #fec78b #fce8aa
+  1C #fce5a6 #fceaac
+  1D #fec488 #fceaac
+  1E #ee5b5e #fcecae
+  1F #fdd497 #fcecae
+  1G #fc8c63 #fcecae
+  1H #fde1a3 #fceaac
+  1I #feb97f #fecb8e
+  1J #fa7f5e #fdd698
+  1K #feb37b #fce3a5
+  1L #fddfa1 #fceaac
+  1M #fce8aa #fce6a8
+  1N #fec488 #ac337b
+  1O #f6705b #fda470
+  1P #fde1a3 #fdd193
+  1Q #fde1a3 #fdd497
+  1R #cb3e71 #fce6a8
+  1S #fde1a3 #fce8aa
+  1T #fcecae #febb80
+  1U #fcecae #fceeb0
+  1V #fce3a5 #fce8aa
+  1W #fce3a5 #fdd295
+  1X #fddfa1 #fce3a5
+  1Y #fec689 #fec085
+  1Z #fdda9c #fddc9d
+  20 #fdcf92 #fde1a3
+  21 #feb37b #fec78b
+  22 #fddd9f #fdcf92
+  23 #fea873 #fec488
+  24 #de4a67 #fdd698
+  25 #fdd698 #fda16e
+  26 #fde1a3 #febe83
+  27 #fdcf92 #fce3a5
+  28 #fda16e #fddfa1
+  29 #fb8660 #fdd89a
+  2a #fce3a5 #feb77d
+  2b #fce3a5 #fde1a3
+  2c #fdd698 #fdd698
+  2d #febb80 #fdd89a
+  2e #feb97f #feb97f
+  2f #fdcf92 #fec78b
+  2g #fb8861 #fdd497
+  2h #d3426d #fec98d
+  2i #fce5a6 #feb77d
+  2j #fce6a8 #febb80
+  2k #fde1a3 #fdd89a
+  2l #fde1a3 #fddc9d
+  2m #fde1a3 #f2635c
+  2n #fdd497 #fc9265
+  2o #fddc9d #fdd89a
+  2p #fdd497 #fddd9f
+  2q #fce5a6 #fea671
+  2r #fce8aa #feaa74
+  2s #fce8aa #fdda9c
+  2t #fdd89a #fd9f6c
+  2u #fcecae #fec78b
+  2v #fceaac #fcecae
+  2w #fdda9c #fdda9c
+  2x #fce6a8 #fde1a3
+  2y #fce6a8 #fce5a6
+  2z #fddc9d #fd9f6c
+  2A #feb97f #a6317d
+  2B #fdd698 #e85461
+  2C #fcecae #fddd9f
+  2D #fceeb0 #fceeb0
+  2E #fceaac #fde1a3
+  2F #fdd497 #fce6a8
+  2G #fec689 #fce3a5
+  2H #fcecae #fceaac
+  2I #fceaac #fceaac
+  2J #fce8aa #fceaac
+  2K #feb97f #fea671
+  2L #fdcf92 #feb37b
+  2M #fddfa1 #febe83
+  2N #fec689 #fdcd90
+  2O #fce3a5 #feb97f
+  2P #fce3a5 #fdcf92
+  2Q #fdd295 #febe83
+  2R #fde1a3 #fddfa1
+  2S #fce3a5 #fdd89a
+  2T #fce3a5 #fec488
+  2U #fdda9c #fecb8e
+  2V #fdd497 #fec488
+  2W #fce3a5 #fdda9c
+  2X #feb77d #feb77d
+  2Y #feb37b #fecb8e
+  2Z #fec78b #feaa74
+  30 #fddd9f #febc82
+  31 #fce5a6 #fddc9d
+  32 #fce5a6 #fec78b
+  33 #fda26f #fce6a8
+  34 #feac75 #fce6a8
+  35 #fdda9c #fddfa1
+  36 #fb8660 #fce3a5
+  37 #fdcd90 #fddfa1
+  38 #fce6a8 #fdd89a
+  39 #fce6a8 #fda26f
+  3a #feb37b #fde1a3
+  3b #fdd193 #fcecae
+  3c #fdda9c #fceaac
+  3d #fec689 #feb77d
+  3e #febe83 #fda16e
+  3f #feb77d #fda26f
+  3g #febb80 #fce8aa
+  3h #fdda9c #fdd89a
+  3i #fdd497 #fdd497
+  3j #fea873 #fddd9f
+  3k #febb80 #fcecae
+  3l #fcecae #fddc9d
+  3m #fec689 #feb179
+  3n #fddc9d #fddc9d
+  3o #feb37b #fddc9d
+  3p #fec689 #fdd698
+  3q #fddc9d #fecb8e
+  3r #fec085 #feb77d
+  3s #fddc9d #fec98d
+  3t #feb37b #fec085
+  3u #fddc9d #a7317d
+  3v #fea873 #fdd295
+  3w #fce6a8 #feb77d
+  3x #fea873 #fce8aa
+  3y #f56c5b #fec78b
+  3z #fdd698 #fdd89a
+  3A #fce8aa #feac75
+  3B #fecb8e #fce8aa
+  3C #fddd9f #fce8aa
+  3D #fdd698 #fce5a6
+  3E #fec286 #fec689
+  3F #fdd193 #fdd193
+  3G #fce6a8 #fd9768
+  3H #fddc9d #fce8aa
+  3I #fdcf92 #fce8aa
+  3J #fec98d #feaa74
+  3K #fec085 #fdcd90
+  3L #fce5a6 #fdd497
+  3M #fce6a8 #fddfa1
+  3N #fc9366 #fda470
+  3O #fdd193 #fce6a8
+  3P #fec689 #fce5a6
+  3Q #fda26f #fdcd90
+  3R #fdd698 #fce6a8
+  3S #fd9768 #fec085
+  3T #fd9d6b #fdcd90
+  3U #feaf78 #fecb8e
+  3V #fddc9d #fdcd90
+  3W #fec286 #fddd9f
+  3X #fceaac #fddc9d
+  3Y #fcecae #fddfa1
+  3Z #fce6a8 #fcecae
+  40 #fdda9c #fcecae
+  41 #fceaac #fdd497
+  42 #fa805e #fc9265
+  43 #fce6a8 #fddc9d
+  44 #fddd9f #fdd193
+  45 #fcecae #feb97f
+  46 #fde1a3 #fdcd90
+  47 #fda16e #fceaac
+  48 #fcecae #fce5a6
+  49 #fceaac #fdd698
+  4a #fd9b6a #fce6a8
+  4b #fda16e #feaf78
+  4c #fce6a8 #fdda9c
+  4d #fddfa1 #fd9969
+  4e #fec085 #fec78b
+  4f #f7735c #febe83
+  4g #fecb8e #feaa74
+  4h #fec98d #feb37b
+  4i #fec689 #f7715b
+  4j #feae76 #febc82
+  4k #fdd89a #fc8e63
+  4l #fcf0b1 #fcf0b1
+  4m #fddfa1 #fcf0b1
+  4n #fddd9f #fceeb0
+  4o #fddc9d #fec286
+  4p #fdd89a #fdd497
+  4q #fdd698 #fce8aa
+  4r #fceaac #fce8aa
+  4s #fce8aa #fdd193
+  4t #fce8aa #fce3a5
+  4u #feac75 #fdda9c
+  4v #f3675b #fce8aa
+  4w #fec085 #fce8aa
+  4x #fdd698 #febe83
+  4y #fec689 #feac75
+  4z #fddfa1 #fce8aa
+  4A #fda470 #fce5a6
+  4B #feb97f #fec286
+  4C #feb179 #fd9f6c
+  4D #fce8aa #fce5a6
+  4E #fdd89a #fcecae
+  4F #fce5a6 #fceeb0
+  4G #ec585f #fcecae
+  4H #f9795c #fce6a8
+  4I #febe83 #fdd89a
+  4J #fce3a5 #fceaac
+  4K #fec98d #fdd89a
+  4L #fec98d #f97d5d
+  4M #fceeb0 #fcecae
+  4N #fddfa1 #e55063
+  4O #feb179 #fec98d
+  4P #feb179 #fdd89a
+  4Q #fdda9c #d1426e
+  4R #fceeb0 #fce3a5
+  4S #fddc9d #fcf0b1
+  4T #fce6a8 #fcf0b1
+  4U #fdd698 #f66e5b
+  4V #fceaac #fddd9f
+  4W #fddfa1 #fda26f
+  4X #d4436d #d6446c
+  4Y #fdda9c #feb97f
+  4Z #fda26f #fc9366
+  50 #fea873 #feb77d
+  51 #f7735c #fd9f6c
+  52 #feac75 #feb37b
+  53 #fec78b #fecb8e
+  54 #fcf0b1 #fceeb0
+  55 #fce8aa #fcf0b1
+  56 #fecb8e #fcf0b1
+  57 #febe83 #fceeb0
+  58 #fce6a8 #fddd9f
+  59 #fde1a3 #fddd9f
+  5a #fddfa1 #fdd497
+  5b #fceaac #fdd295
+  5c #fceaac #fce6a8
+  5d #fecb8e #fce3a5
+  5e #fce3a5 #fddc9d
+  5f #fec78b #fdcd90
+  5g #fddc9d #fde1a3
+  5h #fdd193 #fdd89a
+  5i #feae76 #fec488
+  5j #febe83 #fddfa1
+  5k #fdd89a #fceeb0
+  5l #feb57c #fdd295
+  5m #fec98d #fec78b
+  5n #feaf78 #fdcf92
+  5o #feb37b #febb80
+  5p #fdd193 #fdd295
+  5q #fce5a6 #fec98d
+  5r #fda26f #fdd295
+  5s #fceeb0 #fcf0b1
+  5t #fceaac #fcf0b1
+  5u #fcecae #fdd295
+  5v #feb37b #fcecae
+  5w #fceaac #fdcd90
+  5x #fddc9d #fcecae
+  5y #fec689 #feb57c
+  5z #f97d5d #feb57c
+  5A #fdcf92 #fdda9c
+  5B #fc9064 #fce5a6
+  5C #fcf1b3 #fcf1b3
+  5D #fddc9d #fcf1b3
+  5E #fcf0b1 #fcf1b3
+  5F #fdd193 #fceaac
+  5G #fc9064 #fddc9d
+  5H #fdd698 #fd9768
+  5I #fddfa1 #fce6a8
+  5J #febe83 #fcf0b1
+  5K #fddd9f #fceaac
+  5L #f56a5b #fdda9c
+  5M #fdcf92 #fce6a8
+  5N #fceaac #fceeb0
+  5O #fddc9d #fceeb0
+  5P #fdda9c #fceeb0
+  5Q #feac75 #fceeb0
+  5R #fdd89a #fce8aa
+  5S #febb80 #fdd295
+  5T #fcecae #fce6a8
+  5U #feb179 #fb8660
+  5V #fdd497 #fceaac
+  5W #fddc9d #fddd9f
+  5X #fce5a6 #fec689
+  5Y #fce5a6 #fce3a5
+  5Z #fce8aa #febe83
+  60 #fb8a62 #fceaac
+  61 #fec689 #fce8aa
+  62 #fddc9d #fce6a8
+  63 #fc8e63 #fec286
+  64 #fec98d #feae76
+  65 #fceaac #fec085
+  66 #fdd295 #fdd89a
+  67 #feb179 #fcecae
+  68 #fceaac #fdd193
+  69 #fecb8e #fceaac
+  6a #fce6a8 #fea873
+  6b #f97d5d #fcf0b1
+  6c #fde1a3 #fceeb0
+  6d #fce8aa #fceeb0
+  6e #000003 #fce5a6
+  6f #fce8aa #fdd497
+  6g #fceeb0 #fce8aa
+  6h #fec689 #fceeb0
+  6i #fdd497 #fceeb0
+  6j #fddc9d #fdcf92
+  6k #fcecae #fda16e
+  6l #fdd89a #fce3a5
+  6m #fdd698 #fce3a5
+  6n #fceeb0 #fce5a6
+  6o #fcecae #fde1a3
+  6p #fda16e #fceeb0
+  6q #ec585f #fce8aa
+  6r #f7715b #fec78b
+  6s #fdd193 #fddd9f
+  6t #fddc9d #fcf3b5
+  6u #fcecae #fcf1b3
+  6v #fddfa1 #fec085
+  6w #fce3a5 #fcf1b3
+  6x #fda470 #fceaac
+  6y #febc82 #fcf1b3
+  6z #fce8aa #fcf1b3
+  6A #fcf0b1 #fce8aa
+  6B #fce8aa #fde1a3
+  6C #fdd497 #fce8aa
+  6D #fddfa1 #feb57c
+  6E #fce8aa #f97d5d
+  6F #fddd9f #fce3a5
+  6G #fddfa1 #fceeb0
+  6H #fec286 #fec98d
+  6I #feaf78 #fc8c63
+  6J #fec689 #fddfa1
+  6K #fcf1b3 #fcf3b5
+  6L #fce5a6 #fcf3b5
+  6M #fceaac #fcf1b3
+  6N #fcf3b5 #fcf3b5
+  6O #fceeb0 #fdd89a
+  6P #fceeb0 #febb80
+  6Q #fceeb0 #fce6a8
+  6R #fdcf92 #fceeb0
+  6S #fa805e #fce8aa
+  6T #fdd295 #fde1a3
+  6U #fce3a5 #fea873
+  6V #fcf0b1 #fcecae
+  6W #fce5a6 #fcf1b3
+  6X #fceeb0 #fdd193
+  6Y #fcecae #fdd89a
+  6Z #febe83 #fcecae
+  70 #fecb8e #fddc9d
+  71 #fec98d #fdcd90
+  72 #fcf0b1 #fcf3b5
+  73 #fceeb0 #fcf1b3
+  74 #fdda9c #fcf3b5
+  75 #fceaac #fcf3b5
+  76 #fec78b #fce6a8
+  77 #fceeb0 #fcf3b5
+  78 #fcecae #fcf3b5
+  79 #fec488 #fcf3b5
+  7a #fec689 #fceaac
+  7b #febe83 #fce3a5
+  7c #fce8aa #fcecae
+  7d #fda16e #fcf3b5
+  7e #fce3a5 #fcf3b5
+  7f #febe83 #fec98d
+  7g #fddfa1 #fcf3b5
+  7h #fcf3b5 #fcf5b7
+  7i #fdd295 #fcf3b5
+  7j #fceeb0 #fde1a3
+  7k #fdd698 #fcf3b5
+  7l #fcf5b7 #fcf5b7
+  7m #fcf3b5 #fcf1b3
+  7n #fcf1b3 #fce5a6
+  7o #fcf5b7 #fcf3b5
+  7p #fceeb0 #fec78b
+  7q #fcf1b3 #fddc9d
+  7r #fcf1b3 #fdd193
+  7s #fcf1b3 #fceeb0
+  7t #fdd497 #fdd193
+  7u #feb97f #feb77d
+  7v #fce8aa #fdd89a
+  7w #fddfa1 #feac75
+  7x #feaf78 #feaa74
+  7y #fcf1b3 #fceaac
+  7z #fcf1b3 #fce3a5
+  7A #fcf1b3 #fdd497
+  7B #fcf1b3 #fddd9f
+  7C #fce6a8 #fdd497
+  7D #fcf1b3 #fcecae
+  7E #fcf3b5 #fcecae
+  7F #fcecae #f7735c
+  7G #fda26f #fceeb0
+  7H #feac75 #fea671
+  7I #febe83 #fdcd90
+  7J #fce3a5 #feb57c
+  7K #fce5a6 #fce8aa
+  7L #fec98d #000003
+  7M #fecb8e #fce6a8
+  7N #fecb8e #fddd9f
+  7O #febe83 #fceaac
+  7P #fceaac #fce5a6
+  7Q #fdd497 #fce5a6
+  7R #fcecae #fdcf92
+  7S #febc82 #feaf78
+  7T #fceeb0 #fddfa1
+  7U #fcf1b3 #fcf0b1
+  7V #feb77d #fdd193
+  7W #feaf78 #fdd698
+  7X #fce6a8 #feb97f
+  7Y #fb8a62 #fce8aa
+  7Z #fce3a5 #fecb8e
+  80 #fddd9f #fd9f6c
+  81 #fdcf92 #fcecae
+  82 #fda470 #fcecae
+  83 #fddfa1 #fcecae
+  84 #fdd193 #fddfa1
+  85 #feaf78 #fce3a5
+  86 #fce3a5 #ca3e72
+  87 #fce6a8 #fda16e
+  88 #fb8a62 #fde1a3
+  89 #fce5a6 #fdda9c
+  8a #fcf0b1 #febc82
+  8b #fcf1b3 #fce6a8
+  8c #fcf1b3 #fde1a3
+  8d #fcf1b3 #fec085
+  8e #fcf3b5 #fec488
+  8f #fcf3b5 #fceeb0
+  8g #feb37b #feaf78
+  8h #fdd497 #fec78b
+  8i #fceaac #febe83
+  8j #fb8a62 #fea873
+  8k #fdd698 #fddfa1
+  8l #fda470 #fce6a8
+  8m #fce3a5 #fd9b6a
+  8n #fa825f #feac75
+  8o #febc82 #fcf0b1
+  8p #fdcf92 #fddc9d
+  8q #fddd9f #f0605d
+  8r #fddfa1 #fdd295
+  8s #fce6a8 #fec488
+  8t #fde1a3 #fcecae
+  8u #fdd193 #fceeb0
+  8v #fdda9c #fdd497
+  8w #fde1a3 #fdda9c
+  8x #fddc9d #febc82
+  8y #fdcd90 #fce6a8
+  8z #fddc9d #fdda9c
+  8A #fcf3b5 #fdcd90
+  8B #fce6a8 #fcf1b3
+  8C #fda26f #fdd89a
+  8D #fceaac #feaa74
+  8E #fcecae #feb57c
+  8F #fcecae #fce8aa
+  8G #fceeb0 #febe83
+  8H #fce5a6 #fce6a8
+  8I #fce5a6 #fcecae
+  8J #fddfa1 #fdda9c
+  8K #fce6a8 #fdd698
+  8L #fddfa1 #fce5a6
+  8M #fce5a6 #f7715b
+  8N #fec286 #fddc9d
+  8O #fdd698 #fea873
+  8P #feaa74 #fec689
+  8Q #fec98d #fceeb0
+  8R #fceeb0 #fddd9f
+  8S #fda16e #fcf0b1
+  8T #fdcd90 #fde1a3
+  8U #fcecae #fce3a5
+  8V #fcf3b5 #fec78b
+  8W #fea873 #fde1a3
+  8X #f7735c #fce3a5
+  8Y #fdd193 #fce8aa
+  8Z #fce6a8 #fdcd90
+  90 #fdcd90 #fcecae
+  91 #f56a5b #fec98d
+  92 #febc82 #fec085
+  93 #fdd89a #fceaac
+  94 #fce6a8 #f8775c
+  95 #febb80 #fceaac
+  96 #fce5a6 #feb37b
+  97 #fd9d6b #fde1a3
+  98 #fecb8e #fd9f6c
+  99 #fdd698 #feac75
+  9a #feae76 #fceaac
+  9b #fec286 #fceaac
+  9c #fb8a62 #fceeb0
+  9d #fec286 #fce5a6
+  9e #fceaac #fdd89a
+  9f #fceaac #f56c5b
+  9g #fd9f6c #fec286
+  9h #feb77d #fddc9d
+  9i #fdcf92 #fdd295
+  9j #feb77d #fecb8e
+  9k #fce8aa #fddd9f
+  9l #fdcd90 #fcf3b5
+  9m #feac75 #fceaac
+  9n #febc82 #fce5a6
+  9o #fce5a6 #fdcd90
+  9p #fec488 #feb97f
+  9q #fec98d #feb97f
+  9r #fb8460 #fddfa1
+  9s #fce8aa #fddc9d
+  9t #f7735c #fde1a3
+  9u #fce6a8 #fdd295
+  9v #feb37b #fdd497
+  9w #feaa74 #fce5a6
+  9x #fd9567 #fceeb0
+  9y #fdd89a #fce6a8
+  9z #fcf3b5 #fddd9f
+  9A #feb179 #fddc9d
+  9B #fddc9d #fec78b
+  9C #fce3a5 #fceeb0
+  9D #fec085 #fddd9f
+  9E #fceaac #fce3a5
+  9F #fdcd90 #fce8aa
+  9G #fc8e63 #fce3a5
+  9H #fec78b #ee5b5e
+  9I #fdcf92 #fcf0b1
+  9J #fdd497 #fcf3b5
+  9K #fdcd90 #fdd193
+  9L #feb37b #fceeb0
+  9M #febb80 #fceeb0
+  9N #fce8aa #fddfa1
+  9O #fdcd90 #fceeb0
+  9P #fce3a5 #fcf0b1
+  9Q #fce5a6 #fcf0b1
+  9R #fcf5b7 #fceeb0
+  9S #fcf5b7 #fec78b
+  9T #fceaac #fd9b6a
+  9U #fceeb0 #fddc9d
+  9V #fcf5b7 #fce6a8
+  9W #fcf3b5 #fcf0b1
+  9X #fce5a6 #fde1a3
+  9Y #fcf0b1 #fceaac
+  9Z #fdd295 #fceeb0
+  a0 #fceeb0 #fecb8e
+  a1 #fcf3b5 #fde1a3
+  a2 #fdd698 #fddc9d
+  a3 #fddc9d #fce3a5
+  a4 #fce3a5 #fec78b
+  a5 #feaa74 #fce8aa
+  a6 #febe83 #fdd193
+  a7 #fce8aa #fcf3b5
+  a8 #fcf0b1 #fce3a5
+  a9 #fde1a3 #fdcf92
+  aa #fddc9d #feaa74
+  ab #fdcf92 #feaa74
+  ac #fc9366 #fddd9f
+  ad #fce8aa #fec085
+  ae #fcecae #feb37b
+  af #fce6a8 #fdcf92
+  ag #fddc9d #fdd698
+  ah #fcecae #fdda9c
+  ai #fde1a3 #feb97f
+  aj #fea873 #fec689
+  ak #fec78b #feb179
+  al #fec488 #febe83
+  am #fda26f #fdd497
+  an #fce8aa #febb80
+  ao #fdd89a #fdda9c
+  ap #fecb8e #fecb8e
+  aq #feac75 #feb57c
+  ar #feb57c #feb77d
+  as #fd9f6c #fce8aa
+  at #fce6a8 #fcf3b5
+  au #feaf78 #fce8aa
+  av #fdcf92 #fdd193
+  aw #fdcd90 #febc82
+  ax #fecb8e #fddfa1
+  ay #fdda9c #fdcf92
+  az #fdda9c #fce8aa
+  aA #fecb8e #fde1a3
+  aB #fce3a5 #fddfa1
+  aC #feae76 #fddd9f
+  aD #feb77d #fec689
+  aE #feae76 #fceeb0
+  aF #fd9969 #fcf1b3
+  aG #fddd9f #fcf0b1
+  aH #fce5a6 #fdd698
+  aI #fec98d #fceaac
+  aJ #fec488 #fec98d
+  aK #fcf3b5 #fce5a6
+  aL #fce6a8 #fceeb0
+  aM #fdd295 #fceaac
+  aN #fddc9d #ee5d5d
+  aO #fdd295 #fdda9c
+  aP #fce6a8 #fec085
+  aQ #fceaac #fec488
+  aR #fec78b #fcecae
+  aS #fce8aa #fd9969
+  aT #feae76 #fde1a3
+  aU #fddd9f #fdd698
+  aV #fcf3b5 #f9795c
+  aW #fceeb0 #fceaac
+  aX #fce8aa #fec286
+  aY #000003 #fd9f6c
+  aZ #fec085 #feae76
+  b0 #fddd9f #fde1a3
+  b1 #fdd497 #fcf1b3
+  b2 #fdd193 #fcf0b1
+  b3 #febc82 #febb80
+  b4 #fdd698 #fec98d
+  b5 #feb97f #fce3a5
+  b6 #fdd193 #febc82
+  b7 #fda470 #fce3a5
+text:
+  Generating 5 frames for Mandelbrot zoom...
+   40%[█████████████████████████████▌                                            ]
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+colour:
+  ................................................................................................................................................................
+  ................................................................................................................................................................
+  0001020203040506070708090a0b0b0c0d0e0f0g0g0h0i0j0k0b0l0m0n0o0p0q0r0s0t0u0u0t0v0w0x0y0z0A0B0C0D0E0F0G0G0F0F0F0H0I0J0K0n0L0M0N0O0P0Q0R0S0T0U0V0W0X0X0X0X0X0X0X0X0X
+  0F0Y02020Z1011120u13141516060g1718191a1b1c1d1e1f1g1h0v1i1i1i1j1k1l1m1n0u1o1p1q1r1s1t1u1v1w1x1y1i1z1A1A1B1C1D1E1F1G1H1I1J1K1L1M0F0F1N1O1P1Q1R1S1T0X1U1U0X0X0X0X0X
+  1A1V1W1X171Y1Z0202021X2021220u0u1n232425260u0u272028291i0u2a2b2c2d2e2f2g2h2i2j0G1A0G0F2k2l2m2n2o2p2q2r2s2t2u0X0X0X0X0X0X2v2w2x0F2y0Y2b2z2A0t2B1B2C2D2D2D2E2F2G2H
+  2I2I2J122K2L2M0F2N2O2P0m2Q2R022S0u2T2U2V1n1o2W2b2X2Y2Z3031322F1S0G3334353637381A1A2y393a3b3c3d3e3f3g3h3i3j3k1U1U0X0X0X0X3l3m3n3o3p3q3r3s3t3u3v123w2D2D2D2l1A2I2I
+  2I2I2I0G3x3y3z3A1A3B3C3D3E3F3G3H3I1V1s3J3K3L3M0G0G0G3N3O3P3Q3R1A1A1A0F3S3T3U3V3W2E3X3Y0X1U0X3Z40410F1M424344452D46470X48494a4b4c4d4e4f4g4h4i4j4k1W2P2D4l4m4n4o4p
+  4q4r4r4s4t024u1C2I2I2J4v4w2F4x4y2J1A4z1B1Q4A4B1A2J1A1A4C2O3V1W4D2J3Z4E4F4G4H4I4J1V4K4L2D2D4M0X0X4N464O4P2z4Q1W4R4l4S4T3M1L4U1U4V4W4X4Y4Z505152534P1w544l4l4l5556
+  4n572y58595a2W5b2I5c1A1M5d5e5f4D2I4D1A2x5g5h5i5j2I3Z3Z5k4F5l5m1L5n5o1U2D2D2D0X5p4s5q2o5r5s5t5u5v2j5w0V5x5y5z5A5B4l5C5C5C5C5D5E5C5E5E5s1A5F3m5G5H5I5F5J4l4l5E5E5E
+  5s5s5s2D5K5L0T5M0X5N5O5P5Q5R5m5S5T0X1U1U1U595U5V5W5X1o2D2D2D1U5Y5Z5Y3Y2D603l5T612y6263645I5C5C5C5E5C5C5C6566671U5C5C5C5C5C5C5C5C5C5C4l2I683Z696a1W6b5E5C5C5C5C5C
+  4l4l4l5s6c6c6d6e6f6g2D5s2D4n6h6i406j5N5s2D2D2D6k0F6l6m5s6n4M6o6p6q146r6s5C5C5C6t5C5C6u6v6w5C5C5C5C5C5C5C5C5D5C5C5C5C5C5C5C5C5C5C5C5C5C5E6x5E6y6w6z5C5C5C5C5C5C5C
+  4l6A4l4l2D4M6B2H6C4M4l4l542D6g6D6E6F2C4l4J4M4R6G4t6H6I6J5C6K6K6L6K6K6u6M6K6N6N6N6N6N6N6K6K6K6K6N6N6K6K6K5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  5C4z6O6P6Q6R6S6T6U1Q6V6W6X2D6Y1U6Z7071325C6N6N726N6K73746K6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6K5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  6N6N7275767778797a7b7c6N6N6N7d6N6N7e7f7g6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  6N7h7h7h7h7h6N6N7i7j7k6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7h7h7h7h7h7l7l7l7l7l7h7h6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7h6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N7m5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7h6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N7m7m5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N6N7m1A5N5C5C5C5C1X7n5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7o6N6N6N6N6N6N6N6N6N6N6N5x7p7q7r5x7s7t7u2x7v1U7w7x4c7y7z5C7A7B5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l6N6N6N6N6N6N7C7D7m7E7F7G7s7H7I7J7K7L7M7N587O7P0F0t3O7Q7R587S7T7U5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7o6N6N6N6N6N6N6u147V7W7X7Y481M1M7Z805c817c82830X4084858687883R89838a8b8c8d5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7o6N8e8f6N7m6c8g1U5427618h7v8i5T1U1U5N1U2D2D2D1U0X0X0X0X0X8j8k2y8l6o8m8n4T8o5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7o6N6N2D8p8q8r8s3O1A5T1r1M8t6c8u6G2D2D2D2D2D2D2D2D2D0X0X0X0X0X0X5V8v8w8x8y8z7U5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7o6N6N6N6N8A8B5V6l8C0P4t8D8E8F2D2D2D2D2D2D2D2D2D2D2D8G6Y8F0X0X0X0X0X5K172y8H2H6G4l7U5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7o6N6N6N6N4l1V2D542D8I2E1A8J6m6i6d2D2D2D2D2D2D2D2D2D0X071r0G8K8L4r0X0X0X2I8M8N6J8O8P8Q8R8S5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l6N8T8U7G6w8V7j8W0G8X6Q8Y768Z905P2D2D2D2D2D2D2D2D2D2D2D2D91921A1A933c2I2I2I2I4r4D941C95964l4l5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l0X2D970A98994412581A9a9b486n2D2D2D2D2D5s5s5s5s5s5s2D2D9c3C9d4t4r2I2I9e9f9g5M9h9i9j9k4l4l5E5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7l7o6N6N9l9m9n146F9o1V4t9p169q9r9s2D2D5s4l4l4l4l4l4l4l4l5s2D4q9t1V9u6l9v9w350Y1C5h5R9x0W9y4l5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l7l7o6N9z8b4F7U4l5N9A2I2J0G1W3H9B2D1U2D4l4l4l4l4l4l4l4l4l4l4l4l5s5s9C819D9E9F9G9H6O9I4l4l4l4l5E5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l7l7l7l7l7l6N9J849K4M2D544l9L9M8K1M9N8T9O2D2D2D4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l9P5s4l4l4l9Q4l4l4l4l4l4l5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l9R9S7o6N6N6N5K6Q6g1B1H9T9U9U0H7685406c2D2D2D5s4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l9V9W9X9Y9Za07ma18Ya29k0u5Za3a4a52J1A6Ba62D2D2D2D2D544l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7ha75x5t6ga86Ya9aaab0l0T12acad1A2I2I2I48aeafag7Zah2D544l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l6Nai5s4V2b0xaj4bak5ral0P011Xamanao5Y0Japaqar3c1Aas2D4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7hat4M6cauavawaxay8L3D0l0xazaA2PaB6FaCaD0V2DaE5s4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7l6N6N6N786uaFaGaHaIaB1A2J2I2I3x0G124q5RaJ2D2D4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7l7o6NaK5NaLaM7U7U4l1UaNaO5c4r4r1AaP7Z6saQ8G2D2D4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l7l7l7o9Q56592D5s5s4l4l4l4l9Q2DaR9saS9kaT2b443I1U2D2D4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l7U5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l6NaUaV1Za48U4M544l4l4l4l4l54aW8RaX3naYaZb09s2R2D2D2D4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l7U5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
+  7l7l7l6N7gb1b2b39N8T2D2D4M7vb44R6gazb52S1r1V6Cb66Fb76R2D2D2D54544l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l7U7U5C5C5C5C5C5C5C7U7U7U4l4l
+
+frame 3: 58224 bytes, 42x80, cursor 42,0, scrolled 0
+palette:
+  .. default default
+  00 #fdcd90 #fdcf92
+  01 #fdcf92 #fdcf92
+  02 #fdcd90 #fdcd90
+  03 #feac75 #feae76
+  04 #fec78b #fa7f5e
+  05 #fec085 #fec286
+  06 #fec488 #fec488
+  07 #febb80 #fb8460
+  08 #feb57c #febe83
+  09 #fc8e63 #feaf78
+  0a #feb77d #fda470
+  0b #febc82 #fec286
+  0c #feaa74 #fec286
+  0d #feb57c #fec286
+  0e #febe83 #fec286
+  0f #feb37b #fec085
+  0g #febc82 #fec085
+  0h #feaa74 #feb179
+  0i #f97b5d #feaa74
+  0j #fda16e #feac75
+  0k #feaf78 #feb37b
+  0l #fd9b6a #febb80
+  0m #feb97f #febb80
+  0n #feb97f #feb97f
+  0o #feb77d #feb97f
+  0p #fa805e #feb77d
+  0q #fa825f #feb57c
+  0r #fea671 #feac75
+  0s #feaf78 #feb179
+  0t #feaf78 #fda470
+  0u #feae76 #feae76
+  0v #fea873 #f97d5d
+  0w #fea873 #feaa74
+  0x #fd9f6c #feaa74
+  0y #fd9d6b #fc8e63
+  0z #fd9b6a #fda16e
+  0A #fc9366 #fb8460
+  0B #fa805e #fc9265
+  0C #f7715b #fb8660
+  0D #ec585f #f6705b
+  0E #691c80 #ee5b5e
+  0F #000003 #000003
+  0G #fdcf92 #fdcd90
+  0H #fec78b #a7317d
+  0I #fec286 #feb77d
+  0J #ea5560 #feb77d
+  0K #feb97f #fd9d6b
+  0L #febb80 #febe83
+  0M #febb80 #fc9366
+  0N #fda26f #fec286
+  0O #fec286 #fec488
+  0P #fec286 #fec286
+  0Q #fec286 #fa825f
+  0R #fec286 #fea671
+  0S #fec085 #fec085
+  0T #feaa74 #febe83
+  0U #feaf78 #fd9969
+  0V #fc9265 #feaf78
+  0W #febb80 #febb80
+  0X #febb80 #febc82
+  0Y #feb37b #fd9567
+  0Z #feb77d #feb77d
+  10 #fea671 #feb57c
+  11 #fd9768 #feb37b
+  12 #feb37b #feb37b
+  13 #feac75 #feac75
+  14 #fc9064 #f9795c
+  15 #feac75 #fea873
+  16 #feaa74 #fda470
+  17 #fa7f5e #fb8861
+  18 #fc9064 #fd9969
+  19 #f66e5b #fd9969
+  1a #f56a5b #fd9567
+  1b #fa7f5e #fb8660
+  1c #fb8861 #fb8460
+  1d #f56c5b #f56a5b
+  1e #dc4869 #f2635c
+  1f #dd4968 #d6446c
+  1g #dc4869 #000003
+  1h #842681 #000003
+  1i #fec98d #feaa74
+  1j #fec98d #febc82
+  1k #fea873 #fa825f
+  1l #fda470 #f97b5d
+  1m #feb179 #feaa74
+  1n #feb97f #feac75
+  1o #feb97f #febe83
+  1p #fea671 #feb179
+  1q #feb179 #fea873
+  1r #feac75 #febe83
+  1s #fd9f6c #fec085
+  1t #fb8a62 #fa805e
+  1u #fda26f #febc82
+  1v #febc82 #febc82
+  1w #febb80 #feb179
+  1x #feb179 #fda26f
+  1y #fea873 #feb179
+  1z #fc9265 #fda16e
+  1A #feb37b #feae76
+  1B #fea873 #fd9d6b
+  1C #feaa74 #feaa74
+  1D #f7715b #fc9064
+  1E #fda26f #fd9b6a
+  1F #fd9969 #fc9064
+  1G #fb8460 #fb8660
+  1H #f7715b #450f76
+  1I #f3675b #ee5d5d
+  1J #f7735c #f0605d
+  1K #9c2e7f #321067
+  1L #d1426e #000003
+  1M #fec488 #fdcd90
+  1N #feb37b #fecb8e
+  1O #feae76 #fecb8e
+  1P #feb97f #fec689
+  1Q #feb77d #fec488
+  1R #fec085 #febc82
+  1S #fec085 #febe83
+  1T #fb8a62 #febb80
+  1U #febe83 #ee5d5d
+  1V #febe83 #feb97f
+  1W #febe83 #feaf78
+  1X #fec085 #bb3877
+  1Y #fec085 #fd9b6a
+  1Z #fec085 #fea873
+  20 #febe83 #feaa74
+  21 #febe83 #fea873
+  22 #febe83 #feb77d
+  23 #febc82 #feaa74
+  24 #febc82 #fc9366
+  25 #feaf78 #fd9f6c
+  26 #feb179 #feb57c
+  27 #feb179 #feb37b
+  28 #f56a5b #fd9768
+  29 #feae76 #fda16e
+  2a #feaa74 #f97d5d
+  2b #fda26f #fd9f6c
+  2c #fda26f #fda16e
+  2d #fd9f6c #fd9567
+  2e #fd9768 #fd9768
+  2f #fc8e63 #ac337b
+  2g #f9795c #fa825f
+  2h #7f2481 #cd3f70
+  2i #470f77 #000003
+  2j #b93778 #000003
+  2k #892881 #000003
+  2l #fdcf92 #f3655c
+  2m #fdcd90 #fec286
+  2n #fea873 #febc82
+  2o #feb179 #fec78b
+  2p #fec98d #fec98d
+  2q #feb97f #fec78b
+  2r #feb37b #fc8c63
+  2s #feb97f #feb37b
+  2t #fec488 #feb37b
+  2u #fec689 #fec689
+  2v #fec488 #fec689
+  2w #f6705b #fec488
+  2x #fda470 #febb80
+  2y #febb80 #fea671
+  2z #fda470 #feb77d
+  2A #feb77d #febb80
+  2B #f97d5d #feb57c
+  2C #feac75 #f7735c
+  2D #feaf78 #fea671
+  2E #fda470 #feaa74
+  2F #fc9366 #f97d5d
+  2G #fda470 #fd9b6a
+  2H #fa805e #370f6c
+  2I #fb8861 #e24d65
+  2J #fc9265 #fa7f5e
+  2K #fd9567 #fb8861
+  2L #f3655c #f97b5d
+  2M #d9466a #f7735c
+  2N #f97b5d #f7735c
+  2O #de4a67 #d6446c
+  2P #000003 #ce4070
+  2Q #f97d5d #fc8c63
+  2R #feac75 #feb77d
+  2S #fdcd90 #fec78b
+  2T #fecb8e #fec78b
+  2U #feb77d #fec689
+  2V #fec085 #fec78b
+  2W #fec98d #febb80
+  2X #febc82 #fec78b
+  2Y #feb179 #fec689
+  2Z #fb8460 #fec689
+  30 #fd9b6a #fea873
+  31 #f3655c #feb179
+  32 #fda470 #feb97f
+  33 #febb80 #fc8e63
+  34 #feb57c #febb80
+  35 #feb77d #fea671
+  36 #feb77d #fda16e
+  37 #feb57c #feae76
+  38 #fea671 #fd9567
+  39 #feaa74 #fc9265
+  3a #fda16e #ee5d5d
+  3b #fc8e63 #fa7f5e
+  3c #b83778 #f0605d
+  3d #f56a5b #d0416f
+  3e #000003 #d9466a
+  3f #f7715b #cd3f70
+  3g #ed595f #d0416f
+  3h #691c80 #5e177f
+  3i #952c80 #872781
+  3j #f56a5b #d6446c
+  3k #ac337b #b83778
+  3l #fc9265 #feae76
+  3m #fec78b #fec98d
+  3n #fdcd90 #fecb8e
+  3o #feb179 #feb77d
+  3p #feae76 #fd9d6b
+  3q #fec286 #fea873
+  3r #fec488 #feb179
+  3s #fda470 #fc9366
+  3t #fd9f6c #fea671
+  3u #fec78b #fec488
+  3v #fec78b #fd9969
+  3w #fec78b #fec78b
+  3x #fec689 #feb37b
+  3y #f4685b #febe83
+  3z #febe83 #febe83
+  3A #fc9366 #feb57c
+  3B #fb8861 #feaf78
+  3C #feac75 #feb57c
+  3D #fea873 #fea873
+  3E #f6705b #fd9f6c
+  3F #e04b66 #cb3e71
+  3G #b93778 #fb8460
+  3H #040313 #d0416f
+  3I #000003 #691c80
+  3J #fec98d #fec78b
+  3K #fec98d #fea671
+  3L #febc82 #feb77d
+  3M #fda26f #f9795c
+  3N #fb8660 #febc82
+  3O #fb8861 #fda470
+  3P #fb8660 #fec286
+  3Q #feaf78 #fec286
+  3R #feae76 #fec085
+  3S #fea873 #feb97f
+  3T #fec689 #feb77d
+  3U #febe83 #fea671
+  3V #fec689 #feb179
+  3W #febc82 #febb80
+  3X #fea873 #fda26f
+  3Y #febc82 #feaf78
+  3Z #fd9f6c #feb37b
+  40 #fda16e #f3655c
+  41 #feae76 #feac75
+  42 #fb8a62 #f97b5d
+  43 #fb8a62 #fda470
+  44 #f56c5b #fd9b6a
+  45 #eb5660 #fc9265
+  46 #651a80 #ea5560
+  47 #f1615c #d4436d
+  48 #e55063 #6c1d80
+  49 #4d117a #842681
+  4a #fda16e #fec689
+  4b #feb77d #fec286
+  4c #feac75 #fec286
+  4d #feaa74 #fec488
+  4e #fd9969 #fec488
+  4f #fec286 #fd9b6a
+  4g #fc9064 #fec085
+  4h #febb80 #feaf78
+  4i #feb57c #feaf78
+  4j #feb97f #feb57c
+  4k #feb77d #feb57c
+  4l #fd9969 #fea671
+  4m #feaa74 #feac75
+  4n #fd9969 #fd9567
+  4o #fb8861 #fb8660
+  4p #fd9768 #fd9567
+  4q #f3675b #fa805e
+  4r #8c2980 #f8755c
+  4s #4b1079 #ea5560
+  4t #000003 #da4769
+  4u #852681 #000003
+  4v #feac75 #fd9d6b
+  4w #fec286 #febb80
+  4x #febe83 #fd9768
+  4y #fec085 #feaf78
+  4z #f3655c #fa825f
+  4A #fec286 #febe83
+  4B #fa805e #febe83
+  4C #febc82 #feb179
+  4D #feac75 #fec085
+  4E #febe83 #fc9064
+  4F #feaf78 #f0605d
+  4G #feaf78 #fc9366
+  4H #fda26f #fea873
+  4I #fc9064 #feaa74
+  4J #feb77d #feaf78
+  4K #feb77d #fb8460
+  4L #feb77d #fa805e
+  4M #fb8a62 #f56a5b
+  4N #fda470 #fda26f
+  4O #f3675b #fea873
+  4P #fda470 #fa7f5e
+  4Q #fda16e #fd9b6a
+  4R #fc8c63 #fd9768
+  4S #d3426d #fa7f5e
+  4T #f97b5d #f4685b
+  4U #c03a75 #000003
+  4V #febe83 #feb179
+  4W #fd9567 #fd9969
+  4X #feb57c #fda26f
+  4Y #feb37b #feb179
+  4Z #febe83 #fd9d6b
+  50 #febc82 #feac75
+  51 #feb77d #febe83
+  52 #fc9366 #fea671
+  53 #feac75 #febc82
+  54 #fea671 #febc82
+  55 #febb80 #feb57c
+  56 #fea873 #fd9567
+  57 #fea671 #fd9969
+  58 #feb179 #feb179
+  59 #feaf78 #fda16e
+  5a #fd9f6c #e85461
+  5b #feaa74 #fd9d6b
+  5c #fda470 #fd9f6c
+  5d #fd9d6b #fa805e
+  5e #fb8a62 #ef5e5d
+  5f #ee5d5d #e14c66
+  5g #f4685b #d7456b
+  5h #e65162 #000003
+  5i #e24d65 #000003
+  5j #fec488 #fd9768
+  5k #fd9d6b #feb179
+  5l #ee5d5d #fd9b6a
+  5m #fda26f #fc8e63
+  5n #feb37b #feb77d
+  5o #febe83 #feb37b
+  5p #feb57c #feb37b
+  5q #fc9064 #fc8c63
+  5r #febe83 #febb80
+  5s #febe83 #feac75
+  5t #febe83 #cb3e71
+  5u #febe83 #febc82
+  5v #febb80 #feac75
+  5w #fc9064 #fd9d6b
+  5x #eb5660 #feae76
+  5y #feae76 #fc9366
+  5z #fda16e #f97b5d
+  5A #fea671 #feaa74
+  5B #fda470 #e55063
+  5C #fda16e #fd9768
+  5D #fc9064 #c53c74
+  5E #f1615c #ee5b5e
+  5F #000003 #a12f7e
+  5G #470f77 #000004
+  5H #fec286 #fec78b
+  5I #f7735c #f97b5d
+  5J #feb97f #fd9969
+  5K #fec085 #fec689
+  5L #febc82 #fec689
+  5M #fec488 #feaa74
+  5N #fd9567 #feae76
+  5O #feb97f #feb179
+  5P #fc9064 #feb77d
+  5Q #feae76 #feb97f
+  5R #feb179 #feb97f
+  5S #feaf78 #feb77d
+  5T #feaf78 #feb57c
+  5U #fb8861 #feac75
+  5V #fd9567 #feaf78
+  5W #e85461 #feaf78
+  5X #feb57c #fda470
+  5Y #fc9265 #fc9064
+  5Z #feae76 #fea671
+  60 #feac75 #fea671
+  61 #fd9b6a #fb8660
+  62 #fd9d6b #fda16e
+  63 #fc8c63 #f56c5b
+  64 #f97b5d #fc8c63
+  65 #f3675b #fb8460
+  66 #ec585f #f7715b
+  67 #000003 #be3976
+  68 #6f1e81 #000003
+  69 #fd9d6b #fec488
+  6a #fb8861 #fec085
+  6b #fea671 #febb80
+  6c #feb77d #fd9567
+  6d #fea873 #fa805e
+  6e #f8775c #ef5e5d
+  6f #fb8660 #fda26f
+  6g #fb8a62 #feae76
+  6h #fd9969 #fc9265
+  6i #fb8460 #fc8e63
+  6j #fd9f6c #fd9b6a
+  6k #fb8460 #f66e5b
+  6l #fb8660 #f8775c
+  6m #000003 #c53c74
+  6n #e24d65 #53137c
+  6o #812581 #000003
+  6p #fec78b #fd9768
+  6q #fec78b #feb179
+  6r #fec78b #fec085
+  6s #fec78b #feaf78
+  6t #fec78b #fc9366
+  6u #fec689 #feb57c
+  6v #feaa74 #fa805e
+  6w #fec689 #fea671
+  6x #f3655c #feb97f
+  6y #febe83 #fda16e
+  6z #fec085 #feb77d
+  6A #fc9366 #feaa74
+  6B #feb77d #fd9969
+  6C #feb77d #fc9366
+  6D #feb57c #feb57c
+  6E #feae76 #feb57c
+  6F #feac75 #fa7f5e
+  6G #fb8460 #fea671
+  6H #feac75 #fda470
+  6I #feac75 #fc9064
+  6J #fda16e #fda26f
+  6K #fd9b6a #fda26f
+  6L #fd9b6a #f8775c
+  6M #f97d5d #d0416f
+  6N #000003 #ee5d5d
+  6O #000003 #a7317d
+  6P #fd9b6a #fec286
+  6Q #feae76 #fec286
+  6R #f97d5d #fec085
+  6S #febb80 #fec085
+  6T #fd9567 #febb80
+  6U #feaa74 #fd9969
+  6V #fb8861 #feb179
+  6W #da4769 #febb80
+  6X #febe83 #feb57c
+  6Y #f3675b #fd9567
+  6Z #feaf78 #f3655c
+  70 #feaf78 #feae76
+  71 #fc8e63 #fd9d6b
+  72 #fc8c63 #fd9f6c
+  73 #fa805e #fd9567
+  74 #f4685b #fc9064
+  75 #fda470 #fda470
+  76 #fb8861 #f9795c
+  77 #eb5660 #fda16e
+  78 #f7715b #fc9265
+  79 #fd9b6a #fd9b6a
+  7a #fc9366 #fd9768
+  7b #d7456b #fc9064
+  7c #fa825f #f3675b
+  7d #f8755c #f56a5b
+  7e #fec286 #febc82
+  7f #fec085 #febb80
+  7g #feb97f #fda470
+  7h #feb37b #fd9b6a
+  7i #fea671 #fc8c63
+  7j #fd9969 #fea873
+  7k #fc9064 #fd9567
+  7l #feae76 #fea873
+  7m #fda16e #fda16e
+  7n #feaa74 #fea671
+  7o #ed595f #fc8c63
+  7p #fd9969 #f9795c
+  7q #fea873 #fd9f6c
+  7r #f56c5b #fda26f
+  7s #f4685b #fb8460
+  7t #fda16e #fc9366
+  7u #fc9064 #fd9768
+  7v #fc9366 #fa7f5e
+  7w #fc8c63 #da4769
+  7x #f97d5d #f97d5d
+  7y #fc8e63 #f97d5d
+  7z #fb8660 #ea5560
+  7A #f8755c #f8775c
+  7B #eb5660 #f2635c
+  7C #b3357a #000003
+  7D #feae76 #fec488
+  7E #feb37b #febe83
+  7F #fda470 #febe83
+  7G #febc82 #f1615c
+  7H #feaf78 #fea873
+  7I #fda26f #fd9d6b
+  7J #feb77d #feb37b
+  7K #eb5660 #feb57c
+  7L #feaa74 #feb37b
+  7M #feb179 #fd9b6a
+  7N #fea873 #fda16e
+  7O #fda26f #feaa74
+  7P #fd9b6a #fda470
+  7Q #feaa74 #fda16e
+  7R #fc8e63 #f9795c
+  7S #fc8e63 #e85461
+  7T #fc9064 #fa7f5e
+  7U #fd9567 #fa825f
+  7V #fd9567 #d1426e
+  7W #fb8a62 #822581
+  7X #fc9064 #ed595f
+  7Y #fc8c63 #f7735c
+  7Z #fc8c63 #f9795c
+  80 #f56a5b #f9795c
+  81 #fa805e #f8775c
+  82 #ee5b5e #f4685b
+  83 #e24d65 #f7735c
+  84 #f0605d #f3675b
+  85 #e04b66 #d4436d
+  86 #3e0f72 #000003
+  87 #fd9d6b #febe83
+  88 #febc82 #f97d5d
+  89 #feae76 #feb37b
+  8a #feb37b #febb80
+  8b #fda26f #feb77d
+  8c #f9795c #fda16e
+  8d #fc8e63 #feb37b
+  8e #feae76 #fd9b6a
+  8f #feb179 #fa7f5e
+  8g #fd9b6a #fd9f6c
+  8h #fea873 #fda470
+  8i #fda16e #fda470
+  8j #fb8861 #fd9b6a
+  8k #fc9366 #fc9064
+  8l #fa7f5e #f8775c
+  8m #ce4070 #ac337b
+  8n #f97b5d #261157
+  8o #f2635c #852681
+  8p #f9795c #9a2d7f
+  8q #ce4070 #f0605d
+  8r #ed595f #ee5b5e
+  8s #63197f #dd4968
+  8t #d1426e #842681
+  8u #4d117a #c03a75
+  8v #e44e64 #57147d
+  8w #f3655c #ac337b
+  8x #ef5e5d #010109
+  8y #f56c5b #c63c73
+  8z #f4685b #d0416f
+  8A #ed595f #da4769
+  8B #e85461 #e65162
+  8C #000003 #cd3f70
+  8D #fda470 #fec286
+  8E #feb57c #febc82
+  8F #feb77d #feb179
+  8G #feb37b #fda470
+  8H #ed595f #fc9064
+  8I #fea873 #f7735c
+  8J #feaa74 #f0605d
+  8K #fc9366 #f66e5b
+  8L #ee5b5e #fd9567
+  8M #f1615c #fc8e63
+  8N #fb8660 #fa7f5e
+  8O #fd9d6b #fc9366
+  8P #fda16e #fc9265
+  8Q #fd9567 #fb8460
+  8R #fb8660 #fc8c63
+  8S #fa825f #fa7f5e
+  8T #f56c5b #ef5e5d
+  8U #9f2f7e #ee5b5e
+  8V #b3357a #852681
+  8W #852681 #180f3f
+  8X #ab337c #000003
+  8Y #61187f #000003
+  8Z #ca3e72 #000003
+  90 #d9466a #1b1044
+  91 #b53679 #000003
+  92 #000003 #792281
+  93 #fec689 #feae76
+  94 #f8775c #feaa74
+  95 #feac75 #feaa74
+  96 #f6705b #fda26f
+  97 #f6705b #fd9969
+  98 #c23a75 #ec585f
+  99 #f9795c #f56c5b
+  9a #fa7f5e #f97d5d
+  9b #fd9567 #fc8e63
+  9c #fd9567 #f2635c
+  9d #fc8c63 #fa805e
+  9e #942b80 #f56a5b
+  9f #f3655c #b53679
+  9g #f6705b #e55063
+  9h #f8755c #de4a67
+  9i #f0605d #f0605d
+  9j #eb5660 #d7456b
+  9k #e75262 #000003
+  9l #bd3977 #000003
+  9m #170f3c #000003
+  9n #000003 #140d35
+  9o #fea873 #feaf78
+  9p #f97d5d #feb37b
+  9q #fd9f6c #feae76
+  9r #feaa74 #fd9b6a
+  9s #fd9768 #ef5e5d
+  9t #fa825f #fa825f
+  9u #972c7f #fa825f
+  9v #d1426e #b53679
+  9w #f8755c #b3357a
+  9x #cd3f70 #ec585f
+  9y #ab337c #e75262
+  9z #c33b74 #e04b66
+  9A #792281 #5a157e
+  9B #301065 #000003
+  9C #09071f #000003
+  9D #feb97f #fc9265
+  9E #feaa74 #fa7f5e
+  9F #fea671 #fd9f6c
+  9G #fd9d6b #fea873
+  9H #feaa74 #fea873
+  9I #fd9969 #fda16e
+  9J #fc8c63 #fd9567
+  9K #fb8a62 #fb8460
+  9L #f9795c #fc8e63
+  9M #f9795c #fa7f5e
+  9N #f2635c #ea5560
+  9O #b83778 #000003
+  9P #000003 #3e0f72
+  9Q #f56a5b #febe83
+  9R #febc82 #febe83
+  9S #febc82 #feb97f
+  9T #fda16e #ed595f
+  9U #feb57c #feb179
+  9V #feae76 #f3655c
+  9W #f56a5b #feae76
+  9X #fd9d6b #feac75
+  9Y #feaa74 #fa825f
+  9Z #f7715b #fd9969
+  a0 #f7715b #f97b5d
+  a1 #fc8c63 #fc8c63
+  a2 #ec585f #f97b5d
+  a3 #681b80 #f8755c
+  a4 #ec585f #cd3f70
+  a5 #be3976 #ce4070
+  a6 #942b80 #321067
+  a7 #fda16e #feae76
+  a8 #febe83 #fda26f
+  a9 #feb37b #fd9969
+  aa #fd9567 #feb97f
+  ab #feb37b #feb97f
+  ac #fea873 #fc9366
+  ad #fd9969 #feb37b
+  ae #feac75 #f7715b
+  af #fea671 #fea873
+  ag #ef5e5d #fea873
+  ah #fda470 #fd9768
+  ai #f8775c #fd9969
+  aj #fd9567 #eb5660
+  ak #fc9064 #fa825f
+  al #fb8660 #f1615c
+  am #f6705b #f0605d
+  an #e85461 #0e0a2a
+  ao #c23a75 #000003
+  ap #1b1044 #000003
+  aq #000003 #842681
+  ar #feb97f #feae76
+  as #fd9768 #feaa74
+  at #feb37b #feb57c
+  au #fda470 #feb57c
+  av #feb37b #feac75
+  aw #fc8e63 #fda26f
+  ax #fda26f #fea671
+  ay #feaa74 #fc8e63
+  az #f3655c #fd9768
+  aA #f56a5b #fc8e63
+  aB #de4a67 #fa7f5e
+  aC #e85461 #f1615c
+  aD #2a115c #eb5660
+  aE #000003 #731f81
+  aF #b0347b #c03a75
+  aG #000003 #c83d72
+  aH #fda470 #fec085
+  aI #feaa74 #feaf78
+  aJ #febb80 #fea873
+  aK #feae76 #feaf78
+  aL #feaf78 #feac75
+  aM #fda470 #feac75
+  aN #fda16e #fc8e63
+  aO #fb8460 #fd9969
+  aP #fc9265 #fc8c63
+  aQ #fc8e63 #f1615c
+  aR #f9795c #f56a5b
+  aS #f4685b #ef5e5d
+  aT #b53679 #ec585f
+  aU #000003 #b83778
+  aV #bd3977 #d6446c
+  aW #ce4070 #ed595f
+  aX #feaf78 #febe83
+  aY #fea671 #feae76
+  aZ #fda470 #fb8861
+  b0 #fd9b6a #f56a5b
+  b1 #fd9768 #5d177e
+  b2 #e75262 #f97d5d
+  b3 #fa805e #fa7f5e
+  b4 #fb8861 #e44e64
+  b5 #ee5d5d #ec585f
+  b6 #bd3977 #a9327c
+  b7 #f2635c #c33b74
+  b8 #d7456b #b3357a
+  b9 #ab337c #972c7f
+  ba #000003 #661a80
+  bb #e65162 #c23a75
+  bc #eb5660 #f56a5b
+  bd #ef5e5d #f56c5b
+  be #ee5b5e #f3675b
+  bf #000003 #ef5e5d
+  bg #000003 #470f77
+  bh #fd9768 #febb80
+  bi #feaf78 #feb97f
+  bj #d9466a #feb77d
+  bk #fc8e63 #feb57c
+  bl #fd9567 #feaa74
+  bm #fda470 #feb179
+  bn #fc9265 #feac75
+  bo #fda26f #feae76
+  bp #fea873 #fb8460
+  bq #fda26f #fda470
+  br #fd9969 #fd9f6c
+  bs #f2635c #fb8460
+  bt #a3307e #fb8460
+  bu #ee5b5e #f7735c
+  bv #d7456b #000003
+  bw #b53679 #63197f
+  bx #9f2f7e #000003
+  by #60187f #e04b66
+  bz #ee5b5e #f3655c
+  bA #ed595f #f8755c
+  bB #f97b5d #fa7f5e
+  bC #f7735c #fa825f
+  bD #f0605d #f9795c
+  bE #ee5d5d #f9795c
+  bF #000003 #f56c5b
+  bG #000003 #b63679
+  bH #000003 #bb3877
+  bI #de4a67 #fda470
+  bJ #f3655c #fea873
+  bK #f97b5d #fda16e
+  bL #f7715b #fea873
+  bM #f8755c #fda470
+  bN #fd9b6a #fd9768
+  bO #ee5d5d #fb8a62
+  bP #f3655c #fb8660
+  bQ #f8775c #ee5d5d
+  bR #ee5d5d #d1426e
+  bS #b63679 #6c1d80
+  bT #9a2d7f #dd4968
+  bU #e55063 #430f75
+  bV #f0605d #f97d5d
+  bW #eb5660 #fb8861
+  bX #fb8861 #fc8e63
+  bY #fa825f #fc9064
+  bZ #fb8861 #fc8c63
+  c0 #fb8861 #fc9064
+  c1 #fa825f #eb5660
+  c2 #f56c5b #f97b5d
+  c3 #5a157e #ed595f
+  c4 #5e177f #d3426d
+  c5 #feaa74 #febb80
+  c6 #fda16e #feaf78
+  c7 #feb37b #fea873
+  c8 #fd9768 #f7735c
+  c9 #feae76 #fd9969
+  ca #feaa74 #fb8460
+  cb #c23a75 #fda470
+  cc #fd9b6a #fd9d6b
+  cd #fd9567 #fb8660
+  ce #f9795c #942b80
+  cf #fb8460 #f97b5d
+  cg #7f2481 #742081
+  ch #1a1041 #ac337b
+  ci #8c2980 #d4436d
+  cj #000003 #b53679
+  ck #ec585f #eb5660
+  cl #f7715b #fa825f
+  cm #fb8861 #f2635c
+  cn #fc9064 #fb8460
+  co #e14c66 #fa805e
+  cp #fc9265 #fc9366
+  cq #fd9567 #f7735c
+  cr #fd9768 #fd9969
+  cs #f3655c #fd9567
+  ct #fb8660 #fd9768
+  cu #fa7f5e #fc9265
+  cv #f97d5d #dc4869
+  cw #f9795c #f8755c
+  cx #f3655c #f56a5b
+  cy #251155 #c83d72
+  cz #000003 #5d177e
+  cA #0a0722 #ec585f
+  cB #000003 #812581
+  cC #000003 #9c2e7f
+  cD #febb80 #fd9768
+  cE #feb179 #feac75
+  cF #feae76 #fda26f
+  cG #ea5560 #feac75
+  cH #f97d5d #fd9768
+  cI #fd9969 #fa805e
+  cJ #fd9768 #fb8a62
+  cK #f7735c #f9795c
+  cL #ec585f #d4436d
+  cM #f1615c #8f2a80
+  cN #972c7f #ed595f
+  cO #d4436d #f2635c
+  cP #d3426d #ed595f
+  cQ #ac337b #ee5b5e
+  cR #ac337b #d7456b
+  cS #742081 #ca3e72
+  cT #000003 #a4307d
+  cU #ae347b #c33b74
+  cV #9e2e7e #f56a5b
+  cW #ea5560 #ef5e5d
+  cX #d7456b #822581
+  cY #000003 #e44e64
+  cZ #000003 #55137d
+  d0 #000003 #711f81
+  d1 #000003 #010007
+  d2 #c53c74 #b93778
+  d3 #ee5d5d #e55063
+  d4 #b63679 #f66e5b
+  d5 #661a80 #fa7f5e
+  d6 #fc8e63 #fa805e
+  d7 #fd9768 #fc9366
+  d8 #e55063 #fd9b6a
+  d9 #fc9265 #fda26f
+  da #f7735c #fd9f6c
+  db #fd9567 #fd9b6a
+  dc #fd9768 #fb8861
+  dd #fc8e63 #fd9768
+  de #e75262 #fa805e
+  df #3b0f6f #dc4869
+  dg #bd3977 #cb3e71
+  dh #a3307e #000003
+  di #f4685b #f4685b
+  dj #ec585f #e75262
+  dk #822581 #b1357a
+  dl #000003 #61187f
+  dm #e04b66 #eb5660
+  dn #050417 #e04b66
+  do #000003 #f7715b
+  dp #d9466a #be3976
+  dq #5d177e #3c0f71
+  dr #e04b66 #dd4968
+  ds #feaa74 #d9466a
+  dt #fea873 #fd9768
+  du #fd9b6a #ee5d5d
+  dv #fd9768 #fc9265
+  dw #fda16e #fc8c63
+  dx #fc8c63 #c03a75
+  dy #fb8a62 #dc4869
+  dz #f97b5d #f1615c
+  dA #ce4070 #f1615c
+  dB #f0605d #fc8c63
+  dC #9f2f7e #f0605d
+  dD #f9795c #f97b5d
+  dE #fb8460 #fb8861
+  dF #f8775c #fc8c63
+  dG #f97d5d #fb8861
+  dH #f6705b #f8775c
+  dI #d0416f #f0605d
+  dJ #e85461 #f56c5b
+  dK #f7715b #fb8460
+  dL #e65162 #fb8660
+  dM #f97d5d #f2635c
+  dN #f97d5d #f7715b
+  dO #f3675b #fa7f5e
+  dP #f4685b #f2635c
+  dQ #a9327c #e75262
+  dR #000003 #ee5b5e
+  dS #c33b74 #e14c66
+  dT #1c1046 #ec585f
+  dU #992d7f #400f73
+  dV #120d33 #000003
+  dW #952c80 #b53679
+  dX #942b80 #d4436d
+  dY #a6317d #f4685b
+  dZ #972c7f #ec585f
+  e0 #d3426d #e65162
+  e1 #651a80 #9e2e7e
+  e2 #5d177e #f8755c
+  e3 #fa805e #fb8660
+  e4 #fd9768 #fb8460
+  e5 #f2635c #fd9d6b
+  e6 #fda16e #fd9f6c
+  e7 #fd9f6c #fd9d6b
+  e8 #fb8660 #fd9d6b
+  e9 #fa825f #fc9366
+  ea #fd9f6c #fd9f6c
+  eb #fda16e #fd9d6b
+  ec #fc9064 #f7735c
+  ed #fb8460 #fd9567
+  ee #fb8a62 #fd9567
+  ef #fb8a62 #fd9969
+  eg #fc8e63 #fc9265
+  eh #400f73 #f2635c
+  ei #4d117a #cd3f70
+  ej #120d33 #bb3877
+  ek #000003 #c63c73
+  el #000003 #02020d
+  em #4f117b #d9466a
+  en #f8775c #f4685b
+  eo #fb8460 #ec585f
+  ep #f4685b #fb8861
+  eq #f66e5b #e24d65
+  er #dd4968 #fb8460
+  es #f97b5d #fc9265
+  et #fc8c63 #feaa74
+  eu #fc8e63 #fda470
+  ev #feaa74 #fd9f6c
+  ew #fda16e #ca3e72
+  ex #fa805e #f56a5b
+  ey #f66e5b #742081
+  ez #f66e5b #fa7f5e
+  eA #f7715b #f7715b
+  eB #f8775c #fd9567
+  eC #fc8e63 #fa825f
+  eD #fd9567 #fda26f
+  eE #cd3f70 #fd9567
+  eF #fc8c63 #fda16e
+  eG #fc9265 #f4685b
+  eH #f8755c #fc8e63
+  eI #a9327c #d9466a
+  eJ #f97d5d #fb8460
+  eK #fc9265 #f56a5b
+  eL #fb8861 #fd9768
+  eM #ef5e5d #cb3e71
+  eN #ef5e5d #fc8e63
+  eO #fa7f5e #c23a75
+  eP #f97b5d #fa825f
+  eQ #eb5660 #d4436d
+  eR #d6446c #f2635c
+  eS #000003 #321067
+  eT #892881 #e04b66
+  eU #da4769 #a3307e
+  eV #f8755c #f6705b
+  eW #ee5d5d #fa805e
+  eX #f97b5d #da4769
+  eY #e04b66 #f7715b
+  eZ #dd4968 #d3426d
+  f0 #f7715b #812581
+  f1 #fb8660 #f56a5b
+  f2 #fb8a62 #f9795c
+  f3 #fda16e #fd9567
+  f4 #feac75 #fc9265
+  f5 #ec585f #feae76
+  f6 #fea671 #fda16e
+  f7 #fea873 #fea671
+  f8 #feaa74 #fd9567
+  f9 #feac75 #fc9366
+  fa #fc8e63 #feac75
+  fb #fda470 #fea671
+  fc #fb8861 #fea671
+  fd #fda26f #fd9969
+  fe #fd9969 #fda26f
+  ff #fd9969 #fd9969
+  fg #fc9265 #fd9768
+  fh #fa825f #f3655c
+  fi #f7715b #691c80
+  fj #e14c66 #c63c73
+  fk #892881 #972c7f
+  fl #a9327c #a9327c
+  fm #e85461 #d6446c
+  fn #f56c5b #eb5660
+  fo #fc9265 #fc9265
+  fp #fc9366 #f7735c
+  fq #ed595f #fd9f6c
+  fr #fc9265 #fd9d6b
+  fs #fb8861 #fc9265
+  ft #ea5560 #fa805e
+  fu #fd9567 #f97b5d
+  fv #c33b74 #f56a5b
+  fw #f1615c #fd9567
+  fx #cd3f70 #f3675b
+  fy #f7715b #fd9b6a
+  fz #fd9d6b #fd9768
+  fA #fd9d6b #fda470
+  fB #c83d72 #feaa74
+  fC #feaa74 #f8755c
+  fD #fd9f6c #fa825f
+  fE #fd9f6c #fea873
+  fF #fb8460 #fda26f
+  fG #fda16e #e85461
+  fH #fda16e #fd9969
+  fI #fa805e #fda470
+  fJ #fd9768 #fd9b6a
+  fK #fc9265 #fb8861
+  fL #f97d5d #fc8e63
+  fM #f97b5d #f6705b
+  fN #f1615c #ee5d5d
+  fO #ae347b #942b80
+  fP #a3307e #d6446c
+  fQ #b53679 #d0416f
+  fR #f66e5b #fa805e
+  fS #f6705b #fc9265
+  fT #fc9064 #fc9265
+  fU #fa825f #fd9b6a
+  fV #dd4968 #fd9567
+  fW #ed595f #fd9969
+  fX #fc9064 #fda16e
+  fY #feaa74 #f8775c
+  fZ #feac75 #fda26f
+  g0 #fa825f #feae76
+  g1 #f97d5d #feb179
+  g2 #fea671 #feb37b
+  g3 #fd9b6a #feac75
+  g4 #fd9b6a #fea671
+  g5 #feac75 #feb37b
+  g6 #fa825f #fd9567
+  g7 #fea873 #fb8a62
+  g8 #fd9d6b #fb8a62
+  g9 #fda470 #f56a5b
+  ga #fd9d6b #feaa74
+  gb #fb8861 #fb8a62
+  gc #ed595f #fb8861
+  gd #c23a75 #bb3877
+  ge #942b80 #f4685b
+  gf #e14c66 #221150
+  gg #762181 #fc8e63
+  gh #4a1079 #fa7f5e
+  gi #fd9567 #fd9f6c
+  gj #f97b5d #fd9969
+  gk #000003 #852681
+  gl #63197f #9e2e7e
+  gm #fa825f #fb8861
+  gn #fd9b6a #feb37b
+  go #fda470 #fa805e
+  gp #fda470 #feae76
+  gq #fda470 #f4685b
+  gr #e65162 #feb37b
+  gs #fea873 #feb37b
+  gt #fea671 #fea671
+  gu #f6705b #feae76
+  gv #fea671 #fda470
+  gw #feaa74 #f7715b
+  gx #fea671 #fd9b6a
+  gy #fea671 #fb8460
+  gz #fda16e #fb8861
+  gA #f56c5b #1c1046
+  gB #e85461 #f6705b
+  gC #a7317d #fa825f
+  gD #fb8a62 #fd9b6a
+  gE #fc9064 #fd9b6a
+  gF #f97d5d #fd9969
+  gG #fd9d6b #fea671
+  gH #feaa74 #f6705b
+  gI #fc9064 #fea873
+  gJ #fc8c63 #feb37b
+  gK #dd4968 #feaf78
+  gL #fda26f #feb179
+  gM #feb37b #fb8a62
+  gN #fda470 #feb37b
+  gO #feaf78 #feaa74
+  gP #feb37b #fea671
+  gQ #fb8460 #feac75
+  gR #fda470 #fea873
+  gS #fc8e63 #fd9567
+  gT #6c1d80 #f2635c
+  gU #f56a5b #fda16e
+  gV #fc9366 #fda470
+  gW #fd9b6a #feaa74
+  gX #fa825f #fea873
+  gY #fda16e #feb37b
+  gZ #f7735c #d3426d
+  h0 #fda26f #feac75
+  h1 #f66e5b #fd9b6a
+  h2 #fda26f #feb37b
+  h3 #f7715b #feb179
+  h4 #feb57c #feb77d
+  h5 #feb179 #fc8c63
+  h6 #feb37b #fc8e63
+  h7 #feb57c #fd9567
+  h8 #fb8a62 #feb57c
+  h9 #feaf78 #feaf78
+  ha #ef5e5d #feb179
+  hb #feb37b #fa7f5e
+  hc #fc9064 #feb179
+  hd #fd9567 #feb37b
+  he #fea671 #fda26f
+  hf #e04b66 #fda26f
+  hg #fc8e63 #feaa74
+  hh #fa805e #fa825f
+  hi #e85461 #c33b74
+  hj #f97b5d #fc8e63
+  hk #fc8c63 #fda470
+  hl #fda26f #fda26f
+  hm #feae76 #fda470
+  hn #fda470 #f8775c
+  ho #fb8460 #feb179
+  hp #fda16e #feb77d
+  hq #fda470 #fb8460
+  hr #feb179 #fda470
+  hs #feb37b #fd9d6b
+  ht #fda26f #f8775c
+  hu #feb37b #e75262
+  hv #feae76 #feb77d
+  hw #feb37b #feaa74
+  hx #feb37b #fda16e
+  hy #fd9969 #feaf78
+  hz #fa825f #feb179
+  hA #feaa74 #feb77d
+  hB #feb179 #f56a5b
+  hC #fd9567 #feb179
+  hD #feac75 #feb179
+  hE #cb3e71 #febb80
+  hF #fd9969 #febc82
+  hG #ed595f #f8775c
+  hH #feaa74 #feb57c
+  hI #feb77d #febc82
+  hJ #f66e5b #fd9d6b
+  hK #fc8e63 #fd9f6c
+  hL #feac75 #fd9b6a
+  hM #fa825f #feaf78
+  hN #fc8e63 #fd9b6a
+  hO #fb8660 #f97b5d
+  hP #812581 #f6705b
+  hQ #fa825f #f97b5d
+  hR #fd9b6a #fd9969
+  hS #fd9d6b #fd9d6b
+  hT #feb57c #fda16e
+  hU #fc8c63 #feb77d
+  hV #fea671 #fb8660
+  hW #e04b66 #feb97f
+  hX #feb179 #febc82
+  hY #fa805e #feb57c
+  hZ #feb77d #feac75
+  i0 #feb57c #fc9366
+  i1 #fea671 #fb8861
+  i2 #d3426d #febc82
+  i3 #f97b5d #febc82
+  i4 #fc9064 #fda470
+  i5 #f1615c #feb77d
+  i6 #fa825f #fb8a62
+  i7 #fc9064 #febb80
+  i8 #fd9b6a #feb179
+  i9 #feb179 #febb80
+  ia #fd9d6b #feb77d
+  ib #feb179 #feaf78
+  ic #febc82 #feb57c
+  id #fda26f #febb80
+  ie #eb5660 #febe83
+  if #feb97f #feb77d
+  ig #feb57c #feb97f
+  ih #feae76 #febb80
+  ii #febc82 #fd9969
+  ij #feb179 #fb8861
+  ik #f97d5d #feac75
+  il #fd9f6c #feac75
+  im #d1426e #ee5b5e
+  in #fd9768 #fea873
+  io #feb37b #feaf78
+  ip #fb8460 #feaf78
+  iq #feb37b #f6705b
+  ir #febc82 #fc9064
+  is #febc82 #e85461
+  it #feaf78 #febb80
+  iu #fda26f #febe83
+  iv #feb57c #fb8a62
+  iw #fc9366 #febc82
+  ix #feb97f #feaf78
+  iy #febb80 #feb37b
+  iz #fd9567 #fda470
+  iA #feb97f #fda26f
+  iB #febb80 #feb77d
+  iC #fb8a62 #fd9f6c
+  iD #febe83 #fec085
+  iE #febb80 #feb97f
+  iF #febb80 #f2635c
+  iG #fb8460 #fd9f6c
+  iH #e44e64 #fec085
+  iI #e85461 #fc9265
+  iJ #fea873 #febb80
+  iK #feaa74 #febc82
+  iL #ee5b5e #febc82
+  iM #fd9969 #fd9d6b
+  iN #fd9567 #feb77d
+  iO #d7456b #fb8460
+  iP #feb37b #febc82
+  iQ #fd9f6c #febb80
+  iR #feb97f #fb8660
+  iS #e85461 #febb80
+  iT #fda470 #fd9567
+  iU #febb80 #d7456b
+  iV #febb80 #f6705b
+  iW #feaa74 #fc9064
+  iX #fea873 #fb8660
+  iY #fb8861 #fd9d6b
+  iZ #febb80 #fc8c63
+  j0 #feb179 #fec085
+  j1 #ec585f #fea873
+  j2 #febb80 #fc9265
+  j3 #f6705b #fea873
+  j4 #feaf78 #fa7f5e
+  j5 #fd9f6c #febe83
+text:
+  Generating 5 frames for Mandelbrot zoom...
+   60%[████████████████████████████████████████████▍                             ]
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+colour:
+  ................................................................................................................................................................
+  ................................................................................................................................................................
+  00010101010101010002030405060708090a0b050c0d0e0f0g0h0i0j0k0l0m0n0o0p0q0r0s0t0u0v0w0x0y0z0A0B0C0D0E0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  01010101010101010G020H0I0J0K0L0M0N0O060O0P0Q0R0S0S0S0T0U0V0W0X0Y0Z0Z101112131415161718191a1b1c1d1e1f1g1h0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  01010101010101011i1j1k1l1m1n1o1p060606061q1r1s0S0S0S1o1t1u1v1v1w1x1y1z1A1B150i1C1D1E1F1G1H1I1J1K1L0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  0101010101010101001M1N1O1P1Q1R1S1T0606061U1V1W1X1Y1Z202122232425262728292a2b2c2d2e2f2g2h2i2j1g2k0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  010101010101012l2m2n2o2p2p2p2q2r2s2t2u2u2v2w2x2y2z2A0m2s0Z2B2C272D2E2F2G2H2I2J2K2L2M2N2O2P0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  0101012Q2R2m2S2T2U2V2W2p2p2p2X2x2Y2Z2u2u2u06303132330X3435363738393a3b3c3d3e3f3g3h3i3j3k0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  3l3m3n3o173p0n3q3r3s3t3u3v3w3w3w3w2u2u2u2u3x3y0S3z3A1v1v3B3C273D3E3F3G3H3e3I0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  1V3J3K3L3M3N0Z213O0b3P0b0e3Q3R3S3T3U3V3W3X260k1V1V223Y3Z400s4142434445464748490F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  4a4b06064c220b4d4e0606060P4f0P0S0S4g2d4h4i250W0W4j4j0Z4k4l12123l4m4n4o4p3b4q4r4s4t4u0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  3m4v4w2A4x4y4z060606064A4B4C4D0S0S0S4E4F4G4H0X0X4I4J4K4L371A4M4N4O4P4Q4R1G4S4T0F4U0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  2p3w4V4W4X4Y3z062v2v064Z503z0S0S0S0S515253541v1v55565758590u0u5a5b5c5d5e5f5g5h5i0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  3w5j5k5l5m5n5o2v2u2u2u1r0f5p5q155r5s5t3z5u1v1v1v5v0Z5w5x125y5z5A5B5C5D5E5F5G0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  3m5H345I5J5K5L2u2u2u2u5M5N5O5P5Q0m0o0o5R5S5T5k5U5V5W4i5X1A5Y5Z6061626364656667680F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  3w3w3w3w3w3w2u2u2u2u2u696a6b5S0W0W4J5n0Z0Z6c6d6e276f6g0u6h6i0w5c5c6j4W6k6l6m6n6o0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  6p6q6r6s6t3T6u6u6v6w6x6y0S6z6A0X1v0m376B6C6D6E12126F6G606H6I396J6K6L4W6M4S6N6O0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  6P05056Q6R6S0L6T6U6V6W341V6X5u1v1v0m6Y0s6Z70717273410w7475767778797a7b5q7c7d0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  060P7e7f0S0S0S7g7h0m0W7i0Z0Z127j0h4J3Z127k7l7m7n7o7p7q7r2d7s7t7u7v7w7x7y7z7A7B7C0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  067D1V3z1S0S1S7E7F1v7G7H7I7J7K7L7M7N3p7O7P7Q7R7S147T6h7U7V7W7X7Y7Z806M8182838485860F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  2v2u2v8788898a3p8b8c4J8d52708e8f8g8h8i7q8j8k8l8m8n8o8p8q8r8s8t8o8u8v8w8x8y8z8A8B8C0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  2u2u2u068D2E0W8E8F8G8H8I8J8K8L4N8M8N8O8P8Q8R8S8T8U8V0F0F8W8X0F0F0F0F0F0F0F8Y8Z9091920F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  2u2u932s1Y4V22940s95969798999a9b9c9d9e9f9g9h9i9j9k9l9m0F0F0F0F0F0F0F0F0F0F0F0F0F0F6o9n0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  4A1u0W9o8a0W9p4K4i9q9r9s9t9u9v9w9x9y9z9A9B9C0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  0S0S9D9E4X1v0X9F26129G9H8P9I9J9K9L9M9N9O9P0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  0S0S3z9Q9R1v9S9T9U9V9W9X9Y9Z0za0a1a2a3a4a5a60F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  a7a8a9aaab3o5Pac1qadaeafagahaiajakalamanao0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0Fapaq0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  aras0W0Wat0Z0Zau12avawaxay5c4QazaAaBaCaDaE0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0FaFaG0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  aHaIaJ0X8EaK1E0saL0uaM5mahaNaOaPaQaRaSaTaU0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0FaVaTaW0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  1SaX7E1v1v8g3o2727aYaZb0b1b2b3b4b5b6b7b8b9ba0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0Fbbbcbdbebfbg0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  bhbibjbkblbmbnbobp0wbqbrbsbtbubvbwbx0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0FbybzbAbBbCbDbEbFbGbH0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  bI3o0Z0ZbJ2727bKbLbM2dbNbObPbQbRbS0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0FbTbUbVbWbXbYbZc0c1c25F0F4tc3c40F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F
+  c52b0hc637c7c8c9cacbcccdcecf1ecg0F0F0F0F0F0F0Fchci0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F8Ccjckclcmcncocpcqcrcsctcucvcwcxcy0Fcz0FcA0F0F0FaU0F0F0F0FcB0F0F0FcC0F0F6m
+  cDcE2713cFcG1C5ccHcIcJcKcLcMcNcOcPcQcRcScT8scUcVcWcXcY6O0FcZ0F0F0F0F0F0F0F0Fd0d10F0Fd2d3d4d5d6d7d88c7md9ccda6Kdbdcddde8Xdfdgdh1Ibsdidjdk0F0F0F0Fdldmdndodpdq0Fdr
+  cE6gds5ZdtdudvdwdxdydzdAdBdCdDdEdFdGdHdIdJdKdLdMdNdOdPdQdRdSdTdUdV0F0F0FdWdXdYdZe0e1e2e318e4e5e630e7e875e9942Eeaebec18edeec074efeg8Heheiej0F0Fekelemeneoepeqeres
+  eteuevbrewexeyezeAeB8ceCeDeEdb1FeFeGeHeIeJcteK4p1aeLeMeNeOePeQeRcY6OeSeTeUeVeWeXeYeZf0f1f2f3752c9Hf4f5f6f7f8f9fafb9G7Qfcfdfe7kff9Ifgfhfifjfkflfm8Tfnfofpfqfrfs8g
+  dHftfu7yfvfwfxfyfzfAfB5U754HfCfD4NfE7y1IfFfGdvfHfI8g6KfJfK4RfLfMfNfOfPfQfRfScfeffTfUfVfWfXfYfZg04Pg127g230g30u0ug411g5g6g77Qg8g9ga71gbgcgdgegfggghcsgi0xgj8c9H7n
+  gkglgmfFebea6l2Efdgngogp0ugqgrgsgtgugvgwgxgw13gy4H6U62fAgzdb80gAgBgC2NgDgEgF0xgGfEgHaMgIg5gJcFgKgL4YgMc76DgNgO5k58gP7hataK41gQg1bogR0xgSgTgUgVgW52eF4HgX03aMfagY
+  eugZ61h0h1gYh2aKh3avh425cEh5h6h7h8h9ha8Ghb0uc9hchd89hehfhg7mhhhi2NhjffgVhkaxhlhm3ZhnaK6V4Yho0Z0r6v1p5dhp0Z0Z390hgxhq365paLhrgPhsataK5ZgnaIf78dhtaK58huhvh91phwhx
+  89hyhzhAhBhCh4h4hDhE0X8EhF58h40Z0ZhGhHf3hIhJhBhKhLathM41hN9qeDhOhPhQhRg3hSaK7m4Y7hhThU13hVhW0X1vhX4khY0ohZ4ki0i1i20X1v1vi358i4i50ZhHi62Ai7i85Ph4g009f4hIi96U03ia
+  0r0Zib1vic1o0n34id3W501v9Rieif0oigih3Wii1v9R580o0Z0Z0sij5nh9ikilim4Iin5Aioigia2aip0Z0Z4Jiq0W3W4C503zgi4j0mbhid0W3Wiris1v9RhI0Z0ngpit3W249Siu0o4Yiviw1v1v1v9R1E0o
+  9Rixiyizbm1S5QiAiB3DiC7L3ziDhp4jiEiFiG1liHiDiI0m34iJ0XiKiLiMiNhUiO956Ehp27iP1v1v1riQiR0n0W0WiyiS6S0S3ziT5OiUiV55ioiWiX2s3z3ziY5OiEiZ4ki7j0iDj1iE0Wj2j3j44v3zj56Z
+
+frame 4: 63345 bytes, 42x80, cursor 42,0, scrolled 0
+palette:
+  .. default default
+  00 #b53679 #b53679
+  01 #b3357a #b3357a
+  02 #a9327c #b1357a
+  03 #a12f7e #a7317d
+  04 #8d2980 #9e2e7e
+  05 #7f2481 #7c2381
+  06 #812581 #912a80
+  07 #651a80 #972c7f
+  08 #7f2481 #972c7f
+  09 #a12f7e #992d7f
+  0a #9c2e7f #a4307d
+  0b #9a2d7f #a6317d
+  0c #a9327c #a3307e
+  0d #ab337c #912a80
+  0e #ab337c #a12f7e
+  0f #a6317d #992d7f
+  0g #8c2980 #852681
+  0h #a9327c #872781
+  0i #872781 #822581
+  0j #b0347b #b0347b
+  0k #ae347b #b0347b
+  0l #972c7f #b0347b
+  0m #ab337c #b0347b
+  0n #a4307d #b0347b
+  0o #b0347b #b1357a
+  0p #b1357a #b1357a
+  0q #ab337c #b1357a
+  0r #b0347b #9f2f7e
+  0s #ac337b #ab337c
+  0t #ab337c #a3307e
+  0u #a7317d #a4307d
+  0v #9f2f7e #a9327c
+  0w #a6317d #ab337c
+  0x #8f2a80 #ab337c
+  0y #9f2f7e #ab337c
+  0z #a3307e #9e2e7e
+  0A #6f1e81 #a4307d
+  0B #8a2881 #a6317d
+  0C #ac337b #b1357a
+  0D #b3357a #b1357a
+  0E #a9327c #a4307d
+  0F #9e2e7e #8d2980
+  0G #a3307e #ac337b
+  0H #420f74 #972c7f
+  0I #9f2f7e #b1357a
+  0J #b0347b #ae347b
+  0K #a12f7e #a4307d
+  0L #ab337c #922b80
+  0M #ae347b #a7317d
+  0N #972c7f #952c80
+  0O #a9327c #a7317d
+  0P #b53679 #b3357a
+  0Q #b3357a #150e38
+  0R #b3357a #b0347b
+  0S #b3357a #8a2881
+  0T #a12f7e #b1357a
+  0U #a7317d #8c2980
+  0V #a3307e #a12f7e
+  0W #762181 #a6317d
+  0X #8d2980 #a4307d
+  0Y #9e2e7e #a6317d
+  0Z #972c7f #a6317d
+  10 #892881 #922b80
+  11 #a6317d #9a2d7f
+  12 #9c2e7f #a9327c
+  13 #9f2f7e #a6317d
+  14 #8c2980 #a12f7e
+  15 #8d2980 #9a2d7f
+  16 #742081 #8f2a80
+  17 #651a80 #ae347b
+  18 #9a2d7f #a3307e
+  19 #8d2980 #a12f7e
+  1a #9e2e7e #912a80
+  1b #a7317d #a12f7e
+  1c #8f2a80 #a3307e
+  1d #ac337b #ac337b
+  1e #ab337c #ab337c
+  1f #a6317d #a3307e
+  1g #9e2e7e #b0347b
+  1h #b1357a #b0347b
+  1i #9f2f7e #b0347b
+  1j #ae347b #a3307e
+  1k #8a2881 #a9327c
+  1l #9c2e7f #a3307e
+  1m #762181 #a12f7e
+  1n #8f2a80 #822581
+  1o #a4307d #992d7f
+  1p #9c2e7f #a7317d
+  1q #a4307d #a7317d
+  1r #a3307e #a6317d
+  1s #792281 #a4307d
+  1t #a7317d #55137d
+  1u #ac337b #b0347b
+  1v #ae347b #ac337b
+  1w #992d7f #a7317d
+  1x #a9327c #ae347b
+  1y #a9327c #922b80
+  1z #972c7f #ab337c
+  1A #a7317d #a3307e
+  1B #a6317d #a9327c
+  1C #952c80 #ab337c
+  1D #7e2481 #ab337c
+  1E #a9327c #ab337c
+  1F #8d2980 #ab337c
+  1G #9a2d7f #9a2d7f
+  1H #a6317d #8d2980
+  1I #9f2f7e #661a80
+  1J #a9327c #a9327c
+  1K #b0347b #6e1e81
+  1L #ab337c #a6317d
+  1M #912a80 #8d2980
+  1N #822581 #792281
+  1O #812581 #992d7f
+  1P #a9327c #ac337b
+  1Q #ac337b #ae347b
+  1R #ac337b #a6317d
+  1S #a7317d #a7317d
+  1T #61187f #812581
+  1U #b0347b #a9327c
+  1V #a3307e #5e177f
+  1W #b0347b #972c7f
+  1X #b0347b #450f76
+  1Y #7f2481 #a6317d
+  1Z #ab337c #ac337b
+  20 #a6317d #ac337b
+  21 #9a2d7f #ab337c
+  22 #a4307d #a4307d
+  23 #ab337c #a9327c
+  24 #842681 #a6317d
+  25 #922b80 #a4307d
+  26 #a7317d #9e2e7e
+  27 #a12f7e #9e2e7e
+  28 #ae347b #872781
+  29 #9f2f7e #ae347b
+  2a #942b80 #852681
+  2b #a6317d #872781
+  2c #942b80 #9f2f7e
+  2d #922b80 #9f2f7e
+  2e #792281 #ae347b
+  2f #812581 #772181
+  2g #731f81 #ae347b
+  2h #a9327c #b0347b
+  2i #ae347b #ae347b
+  2j #ac337b #8d2980
+  2k #9a2d7f #9c2e7f
+  2l #9a2d7f #a4307d
+  2m #420f74 #992d7f
+  2n #952c80 #2f1062
+  2o #7a2281 #8c2980
+  2p #952c80 #852681
+  2q #ab337c #9f2f7e
+  2r #ac337b #55137d
+  2s #972c7f #a12f7e
+  2t #a6317d #9c2e7f
+  2u #a6317d #9f2f7e
+  2v #9e2e7e #a3307e
+  2w #a3307e #a3307e
+  2x #952c80 #9e2e7e
+  2y #a7317d #922b80
+  2z #8c2980 #ab337c
+  2A #61187f #731f81
+  2B #a6317d #a7317d
+  2C #952c80 #992d7f
+  2D #842681 #ae347b
+  2E #ae347b #a12f7e
+  2F #972c7f #992d7f
+  2G #a7317d #a9327c
+  2H #7f2481 #a7317d
+  2I #53137c #942b80
+  2J #912a80 #ac337b
+  2K #a7317d #9f2f7e
+  2L #772181 #9a2d7f
+  2M #a7317d #8a2881
+  2N #992d7f #8a2881
+  2O #8d2980 #a7317d
+  2P #731f81 #9e2e7e
+  2Q #9e2e7e #7a2281
+  2R #992d7f #972c7f
+  2S #a6317d #852681
+  2T #661a80 #a3307e
+  2U #992d7f #9c2e7f
+  2V #9c2e7f #9f2f7e
+  2W #9f2f7e #972c7f
+  2X #8f2a80 #9e2e7e
+  2Y #942b80 #9c2e7f
+  2Z #a9327c #822581
+  30 #ac337b #a12f7e
+  31 #9a2d7f #9e2e7e
+  32 #9e2e7e #661a80
+  33 #a7317d #691c80
+  34 #a7317d #a6317d
+  35 #ae347b #8d2980
+  36 #711f81 #9c2e7f
+  37 #a3307e #ab337c
+  38 #a7317d #9a2d7f
+  39 #952c80 #ac337b
+  3a #7a2281 #a9327c
+  3b #a9327c #55137d
+  3c #a3307e #a4307d
+  3d #772181 #a3307e
+  3e #57147d #a6317d
+  3f #a4307d #a6317d
+  3g #9f2f7e #a12f7e
+  3h #a12f7e #a12f7e
+  3i #9c2e7f #992d7f
+  3j #9e2e7e #9c2e7f
+  3k #9c2e7f #8c2980
+  3l #7a2281 #972c7f
+  3m #842681 #812581
+  3n #872781 #922b80
+  3o #822581 #8a2881
+  3p #912a80 #a6317d
+  3q #a9327c #3b0f6f
+  3r #63197f #a9327c
+  3s #a6317d #a4307d
+  3t #a4307d #8d2980
+  3u #a4307d #ac337b
+  3v #852681 #ac337b
+  3w #ae347b #a9327c
+  3x #ac337b #9c2e7f
+  3y #a9327c #8a2881
+  3z #9a2d7f #9f2f7e
+  3A #ac337b #9e2e7e
+  3B #b0347b #ac337b
+  3C #b0347b #a6317d
+  3D #b0347b #8f2a80
+  3E #b0347b #922b80
+  3F #9f2f7e #842681
+  3G #a9327c #a6317d
+  3H #9a2d7f #842681
+  3I #ab337c #8d2980
+  3J #a6317d #a6317d
+  3K #872781 #872781
+  3L #7a2281 #912a80
+  3M #a12f7e #912a80
+  3N #a12f7e #9f2f7e
+  3O #2d1060 #9e2e7e
+  3P #8d2980 #942b80
+  3Q #731f81 #58157e
+  3R #8c2980 #4a1079
+  3S #a12f7e #a6317d
+  3T #6c1d80 #a6317d
+  3U #8d2980 #8d2980
+  3V #a9327c #972c7f
+  3W #a4307d #9f2f7e
+  3X #a7317d #8d2980
+  3Y #912a80 #a4307d
+  3Z #842681 #ac337b
+  40 #ac337b #a9327c
+  41 #7e2481 #a3307e
+  42 #872781 #9a2d7f
+  43 #952c80 #772181
+  44 #5b167e #8c2980
+  45 #9a2d7f #912a80
+  46 #812581 #9c2e7f
+  47 #a4307d #ab337c
+  48 #992d7f #a9327c
+  49 #a6317d #892881
+  4a #b0347b #a12f7e
+  4b #a4307d #8f2a80
+  4c #681b80 #a7317d
+  4d #992d7f #a4307d
+  4e #ac337b #872781
+  4f #ab337c #942b80
+  4g #a4307d #a12f7e
+  4h #872781 #a12f7e
+  4i #a4307d #9c2e7f
+  4j #792281 #9a2d7f
+  4k #a6317d #8c2980
+  4l #892881 #9f2f7e
+  4m #7f2481 #922b80
+  4n #912a80 #9e2e7e
+  4o #9e2e7e #7f2481
+  4p #852681 #9c2e7f
+  4q #842681 #711f81
+  4r #9a2d7f #942b80
+  4s #a12f7e #a3307e
+  4t #9e2e7e #6e1e81
+  4u #912a80 #922b80
+  4v #852681 #6b1c80
+  4w #6b1c80 #681b80
+  4x #7f2481 #661a80
+  4y #972c7f #6c1d80
+  4z #ac337b #a3307e
+  4A #61187f #a7317d
+  4B #842681 #9c2e7f
+  4C #a12f7e #ab337c
+  4D #a6317d #390f6e
+  4E #a9327c #9c2e7f
+  4F #952c80 #661a80
+  4G #852681 #842681
+  4H #691c80 #9c2e7f
+  4I #9e2e7e #8c2980
+  4J #8f2a80 #3c0f71
+  4K #922b80 #892881
+  4L #9e2e7e #972c7f
+  4M #a12f7e #4f117b
+  4N #762181 #9e2e7e
+  4O #a4307d #942b80
+  4P #a3307e #792281
+  4Q #992d7f #a3307e
+  4R #852681 #9f2f7e
+  4S #9a2d7f #972c7f
+  4T #972c7f #972c7f
+  4U #9a2d7f #8c2980
+  4V #a9327c #9f2f7e
+  4W #ab337c #9a2d7f
+  4X #9e2e7e #a12f7e
+  4Y #972c7f #9c2e7f
+  4Z #7e2481 #912a80
+  50 #711f81 #892881
+  51 #822581 #922b80
+  52 #8a2881 #8f2a80
+  53 #992d7f #8c2980
+  54 #ae347b #952c80
+  55 #a4307d #ae347b
+  56 #9e2e7e #ab337c
+  57 #972c7f #8c2980
+  58 #9a2d7f #a12f7e
+  59 #ae347b #912a80
+  5a #a4307d #912a80
+  5b #8c2980 #742081
+  5c #8c2980 #7f2481
+  5d #792281 #a12f7e
+  5e #9c2e7f #9a2d7f
+  5f #792281 #5a157e
+  5g #ab337c #792281
+  5h #922b80 #a9327c
+  5i #922b80 #992d7f
+  5j #481078 #691c80
+  5k #842681 #350f6a
+  5l #651a80 #9f2f7e
+  5m #942b80 #a12f7e
+  5n #842681 #8d2980
+  5o #9f2f7e #8f2a80
+  5p #9c2e7f #a12f7e
+  5q #3c0f71 #952c80
+  5r #5b167e #8f2a80
+  5s #772181 #9e2e7e
+  5t #a7317d #661a80
+  5u #8d2980 #742081
+  5v #792281 #762181
+  5w #61187f #ab337c
+  5x #a9327c #762181
+  5y #ab337c #9e2e7e
+  5z #5e177f #9c2e7f
+  5A #a6317d #922b80
+  5B #9c2e7f #9e2e7e
+  5C #952c80 #952c80
+  5D #952c80 #a12f7e
+  5E #972c7f #9e2e7e
+  5F #4d117a #7c2381
+  5G #892881 #7e2481
+  5H #972c7f #9f2f7e
+  5I #972c7f #8f2a80
+  5J #a4307d #7f2481
+  5K #8d2980 #a9327c
+  5L #b0347b #9c2e7f
+  5M #b0347b #a3307e
+  5N #61187f #a12f7e
+  5O #9f2f7e #822581
+  5P #992d7f #2a115c
+  5Q #842681 #7c2381
+  5R #842681 #681b80
+  5S #742081 #61187f
+  5T #812581 #7c2381
+  5U #922b80 #8d2980
+  5V #892881 #7a2281
+  5W #9c2e7f #52127c
+  5X #a12f7e #9c2e7f
+  5Y #a9327c #852681
+  5Z #942b80 #a7317d
+  60 #852681 #a6317d
+  61 #972c7f #942b80
+  62 #a12f7e #60187f
+  63 #a12f7e #892881
+  64 #9f2f7e #7a2281
+  65 #9e2e7e #9a2d7f
+  66 #972c7f #762181
+  67 #912a80 #9c2e7f
+  68 #972c7f #6b1c80
+  69 #972c7f #8a2881
+  6a #992d7f #7e2481
+  6b #8c2980 #a3307e
+  6c #792281 #9e2e7e
+  6d #9e2e7e #992d7f
+  6e #992d7f #a6317d
+  6f #9e2e7e #a4307d
+  6g #9c2e7f #792281
+  6h #711f81 #a6317d
+  6i #9f2f7e #7e2481
+  6j #9a2d7f #7f2481
+  6k #952c80 #55137d
+  6l #a7317d #ab337c
+  6m #9c2e7f #892881
+  6n #922b80 #8a2881
+  6o #872781 #8f2a80
+  6p #3e0f72 #872781
+  6q #6c1d80 #852681
+  6r #170f3c #6f1e81
+  6s #8d2980 #912a80
+  6t #912a80 #952c80
+  6u #8d2980 #872781
+  6v #1f114b #a12f7e
+  6w #7c2381 #9a2d7f
+  6x #952c80 #8f2a80
+  6y #691c80 #942b80
+  6z #8c2980 #8c2980
+  6A #a7317d #5e177f
+  6B #972c7f #a3307e
+  6C #8f2a80 #922b80
+  6D #9c2e7f #922b80
+  6E #9e2e7e #922b80
+  6F #9f2f7e #6c1d80
+  6G #6e1e81 #a12f7e
+  6H #a4307d #9a2d7f
+  6I #8a2881 #9a2d7f
+  6J #a3307e #942b80
+  6K #8a2881 #a4307d
+  6L #942b80 #9e2e7e
+  6M #a9327c #731f81
+  6N #a12f7e #8a2881
+  6O #942b80 #8d2980
+  6P #9a2d7f #a9327c
+  6Q #b0347b #58157e
+  6R #a3307e #ae347b
+  6S #a4307d #a9327c
+  6T #5d177e #a4307d
+  6U #952c80 #5e177f
+  6V #57147d #9a2d7f
+  6W #892881 #8d2980
+  6X #922b80 #8f2a80
+  6Y #8c2980 #922b80
+  6Z #9e2e7e #852681
+  70 #a3307e #9c2e7f
+  71 #952c80 #892881
+  72 #a7317d #7a2281
+  73 #a12f7e #a9327c
+  74 #6e1e81 #842681
+  75 #681b80 #852681
+  76 #892881 #9a2d7f
+  77 #7c2381 #822581
+  78 #9f2f7e #a3307e
+  79 #952c80 #a3307e
+  7a #681b80 #a3307e
+  7b #942b80 #a3307e
+  7c #a6317d #972c7f
+  7d #a4307d #9e2e7e
+  7e #a4307d #a3307e
+  7f #912a80 #a12f7e
+  7g #842681 #762181
+  7h #651a80 #992d7f
+  7i #872781 #9f2f7e
+  7j #942b80 #9a2d7f
+  7k #912a80 #7e2481
+  7l #8a2881 #5e177f
+  7m #912a80 #a9327c
+  7n #8c2980 #a4307d
+  7o #a12f7e #872781
+  7p #1a1041 #a3307e
+  7q #140d35 #9f2f7e
+  7r #a6317d #952c80
+  7s #b0347b #992d7f
+  7t #711f81 #ae347b
+  7u #a12f7e #972c7f
+  7v #922b80 #9a2d7f
+  7w #8a2881 #a3307e
+  7x #9f2f7e #922b80
+  7y #a3307e #7c2381
+  7z #9c2e7f #912a80
+  7A #8f2a80 #742081
+  7B #9a2d7f #7c2381
+  7C #992d7f #942b80
+  7D #a4307d #972c7f
+  7E #a3307e #5b167e
+  7F #a3307e #922b80
+  7G #7a2281 #9c2e7f
+  7H #8a2881 #942b80
+  7I #8f2a80 #7f2481
+  7J #8a2881 #792281
+  7K #8a2881 #6b1c80
+  7L #872781 #a6317d
+  7M #9a2d7f #a7317d
+  7N #9f2f7e #a7317d
+  7O #a4307d #7c2381
+  7P #7e2481 #9c2e7f
+  7Q #972c7f #a9327c
+  7R #842681 #a9327c
+  7S #661a80 #a9327c
+  7T #972c7f #63197f
+  7U #7f2481 #ab337c
+  7V #922b80 #ab337c
+  7W #a6317d #a12f7e
+  7X #ae347b #892881
+  7Y #812581 #ac337b
+  7Z #a7317d #ac337b
+  80 #9f2f7e #8d2980
+  81 #a3307e #952c80
+  82 #8a2881 #972c7f
+  83 #9c2e7f #ab337c
+  84 #5b167e #a7317d
+  85 #822581 #8d2980
+  86 #9c2e7f #9c2e7f
+  87 #a6317d #7f2481
+  88 #952c80 #942b80
+  89 #a4307d #842681
+  8a #9f2f7e #992d7f
+  8b #7f2481 #8a2881
+  8c #922b80 #942b80
+  8d #9e2e7e #711f81
+  8e #7e2481 #9f2f7e
+  8f #942b80 #942b80
+  8g #922b80 #9c2e7f
+  8h #942b80 #a9327c
+  8i #651a80 #ab337c
+  8j #7a2281 #a3307e
+  8k #5b167e #a6317d
+  8l #952c80 #9c2e7f
+  8m #2b115e #9f2f7e
+  8n #a12f7e #822581
+  8o #a3307e #8a2881
+  8p #792281 #a6317d
+  8q #822581 #972c7f
+  8r #812581 #a12f7e
+  8s #772181 #a12f7e
+  8t #9a2d7f #7a2281
+  8u #a4307d #711f81
+  8v #9a2d7f #681b80
+  8w #a6317d #8a2881
+  8x #5b167e #922b80
+  8y #a9327c #a12f7e
+  8z #ae347b #9a2d7f
+  8A #ae347b #a4307d
+  8B #5e177f #762181
+  8C #9c2e7f #852681
+  8D #9c2e7f #842681
+  8E #9c2e7f #3b0f6f
+  8F #9f2f7e #9e2e7e
+  8G #711f81 #9a2d7f
+  8H #57147d #8a2881
+  8I #8d2980 #a3307e
+  8J #a12f7e #9a2d7f
+  8K #9f2f7e #9f2f7e
+  8L #992d7f #9e2e7e
+  8M #60187f #a12f7e
+  8N #872781 #9c2e7f
+  8O #9a2d7f #852681
+  8P #942b80 #922b80
+  8Q #55137d #842681
+  8R #450f76 #5d177e
+  8S #63197f #842681
+  8T #9c2e7f #a6317d
+  8U #9f2f7e #852681
+  8V #53137c #a4307d
+  8W #9f2f7e #792281
+  8X #7e2481 #661a80
+  8Y #ac337b #762181
+  8Z #ac337b #8c2980
+  90 #ac337b #a7317d
+  91 #6f1e81 #261157
+  92 #892881 #7f2481
+  93 #922b80 #8c2980
+  94 #972c7f #7e2481
+  95 #912a80 #8f2a80
+  96 #61187f #9e2e7e
+  97 #6f1e81 #9c2e7f
+  98 #842681 #9f2f7e
+  99 #942b80 #972c7f
+  9a #912a80 #9f2f7e
+  9b #3b0f6f #a12f7e
+  9c #a3307e #a7317d
+  9d #8f2a80 #a7317d
+  9e #a3307e #892881
+  9f #8f2a80 #8f2a80
+  9g #58157e #892881
+  9h #711f81 #8c2980
+  9i #7f2481 #6f1e81
+  9j #3b0f6f #a7317d
+  9k #8c2980 #892881
+  9l #a3307e #972c7f
+  9m #a3307e #992d7f
+  9n #a4307d #952c80
+  9o #9f2f7e #942b80
+  9p #742081 #9a2d7f
+  9q #5d177e #9f2f7e
+  9r #731f81 #681b80
+  9s #a7317d #792281
+  9t #a7317d #842681
+  9u #7e2481 #a12f7e
+  9v #992d7f #000003
+  9w #9f2f7e #912a80
+  9x #9f2f7e #a4307d
+  9y #922b80 #a7317d
+  9z #6f1e81 #a7317d
+  9A #6b1c80 #6f1e81
+  9B #ab337c #822581
+  9C #63197f #a4307d
+  9D #7a2281 #a4307d
+  9E #231152 #a7317d
+  9F #a7317d #872781
+  9G #a6317d #711f81
+  9H #61187f #922b80
+  9I #942b80 #6c1d80
+  9J #842681 #661a80
+  9K #691c80 #731f81
+  9L #992d7f #9a2d7f
+  9M #762181 #a4307d
+  9N #4b1079 #a6317d
+  9O #952c80 #5b167e
+  9P #4b1079 #7f2481
+  9Q #9c2e7f #ac337b
+  9R #731f81 #a4307d
+  9S #9e2e7e #7e2481
+  9T #a4307d #812581
+  9U #9a2d7f #812581
+  9V #922b80 #842681
+  9W #a7317d #762181
+  9X #a7317d #992d7f
+  9Y #ab337c #a7317d
+  9Z #8d2980 #5d177e
+  a0 #972c7f #922b80
+  a1 #912a80 #a3307e
+  a2 #a3307e #9a2d7f
+  a3 #7f2481 #a12f7e
+  a4 #9e2e7e #ac337b
+  a5 #892881 #872781
+  a6 #8a2881 #a7317d
+  a7 #972c7f #812581
+  a8 #4a1079 #4f117b
+  a9 #a9327c #912a80
+  aa #9a2d7f #7e2481
+  ab #a12f7e #852681
+  ac #ab337c #a4307d
+  ad #a4307d #8a2881
+  ae #5e177f #a3307e
+  af #8c2980 #a7317d
+  ag #9e2e7e #a9327c
+  ah #2b115e #a9327c
+  ai #a9327c #8d2980
+  aj #a4307d #7e2481
+  ak #852681 #7c2381
+  al #9e2e7e #a7317d
+  am #a12f7e #942b80
+  an #992d7f #9f2f7e
+  ao #9a2d7f #992d7f
+  ap #812581 #852681
+  aq #822581 #762181
+  ar #a9327c #9a2d7f
+  as #ac337b #a4307d
+  at #9a2d7f #ac337b
+  au #430f75 #a12f7e
+  av #a9327c #952c80
+  aw #ab337c #992d7f
+  ax #a9327c #9e2e7e
+  ay #63197f #8d2980
+  az #a7317d #6f1e81
+  aA #9f2f7e #9a2d7f
+  aB #872781 #8a2881
+  aC #992d7f #8f2a80
+  aD #942b80 #000003
+  aE #661a80 #a12f7e
+  aF #731f81 #a6317d
+  aG #9c2e7f #972c7f
+  aH #4b1079 #952c80
+  aI #711f81 #a3307e
+  aJ #892881 #a7317d
+  aK #ac337b #992d7f
+  aL #8c2980 #ae347b
+  aM #972c7f #a4307d
+  aN #762181 #8f2a80
+  aO #952c80 #822581
+  aP #9f2f7e #9c2e7f
+  aQ #922b80 #912a80
+  aR #942b80 #772181
+  aS #7f2481 #742081
+  aT #822581 #942b80
+  aU #992d7f #a12f7e
+  aV #a3307e #852681
+  aW #9e2e7e #892881
+  aX #9f2f7e #58157e
+  aY #a7317d #711f81
+  aZ #992d7f #912a80
+  b0 #942b80 #812581
+  b1 #a7317d #852681
+  b2 #992d7f #ae347b
+  b3 #852681 #9e2e7e
+  b4 #a12f7e #952c80
+  b5 #5e177f #a6317d
+  b6 #9f2f7e #691c80
+  b7 #a9327c #992d7f
+  b8 #ab337c #7c2381
+  b9 #ab337c #681b80
+  ba #8c2980 #9f2f7e
+  bb #8d2980 #972c7f
+  bc #922b80 #400f73
+  bd #8d2980 #9f2f7e
+  be #9e2e7e #9f2f7e
+  bf #972c7f #07051b
+  bg #a12f7e #8d2980
+  bh #a12f7e #681b80
+  bi #822581 #7e2481
+  bj #992d7f #7c2381
+  bk #922b80 #852681
+  bl #922b80 #872781
+  bm #a3307e #9f2f7e
+  bn #892881 #a12f7e
+  bo #57147d #140d35
+  bp #8f2a80 #842681
+  bq #742081 #992d7f
+  br #762181 #a3307e
+  bs #8d2980 #ae347b
+  bt #a3307e #8c2980
+  bu #922b80 #742081
+  bv #922b80 #a6317d
+  bw #a7317d #8f2a80
+  bx #a7317d #731f81
+  by #952c80 #a6317d
+  bz #852681 #992d7f
+  bA #321067 #812581
+  bB #9a2d7f #5a157e
+  bC #661a80 #972c7f
+  bD #61187f #a4307d
+  bE #8c2980 #a6317d
+  bF #6c1d80 #972c7f
+  bG #922b80 #a12f7e
+  bH #892881 #9c2e7f
+  bI #661a80 #942b80
+  bJ #651a80 #9e2e7e
+  bK #a6317d #912a80
+  bL #842681 #852681
+  bM #952c80 #972c7f
+  bN #7c2381 #9e2e7e
+  bO #762181 #992d7f
+  bP #992d7f #60187f
+  bQ #972c7f #912a80
+  bR #842681 #8f2a80
+  bS #922b80 #922b80
+  bT #952c80 #2b115e
+  bU #a9327c #63197f
+  bV #450f76 #a7317d
+  bW #8c2980 #661a80
+  bX #842681 #7e2481
+  bY #a6317d #63197f
+  bZ #a3307e #a9327c
+  c0 #7c2381 #762181
+  c1 #731f81 #9a2d7f
+  c2 #61187f #9c2e7f
+  c3 #a6317d #5b167e
+  c4 #691c80 #ab337c
+  c5 #6b1c80 #ab337c
+  c6 #792281 #ab337c
+  c7 #a3307e #6f1e81
+  c8 #942b80 #711f81
+  c9 #842681 #a3307e
+  ca #842681 #972c7f
+  cb #952c80 #711f81
+  cc #661a80 #7c2381
+  cd #1f114b #7a2281
+  ce #872781 #7a2281
+  cf #8f2a80 #872781
+  cg #952c80 #8c2980
+  ch #9a2d7f #822581
+  ci #912a80 #942b80
+  cj #822581 #b0347b
+  ck #912a80 #b0347b
+  cl #8c2980 #ac337b
+  cm #8a2881 #992d7f
+  cn #822581 #892881
+  co #772181 #ab337c
+  cp #762181 #a9327c
+  cq #a6317d #6f1e81
+  cr #a4307d #5a157e
+  cs #261157 #a3307e
+  ct #992d7f #792281
+  cu #942b80 #4a1079
+  cv #842681 #9a2d7f
+  cw #822581 #852681
+  cx #ab337c #50127b
+  cy #7c2381 #952c80
+  cz #742081 #7e2481
+  cA #9c2e7f #7f2481
+  cB #952c80 #a7317d
+  cC #8c2980 #7a2281
+  cD #792281 #9c2e7f
+  cE #9c2e7f #822581
+  cF #470f77 #61187f
+  cG #5b167e #822581
+  cH #711f81 #5b167e
+  cI #55137d #4b1079
+  cJ #711f81 #691c80
+  cK #822581 #7f2481
+  cL #8c2980 #8d2980
+  cM #52127c #912a80
+  cN #7f2481 #952c80
+  cO #8c2980 #a9327c
+  cP #822581 #a7317d
+  cQ #972c7f #872781
+  cR #52127c #942b80
+  cS #53137c #8d2980
+  cT #812581 #892881
+  cU #681b80 #6f1e81
+  cV #912a80 #9a2d7f
+  cW #55137d #52127c
+  cX #5a157e #892881
+  cY #7f2481 #4d117a
+  cZ #60187f #852681
+  d0 #912a80 #972c7f
+  d1 #8f2a80 #9c2e7f
+  d2 #9a2d7f #872781
+  d3 #842681 #ab337c
+  d4 #952c80 #ae347b
+  d5 #a6317d #822581
+  d6 #9c2e7f #6f1e81
+  d7 #8f2a80 #942b80
+  d8 #9c2e7f #8d2980
+  d9 #912a80 #742081
+  da #7c2381 #57147d
+  db #872781 #7f2481
+  dc #50127b #892881
+  dd #892881 #892881
+  de #942b80 #8f2a80
+  df #400f73 #942b80
+  dg #8d2980 #8f2a80
+  dh #7a2281 #812581
+  di #a9327c #842681
+  dj #55137d #9f2f7e
+  dk #a7317d #7f2481
+  dl #992d7f #ab337c
+  dm #9e2e7e #ae347b
+  dn #9f2f7e #ac337b
+  do #812581 #9f2f7e
+  dp #9c2e7f #450f76
+  dq #8a2881 #9c2e7f
+  dr #922b80 #952c80
+  ds #852681 #ae347b
+  dt #681b80 #ae347b
+  du #a6317d #7e2481
+  dv #912a80 #842681
+  dw #742081 #872781
+  dx #822581 #742081
+  dy #6f1e81 #6b1c80
+  dz #772181 #420f74
+  dA #842681 #772181
+  dB #651a80 #852681
+  dC #922b80 #7e2481
+  dD #ab337c #9c2e7f
+  dE #a7317d #ae347b
+  dF #a6317d #942b80
+  dG #8d2980 #4f117b
+  dH #8c2980 #b0347b
+  dI #7a2281 #9a2d7f
+  dJ #4b1079 #b0347b
+  dK #9a2d7f #ae347b
+  dL #972c7f #7f2481
+  dM #942b80 #370f6c
+  dN #812581 #8c2980
+  dO #5a157e #58157e
+  dP #481078 #6c1d80
+  dQ #420f74 #6f1e81
+  dR #772181 #731f81
+  dS #8f2a80 #912a80
+  dT #8c2980 #952c80
+  dU #972c7f #390f6e
+  dV #9f2f7e #812581
+  dW #5e177f #a4307d
+  dX #822581 #681b80
+  dY #a3307e #b0347b
+  dZ #8a2881 #b0347b
+  e0 #992d7f #b0347b
+  e1 #481078 #b0347b
+  e2 #9c2e7f #952c80
+  e3 #922b80 #972c7f
+  e4 #8f2a80 #ae347b
+  e5 #7a2281 #ac337b
+  e6 #852681 #7a2281
+  e7 #842681 #952c80
+  e8 #792281 #8d2980
+  e9 #7e2481 #8d2980
+  ea #711f81 #872781
+  eb #842681 #742081
+  ec #792281 #9f2f7e
+  ed #972c7f #a7317d
+  ee #972c7f #5b167e
+  ef #6e1e81 #812581
+  eg #922b80 #812581
+  eh #972c7f #852681
+  ei #ae347b #9e2e7e
+  ej #711f81 #b0347b
+  ek #731f81 #b0347b
+  el #772181 #ac337b
+  em #53137c #221150
+  en #942b80 #8c2980
+  eo #a4307d #922b80
+  ep #7f2481 #8c2980
+  eq #3e0f72 #61187f
+  er #8f2a80 #972c7f
+  es #8d2980 #b0347b
+  et #a12f7e #742081
+  eu #ab337c #ae347b
+  ev #992d7f #ac337b
+  ew #7c2381 #b0347b
+  ex #7c2381 #ae347b
+  ey #1e1049 #ac337b
+  ez #3e0f72 #a9327c
+  eA #6f1e81 #ab337c
+  eB #9e2e7e #942b80
+  eC #ab337c #842681
+  eD #952c80 #b0347b
+  eE #912a80 #7f2481
+  eF #812581 #ae347b
+  eG #7f2481 #a9327c
+  eH #892881 #ae347b
+  eI #9c2e7f #ae347b
+  eJ #892881 #b0347b
+text:
+  Generating 5 frames for Mandelbrot zoom...
+   80%[███████████████████████████████████████████████████████████▏              ]
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+colour:
+  ................................................................................................................................................................
+  ................................................................................................................................................................
+  0000010102030405060708090a0b0c0d0e0e0f0g0h0i0j0j0j0j0j0j0j0j0j0j0j0k0k0l0k0m0n0o0p0p0p0p0p0p0p0p0p0q0r0s0t0u0v0w0x0y0z0A0B0j0o0o0C0D0E0F0G0H0p0p0I0y0J0K0L0M0N0O
+  0P0Q0R0S010T0U0V0W0X0Y0Z1011120u1314151617180n0j0j0j0j0j0j0j0j0j0j0j0j0o0o0p0p0p0p0p0p0p0p0p0p0p0p0p0j191a1b1c1d1d1d1e1f1g0j1h0p0p0p1i1j1k0J1l1m1n1d1d1o1p1q1r1s
+  0v1t1u1v1w0p0p1x1y1z1A1B1C1D1E1F1G1H1I1J0k0j0j0j0j0j0j0j0j0j0j0j0j0j0o0p0p0p0p0p0p0p0p0p0p0p0p0p0p1K1L1M1N1O1P1Q1R1S1J1T0j1U1o1V1W1X1Y1Z201d1d21222324252610270V
+  280j0j0j0j0j0j0j292a2b2c1Z1e1e1e1e0Y2d2e0j0j0j0j0j0j0j0j0j0j0j0j0j0j0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0j0m2f2g2h2i2i2j13221q2i2k2l2m2n2o2p2q0s2r1R2s2t1S1S2u2v2w272x
+  2y0j0j0j0j0j0j0j2z2A0G1d1d1r2B1J1J2C2D0k0j0j0j0j0j0j0j0j0j0j0j0j0j0j1h0p0p0p0p0p0p0p0p0p0p0p0p0p0p0j0j0j0j0j2E2F2G2G2H2I1v1v2J2K2L1S2M2N232O2P2Q2R2S2T2U2V2W2X2Y
+  2i1j2Z1p0J0j0J0J0J2i2E30313233341w1Q2i2i0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j1h0p0p0p0p0p0p0p0p0p0p0p1h0j0j0j0j0j35361E1e3738391d1d1d1d3a0w3b3c3d1S1S3e3f3g2w2w3h3i3j3k
+  0s3l3m3n3o0c3p3q1B3r1J1S3s3t3u3v2i2i1v3w3x3y3z3A0w3B3C0j0j0j0j0j0j0j0j0j0j0j1h1h1h1h1h1h1h1h0j0j0j0j3D3E3F3G3H231e1e1d1d1d1d1d1d1d3I3h3J3J1S1S263K3L3M3N3O3P3Q3R
+  1L2t3S3T093U3V1e1e1e3W3X3Y3Z1d1d1v404142434445464748490j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j4a0j0j0j0j0j0j4a4b124c4d1e1e1e0s1d1d0s4e4f1e4g4h4i4j4k3J4l4m4n4o2c4p3j3j4q
+  4r341f3s2k1J1e1e1e1e1e1Z1d1d1d1d0e4s4t4u4v4w4x4y4z1x0k0j0j0j0j0j0j0j0j0j0j0j0j0j0j3B1J4A4B4C3D0j3B2f4D4E0e1r1S4F4G4H1e1e1e1e3M4I4J4K3i4L4s4M4N4O4P2w4Q3h4R4S4T4U
+  4b0z031S4V4E4W231e1e1e0s1d0s1e123J4X4Y4Z5051525322540J0j0j0j0j0j0j0j0j0j0j0j0j0j55560e57583x591y5a5b5c4X2F0f3s5d5e2l5f5g23235h5i5j5k5l5m5n4P225o5p0V0V3h5q5r2x5s
+  3J3J5t4p5u5v2u5w1e1e1e1e5x5y5z5A5B5C5D5E5F5G5H5I5J0O5K0M0J5L5M0j0j0j0j0j0j0j0j0j5N1J5O3j5P5Q5R5S5T5U5V5W3U5X2Q3i3J3J3J3s3c4V5Y1J1S031S1S5Z603J1r6162635X5o64653j
+  3s66674X68693h6a5Y231e236b6c154d6d6e6f6g4s3N0Z0Y6h1J236i6j6k1P0j0j0j0j0j0j0j0j0j5U6l0V6m6n6o6p6q6r6s6t6u2Q6v143J2B1S2B0z3W6w6x6y6z6A1S1S1S1S3J3J6B4U6C6D6E6F6G58
+  276H0z3N096I6J130Z6K6L6M0O0O1S34343J3J3f4X0V5p2B034T6N6h1l6O536P1U6Q0j0j0j0j0j0j2i6R6S6T316U6V6W6X6Y4Y6Z2770711f5E1b722G2G732c223c6N3J34343J3J1s7475767778793h3h
+  7a7b2w3c3f3J3J3J3J7c7d7e7f7g7h3c6f3J3s7i5p7j7k7l387m6S7n7o1f7p3p7q7r1j7s0J0J0J0J2i2i7t4E6S7u7v7w6d2T7x7y7z1w3J4s3i7A7B7C1J1J127D3s3J3J3J3J3J3J3J2222222w7E7F3h3h
+  7G7H7I7J7K3J3J3J3J7L3S7M1w7N0v487O7P7Q7R0w477S7T371e1e1e7U7V1E48037W5m3z1v7X2i2i2i2i2i2i1Q7Y7Z807Z816l7V820E836l1C8485861E1e1e12134g872b88892Y583g8a8b8c8d8e3h3N
+  868f8g583J3J3J3J1S1S1S1S1S3G0O1J1J1E1e1e1e1e1e1e1e1e1e1e1e1e1e1e1J1J8h272l6S1j1v2i2i2i2i2i2i2i1d1d1d1d1d1d1d1d1d1Z1P8i1e1e1e1e1e3G8j8k8l0V8m5B8n3h2w8o1o221r8p8q
+  8r8s4X8t8u3J3s8v8w7r7e7d7F8x5o530f8y1e1e1e1e1e1e1e1e1e1e1e1e1e231J1J1J1J2G4O3Y408z8A2i2i2i2i1v1d1d1d1d1d1d1d1d1d1d1d1d1Z1e1e1e1e1e1e8B8C8D8E4T2p8F8G8g8H8I3J3J3J
+  3h3h3h8J8K8L227b8M2V8N8O8P8Q8R8S6k8T1e1e1e1e1e1e1e1e1e1e1e3G8U8p8V0O1J1J1J1S8W5X8X8Y3x8Z901d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1e1e1e1e5g1J4r919293945E0z952B2B2B3J3J
+  3h2w2w1l2v6196970V3h982k997v9a0v0w1z1E1e1e1Z1d1d1d1Z1Z1e0w9b3J2B9c9d0O0O1S787f229e3J0h2x2X7e5y4Y1L2b8Z2j1d1d1d1d1d1d1d1d1d1e1e1e0e1r7W9f9g9h9i2U8I9j1S1S1S1S3J3J
+  9k5X9l9m9n222l9o639p6D9q5X8T1r0w1e1e1e1e1d1d1d1d1d1d1d1d1P7c9r3X1S9s1S9t3X1A9u2W9v9w4g2w2v9x9y9d2B9z1r9A9B0s0s1d1d1d1d1d0s1e1e1e1e1q040Z9C9D2v9E2G1S1S1A9F4g4g9G
+  4Y9H9I9J9K9L3J3J3J3f9M9N6d9O9P1B1e1e1e1e1d1d1d1d1d1d1d1d1d1d9Q9R789S1p6H668u9T9U9V9x119W1S1S1S1S1S9X340Y2W9Y1e1e1e1e1e1e1e1e1e1e1e1e1e1E1E1J1J1J1J1S1b3k1l2w6f22
+  9Z6La0a11r3S3J3J3J3J3J3J3fa22t5y1e1e1e1e1e0s1d1d1d1d1d1d1d1d1d1d1d9Q1d20a3a40E229m4ia5a62G1J1J1J8ja73s4ga81e1e1e1e1e1e1e1e1e1e1e1e1e1e1e231Ja92M2v6B4X2C270z6H3t
+  3haa673J3J3J1S1S1S3J3J2u3J22ab1J1e23acad5Dae0s1d1d1d1d1d1d1d1d1d1d1d1Q1Q1Q1Q1Qaf6Cag4i0u0u1J1J1J1J73ah1E1e1e1e1e1e1e1e1e1e1e1e1e1e1e0Lai8e783f22aj2w0Vakal1k1J1J
+  am8K2l3J5A3J1S1S1S1San4s3c222s1J1J7Maoapaqar1Las0s30as1d1d1d1d1d1d2i2i2i2i2i2i2i1Qata7au3gav0O1J1J1J1e1e1e1e1e1e1e1e1e1e1e23aw5y23ax0u1lay3T3J3J0b3S4c1S1Saz2665
+  aA4Y228FaBaC341S1S1S1S6f8laDaE9t0O0OaF2U8gaG703J1qaHaIaJ9Y26aK3x1d1v2i2i2i2i2i2i2i2iaL1P1o1n5Dax0O1J1J231e1e1e1e1e1e1e1e1eaMaN4FaO5CaP5XaQ3f3J3J3J3J1S340u86aRaS
+  aT3g7f2waU2xaVaW3j1S1J1J03aX3c1caY1S1S7WaZ2w88b00f2w2v2P1f6Ib1aM033x402i2i2i2i2i2i2i2i2ib21Zb3b4b58w0z4b5Y1J3Gb6b7b8b9ar1J1J2Rbabbbcbd3hbe227c113J3J3J3W1l5pbf9a
+  3fbgbh8J04bibjbkbl8J3y1J1Jbm3f130b341S3J3J3Nbn0VaP8FbobpaT4Ibq279m2u0cbr1j2i2i2i2i2i2i2i2i2i89bs9Y221HaA3fbt9Fbu2o27bv3f18bwbx1S3Jbybz3c5B7e98bAbBbC585EbD3SbE0Y
+  3J1fbFbG5e5DbHbI4ZbJ6S1e1e566WbK1f3J3J5BbLbM9obN7vbObPbQbR6x1M4rbSbT3N0abU8h2i2i0k0j0j0j0j0j0j0k2ibVbWbX471J3WbY197D492u0fbZ3c3S3J3J3Jc03h3h3hc1aGab3h7F4Lc23J9t
+  343J9G70c3831ec46fc51e1e1e1ec65Dc7c84sc9700V6FaGcacb9kcc5Gcdcecfcgch65ci130c6T2i0j0j0j0j0j0j0j0j0jcjck0k6Rcl3Jcmchcnbg7Cco1Ecp3Wcqcrcs0Nct4n825e86cucv2kcw3h1c6i
+  3s3J86471e1Z1d1d1d1d1d1d1Z1ecxcyczcAcB0b0bcCcDcEa58ccFcGcHcIcJcKcL5C2Ybg134E3W340k0j0j0j0j0j0j0j0j0j0j0j0j0k221wcMcN3u4z231ecOcP0W1r313N3L3i4ucQ4u94cR4TcScE6a1l
+  3W12235y1L0s1d1d1d1d1d1d1d1e1e2z2KaxcT3s1f5m0ZcU5p71cVaScWcXcYcZd0d1d23N3Sd3bX550j0j0j0j0j0j0j0j0j0j0j0j0j0jd42kd51x0k2ibkc06Hd62v3Wd78cd85Cd9dadbdcdddedf4S65dg
+  780O0ObMdh3v1d1d1d1d3x2q1e1e1edidj6hdk1Z1e2O0Kdl3JbZ7Qdmdn8Pdo18dp8K3Sdq261Bdrd40j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j1vdsdt0cdu5edvcV4ZdwdxdydzdAdB95dC6V4r
+  cB1S1S9x0Y1qdD1d1QdE1b732q230E38dF6DdG902hcjdH0k0k0j0j2i1E0s1edI2u4C2G340e0O0k0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0jdJ1QdK7QdLdMdNdOdPdQdRakdSdTdUdV
+  7WdW4Ibm63a2dXd2902i2i0kdYdZe00ke10k1B0m0j0j0j0j0j0j0je0e2ar3p2te34z232te45Ee50j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j2i1v1v1Pe6e7e8e9eaeb9k8f9Lec3c
+  ed139l86eeefegeh1G4Eei0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j2hejekel4h4k0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0jem1J0w0s2V9J8LdSbHceen3H785p70
+  0weo3S5pbcepeqeper7u1E290j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0mes2h0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j1x0Z222s1Let3s5p3S9C4s0Zbt1q0c1P
+  0m8Keuejck6Ra42p3g2vevew0j0j0j0j0j0j0j0j0o0o0o0o0o0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0jex3F9219ey1eezbvbZeAeB5x1P6R1x
+  0j0j0j0j0j481eb40seCeD0m0j0o0o0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0o0o0o0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j3W0weE2geF0EeG45aw1xeHeIe40k0j
+  0p0p0p0p0p0o0j2heJ0j0o0o0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0o0o0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0k0j0k0j0j0j0jcj2h0j0j0j0j0j0j
+  0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0o0o0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j
+
+frame 5: 3578 bytes, 42x80, cursor 42,0, scrolled 0
+palette:
+  . default default
+  0 #000003 #000003
+text:
+  Generating 5 frames for Mandelbrot zoom...
+  100%[██████████████████████████████████████████████████████████████████████████]
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+colour:
+  ................................................................................
+  ................................................................................
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000

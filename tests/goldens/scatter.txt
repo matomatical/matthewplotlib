@@ -1,0 +1,286 @@
+example: scatter.py
+args: (none)
+terminal: 24x46
+image: 1 frames, 368x368, sha256:de2aa92f64486c08
+
+# Regenerate with `make goldens`. One frame per print; the text and
+# colour grids are the terminal screen, cropped to its content.
+
+frame 0: 6762 bytes, 23x46, cursor 23,0, scrolled 0
+palette:
+  .. default default
+  00 #7f7f7f default
+  01 #433982 default
+  02 #433a83 default
+  03 #433b83 default
+  04 #433c84 default
+  05 #423c84 default
+  06 #423d84 default
+  07 #423e85 default
+  08 #423f85 default
+  09 #414085 default
+  0a #414186 default
+  0b #414286 default
+  0c #404286 default
+  0d #404387 default
+  0e #453681 default
+  0f #443781 default
+  0g #443881 default
+  0h #404487 default
+  0i #3f4487 default
+  0j #3f4687 default
+  0k #45347f default
+  0l #453580 default
+  0m #287b8e default
+  0n #277d8e default
+  0o #277c8e default
+  0p #267e8e default
+  0q #267f8e default
+  0r #26808e default
+  0s #25818e default
+  0t #25828d default
+  0u #24838d default
+  0v #3e4788 default
+  0w #3e4888 default
+  0x #45327f default
+  0y #28798e default
+  0z #287a8e default
+  0A #277b8e default
+  0B #25838d default
+  0C #24848d default
+  0D #23858d default
+  0E #24868d default
+  0F #3d4989 default
+  0G #3d4a89 default
+  0H #46307d default
+  0I #46317e default
+  0J #29778e default
+  0K #29788e default
+  0L #35b778 default
+  0M #39b976 default
+  0N #38b976 default
+  0O #3dbb73 default
+  0P #23878d default
+  0Q #23888d default
+  0R #3d4b89 default
+  0S #462f7c default
+  0T #2a758e default
+  0U #2a768e default
+  0V #2fb37b default
+  0W #30b47a default
+  0X #32b579 default
+  0Y #36b776 default
+  0Z #37b876 default
+  10 #3ab975 default
+  11 #3cbb74 default
+  12 #40bc71 default
+  13 #43be6f default
+  14 #47c06e default
+  15 #4cc26b default
+  16 #22898d default
+  17 #228b8d default
+  18 #3c4c89 default
+  19 #3c4d8a default
+  1a #462d7c default
+  1b #2a748e default
+  1c #2b748e default
+  1d #2bb07d default
+  1e #2db17c default
+  1f #2eb27b default
+  1g #cde01d default
+  1h #c8df24 default
+  1i #cadf21 default
+  1j #dee21b default
+  1k #e0e21c default
+  1l #e1e318 default
+  1m #48c06d default
+  1n #4bc16b default
+  1o #4dc26a default
+  1p #51c468 default
+  1q #218b8d default
+  1r #218b8c default
+  1s #3c4e8a default
+  1t #3b4f8a default
+  1u #472b7a default
+  1v #2c718e default
+  1w #2b718e default
+  1x #28ae7f default
+  1y #aadb31 default
+  1z #b2dc2b default
+  1A #bfde26 default
+  1B #d9e11d default
+  1C #d7e11b default
+  1D #f3e51e default
+  1E #55c566 default
+  1F #54c565 default
+  1G #56c565 default
+  1H #208e8c default
+  1I #208f8c default
+  1J #3b518a default
+  1K #3b508a default
+  1L #472a79 default
+  1M #2c708e default
+  1N #24aa80 default
+  1O #26ac80 default
+  1P #a2d936 default
+  1Q #abda33 default
+  1R #acda32 default
+  1S #d2e01f default
+  1T #eae41a default
+  1U #fae622 default
+  1V #63ca5d default
+  1W #5fc95f default
+  1X #5bc862 default
+  1Y #20918c default
+  1Z #3a528b default
+  20 #3a518a default
+  21 #440154 default
+  22 #472978 default
+  23 #2d6e8e default
+  24 #23a882 default
+  25 #22a882 default
+  26 #23a883 default
+  27 #9ad83c default
+  28 #95d73f default
+  29 #89d446 default
+  2a #8cd444 default
+  2b #7cd14e default
+  2c #77d052 default
+  2d #70ce55 default
+  2e #7ccf50 default
+  2f #6bcd59 default
+  2g #64cb5d default
+  2h #1f938b default
+  2i #1f928b default
+  2j #1f918c default
+  2k #39538b default
+  2l #3a538b default
+  2m #440255 default
+  2n #472777 default
+  2o #2e6c8e default
+  2p #22a784 default
+  2q #21a784 default
+  2r #20a684 default
+  2s #20a485 default
+  2t #92d741 default
+  2u #83d34a default
+  2v #7dd24d default
+  2w #86d449 default
+  2x #72cf55 default
+  2y #1e968a default
+  2z #1f958b default
+  2A #1f948b default
+  2B #38558b default
+  2C #39548b default
+  2D #440357 default
+  2E #472676 default
+  2F #2e6b8e default
+  2G #2e6a8d default
+  2H #1fa286 default
+  2I #1fa186 default
+  2J #1e9f87 default
+  2K #1e9e88 default
+  2L #1e9d88 default
+  2M #1e9a89 default
+  2N #1e9989 default
+  2O #1e998a default
+  2P #1e988a default
+  2Q #1e978a default
+  2R #38568b default
+  2S #45065a default
+  2T #450558 default
+  2U #472575 default
+  2V #482374 default
+  2W #2f6a8d default
+  2X #2f688d default
+  2Y #1ea087 default
+  2Z #1e9b89 default
+  30 #37598c default
+  31 #37588c default
+  32 #45085b default
+  33 #482273 default
+  34 #30678d default
+  35 #30668d default
+  36 #31658d default
+  37 #31648d default
+  38 #355c8c default
+  39 #355b8c default
+  3a #365a8c default
+  3b #46095c default
+  3c #482172 default
+  3d #482071 default
+  3e #31638d default
+  3f #32628d default
+  3g #32618d default
+  3h #33608d default
+  3i #335f8d default
+  3j #345e8d default
+  3k #345d8c default
+  3l #355d8c default
+  3m #460c5f default
+  3n #460b5e default
+  3o #481e70 default
+  3p #481d6f default
+  3q #470f62 default
+  3r #460e61 default
+  3s #460d60 default
+  3t #481c6e default
+  3u #481b6d default
+  3v #481a6c default
+  3w #48196b default
+  3x #47186a default
+  3y #471669 default
+  3z #471567 default
+  3A #471466 default
+  3B #471265 default
+  3C #471164 default
+  3D #471163 default
+  3E #471062 default
+text:
+   1.1┬──────────── scatter example ───────────┐
+      │                                        │
+      │                                        │
+      │            ⣀⣠⠠⠤⠒⠒⠂⠊⠛⠐⠢⠤⢐⢄              │
+      │         ⢀⠄⠞             ⠈⠉⢲⢄           │
+      │       ⣠⠖⠂    ⢀⢀⢤⢤⡄⠤⣠⡦⣀⣀     ⠑⢄         │
+      │      ⡚     ⣠⠜⠑⠉⠁     ⠈⠙⠓⢣⡀    ⠇⡀       │
+      │    ⢠⠆    ⠼⠃⠃   ⢀⡀⢀⡀⣄    ⠁⠳⣦    ⠸⣂      │
+      │   ⢀⢚   ⠠⣂⠋   ⠄⠶⠆⠞⠋⠙⠁⠛⠿⡢⡀  ⠈⢒⡀   ⢲⠄     │
+      │   ⢘    ⠺⠄   ⣴⠟⠅⢀⡤⣯⣠⣨⠄⠉⠻⢟⠂  ⠰⡅   ⠈⣃     │
+    y │   ⡇   ⢀⡯   ⠠⠯  ⢴⡢⣿⣿⣾⡇⠘⠙⡛⠏   ⣣⡀  ⢀⠥     │
+      │   ⡎   ⢐⠅   ⢫⣛  ⠟⡮⣟⠺⠰⠫⠠⡪⡿⠜  ⠠⡹   ⢠⠃   ⢐⠅│
+      │   ⣊   ⠠⣋   ⠘⣅⠄ ⠘⢹⠛⣮⣦⣄⣷⠋⡃⠁ ⠠⣆⠅   ⢴⠁   ⡸ │
+      │   ⠨⡂   ⠲⡂  ⠈⠒⢣⣀ ⠁ ⠙⠙⠁⠉   ⣀⢼⠓   ⣀⠖    ⡇ │
+      │    ⠹⡀  ⠈⠙⣢   ⠉⠙⢒⢆⣀⡀⢀ ⣀⣤⢤⠴⠃    ⣸⠃   ⢀⠇  │
+      │     ⠣⡀   ⠁⢣     ⠈⠉⠉⠉⠛⠉⠈     ⣀⠆⠁   ⣀⠚   │
+      │     ⠈⠑⡄    ⠙⠢⢤⣀         ⢀⡠⢠⠒⠁    ⢰     │
+      │       ⠘⠢⠤     ⠉⠁⠑⠴⠰⠰⠢⠔⠔⠊⠁⠁     ⡀⠝      │
+      │         ⠈⠨⢄⣀                ⠤⠔⠉        │
+      │             ⠑⠨⡠⢠⢠⡠⢀⣀⡀⣀⢠⠠⠤⠐⠐⠉           │
+      │                   ⠁                    │
+  -1.1┼────────────────────────────────────────┤
+      -1.1                 x                 1.1
+colour:
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  0000000000................................................................................00
+  0000000000................................................................................00
+  0000000000........................010203030405060708090a0b0c0d............................00
+  0000000000..................0e0f0g..........................0d0h0i0j......................00
+  0000000000..............0k0l0e........0m0n0o0p0p0q0r0s0t0u..........0v0w..................00
+  0000000000............0x..........0y0z0z0A0o..........0B0C0C0D0E........0F0G..............00
+  0000000000........0H0I........0J0K0y......0L0L0M0N0O........0E0P0Q........0G0R............00
+  0000000000......0S0S......0T0T0U......0V0W0X0Y0Z101112131415....161617......1819..........00
+  0000000000......1a........1b1c......1d1e1f1g1h1i1j1k1l1m1n1o1p....1q1r......1s1t..........00
+  0000000000......1u......1v1w......1x1x....1y1z1A1B1C1k1D1E1F1G......1H1I....1J1K..........00
+  0000000000......1L......1M1M......1N1O....1P1Q1R1S1T1j1U1V1W1X....1Y1I......1Z20......212100
+  0000000000......22......2323......242526..2728292a2b2c2d2e2f2g..2h2i2j......2k2l......2m..00
+  0000000000......2n2n......2o2o....2p2q2r2s..2t..2u2v2w2x......2y2z2A......2B2C........2D..00
+  0000000000........2E2E....2o2F2G......2s2s2H2I2J2K2L..2M2N2O2P2Q........2R2R......2S2T....00
+  0000000000..........2U2V......2W2X..........2Y2Y2K2L2Z2Z2O..........303131......322S......00
+  0000000000..........2V3333........34353637..................3838393a3a........3b..........00
+  0000000000..............3c3c3d..........36373e3f3g3h3h3i3j3k3l3l..........3m3n............00
+  0000000000..................3d3o3p3p................................3q3r3s................00
+  0000000000..........................3t3u3v3w3w3x3x3y3y3z3A3A3B3C3D3E......................00
+  0000000000......................................3x........................................00
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

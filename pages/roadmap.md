@@ -59,13 +59,16 @@ Basic code improvements:
 Testing:
 
 * [x] Unit tests for core modules (colors, colormaps, data, core).
-* [x] Integration smoke tests (all examples run).
+* [x] Integration tests (all examples run).
 * [x] Adopt a more well-tested virtual terminal for testing ANSI control codes:
   drive a real terminal (tmux) and retire the hand-written emulator in the
   tests. See `notes/terminal-test-backend.md`.
 * [ ] Audit the escape sequences we emit, preferring ones that do not vary
   between terminals over testing that they did not.
-* [ ] Snapshot testing for str output and image output regression detection.
+* [x] Snapshot testing for str output and image output regression detection:
+  every example is replayed into a real terminal print by print and compared
+  against a golden, cell by cell, along with the byte cost of each print and a
+  digest of the image it saved. See `notes/closed/example-snapshot-tests.md`.
 
 Documentation:
 

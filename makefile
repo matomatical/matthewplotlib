@@ -70,6 +70,12 @@ mypy:
 test:
 	pytest tests/ -v
 
+# Rewrite the example snapshots in tests/goldens/, reporting what changed in
+# each before it writes. See tests/examples.py for the other subcommands
+# (--diff, --show, --sizes).
+goldens:
+	python -m tests.examples --update
+
 
 # # #
 # Release
@@ -98,4 +104,4 @@ release:
 	@echo "git push origin main --tags"
 	@echo "(then make the release on github)"
 
-.PHONY: docs docs/images mypy test release
+.PHONY: docs docs/images mypy test goldens release

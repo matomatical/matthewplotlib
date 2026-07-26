@@ -31,8 +31,9 @@ To work on a new feature:
 1. Make the change on a new branch
 2. Make sure the branch passes the checklist:
    * mypy checks pass (`mypy matthewplotlib/`).
-   * Tests pass (`pytest tests/ -v`), including integration tests for all
-     examples.
+   * Tests pass (`pytest tests/ -v`), including the example snapshots. If a
+     snapshot changed, look at the change before accepting it with
+     `make goldens` -- see Testing, below.
    * Docs up to date (`make docs`).
    * Roadmap (`pages/roadmap.md`) is up to date.
    * Changelog (`CHANGELOG.md`) is up to date.
@@ -58,16 +59,43 @@ Testing
 -------
 
 Unit tests live in `tests/test_*.py` for the core modules (colors, data,
-colormaps, core). Integration tests in `tests/test_examples.py` run every
-example script as a subprocess and check for successful execution and output.
+colormaps, core).
 
 Tests in `tests/test_terminal.py` check what the library's escape sequences do
 to a real terminal, driving a tmux pane through the harness in `tests/tmux.py`.
 Claims about the sequences as strings go in `test_core.py` instead.
 
-When adding a new example to `examples/`, add a corresponding entry to the
-`EXAMPLES` list in `test_examples.py`. The `test_all_examples_covered` test
-will fail if any example is missing from the list.
+`tests/test_examples.py` runs every example and compares what it drew against a
+snapshot in `tests/goldens/`. Each example is run as a subprocess through its
+own `tyro` command line, its prints are replayed one at a time into a tmux pane
+sized to that example, and the resulting screens are compared cell by cell --
+glyph and colour -- along with the byte cost of each print, the cursor, and a
+digest of the image the example saved. The machinery is in `tests/examples.py`,
+and the reasoning, including which layer catches what, is in
+`notes/closed/example-snapshot-tests.md`.
+
+When one of these fails, the assertion names the cells that moved. To look at
+the two screens in colour, and to accept the new output once you have:
+
+```
+python -m tests.examples --diff <example>   # golden against a fresh run
+python -m tests.examples --show <example>   # the golden, as the terminal drew it
+make goldens                                # accept, reporting what changed
+```
+
+When adding a new example to `examples/`, add an entry to the `EXAMPLES` table
+in `tests/examples.py` (`test_all_examples_covered` fails if you forget) and
+run `make goldens` to record it. The entry carries the terminal size to
+snapshot in, which is part of the test rather than a convenience: a pane wider
+than the plot never exercises the deferred wrap at the final column, which is
+where the cursor arithmetic is hardest. Get the size from
+
+```
+python -m tests.examples --sizes [example ...]
+```
+
+which measures the height and suggests a width. Size the pane to the plot, one
+row taller than its output.
 
 Long-running or animated examples should accept a `--num-frames` (or similar)
 argument via `tyro` so that integration tests can run them with a small value.
