@@ -1,3 +1,25 @@
+"""
+Specifying individual colors.
+
+Wherever a plot takes a color, it accepts any of several convenient spellings,
+and converts to a single internal representation.
+
+Types:
+
+* `Color`: The internal representation, an RGB triple of bytes.
+* `ColorLike`: Anything accepted in place of one---a named color, a hex string,
+  or a triple of ints in 0 to 255 or floats in 0.0 to 1.0.
+
+Conversion:
+
+* `parse_color`: Turn a `ColorLike` into a `Color`. See this function for the
+  full list of accepted formats.
+* `NAMED_COLORS`: The recognised color names.
+
+For mapping data to colors, rather than naming one color, see
+`matthewplotlib.colormaps`.
+"""
+
 from __future__ import annotations
 
 import numpy as np

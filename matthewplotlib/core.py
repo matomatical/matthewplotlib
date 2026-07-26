@@ -1,3 +1,29 @@
+"""
+The character grid underneath every plot, and the glyphs that fill it.
+
+A plot is ultimately a rectangle of coloured unicode characters. This module
+provides that rectangle, along with the routines that turn numeric data into
+characters dense enough to draw with. The plot types in
+`matthewplotlib.plots` are built on top of it.
+
+The grid:
+
+* `CharArray`: A grid of unicode codepoints with optional foreground and
+  background colors. Supports composition (stacking, layering, padding),
+  rendering to ANSI strings---including differential updates that repaint only
+  the cells that changed between frames---and rendering to images and animated
+  gifs using an embedded pixel font.
+
+Drawing characters, each packing several data points into one character cell:
+
+* `unicode_braille_array`: Boolean matrices to braille characters, at 2 by 4
+  dots per cell.
+* `unicode_bar` and `unicode_col`: Values to horizontal or vertical bars, using
+  partial block characters for eighth-of-a-cell resolution.
+* `unicode_image`: Images to half-block characters, at 1 by 2 pixels per cell.
+* `unicode_box` and `BoxStyle`: Box-drawing borders, optionally titled.
+"""
+
 from __future__ import annotations
 
 import enum

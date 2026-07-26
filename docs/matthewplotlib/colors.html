@@ -121,7 +121,31 @@
                     <h1 class="modulename">
 <a href="./../matthewplotlib.html">matthewplotlib</a><wbr>.colors    </h1>
 
-                
+                        <div class="docstring"><p>Specifying individual colors.</p>
+
+<p>Wherever a plot takes a color, it accepts any of several convenient spellings,
+and converts to a single internal representation.</p>
+
+<p>Types:</p>
+
+<ul>
+<li><code><a href="#Color">Color</a></code>: The internal representation, an RGB triple of bytes.</li>
+<li><code><a href="#ColorLike">ColorLike</a></code>: Anything accepted in place of one---a named color, a hex string,
+or a triple of ints in 0 to 255 or floats in 0.0 to 1.0.</li>
+</ul>
+
+<p>Conversion:</p>
+
+<ul>
+<li><code><a href="#parse_color">parse_color</a></code>: Turn a <code><a href="#ColorLike">ColorLike</a></code> into a <code><a href="#Color">Color</a></code>. See this function for the
+full list of accepted formats.</li>
+<li><code><a href="#NAMED_COLORS">NAMED_COLORS</a></code>: The recognised color names.</li>
+</ul>
+
+<p>For mapping data to colors, rather than naming one color, see
+<code><a href="colormaps.html">matthewplotlib.colormaps</a></code>.</p>
+</div>
+
                 
                 
                 

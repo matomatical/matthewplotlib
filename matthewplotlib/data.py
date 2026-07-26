@@ -1,3 +1,37 @@
+"""
+Specifying the data that goes into a plot.
+
+Plot constructors are deliberately permissive about how data arrives: a single
+array of points, a pair of coordinate sequences, or an axis object standing in
+for one of the coordinates, each optionally paired with colors. This module
+defines what is accepted and normalises it before plotting.
+
+Types:
+
+* `number`: A scalar, Python or NumPy.
+* `Series` and `Series3`: The accepted shapes for 2d and 3d point data. See
+  these aliases for the full list of forms.
+* `ColorSpec`: One color for a whole series, or one color per point.
+
+Special series:
+
+* `axis`, and its subclasses `xaxis`, `yaxis` and `zaxis`: Stand-ins for a
+  coordinate that runs over a range, so that a series can be given as one
+  sequence of values against an axis rather than as two sequences.
+
+Parsers:
+
+* `parse_series`, `parse_series3`, and their `parse_multiple_*` variants: Turn
+  any accepted form into arrays of points and colors.
+* `parse_range`: Fill in missing axis limits from the data.
+* `parse_color_spec`: Turn a `ColorSpec` into one color per point.
+
+3d projection:
+
+* `project3`: Project 3d points onto the viewing plane of a camera, for the 3d
+  plot types in `matthewplotlib.plots`.
+"""
+
 from __future__ import annotations
 
 import dataclasses

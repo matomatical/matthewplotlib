@@ -48,3 +48,26 @@ Rough edges:
 * No axes/labels available for bars/columns/histograms yet.
 * Limited [documentation](https://matthewplotlib.far.in.net/).
 * Limited input validation, error handling.
+
+Documentation
+-------------
+
+* [Quickstart](https://matthewplotlib.far.in.net/quickstart.html) and
+  [examples](https://matthewplotlib.far.in.net/examples.html), with the source
+  for the latter in `examples/`.
+* [API reference](https://matthewplotlib.far.in.net/matthewplotlib.html),
+  generated from the docstrings. Each module opens with an overview of what is
+  in it; `matthewplotlib.plots` is the place to start.
+* [Roadmap](https://matthewplotlib.far.in.net/roadmap.html), which is also the
+  list of what to build next.
+* [Changelog](https://matthewplotlib.far.in.net/changelog.html).
+
+Working on the library
+----------------------
+
+Start with `CONTRIBUTING.md`: development dependencies, the checklist a change
+has to pass, and how a release is made.
+
+Longer design notes and investigations live in `notes/` — what was measured,
+what was chosen, and what was rejected. Roadmap entries link to the note that
+covers them, so read that note before starting the work. See `notes/README.md`.

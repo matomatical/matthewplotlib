@@ -196,7 +196,47 @@
                     <h1 class="modulename">
 <a href="./../matthewplotlib.html">matthewplotlib</a><wbr>.data    </h1>
 
-                
+                        <div class="docstring"><p>Specifying the data that goes into a plot.</p>
+
+<p>Plot constructors are deliberately permissive about how data arrives: a single
+array of points, a pair of coordinate sequences, or an axis object standing in
+for one of the coordinates, each optionally paired with colors. This module
+defines what is accepted and normalises it before plotting.</p>
+
+<p>Types:</p>
+
+<ul>
+<li><code><a href="#number">number</a></code>: A scalar, Python or NumPy.</li>
+<li><code><a href="#Series">Series</a></code> and <code><a href="#Series3">Series3</a></code>: The accepted shapes for 2d and 3d point data. See
+these aliases for the full list of forms.</li>
+<li><code><a href="#ColorSpec">ColorSpec</a></code>: One color for a whole series, or one color per point.</li>
+</ul>
+
+<p>Special series:</p>
+
+<ul>
+<li><code><a href="#axis">axis</a></code>, and its subclasses <code><a href="#xaxis">xaxis</a></code>, <code><a href="#yaxis">yaxis</a></code> and <code><a href="#zaxis">zaxis</a></code>: Stand-ins for a
+coordinate that runs over a range, so that a series can be given as one
+sequence of values against an axis rather than as two sequences.</li>
+</ul>
+
+<p>Parsers:</p>
+
+<ul>
+<li><code><a href="#parse_series">parse_series</a></code>, <code><a href="#parse_series3">parse_series3</a></code>, and their <code>parse_multiple_*</code> variants: Turn
+any accepted form into arrays of points and colors.</li>
+<li><code><a href="#parse_range">parse_range</a></code>: Fill in missing axis limits from the data.</li>
+<li><code><a href="#parse_color_spec">parse_color_spec</a></code>: Turn a <code><a href="#ColorSpec">ColorSpec</a></code> into one color per point.</li>
+</ul>
+
+<p>3d projection:</p>
+
+<ul>
+<li><code><a href="#project3">project3</a></code>: Project 3d points onto the viewing plane of a camera, for the 3d
+plot types in <code><a href="plots.html">matthewplotlib.plots</a></code>.</li>
+</ul>
+</div>
+
                 
                 
                 

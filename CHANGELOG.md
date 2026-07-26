@@ -13,6 +13,13 @@ Fix:
 * `axes` no longer paints the `ylabel` down the plot's right-hand border when
   the y tick labels are narrower than `ypad + 1`. The tick gutter now widens to
   make room. An absent `ylabel` no longer erases that border either.
+* Correct the Python version classifiers, which still advertised 3.10 and 3.11
+  after 0.4.0 raised the requirement to 3.12.
+
+Dev:
+
+* Add module docstrings for `core`, `colors` and `data`, so every module now
+  introduces itself in the API reference.
 
 Version 0.4.0
 -------------

@@ -11,6 +11,12 @@ Development dependencies
 * make for building docs, running tests, making releases
 * pandoc for building some parts of docs
 
+Install the package and its development dependencies with:
+
+```
+uv pip install -e ".[dev]"
+```
+
 Workflow
 --------
 
@@ -33,6 +39,16 @@ Notes:
   implementation details.
 * Important notes on implementation should be documented in the code, or, if
   there's no appropriate place for that, in commit notes or PR or something.
+* Longer design notes and investigations live in `notes/`, and the roadmap
+  entries they belong to link to them. See `notes/README.md`.
+
+Code style
+----------
+
+* Modules are divided into sections by `# # #` / `# Title` comment blocks,
+  which double as fold markers. Preserve the pattern when adding a section.
+* Every module has a module-level docstring introducing what is in it, since
+  these are published as the API reference.
 
 Testing
 -------
