@@ -196,6 +196,8 @@ More examples:
 
 * [x] Something to show bar/column plots and histograms.
 * [x] Game of life as a demonstration of differential rendering.
+* [x] The Amiga Boing Ball, as a demonstration of animations as values: the
+  frames are computed as one array and played, rather than printed in a loop.
 * [ ] Webcam with ffmpeg
 
 Future design directions.

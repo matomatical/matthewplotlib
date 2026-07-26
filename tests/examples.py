@@ -100,6 +100,8 @@ class Example:
 
 
 EXAMPLES: tuple[Example, ...] = (
+    Example("boing.py",                 27, 66, saves="gif",
+            args=("--num-frames", "8", "--no-loop")),
     Example("calendar_heatmap.py",      25, 64, saves="png"),
     Example("colormaps.py",             64, 72, saves="png"),
     Example("dashboard.py",             15, 56, saves="gif",

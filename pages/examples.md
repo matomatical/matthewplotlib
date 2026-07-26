@@ -12,6 +12,16 @@ folder for source code.
 <tbody>
   <tr>
     <td align="center">
+      <img src="images/boing.gif">
+    </td>
+    <td>
+      <p><strong>Boing</strong></p>
+      <p>The Amiga Boing Ball, 1984. Every frame is arithmetic on a coordinate grid, so the whole animation is one array with a time axis, built with <code>mp.animation</code> and played as a value rather than a loop.</p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/boing.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="images/calendar_heatmap.png">
     </td>
     <td>

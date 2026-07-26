@@ -54,6 +54,7 @@
 <li><code>mp.tstack(...).savegif(f, fps="achieved")</code> encodes a recorded animation at the frame rate it really ran at, rather than the one that was requested.</li>
 <li><code>life.py</code> example: Conway’s Game of Life, demonstrating differential redraw.</li>
 <li><code>quickstart3.py</code> example: <code>quickstart2.py</code> with the animation loop handed to <code>mp.animate</code>.</li>
+<li><code>boing.py</code> example: the Amiga Boing Ball, built with <code>mp.animation</code> from a computed array of frames.</li>
 </ul>
 <p>Change:</p>
 <ul>
@@ -62,9 +63,9 @@
 </ul>
 <p>Fix:</p>
 <ul>
-<li><p><code>dashboard.py</code> no longer raises <code>NameError</code> when asked to save an unbounded run.</p></li>
-<li><p><code>axes</code> no longer paints the <code>ylabel</code> down the plot’s right-hand border when the y tick labels are narrower than <code>ypad + 1</code>. The tick gutter now widens to make room. An absent <code>ylabel</code> no longer erases that border either.</p></li>
-<li><p>Correct the Python version classifiers, which still advertised 3.10 and 3.11 after 0.4.0 raised the requirement to 3.12.</p></li>
+<li><code>dashboard.py</code> no longer raises <code>NameError</code> when asked to save an unbounded run.</li>
+<li><code>axes</code> no longer paints the <code>ylabel</code> down the plot’s right-hand border when the y tick labels are narrower than <code>ypad + 1</code>. The tick gutter now widens to make room. An absent <code>ylabel</code> no longer erases that border either.</li>
+<li>Correct the Python version classifiers, which still advertised 3.10 and 3.11 after 0.4.0 raised the requirement to 3.12.</li>
 </ul>
 <p>Dev:</p>
 <ul>

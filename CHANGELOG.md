@@ -28,6 +28,8 @@ New:
 * `life.py` example: Conway's Game of Life, demonstrating differential redraw.
 * `quickstart3.py` example: `quickstart2.py` with the animation loop handed to
   `mp.animate`.
+* `boing.py` example: the Amiga Boing Ball, built with `mp.animation` from a
+  computed array of frames.
 
 Change:
 
@@ -40,7 +42,6 @@ Fix:
 
 * `dashboard.py` no longer raises `NameError` when asked to save an unbounded
   run.
-
 * `axes` no longer paints the `ylabel` down the plot's right-hand border when
   the y tick labels are narrower than `ypad + 1`. The tick gutter now widens to
   make room. An absent `ylabel` no longer erases that border either.
