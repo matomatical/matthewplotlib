@@ -1,3 +1,10 @@
+"""
+Draft for the "webcam with ffmpeg" roadmap item. Not yet a real example: the
+ffmpeg invocation below uses `-f avfoundation`, which is macOS-only, so it
+needs a platform-appropriate input format (`v4l2` on Linux) before it can move
+into examples/ and join the integration tests.
+"""
+
 import numpy as np
 import subprocess
 import matthewplotlib as mp

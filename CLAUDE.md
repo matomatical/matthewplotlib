@@ -64,8 +64,10 @@ Code style:
 - CHANGELOG entries should be concise and describe API-level changes, not
   implementation details
 
-Design notes and investigations live in wip/, and roadmap entries link to them.
-Read the relevant note before starting work it covers.
+Design notes and investigations live in notes/, and roadmap entries link to
+them. Read the relevant note before starting work it covers. See
+notes/README.md for what belongs there, and note that a settled note moves to
+notes/closed/ rather than being deleted.
 
 Build Configuration:
 

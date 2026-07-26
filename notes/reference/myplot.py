@@ -1,5 +1,10 @@
 """
 Terminal-based (live) plotting library.
+
+REFERENCE ONLY -- the predecessor of matthewplotlib, kept because a few of its
+features still have no equivalent here. The roadmap entries that want them link
+to this file. Everything else is superseded, and it will not import: it targets
+an API (`Char`, `Line`, `TextBox`) that no longer exists.
 """
 
 import numpy as np

@@ -61,7 +61,7 @@
 <li><label><input type="checkbox" checked="" />Borders.</label></li>
 <li><label><input type="checkbox" checked="" />Axis ticks and tick labels for scatter plots.</label></li>
 <li><label><input type="checkbox" checked="" />Axis labels and titles.</label></li>
-<li><label><input type="checkbox" />Labels and ticks for bar/column charts and histograms.</label></li>
+<li><label><input type="checkbox" />Labels and ticks for bar/column charts and histograms. See <code>bars</code> and <code>hist</code> in <code>notes/reference/myplot.py</code> for a reference.</label></li>
 </ul>
 <p>Basic plot arrangement:</p>
 <ul class="task-list">
@@ -100,7 +100,7 @@
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Unit tests for core modules (colors, colormaps, data, core).</label></li>
 <li><label><input type="checkbox" checked="" />Integration smoke tests (all examples run).</label></li>
-<li><label><input type="checkbox" />Adopt a more well-tested virtual terminal for testing ANSI control codes: drive a real terminal (tmux) and retire the hand-written emulator in the tests. See <code>wip/terminal-test-backend.md</code>.</label></li>
+<li><label><input type="checkbox" />Adopt a more well-tested virtual terminal for testing ANSI control codes: drive a real terminal (tmux) and retire the hand-written emulator in the tests. See <code>notes/terminal-test-backend.md</code>.</label></li>
 <li><label><input type="checkbox" />Audit the escape sequences we emit, preferring ones that do not vary between terminals over testing that they did not.</label></li>
 <li><label><input type="checkbox" />Snapshot testing for str output and image output regression detection.</label></li>
 </ul>
@@ -152,21 +152,30 @@
 <li><label><input type="checkbox" />Some 2d projections.</label></li>
 <li><label><input type="checkbox" />3d globe projection.</label></li>
 </ul></li>
+<li><label><input type="checkbox" />Advanced heatmaps:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />RGB-channel 2d histograms (see <code>hist2d_rgb</code> in <code>notes/reference/myplot.py</code>).</label></li>
+<li><label><input type="checkbox" />Integer-factor down- and upsampling for <code>image</code>.</label></li>
+</ul></li>
 <li><label><input type="checkbox" />Other:</label>
 <ul class="task-list">
 <li><label><input type="checkbox" />Calendar heatmap plots (see calendar heatmap example for now).</label></li>
 <li><label><input type="checkbox" />Candlestick plots.</label></li>
 <li><label><input type="checkbox" />Box plots.</label></li>
+<li><label><input type="checkbox" />Vector field plots.</label></li>
 </ul></li>
 </ul>
 <p>Advanced plot arrangement:</p>
 <ul class="task-list">
-<li><label><input type="checkbox" />Animation context manager, owning the printing and cursor state.</label>
+<li><label><input type="checkbox" />Animation context manager, owning the printing and cursor state. See <code>notes/animation-context-manager.md</code>.</label>
 <ul class="task-list">
 <li><label><input type="checkbox" />Opt-in frame timing.</label></li>
 <li><label><input type="checkbox" />Opt-in frame collection.</label></li>
+<li><label><input type="checkbox" />A way to print from inside a running animation without corrupting it.</label></li>
 </ul></li>
-<li><label><input type="checkbox" />Crop plot composition primitive.</label>
+<li><label><input type="checkbox" />Temporal stacking (<code>tstack</code>): animations as first-class values.</label></li>
+<li><label><input type="checkbox" />Indexing and slicing of plots.</label></li>
+<li><label><input type="checkbox" />Crop plot composition primitive. See <code>notes/terminal-aware-printing.md</code>.</label>
 <ul class="task-list">
 <li><label><input type="checkbox" />By default, clip plots to terminal width and (almost) height, to enable terminal-aware printing.</label></li>
 </ul></li>
@@ -176,12 +185,15 @@
 <li><label><input type="checkbox" />Axis transformations (e.g. logarithmic scale).</label></li>
 <li><label><input type="checkbox" />Legend construction (API needs thought).</label></li>
 <li><label><input type="checkbox" checked="" />Text embedded in borders.</label></li>
+<li><label><input type="checkbox" />More border styles: dashed and bold lines, and corner treatments (rounded, cut, doubled, crossed).</label></li>
+<li><label><input type="checkbox" />Dashboard meters: circular, vertical and ticking-number variants of <code>progress</code>, and scrolling text marquees.</label></li>
 </ul>
 <p>Advanced rendering:</p>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Export animations to gifs.</label></li>
 <li><label><input type="checkbox" />Render plots to SVG (keep console aesthetic).</label></li>
 <li><label><input type="checkbox" />Render plots to PDF (keep console aesthetic).</label></li>
+<li><label><input type="checkbox" />Render plots to TikZ/pgfplots source.</label></li>
 </ul>
 <p>Backend improvements:</p>
 <ul class="task-list">
@@ -191,7 +203,7 @@
 <li><label><input type="checkbox" checked="" />Intelligent ANSI rendering (only include necessary control codes and resets, e.g., if several characters in a row use the same colours).</label></li>
 <li><label><input type="checkbox" checked="" />Faster animated plot redraws (e.g., differential rendering with shortcut <code>-</code>).</label></li>
 <li><label><input type="checkbox" />Clean up backend code e.g. using JAX PyTrees and vectorisation.</label></li>
-<li><label><input type="checkbox" />Automatically optimise saved gifs (lossless compression).</label></li>
+<li><label><input type="checkbox" />Automatically optimise saved gifs (lossless compression). See <code>notes/gif-size.md</code>.</label></li>
 </ul>
 <p>More elaborate documentation:</p>
 <ul class="task-list">
@@ -200,7 +212,7 @@
 <li><label><input type="checkbox" checked="" />Documentation search.</label></li>
 <li><label><input type="checkbox" />Tutorials and recipes.</label></li>
 <li><label><input type="checkbox" />Freeze documentation with each version.</label></li>
-<li><label><input type="checkbox" />Terminal support matrix: the escape sequences and behaviours the library relies on, against the terminals people actually use. Tells a reader whether their terminal will work, and doubles as the specification of what the library is allowed to emit. See <code>wip/terminal-test-backend.md</code>.</label></li>
+<li><label><input type="checkbox" />Terminal support matrix: the escape sequences and behaviours the library relies on, against the terminals people actually use. Tells a reader whether their terminal will work, and doubles as the specification of what the library is allowed to emit. See <code>notes/terminal-test-backend.md</code>.</label></li>
 </ul>
 <p>More examples:</p>
 <ul class="task-list">

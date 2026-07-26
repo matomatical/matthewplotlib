@@ -20,7 +20,8 @@ Basic plot furnishings:
 * [x] Borders.
 * [x] Axis ticks and tick labels for scatter plots.
 * [x] Axis labels and titles.
-* [ ] Labels and ticks for bar/column charts and histograms.
+* [ ] Labels and ticks for bar/column charts and histograms. See `bars` and
+  `hist` in `notes/reference/myplot.py` for a reference.
 
 Basic plot arrangement:
 
@@ -61,7 +62,7 @@ Testing:
 * [x] Integration smoke tests (all examples run).
 * [ ] Adopt a more well-tested virtual terminal for testing ANSI control codes:
   drive a real terminal (tmux) and retire the hand-written emulator in the
-  tests. See `wip/terminal-test-backend.md`.
+  tests. See `notes/terminal-test-backend.md`.
 * [ ] Audit the escape sequences we emit, preferring ones that do not vary
   between terminals over testing that they did not.
 * [ ] Snapshot testing for str output and image output regression detection.
@@ -106,17 +107,26 @@ More plot types:
 * [ ] World maps:
   * [ ] Some 2d projections.
   * [ ] 3d globe projection.
+* [ ] Advanced heatmaps:
+  * [ ] RGB-channel 2d histograms (see `hist2d_rgb` in
+    `notes/reference/myplot.py`).
+  * [ ] Integer-factor down- and upsampling for `image`.
 * [ ] Other:
   * [ ] Calendar heatmap plots (see calendar heatmap example for now).
   * [ ] Candlestick plots.
   * [ ] Box plots.
+  * [ ] Vector field plots.
 
 Advanced plot arrangement:
 
-* [ ] Animation context manager, owning the printing and cursor state.
+* [ ] Animation context manager, owning the printing and cursor state. See
+  `notes/animation-context-manager.md`.
   * [ ] Opt-in frame timing.
   * [ ] Opt-in frame collection.
-* [ ] Crop plot composition primitive.
+  * [ ] A way to print from inside a running animation without corrupting it.
+* [ ] Temporal stacking (`tstack`): animations as first-class values.
+* [ ] Indexing and slicing of plots.
+* [ ] Crop plot composition primitive. See `notes/terminal-aware-printing.md`.
   * [ ] By default, clip plots to terminal width and (almost) height, to enable
     terminal-aware printing.
 
@@ -125,12 +135,17 @@ Advanced furnishings:
 * [ ] Axis transformations (e.g. logarithmic scale).
 * [ ] Legend construction (API needs thought).
 * [x] Text embedded in borders.
+* [ ] More border styles: dashed and bold lines, and corner treatments
+  (rounded, cut, doubled, crossed).
+* [ ] Dashboard meters: circular, vertical and ticking-number variants of
+  `progress`, and scrolling text marquees.
 
 Advanced rendering:
 
 * [x] Export animations to gifs.
 * [ ] Render plots to SVG (keep console aesthetic).
 * [ ] Render plots to PDF (keep console aesthetic).
+* [ ] Render plots to TikZ/pgfplots source.
 
 Backend improvements:
 
@@ -142,7 +157,8 @@ Backend improvements:
 * [x] Faster animated plot redraws (e.g., differential rendering with shortcut
   `-`).
 * [ ] Clean up backend code e.g. using JAX PyTrees and vectorisation.
-* [ ] Automatically optimise saved gifs (lossless compression).
+* [ ] Automatically optimise saved gifs (lossless compression). See
+  `notes/gif-size.md`.
 
 More elaborate documentation:
 
@@ -155,7 +171,7 @@ More elaborate documentation:
 * [ ] Terminal support matrix: the escape sequences and behaviours the library
   relies on, against the terminals people actually use. Tells a reader whether
   their terminal will work, and doubles as the specification of what the
-  library is allowed to emit. See `wip/terminal-test-backend.md`.
+  library is allowed to emit. See `notes/terminal-test-backend.md`.
 
 More examples:
 

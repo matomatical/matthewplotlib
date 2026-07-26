@@ -1,3 +1,13 @@
+> **Closed 2026-07-26.** The aspirational README written *before* the library
+> existed, under the old name "mattplotlib". Kept as the original statement of
+> intent. Its still-unbuilt ideas were harvested into `pages/roadmap.md` and
+> into `notes/animation-context-manager.md`; nothing further is pending from
+> it.
+>
+> Note the operators differ throughout: `&` for hstack, `^` for vstack, `|` for
+> temporal stacking. Today's are `+` and `/`. Still open on the roadmap under
+> "Finalise operator assignment".
+
 matt's plotting library (mattplotlib)
 =====================================
 

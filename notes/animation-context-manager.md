@@ -74,6 +74,62 @@ the user chooses how much framework they want:
   teaches and it needs to stay visibly first-class.
 * Whether `update()` should return anything (the string it wrote? the frame?).
 
+## An older, different shape
+
+Added 2026-07-26, harvested from `notes/closed/design.md` — the pre-library
+design sketch, which had already reached for an animation context manager and
+arrived somewhere else. Worth reading before building the above, because it
+disagrees on the fundamentals rather than the details.
+
+There, an animation is a **value** first: frames are stacked into one object
+with `tstack` (or the `|` operator), and the context manager *plays* it.
+
+    a = mp.tstack(*[mp.line(...) for y in np.arange(0, 2*np.pi)])
+
+    with mp.animate(a, loop=True) as anim:
+        for t, frame in enumerate(anim):
+            time.sleep(0.04)
+            anim.print("frame", t)
+
+So the loop **pulls** frames out of a finished animation, where the design
+above has the user **push** frames in with `anim.update(plot)`. The difference
+is not cosmetic:
+
+* **Pull needs every frame up front.** That is exactly what the `track=True`
+  option above collects, but as an output rather than an input. Pull cannot
+  animate anything reactive — Game of Life, a training curve, a webcam — since
+  those do not know frame `t+1` until frame `t` has been shown. Push handles
+  both, and can be given a `tstack` to iterate over trivially.
+* **Pull makes an animation a first-class value,** which push does not. It can
+  be sliced, looped, composed, exported, or `hstack`ed with another animation
+  before anything is printed. `save_animation` currently takes a list of frames
+  and would be the natural consumer.
+
+Push is the right default, and the design above should stay as it is. But
+`tstack` as a composition primitive is worth having on its own terms — it is on
+the roadmap now — and if it exists, `mp.animate(tstack_value)` is a thin
+convenience over the push loop rather than a competing API.
+
+### `anim.print`
+
+The sharper idea, and one the design above has no answer for: **printing while
+an animation is running.** Once the context manager owns the cursor, a bare
+`print()` from user code lands in the middle of the plot and corrupts it. The
+sketch's answer is to route it — `anim.print(...)` — so the context manager can
+scroll the plot, emit the line above it, and repaint.
+
+This is a real gap. Debugging an animated program is a normal thing to want to
+do, and today the only options are to not print or to not animate. It also
+interacts with the height budget in `notes/terminal-aware-printing.md`: a plot
+occupying `R-1` rows has nowhere to put a printed line without scrolling the
+plot off, so `anim.print` and the height check are the same question asked
+twice.
+
+Open: whether it is a method, a file-like object the user can pass to
+`print(file=...)` (the sketch's own parenthetical alternative), or a
+redirect of `sys.stdout` for the duration of the block. The last is the most
+convenient and the most magical.
+
 ## Prerequisite
 
 Confirm the differential rendering foundation behaves in a real terminal
