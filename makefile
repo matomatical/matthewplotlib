@@ -5,7 +5,7 @@ PDOC_CSS := $(shell python -c "import pdoc; from pathlib import Path; print(Path
 IMAGES := $(wildcard images/*)
 DOCS_IMAGES := $(IMAGES:images/%=docs/images/%)
 
-docs: docs/api docs/index.html docs/changelog.html docs/quickstart.html docs/examples.html docs/roadmap.html docs/images docs/pdoc.css
+docs: docs/api docs/index.html docs/changelog.html docs/quickstart.html docs/examples.html docs/compatibility.html docs/roadmap.html docs/images docs/pdoc.css
 
 # Copies the images, then drops any left over from a deleted source image.
 # Phony, because the timestamp of a directory says nothing about whether its
@@ -54,6 +54,11 @@ docs/examples.html: pages/examples.md templates/page.html docs/pdoc.css
 	pandoc $< -o $@ --template=templates/page.html --wrap none \
 		--metadata title="Examples" \
 		-V source="$(GITHUB)/pages/examples.md"
+
+docs/compatibility.html: pages/compatibility.md templates/page.html docs/pdoc.css
+	pandoc $< -o $@ --template=templates/page.html --wrap none \
+		--metadata title="Compatibility" \
+		-V source="$(GITHUB)/pages/compatibility.md"
 
 docs/roadmap.html: pages/roadmap.md templates/page.html docs/pdoc.css
 	pandoc $< -o $@ --template=templates/page.html --wrap none \

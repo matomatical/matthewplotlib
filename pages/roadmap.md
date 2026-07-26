@@ -63,8 +63,10 @@ Testing:
 * [x] Adopt a more well-tested virtual terminal for testing ANSI control codes:
   drive a real terminal (tmux) and retire the hand-written emulator in the
   tests. See `notes/terminal-test-backend.md`.
-* [ ] Audit the escape sequences we emit, preferring ones that do not vary
-  between terminals over testing that they did not.
+* [x] Audit the escape sequences we emit, preferring ones that do not vary
+  between terminals over testing that they did not. Retired `CHA`, `CNL` and
+  `ECH`, leaving a VT100-only vocabulary apart from the SGR colours, and pinned
+  it with `TestEmittedVocabulary`. See `notes/closed/escape-vocabulary.md`.
 * [x] Snapshot testing for str output and image output regression detection:
   every example is replayed into a real terminal print by print and compared
   against a golden, cell by cell, along with the byte cost of each print and a
@@ -171,10 +173,14 @@ More elaborate documentation:
 * [x] Documentation search.
 * [ ] Tutorials and recipes.
 * [ ] Freeze documentation with each version.
-* [ ] Terminal support matrix: the escape sequences and behaviours the library
+* [x] Terminal support matrix: the escape sequences and behaviours the library
   relies on, against the terminals people actually use. Tells a reader whether
   their terminal will work, and doubles as the specification of what the
-  library is allowed to emit. See `notes/terminal-test-backend.md`.
+  library is allowed to emit. Published as `pages/compatibility.md`; the
+  terminal column is honest that only tmux is under test.
+  * [ ] Verify a second terminal. `screen` is the cheapest second opinion,
+    `Xvfb` plus the installed `xterm` is the reference VT. See the caveat in
+    `notes/terminal-test-backend.md`.
 
 More examples:
 

@@ -7,6 +7,21 @@ In development
 New:
 
 * `life.py` example: Conway's Game of Life, demonstrating differential redraw.
+* A compatibility page (`pages/compatibility.md`): every escape sequence the
+  library emits, the terminal behaviours it relies on, the glyph blocks it
+  draws with, and which terminals are actually tested.
+
+Change:
+
+* Animated redraws now speak only VT100, apart from the SGR colours. `CHA`
+  (absolute column) became a carriage return plus a cursor forward, `CNL` (next
+  line) a carriage return plus a cursor down, and `ECH` (erase character)
+  written spaces. The screens are identical -- across all nineteen example
+  snapshots only the byte counts moved -- and the point is `CHA`, whose old use
+  depended on it cancelling a deferred wrap, which is the thing terminals
+  disagree about most. A full repaint now costs less rather than more (-121
+  bytes per frame in `mandelbrot.py`); a sparse diff costs one byte more. See
+  `notes/closed/escape-vocabulary.md`.
 
 Fix:
 
@@ -18,6 +33,9 @@ Fix:
 
 Dev:
 
+* `TestEmittedVocabulary` pins the set of escape sequences the renderer is
+  allowed to emit, over every path that emits any. It is the executable form of
+  the compatibility page, so the page cannot go quietly out of date.
 * Add module docstrings for `core`, `colors` and `data`, so every module now
   introduces itself in the API reference.
 * Escape sequences are now tested against a real terminal (a tmux pane, see

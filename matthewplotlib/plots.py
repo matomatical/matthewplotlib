@@ -138,6 +138,11 @@ class plot:
         below the plot survives. That costs a few bytes per row rather than a
         single erase-to-end-of-screen, which is nothing beside the redraw that
         follows.
+
+        Rows, though, and not columns: each row is erased margin to margin, so
+        anything sitting to the right of the plot goes with it. A differential
+        redraw (`plot - prev`) is careful about that boundary where this is not.
+        See `notes/erase-granularity.md`.
         """
         H = self.height
         if H == 0:

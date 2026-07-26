@@ -149,6 +149,22 @@ class TestTheHarness:
         screen = term.screen()
         assert [screen.line(r) for r in range(3)] == ["....", "X", ""]
 
+    def test_a_carriage_return_cancels_a_deferred_wrap(self):
+        """How the renderer gets out of the pending-wrap state.
+
+        `goto_col` stops trusting its column arithmetic once a glyph fills the
+        plot's last column, and recovers with a carriage return. That only works
+        if the return resolves the pending wrap rather than leaving it armed for
+        the next glyph -- which would land the glyph a row below where the
+        renderer thinks it is. This is the assumption the audit traded CHA for,
+        so it is the one worth pinning.
+        """
+        term = Terminal(3, 4).feed("....")     # margin reached, wrap pending
+        term.feed("\rX")                       # return, then paint
+        screen = term.screen()
+        assert [screen.line(r) for r in range(3)] == ["X...", "", ""]
+        assert screen.cursor == (0, 1)
+
     def test_reading_the_screen_leaves_the_wrap_pending(self):
         """Reading appends a set-title sentinel to synchronise with tmux. If that
         disturbed the last-column flag, the harness would hide the very bug it

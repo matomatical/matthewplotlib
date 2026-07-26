@@ -658,7 +658,8 @@ ALLOWED_FINALS = {
 }
 
 # Retired by the escape-sequence audit, and not to be reintroduced without a
-# corresponding row on the compatibility page. See notes/escape-vocabulary.md.
+# corresponding row on the compatibility page. See the reasoning in
+# notes/closed/escape-vocabulary.md.
 RETIRED_FINALS = {
     "E": "CNL, cursor next line (now a carriage return and a cursor down)",
     "G": "CHA, absolute column (now a carriage return and a cursor forward)",

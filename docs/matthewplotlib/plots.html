@@ -27,6 +27,7 @@
         <li><a href="../index.html">README</a></li>
         <li><a href="../quickstart.html">Quickstart</a></li>
         <li><a href="../examples.html">Examples</a></li>
+        <li><a href="../compatibility.html">Compatibility</a></li>
         <li><a href="../roadmap.html">Roadmap</a></li>
         <li><a href="../changelog.html">Changelog</a></li>
     </ul>
@@ -603,6 +604,11 @@ row lower.</p>
 below the plot survives. That costs a few bytes per row rather than a
 single erase-to-end-of-screen, which is nothing beside the redraw that
 follows.</p>
+
+<p>Rows, though, and not columns: each row is erased margin to margin, so
+anything sitting to the right of the plot goes with it. A differential
+redraw (<code>plot - prev</code>) is careful about that boundary where this is not.
+See <code>notes/erase-granularity.md</code>.</p>
 </div>
 
 

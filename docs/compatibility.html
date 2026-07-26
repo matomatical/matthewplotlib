@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Compatibility — matthewplotlib</title>
+    <link rel="stylesheet" href="pdoc.css">
+</head>
+<body>
+    <nav class="pdoc">
+        <label id="navtoggle" for="togglestate" class="pdoc-button">
+            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'>
+                <path stroke-linecap='round' stroke="currentColor"
+                      stroke-miterlimit='10' stroke-width='2'
+                      d='M4 7h22M4 15h22M4 23h22'/>
+            </svg>
+        </label>
+        <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
+        <div>
+            <a href="index.html" class="nav-title">matthewplotlib</a>
+            <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
+                   pattern=".+" required>
+            <h2>Overview</h2>
+            <ul>
+                <li><a href="index.html">README</a></li>
+                <li><a href="quickstart.html">Quickstart</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="compatibility.html">Compatibility</a></li>
+                <li><a href="roadmap.html">Roadmap</a></li>
+                <li><a href="changelog.html">Changelog</a></li>
+            </ul>
+            <h2>Reference</h2>
+            <ul>
+                <li><a class="module" href="matthewplotlib.html">matthewplotlib</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="pdoc">
+        <button class="pdoc-button git-button theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme">
+            <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <a class="pdoc-button git-button" href="https://github.com/matomatical/matthewplotlib/blob/main/pages/compatibility.md" title="Edit on GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 496 512" fill="currentColor"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+        </a>
+        <div class="docstring page-content">
+<h1 id="terminal-compatibility">Terminal compatibility</h1>
+<p>Matthewplotlib draws by writing bytes to a terminal, so what you see depends on what your terminal does with them. This page is the complete list of what the library sends, and what each part of it needs.</p>
+<p>It is written to answer two questions. If you are using the library: will it work in your terminal, and what will it look like if something is missing. If you are changing the library: this is the specification of what it is allowed to emit, and <code>TestEmittedVocabulary</code> in <code>tests/test_core.py</code> enforces it.</p>
+<p>The library never asks what terminal it is talking to. It does not read <code>TERM</code> or <code>COLORTERM</code>, and it has no capability database and no fallback modes. Every terminal gets the same bytes. (The one exception is <code>wrap</code>, which reads the terminal <em>width</em> from <code>shutil.get_terminal_size</code> to decide a grid layout.) So this page is a complete description, not a negotiation.</p>
+<h2 id="the-short-version">The short version</h2>
+<p>Three things can vary between terminals, and they fail very differently:</p>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 65%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>What</th>
+<th>If your terminal falls short</th>
+<th>Severity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Glyphs</strong> — braille, blocks, box-drawing</td>
+<td>Missing characters show as boxes or gaps</td>
+<td>Cosmetic, and obvious</td>
+</tr>
+<tr class="even">
+<td><strong>Colour</strong> — 24-bit RGB</td>
+<td>Colours snap to the nearest the terminal has</td>
+<td>Cosmetic, sometimes ugly</td>
+</tr>
+<tr class="odd">
+<td><strong>Escape sequences</strong> — cursor movement and erasing</td>
+<td>Static plots are unaffected; animation could misplace or smear</td>
+<td>The only one that corrupts</td>
+</tr>
+</tbody>
+</table>
+<p>Only the third can produce a scrambled screen rather than a plain-looking one, which is why most of this page is about it — and why the set of sequences the library uses was deliberately cut down to a size that fits on one screen.</p>
+<p>If you print a plot and never animate it, you are only using colour, glyphs, and newlines. That works essentially everywhere.</p>
+<h2 id="escape-sequences">Escape sequences</h2>
+<p>The complete set. Everything here is in the VT100’s repertoire except the SGR colour codes, which are noted as such.</p>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 17%" />
+<col style="width: 23%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Sequence</th>
+<th>Name</th>
+<th>Effect</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ESC [ n A</code></td>
+<td>CUU</td>
+<td>Cursor up n rows</td>
+<td>Animation: reaching the frame above</td>
+</tr>
+<tr class="even">
+<td><code>ESC [ n B</code></td>
+<td>CUD</td>
+<td>Cursor down n rows</td>
+<td>Animation: reaching a later row</td>
+</tr>
+<tr class="odd">
+<td><code>ESC [ n C</code></td>
+<td>CUF</td>
+<td>Cursor forward n columns</td>
+<td>Animation: skipping unchanged cells</td>
+</tr>
+<tr class="even">
+<td><code>ESC [ n D</code></td>
+<td>CUB</td>
+<td>Cursor back n columns</td>
+<td>Animation: stepping back within a row</td>
+</tr>
+<tr class="odd">
+<td><code>ESC [ 2 K</code></td>
+<td>EL</td>
+<td>Erase the whole line</td>
+<td>Clearing a plot, and rows a shrinking plot gave up</td>
+</tr>
+<tr class="even">
+<td><code>ESC [ 0 m</code></td>
+<td>SGR</td>
+<td>Reset all attributes</td>
+<td>Ending a coloured run</td>
+</tr>
+<tr class="odd">
+<td><code>ESC [ 39 m</code> / <code>ESC [ 49 m</code></td>
+<td>SGR</td>
+<td>Default foreground / background</td>
+<td>Returning one channel to default. <em>Not VT100; ECMA-48.</em></td>
+</tr>
+<tr class="even">
+<td><code>ESC [ 38;2;r;g;b m</code></td>
+<td>SGR</td>
+<td>24-bit foreground</td>
+<td>Colour. <em>Not VT100; ISO 8613-6.</em></td>
+</tr>
+<tr class="odd">
+<td><code>ESC [ 48;2;r;g;b m</code></td>
+<td>SGR</td>
+<td>24-bit background</td>
+<td>Colour. <em>Not VT100; ISO 8613-6.</em></td>
+</tr>
+<tr class="even">
+<td><code>CR</code> (<code>\r</code>)</td>
+<td>—</td>
+<td>Column 0</td>
+<td>Reaching a known column from an unknown one</td>
+</tr>
+<tr class="odd">
+<td><code>LF</code> (<code>\n</code>)</td>
+<td>—</td>
+<td>Next row, scrolling at the bottom</td>
+<td>Line breaks, and growing a plot taller</td>
+</tr>
+</tbody>
+</table>
+<p>That is the whole vocabulary. A terminal that handles those eleven things handles every control sequence this library can produce; the rest of what it sends is printable characters, which is the Glyphs section below.</p>
+<p>Three sequences were removed in the escape-sequence audit, and the library is tested not to reintroduce them. If you are comparing against an older version, or reading code that predates it:</p>
+<ul>
+<li><strong>CHA</strong> (<code>ESC [ n G</code>, absolute column) is now <code>CR</code> plus <code>CUF</code>. CHA was only ever reached in the one situation where the renderer had lost track of the cursor column — after filling a plot’s last column, where terminals defer the line wrap — so it depended on CHA cancelling a pending wrap. Wrap handling is the single least consistent corner of real terminals (see <a href="https://github.com/mattiase/wraptest">wraptest</a>); carriage return is not.</li>
+<li><strong>CNL</strong> (<code>ESC [ n E</code>, next line) is now <code>CR</code> plus <code>CUD</code>. One byte more.</li>
+<li><strong>ECH</strong> (<code>ESC [ n X</code>, erase n characters) is now written spaces. The renderer already resets the colour to default before blanking anything, so a space paints exactly what the erase painted.</li>
+</ul>
+<p>See <code>notes/closed/escape-vocabulary.md</code> for the measurements behind those three.</p>
+<h2 id="behaviours-not-just-sequences">Behaviours, not just sequences</h2>
+<p>Recognising a sequence is not the same as agreeing what it does. These are the behaviours the library counts on. Each is asserted against a real terminal in <code>tests/test_terminal.py</code>, most of them in <code>TestTheHarness</code>.</p>
+<ul>
+<li><strong>An omitted count means one.</strong> The library writes <code>ESC [ B</code> where the distance is always one row. This is the standard default — terminfo records xterm’s own cursor-up capability as <code>cuu1=\E[A</code> — and every curses program relies on it. It never writes a count of zero, which would mean one and not none.</li>
+<li><strong>Carriage return cancels a deferred wrap.</strong> After a glyph lands in the last column, terminals leave the cursor on the margin with a wrap pending rather than moving past the edge. The library stops trusting its column arithmetic at that point and issues a carriage return before counting again.</li>
+<li><strong>Cursor movement clamps; it does not scroll.</strong> Cursor-down at the bottom row stays on the bottom row. This is why a plot that grows taller is extended with newlines rather than cursor movement — a newline at the bottom scrolls, which is what is wanted there.</li>
+<li><strong>Blanking paints the current background.</strong> On terminals with background-colour erase, an erase fills with the active background rather than the default; a written space does so everywhere. Rather than depend on which, the library resets the colour to default before it blanks anything, so both behaviours produce the same screen.</li>
+<li><strong><code>print</code> adds the newline.</strong> Every string the library returns is shaped for a plain <code>print</code> and ends one row short, expecting the newline <code>print</code> appends. On a tty the line discipline turns that into carriage-return plus line-feed, which is what returns the cursor to column 0.</li>
+</ul>
+<p>And two things the library requires of the <em>screen</em>, rather than of the terminal’s escape handling:</p>
+<ul>
+<li><strong>A plot must not be wider than the screen.</strong> A plot exactly as wide as the screen is fine. Anything wider wraps, and every column calculation after that is void. This is out of contract today, and silently so.</li>
+<li><strong>Animation needs a spare row.</strong> Printing a plot of height H plus a newline needs H+1 rows, so an animation in an R-row terminal wants a plot of at most R-1 rows; clear-and-redraw wants R-2, since it steps a row above the plot.</li>
+</ul>
+<h2 id="what-the-library-never-sends">What the library never sends</h2>
+<p>Worth stating, because these are where terminals genuinely diverge and where a plotting library could easily have reached:</p>
+<ul>
+<li><strong>No cursor save/restore.</strong> There are two incompatible conventions for it (<code>ESC 7</code>/<code>ESC 8</code> and <code>ESC [ s</code>/<code>ESC [ u</code>) and terminals differ over which they implement.</li>
+<li><strong>No absolute cursor positioning</strong> (<code>CUP</code>), no scroll regions, no alternate screen buffer, no tab stops, no private modes, no OSC. The library moves relative to where the cursor already is, and stays inside the rows it printed.</li>
+<li><strong>No queries.</strong> It never asks the terminal a question and waits for a reply, so it cannot hang on a terminal that does not answer.</li>
+</ul>
+<p>A consequence worth knowing: because the library only ever moves relative to the cursor and never addresses the screen absolutely, output composes with whatever else is on screen. It does not own the display.</p>
+<h2 id="colour">Colour</h2>
+<p>Colour is the only part of the vocabulary that is not VT100, and the only one where terminals differ in a way you will actually notice.</p>
+<p>The library always emits 24-bit colour. On a terminal with fewer colours the usual behaviour is to approximate to the nearest available, which is a rendering difference and not a correctness problem: the layout, the cursor arithmetic and the animation all still work, and the plot is simply a coarser colour. Some very old terminals ignore the sequence instead and render in the default colour, which is legible but flat.</p>
+<p>Continuous colormaps are what suffer: a 256-colour terminal renders <code>viridis</code> as visible bands. Discrete palettes with a handful of well-separated colours survive almost anything.</p>
+<p>There is no reduced-colour mode yet. It is on the roadmap under “configurable colour scales and normalisation”.</p>
+<h2 id="glyphs">Glyphs</h2>
+<p>The plots are drawn with characters, so the font matters as much as the terminal. The library uses four blocks:</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 39%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Range</th>
+<th>Block</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>U+2800–U+28FF</td>
+<td>Braille Patterns</td>
+<td><code>scatter</code>, <code>hilbert</code>, dotted borders — 2×4 dots per cell</td>
+</tr>
+<tr class="even">
+<td>U+2580–U+259F</td>
+<td>Block Elements</td>
+<td><code>image</code> (half blocks), <code>bars</code> and <code>columns</code> (eighth blocks), blocky borders</td>
+</tr>
+<tr class="odd">
+<td>U+2500–U+257F</td>
+<td>Box Drawing</td>
+<td><code>border</code>, <code>axes</code></td>
+</tr>
+<tr class="even">
+<td>ASCII</td>
+<td>—</td>
+<td><code>text</code>, tick labels, titles</td>
+</tr>
+</tbody>
+</table>
+<p>Braille is the one to check. It is the densest and the least likely to be in an older bitmap font, and a font that lacks it turns a scatter plot into a field of replacement boxes. Most modern terminal fonts have it.</p>
+<p>Two further font properties matter, and neither is about coverage:</p>
+<ul>
+<li><strong>The glyphs must be single-width.</strong> The library assumes one character per cell throughout its cursor arithmetic. Braille, blocks and box-drawing are all narrow characters, but some fonts render braille double-width, which will smear an animated plot.</li>
+<li><strong>Cells should abut.</strong> Half-blocks and eighth-blocks are meant to tile into continuous areas. Terminals that add letter-spacing, or fonts whose block glyphs do not fill the cell, leave visible seams in an <code>image</code> plot. This is cosmetic, but it is the most common complaint about block-drawing plots.</li>
+</ul>
+<p>If glyphs are the problem rather than the terminal, <code>saveimg</code> renders the same plot to a PNG through an embedded pixel font, with no dependency on your font at all.</p>
+<h2 id="which-terminals-are-tested">Which terminals are tested</h2>
+<p>Honestly: one.</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 34%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Terminal</th>
+<th>Status</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tmux 3.5a</td>
+<td><strong>Verified continuously</strong></td>
+<td>The test suite drives a real tmux pane. Every behaviour listed above is asserted there, and every example is snapshotted frame by frame — glyph, colour, cursor and scroll position of every cell</td>
+</tr>
+<tr class="even">
+<td>Everything else</td>
+<td><strong>Expected, not verified</strong></td>
+<td>Reasoned from the vocabulary being VT100</td>
+</tr>
+</tbody>
+</table>
+<p>This is a smaller claim than a table of ticks would be, and it is the true one. What makes it a reasonable position rather than an evasion is the shape of the vocabulary: the eleven sequences above are the ones that forty years of software has made unskippable, so a terminal that got one of them wrong would break far more than this library. The audit that produced this list existed precisely so that the compatibility question could be answered by argument instead of by a matrix nobody can keep current.</p>
+<p>The places to be sceptical, in order:</p>
+<ol type="1">
+<li><strong>24-bit colour</strong>, which genuinely varies, and degrades visibly.</li>
+<li><strong>Deferred wrap at the last column</strong>, if you animate a plot exactly as wide as the screen. Terminals really do disagree here; the library is written not to depend on the disagreement, but this is the assumption most worth testing.</li>
+<li><strong>Background-colour erase</strong>, if a plot shrinks mid-animation and leaves a coloured smear behind. The library resets the colour first specifically to avoid this, so a smear is a bug worth reporting.</li>
+</ol>
+<h2 id="reporting-a-terminal">Reporting a terminal</h2>
+<p>If you have a terminal not listed above, two things are useful.</p>
+<p>The strong check, if you can install tmux, is the suite itself — though note that it tests tmux, not your terminal:</p>
+<pre class="console"><code>pytest tests/test_terminal.py</code></pre>
+<p>The check that actually exercises <em>your</em> terminal is an animation that resizes, which is the case that uses every sequence on this page:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matthewplotlib <span class="im">as</span> mp</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>prev <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">60</span>):</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> <span class="dv">30</span> <span class="op">+</span> <span class="bu">int</span>(<span class="dv">25</span> <span class="op">*</span> np.sin(i <span class="op">/</span> <span class="dv">6</span>))          <span class="co"># a plot that grows and shrinks</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(i)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    plot <span class="op">=</span> mp.border(mp.image(rng.random((<span class="dv">12</span>, w))))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(plot <span class="op">-</span> prev)                        <span class="co"># differential redraw</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    prev <span class="op">=</span> plot</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">1</span> <span class="op">/</span> <span class="dv">20</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span></code></pre></div>
+<p>It should animate in place, with no drifting, no leftover columns to the right as it narrows, and no coloured smear. If it misbehaves, please open an issue with your terminal, its version, and <code>echo $TERM</code> — and if the plot drifts or smears rather than merely looking wrong, say so, because that is the class of problem this page exists to prevent.</p>
+        </div>
+    </main>
+    <script>
+    (function() {
+        function getPreferred() {
+            var saved = localStorage.getItem('pdoc-theme');
+            if (saved) return saved;
+            return window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light' : 'dark';
+        }
+        function apply(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            var moon = document.querySelector('.theme-icon-moon');
+            var sun = document.querySelector('.theme-icon-sun');
+            if (moon) moon.style.display = theme === 'dark' ? 'inline' : 'none';
+            if (sun) sun.style.display = theme === 'light' ? 'inline' : 'none';
+        }
+        window.toggleTheme = function() {
+            var current = document.documentElement.getAttribute('data-theme') || 'dark';
+            var next = current === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('pdoc-theme', next);
+            apply(next);
+        };
+        apply(getPreferred());
+    })();
+    </script>
+    <script>
+    function escapeHTML(html) {
+        return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
+    }
+    const originalContent = document.querySelector("main.pdoc");
+    let currentContent = originalContent;
+    function setContent(innerHTML) {
+        let elem;
+        if (innerHTML) {
+            elem = document.createElement("main");
+            elem.classList.add("pdoc");
+            elem.innerHTML = innerHTML;
+        } else {
+            elem = originalContent;
+        }
+        if (currentContent !== elem) {
+            currentContent.replaceWith(elem);
+            currentContent = elem;
+        }
+    }
+    function getSearchTerm() {
+        return (new URL(window.location)).searchParams.get("search");
+    }
+    const searchBox = document.querySelector(".pdoc input[type=search]");
+    searchBox.addEventListener("input", function () {
+        let url = new URL(window.location);
+        if (searchBox.value.trim()) {
+            url.hash = "";
+            url.searchParams.set("search", searchBox.value);
+        } else {
+            url.searchParams.delete("search");
+        }
+        history.replaceState("", "", url.toString());
+        onInput();
+    });
+    window.addEventListener("popstate", onInput);
+    let search, searchErr;
+    async function initialize() {
+        try {
+            search = await new Promise((resolve, reject) => {
+                const script = document.createElement("script");
+                script.type = "text/javascript";
+                script.async = true;
+                script.onload = () => resolve(window.pdocSearch);
+                script.onerror = (e) => reject(e);
+                script.src = "search.js";
+                document.getElementsByTagName("head")[0].appendChild(script);
+            });
+        } catch (e) {
+            searchErr = "Cannot fetch search index.";
+        }
+        onInput();
+        document.querySelector("nav.pdoc").addEventListener("click", e => {
+            if (e.target.hash) {
+                searchBox.value = "";
+                searchBox.dispatchEvent(new Event("input"));
+            }
+        });
+    }
+    function onInput() {
+        setContent((() => {
+            const term = getSearchTerm();
+            if (!term) return null;
+            if (searchErr) return "<h3>Error: " + searchErr + "</h3>";
+            if (!search) return "<h3>Searching...</h3>";
+            window.scrollTo({top: 0, left: 0, behavior: 'auto'});
+            const results = search(term);
+            let html;
+            if (results.length === 0) {
+                html = "No search results for '" + escapeHTML(term) + "'.";
+            } else {
+                html = "<h4>" + results.length + " search result" + (results.length > 1 ? "s" : "") + " for '" + escapeHTML(term) + "'.</h4>";
+            }
+            for (let result of results.slice(0, 10)) {
+                let doc = result.doc;
+                let url = doc.modulename.replaceAll(".", "/") + ".html";
+                if (doc.qualname) url += "#" + doc.qualname;
+                let heading;
+                switch (doc.kind) {
+                    case "function":
+                        heading = doc.fullname.endsWith(".__init__")
+                            ? '<span class="name">' + doc.fullname.replace(/\.__init__$/, "") + "</span>" + doc.signature
+                            : '<span class="def">' + doc.funcdef + '</span> <span class="name">' + doc.fullname + "</span>" + doc.signature;
+                        break;
+                    case "class":
+                        heading = '<span class="def">class</span> <span class="name">' + doc.fullname + "</span>";
+                        if (doc.bases) heading += '<wbr>(<span class="base">' + doc.bases + "</span>)";
+                        heading += ":";
+                        break;
+                    default:
+                        heading = '<span class="name">' + doc.fullname + "</span>";
+                }
+                html += '<section class="search-result"><a href="' + url + '" class="attr ' + doc.kind + '">' + heading + '</a><div class="docstring">' + doc.doc + "</div></section>";
+            }
+            return html;
+        })());
+    }
+    if (getSearchTerm()) {
+        initialize();
+        searchBox.value = getSearchTerm();
+        onInput();
+    } else {
+        searchBox.addEventListener("focus", initialize, {once: true});
+    }
+    searchBox.addEventListener("keydown", e => {
+        if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
+            let focused = currentContent.querySelector(".search-result.focused");
+            if (!focused) {
+                currentContent.querySelector(".search-result").classList.add("focused");
+            } else if (e.key === "ArrowDown" && focused.nextElementSibling && focused.nextElementSibling.classList.contains("search-result")) {
+                focused.classList.remove("focused");
+                focused.nextElementSibling.classList.add("focused");
+                focused.nextElementSibling.scrollIntoView({behavior: "smooth", block: "nearest"});
+            } else if (e.key === "ArrowUp" && focused.previousElementSibling && focused.previousElementSibling.classList.contains("search-result")) {
+                focused.classList.remove("focused");
+                focused.previousElementSibling.classList.add("focused");
+                focused.previousElementSibling.scrollIntoView({behavior: "smooth", block: "nearest"});
+            } else if (e.key === "Enter") {
+                focused.querySelector("a").click();
+            }
+        }
+    });
+    </script>
+</body>
+</html>

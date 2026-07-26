@@ -25,6 +25,7 @@
                 <li><a href="index.html">README</a></li>
                 <li><a href="quickstart.html">Quickstart</a></li>
                 <li><a href="examples.html">Examples</a></li>
+                <li><a href="compatibility.html">Compatibility</a></li>
                 <li><a href="roadmap.html">Roadmap</a></li>
                 <li><a href="changelog.html">Changelog</a></li>
             </ul>
@@ -48,6 +49,11 @@
 <p>New:</p>
 <ul>
 <li><code>life.py</code> example: Conway’s Game of Life, demonstrating differential redraw.</li>
+<li>A compatibility page (<code>pages/compatibility.md</code>): every escape sequence the library emits, the terminal behaviours it relies on, the glyph blocks it draws with, and which terminals are actually tested.</li>
+</ul>
+<p>Change:</p>
+<ul>
+<li>Animated redraws now speak only VT100, apart from the SGR colours. <code>CHA</code> (absolute column) became a carriage return plus a cursor forward, <code>CNL</code> (next line) a carriage return plus a cursor down, and <code>ECH</code> (erase character) written spaces. The screens are identical – across all nineteen example snapshots only the byte counts moved – and the point is <code>CHA</code>, whose old use depended on it cancelling a deferred wrap, which is the thing terminals disagree about most. A full repaint now costs less rather than more (-121 bytes per frame in <code>mandelbrot.py</code>); a sparse diff costs one byte more. See <code>notes/closed/escape-vocabulary.md</code>.</li>
 </ul>
 <p>Fix:</p>
 <ul>
@@ -56,6 +62,7 @@
 </ul>
 <p>Dev:</p>
 <ul>
+<li><code>TestEmittedVocabulary</code> pins the set of escape sequences the renderer is allowed to emit, over every path that emits any. It is the executable form of the compatibility page, so the page cannot go quietly out of date.</li>
 <li>Add module docstrings for <code>core</code>, <code>colors</code> and <code>data</code>, so every module now introduces itself in the API reference.</li>
 <li>Escape sequences are now tested against a real terminal (a tmux pane, see <code>tests/test_terminal.py</code> and <code>tests/tmux.py</code>) rather than a hand-written emulator, which retires the emulator and makes tmux a development dependency. See <code>notes/terminal-test-backend.md</code>.</li>
 <li>The example smoke tests are replaced by snapshot tests. Every example is replayed into a real terminal print by print and compared against a golden in <code>tests/goldens/</code>, cell by cell in both glyph and colour, along with the byte cost of each print and a digest of the image it saved. Regenerate with <code>make   goldens</code>. See <code>notes/closed/example-snapshot-tests.md</code>.</li>

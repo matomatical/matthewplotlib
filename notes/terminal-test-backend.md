@@ -1,8 +1,9 @@
 # Testing ANSI output against a real terminal
 
 Investigated 2026-07-25 (Matthew + Claude), after the differential rendering
-work. Steps 1-3 of the plan built 2026-07-26 (see "What was built", below);
-steps 4 and 5 remain, and have their own roadmap entries.
+work. Steps 1-3 of the plan built 2026-07-26 (see "What was built", below).
+Steps 4 and 5 were done later the same day: the audit is
+`notes/closed/escape-vocabulary.md`, and the matrix is `pages/compatibility.md`.
 
 ## The problem
 
@@ -79,6 +80,12 @@ newline-terminated input -- so it is not evidence of anything.)
    `CUB`, `CHA` (`G`), `CNL` (`E`), `ED` (`0J`), `EL` (`2K`), `ECH` (`X`),
    truecolor `SGR`, `CR`, `LF`.
 
+   (Done, and this list was already wrong when written: `ED` had been removed by
+   334393d a session earlier. Predictions below scored in
+   `notes/closed/escape-vocabulary.md` -- `ECH` and `CNL` went as guessed, and
+   `CHA` turned out to matter more than either, for the wrap reason rather than
+   the byte count.)
+
    * `ECH` is the one to scrutinise -- least commonly exercised of the set, and
      only used when a plot narrows. Writing spaces is universally supported and
      costs bytes in that one case only.
@@ -89,8 +96,10 @@ newline-terminated input -- so it is not evidence of anything.)
      conservative instead. That is the pattern to generalise.
 
 5. **Build a terminal support matrix** (Matthew's idea, and the eventual public
-   artifact): the sequences and behaviours we rely on, against the terminals
-   people actually use -- what supports what, and where behaviour differs.
+   artifact; now `pages/compatibility.md`, which answers the terminal question
+   by argument from a small vocabulary rather than by a table of ticks, and says
+   plainly that only tmux is tested): the sequences and behaviours we rely on,
+   against the terminals people actually use -- what supports what, and where behaviour differs.
    Publish it in the documentation. It is more useful to a user than any test
    result, since it tells them whether their terminal will work, and it doubles
    as the specification of what the library is allowed to emit.
