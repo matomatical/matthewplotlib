@@ -175,15 +175,24 @@ class TestTheHarness:
         assert screen.scrolled == 2
         assert [screen.line(r) for r in range(3)] == ["c", "d", ""]
 
-    def test_erasing_paints_the_active_background(self):
-        """Background-colour erase, and the reason the renderer resets the colour
-        before every erase (`reset_colour` in `to_ansi_diff_str`). A model that
-        erased to default -- as the emulator this replaced did -- cannot see it.
+    def test_blanking_paints_the_active_background(self):
+        """Why `reset_colour` runs before every blanking in `to_ansi_diff_str`.
+
+        Both ways the renderer blanks a cell carry the active background with
+        them: a written space always does, and an erase does on any terminal
+        with background-colour erase. A model that erased to default -- as the
+        emulator this replaced did -- cannot see the second.
         """
-        painted = _screen_after(1, 4, "\x1b[48;2;7;7;7mAB\x1b[2X")
-        assert painted.cells[0][2] == (" ", None, (7, 7, 7))
-        reset = _screen_after(1, 4, "\x1b[48;2;7;7;7mAB\x1b[0m\x1b[2X")
-        assert reset.cells[0][2] == BLANK
+        # a written space, which is how trailing columns are cleared
+        spaces = _screen_after(1, 4, "\x1b[48;2;7;7;7mAB  ")
+        assert spaces.cells[0][2] == (" ", None, (7, 7, 7))
+        spaces_reset = _screen_after(1, 4, "\x1b[48;2;7;7;7mAB\x1b[0m  ")
+        assert spaces_reset.cells[0][2] == BLANK
+        # erase-in-line, which is how whole lost rows are cleared
+        erased = _screen_after(2, 4, "\x1b[48;2;7;7;7mAB\n\x1b[2K")
+        assert erased.cells[1][0] == (" ", None, (7, 7, 7))
+        erased_reset = _screen_after(2, 4, "\x1b[48;2;7;7;7mAB\n\x1b[0m\x1b[2K")
+        assert erased_reset.cells[1][0] == BLANK
 
     def test_each_terminal_starts_from_a_clean_screen(self):
         _screen_after(2, 4, "\x1b[48;2;7;7;7mdirt\nmore dirt")
@@ -434,10 +443,11 @@ class TestCharArrayDiffStrResize:
             assert screen.cells[r][:new.width] == ref.cells[r + offset][:new.width]
 
     def test_narrowing_erases_only_the_lost_columns(self):
-        """Trailing columns are erased with ECH, which cannot reach past them.
+        """Trailing columns are blanked with spaces, which reach exactly as far
+        as they are written and no further.
 
-        And erased to blank, not to whatever colour was last in effect: a
-        terminal paints an erase in the active background (see `TestTheHarness`).
+        And blanked to default, not to whatever colour was last in effect: a
+        space carries the active background (see `TestTheHarness`).
         """
         rng = np.random.default_rng(9)
         prev, new = _rand_chars(rng, 3, 10), _rand_chars(rng, 3, 6)

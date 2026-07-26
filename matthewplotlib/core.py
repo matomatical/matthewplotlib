@@ -321,9 +321,30 @@ class CharArray:
                 s.append(f"\x1b[{abs(d)}{'B' if d > 0 else 'A'}")
                 cur_row = i
 
+        def goto_col(col: int) -> None:
+            # A relative move when the column is known. When it is not -- after
+            # a deferred wrap, see `paint` -- a carriage return is what resolves
+            # it: it lands on column 0 whatever the terminal thinks the column
+            # is, and it cancels the pending wrap, which is the part that must
+            # not be left to chance. Absolute column addressing (CHA) would do
+            # both in one sequence, but only on terminals that agree about the
+            # wrap flag, and that is exactly what terminals disagree about.
+            nonlocal cur_col
+            if col == cur_col:
+                return
+            if col == 0 or cur_col is None:
+                s.append("\r")          # one byte, and never the wrong column
+                cur_col = 0
+            if col != cur_col:
+                d = col - cur_col
+                s.append(f"\x1b[{abs(d)}{'C' if d > 0 else 'D'}")
+            cur_col = col
+
         def reset_colour() -> None:
-            # erasing paints in the current background on many terminals, so the
-            # colour must be back to default before any erase (and at the end)
+            # Blanking paints in the current background -- an erase does so on
+            # many terminals, a written space does so on all of them -- so the
+            # colour must be back to default before any blanking (and at the
+            # end).
             nonlocal current_fg, current_bg
             if current_fg is not None or current_bg is not None:
                 s.append("\x1b[0m")
@@ -331,11 +352,7 @@ class CharArray:
 
         def paint(i: int, col: int) -> None:
             nonlocal cur_col, current_fg, current_bg
-            if cur_col is None:
-                s.append(f"\x1b[{col + 1}G")  # absolute column
-            elif col != cur_col:
-                d = col - cur_col
-                s.append(f"\x1b[{abs(d)}{'C' if d > 0 else 'D'}")
+            goto_col(col)
             controls = []
             fg = self.fg_rgb[i, col] if self.fg[i, col] else None
             if fg is None and current_fg is not None:
@@ -360,7 +377,7 @@ class CharArray:
             # final column, in which case terminals defer the wrap: the cursor
             # stays put with a wrap flag rather than moving past the edge, so on
             # a screen exactly this wide it is not where counting glyphs says.
-            # Forget the column and address the next cell absolutely.
+            # Forget the column; `goto_col` recovers with a carriage return.
             cur_col = col + 1 if col + 1 < W else None
 
         # repaint the rows that are already on screen
@@ -372,11 +389,19 @@ class CharArray:
             for j in cols:
                 paint(i, int(j))
             if trailing:
+                # Spaces, not an erase-character sequence: `reset_colour` has
+                # already put the colour back to default, so a space paints
+                # exactly what an erase would, and a space is a character every
+                # terminal has an opinion about. Costs `trailing` bytes instead
+                # of five, on the one frame where a plot narrows.
                 reset_colour()
-                if cur_col != W:
-                    s.append(f"\x1b[{W + 1}G")
-                    cur_col = W
-                s.append(f"\x1b[{trailing}X")
+                goto_col(W)
+                s.append(" " * trailing)
+                # Those spaces moved the cursor, where an erase would not have.
+                # They stop at column PW, which is on screen (prev was rendered
+                # there) -- but PW may be the last column, and then the wrap is
+                # deferred and the column is not what counting says. Forget it.
+                cur_col = None
 
         # erase the rows prev covered and self does not
         if lost_rows:
@@ -397,16 +422,15 @@ class CharArray:
                     paint(i, col)
 
         reset_colour()
-        # park at column 0 of the plot's last row, leaving the newline that
-        # `print` appends to complete the frame
+        # Park at column 0 of the plot's last row, leaving the newline that
+        # `print` appends to complete the frame. Column first, then row: a
+        # carriage return costs a byte where cursor-next-line would have done
+        # both at once, but it is the move no terminal can get wrong, and it
+        # settles the deferred wrap before anything counts on the column again.
+        goto_col(0)
         d = (H - 1) - cur_row
-        if d > 0:
-            s.append(f"\x1b[{d}E")       # down, and to column 0
-        else:
-            if d < 0:
-                s.append(f"\x1b[{-d}A")  # up, column preserved
-            if cur_col != 0:
-                s.append("\r")
+        if d:
+            s.append(f"\x1b[{abs(d)}{'B' if d > 0 else 'A'}")
         return "".join(s)
 
 

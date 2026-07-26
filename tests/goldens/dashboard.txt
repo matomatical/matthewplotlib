@@ -45,7 +45,7 @@ colour:
   ......4444444444444444444444444444444444...0.1.2.0......
   ........................................................
 
-frame 1: 416 bytes, 14x56, cursor 14,0, scrolled 0
+frame 1: 417 bytes, 14x56, cursor 14,0, scrolled 0
 palette:
   . default default
   0 #ff0000 default
@@ -84,7 +84,7 @@ colour:
   ......4444444444444444444444444444444444...0.1.2.0......
   ........................................................
 
-frame 2: 638 bytes, 14x56, cursor 14,0, scrolled 0
+frame 2: 639 bytes, 14x56, cursor 14,0, scrolled 0
 palette:
   . default default
   0 #ff0000 default
@@ -123,7 +123,7 @@ colour:
   ......4444444444444444444444444444444444...0.1.2.0......
   ........................................................
 
-frame 3: 655 bytes, 14x56, cursor 14,0, scrolled 0
+frame 3: 656 bytes, 14x56, cursor 14,0, scrolled 0
 palette:
   . default default
   0 #ff0000 default
@@ -162,7 +162,7 @@ colour:
   ......4444444444444444444444444444444444...0.1.2.0......
   ........................................................
 
-frame 4: 452 bytes, 14x56, cursor 14,0, scrolled 0
+frame 4: 453 bytes, 14x56, cursor 14,0, scrolled 0
 palette:
   . default default
   0 #ff0000 default

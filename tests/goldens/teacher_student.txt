@@ -67,7 +67,7 @@ colour:
   0000000000000000000000000000000000000000000000
   0000000000000000000000000000000000000000000000
 
-frame 1: 465 bytes, 23x46, cursor 23,0, scrolled 0
+frame 1: 466 bytes, 23x46, cursor 23,0, scrolled 0
 palette:
   . default default
   0 #7f7f7f default
@@ -129,7 +129,7 @@ colour:
   0000000000000000000000000000000000000000000000
   0000000000000000000000000000000000000000000000
 
-frame 2: 430 bytes, 23x46, cursor 23,0, scrolled 0
+frame 2: 431 bytes, 23x46, cursor 23,0, scrolled 0
 palette:
   . default default
   0 #7f7f7f default
@@ -193,7 +193,7 @@ colour:
   0000000000000000000000000000000000000000000000
   0000000000000000000000000000000000000000000000
 
-frame 3: 417 bytes, 23x46, cursor 23,0, scrolled 0
+frame 3: 418 bytes, 23x46, cursor 23,0, scrolled 0
 palette:
   . default default
   0 #7f7f7f default
@@ -253,7 +253,7 @@ colour:
   0000000000000000000000000000000000000000000000
   0000000000000000000000000000000000000000000000
 
-frame 4: 352 bytes, 23x46, cursor 23,0, scrolled 0
+frame 4: 353 bytes, 23x46, cursor 23,0, scrolled 0
 palette:
   . default default
   0 #7f7f7f default
@@ -313,7 +313,7 @@ colour:
   0000000000000000000000000000000000000000000000
   0000000000000000000000000000000000000000000000
 
-frame 5: 347 bytes, 23x46, cursor 23,0, scrolled 0
+frame 5: 348 bytes, 23x46, cursor 23,0, scrolled 0
 palette:
   . default default
   0 #7f7f7f default

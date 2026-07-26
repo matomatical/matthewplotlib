@@ -140,7 +140,7 @@ colour:
   00000000000000000000000000000000000000000000000000000000000000000000000000000000
   00000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-frame 2: 44876 bytes, 42x80, cursor 42,0, scrolled 0
+frame 2: 44755 bytes, 42x80, cursor 42,0, scrolled 0
 palette:
   .. default default
   00 #fecb8e #fce5a6
@@ -920,7 +920,7 @@ colour:
   7l7l7l6NaUaV1Za48U4M544l4l4l4l4l54aW8RaX3naYaZb09s2R2D2D2D4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l7U5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C
   7l7l7l6N7gb1b2b39N8T2D2D4M7vb44R6gazb52S1r1V6Cb66Fb76R2D2D2D54544l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l7U7U5C5C5C5C5C5C5C7U7U7U4l4l
 
-frame 3: 58224 bytes, 42x80, cursor 42,0, scrolled 0
+frame 3: 58103 bytes, 42x80, cursor 42,0, scrolled 0
 palette:
   .. default default
   00 #fdcd90 #fdcf92
@@ -2194,7 +2194,7 @@ colour:
   0r0Zib1vic1o0n34id3W501v9Rieif0oigih3Wii1v9R580o0Z0Z0sij5nh9ikilim4Iin5Aioigia2aip0Z0Z4Jiq0W3W4C503zgi4j0mbhid0W3Wiris1v9RhI0Z0ngpit3W249Siu0o4Yiviw1v1v1v9R1E0o
   9Rixiyizbm1S5QiAiB3DiC7L3ziDhp4jiEiFiG1liHiDiI0m34iJ0XiKiLiMiNhUiO956Ehp27iP1v1v1riQiR0n0W0WiyiS6S0S3ziT5OiUiV55ioiWiX2s3z3ziY5OiEiZ4ki7j0iDj1iE0Wj2j3j44v3zj56Z
 
-frame 4: 63345 bytes, 42x80, cursor 42,0, scrolled 0
+frame 4: 63224 bytes, 42x80, cursor 42,0, scrolled 0
 palette:
   .. default default
   00 #b53679 #b53679
@@ -3198,7 +3198,7 @@ colour:
   0p0p0p0p0p0o0j2heJ0j0o0o0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0o0o0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0k0j0k0j0j0j0jcj2h0j0j0j0j0j0j
   0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0p0o0o0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j0j
 
-frame 5: 3578 bytes, 42x80, cursor 42,0, scrolled 0
+frame 5: 3457 bytes, 42x80, cursor 42,0, scrolled 0
 palette:
   . default default
   0 #000003 #000003

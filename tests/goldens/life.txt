@@ -69,7 +69,7 @@ colour:
   44444444444444444444444444444444444444444444444444444444444444444444444444
   44444444444444444444444444444444444444444444444444444444444444444444444444
 
-frame 1: 19283 bytes, 25x74, cursor 25,0, scrolled 0
+frame 1: 19284 bytes, 25x74, cursor 25,0, scrolled 0
 palette:
   . default default
   0 #0c0c14 #0c0c14
@@ -146,7 +146,7 @@ colour:
   gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
   gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
 
-frame 2: 19952 bytes, 25x74, cursor 25,0, scrolled 0
+frame 2: 19953 bytes, 25x74, cursor 25,0, scrolled 0
 palette:
   . default default
   0 #0c0c14 #0c0c14
@@ -233,7 +233,7 @@ colour:
   pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
   pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
 
-frame 3: 20669 bytes, 25x74, cursor 25,0, scrolled 0
+frame 3: 20670 bytes, 25x74, cursor 25,0, scrolled 0
 palette:
   . default default
   0 #0c0c14 #0c0c14
@@ -321,7 +321,7 @@ colour:
   pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
   pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp
 
-frame 4: 18740 bytes, 25x74, cursor 25,0, scrolled 0
+frame 4: 18741 bytes, 25x74, cursor 25,0, scrolled 0
 palette:
   . default default
   0 #0c0c14 #0c0c14

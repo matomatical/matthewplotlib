@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pytest
 
@@ -636,3 +638,159 @@ class TestPlotClearStr:
         and never `CSI 0 A`, which a terminal reads as `CSI 1 A`."""
         z = mp.blank(height=0, width=0)
         assert z.clearstr() == "\x1b[1A"
+
+
+# # #
+# THE EMITTED VOCABULARY
+
+
+# The complete set of escape sequences the library is allowed to send, by final
+# byte. Everything here is in the VT100 core, which is what keeps
+# `pages/compatibility.md` short; the only sequences that are not are the SGR
+# colours, and those degrade to a nearby colour rather than corrupting a screen.
+ALLOWED_FINALS = {
+    "A": "CUU, cursor up",
+    "B": "CUD, cursor down",
+    "C": "CUF, cursor forward",
+    "D": "CUB, cursor back",
+    "K": "EL, erase in line",
+    "m": "SGR, select graphic rendition",
+}
+
+# Retired by the escape-sequence audit, and not to be reintroduced without a
+# corresponding row on the compatibility page. See notes/escape-vocabulary.md.
+RETIRED_FINALS = {
+    "E": "CNL, cursor next line (now a carriage return and a cursor down)",
+    "G": "CHA, absolute column (now a carriage return and a cursor forward)",
+    "X": "ECH, erase character (now written spaces)",
+}
+
+CSI = re.compile(r"\x1b\[([0-9;]*)([A-Za-z])")
+
+
+def _sequences(emitted: str) -> list[tuple[str, str]]:
+    """Every escape sequence in `emitted`, as (final byte, parameters).
+
+    Also insists that every escape in the string is a CSI sequence of this
+    plain shape. A regex that only looks for the sequences we know about would
+    let an OSC, a two-byte escape or a private-mode sequence through unread.
+    """
+    found = [(m.group(2), m.group(1)) for m in CSI.finditer(emitted)]
+    assert emitted.count("\x1b") == len(found), (
+        f"{emitted!r} contains an escape that is not a plain CSI sequence"
+    )
+    return found
+
+
+def _sgr_is_allowed(params: str) -> bool:
+    """SGR is only ever a reset, a default fg/bg, or a 24-bit fg/bg colour.
+
+    Several of those can be merged into one sequence, so the parameters are
+    read as a stream of items rather than matched whole.
+    """
+    codes = [int(p) for p in params.split(";")] if params else [0]
+    i = 0
+    while i < len(codes):
+        if codes[i] in (0, 39, 49):
+            i += 1
+        elif (
+            codes[i] in (38, 48)
+            and codes[i + 1:i + 2] == [2]
+            and len(codes) - i >= 5
+        ):
+            i += 5
+        else:
+            return False
+    return True
+
+
+def _vocabulary_scenarios() -> list[tuple[str, str]]:
+    """One emitted string per path through the renderer that produces any."""
+    rng = np.random.default_rng(11)
+
+    def chars(h: int, w: int) -> CharArray:
+        """Every cell coloured, foreground and background."""
+        return unicode_image(rng.integers(0, 256, (2 * h, w, 3), dtype=np.uint8))
+
+    base = chars(4, 6)
+    one_cell = CharArray(
+        codes=base.codes.copy(),
+        fg=base.fg.copy(),
+        fg_rgb=base.fg_rgb.copy(),
+        bg=base.bg.copy(),
+        bg_rgb=base.bg_rgb.copy(),
+    )
+    one_cell.codes[1, 2] = ord("@")
+
+    return [
+        ("render, coloured", base.to_ansi_str()),
+        ("render, uncoloured", CharArray.from_size(3, 4).to_ansi_str()),
+        ("diff, every cell", chars(4, 6).to_ansi_diff_str(base)),
+        ("diff, one cell", one_cell.to_ansi_diff_str(base)),
+        ("diff, nothing changed", base.to_ansi_diff_str(base)),
+        ("diff, wider", chars(4, 9).to_ansi_diff_str(base)),
+        ("diff, narrower", chars(4, 3).to_ansi_diff_str(base)),
+        ("diff, taller", chars(7, 6).to_ansi_diff_str(base)),
+        ("diff, shorter", chars(2, 6).to_ansi_diff_str(base)),
+        ("diff, narrower and shorter", chars(2, 3).to_ansi_diff_str(base)),
+        ("diff, wider and taller", chars(7, 9).to_ansi_diff_str(base)),
+        ("clearstr", mp.blank(height=3, width=4).clearstr()),
+        ("clearstr, empty plot", mp.blank(height=0, width=0).clearstr()),
+    ]
+
+
+VOCABULARY_SCENARIOS = _vocabulary_scenarios()
+VOCABULARY_IDS = [label for label, _ in VOCABULARY_SCENARIOS]
+VOCABULARY_STRINGS = [emitted for _, emitted in VOCABULARY_SCENARIOS]
+
+
+class TestEmittedVocabulary:
+    """What the library is allowed to say to a terminal.
+
+    `pages/compatibility.md` documents this set, and what each member of it
+    needs from a terminal. This is the same claim, executable: a sequence
+    appearing in the renderer that the page does not cover fails here, so the
+    page cannot go quietly out of date.
+    """
+
+    @pytest.mark.parametrize("emitted", VOCABULARY_STRINGS, ids=VOCABULARY_IDS)
+    def test_only_documented_sequences_are_emitted(self, emitted: str):
+        for final, params in _sequences(emitted):
+            assert final in ALLOWED_FINALS, (
+                f"CSI {params}{final} is outside the documented vocabulary"
+                f" ({RETIRED_FINALS.get(final, 'never emitted before')})"
+            )
+            if final == "m":
+                assert _sgr_is_allowed(params), f"SGR {params} is not a colour"
+            elif final == "K":
+                assert params == "2", "erase-in-line is only ever the whole line"
+
+    @pytest.mark.parametrize("emitted", VOCABULARY_STRINGS, ids=VOCABULARY_IDS)
+    def test_no_cursor_move_asks_to_move_zero(self, emitted: str):
+        """`CSI 0 B` moves one row, not none: a zero count reads as one.
+
+        So a renderer that computes a distance of zero has to emit nothing at
+        all, rather than the sequence with a zero in it -- an off-by-one that
+        would only show up on the frames where a plot happens not to move.
+
+        An *omitted* count is a different thing and is fine. It also means one,
+        by the same default that terminfo records for xterm as `cuu1=\\E[A`, and
+        the renderer uses the short form where the distance is always one.
+        """
+        for final, params in _sequences(emitted):
+            if final in ("A", "B", "C", "D"):
+                assert params != "0", (
+                    f"CSI 0 {final} moves one, not none; emit nothing instead"
+                )
+                assert params == "" or int(params) >= 1
+
+    def test_the_retired_sequences_stay_retired(self):
+        """Named separately from the subset check above, so that widening
+        `ALLOWED_FINALS` cannot quietly bring one of these back with it.
+        """
+        for label, emitted in VOCABULARY_SCENARIOS:
+            for final, params in _sequences(emitted):
+                assert final not in RETIRED_FINALS, (
+                    f"{label} emits CSI {params}{final}, retired by the audit:"
+                    f" {RETIRED_FINALS[final]}"
+                )
