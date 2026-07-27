@@ -150,7 +150,7 @@ These are the behaviours the library counts on.
   matches the specification* (STD-070).[^wraptest]
 
   Rather than betting on standards that are widely dismissed, we rely on
-  carriage return, which see seems to be the most robust and widely-used idiom
+  carriage return, which seems to be the most robust and widely-used idiom
   for clearing the flag and returning to a known position. Note that this is
   the mechanism often used by live-updating terminal progress bars, for
   example.
