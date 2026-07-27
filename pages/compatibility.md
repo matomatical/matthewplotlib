@@ -249,9 +249,17 @@ At the moment, we only officially guarantee support for tmux.
 | Terminal | Status | How |
 |----------|--------|-----|
 | tmux 3.5a | **Verified continuously** | The test suite drives a real tmux pane. Every behaviour listed above is asserted there, and every example is snapshotted frame by frame—glyph, colour, cursor and scroll position of every cell. |
+| zmx 0.6.0 (ghostty-vt 1.3.2-dev) | **Spot-checked** | Two cases run by hand and read back with `zmx history --vt`: a plot narrowing and shortening, which leaves no columns behind; and a plot the full width of a 160-column pane animated through six differential frames, which lands where it should. Not automated, so nothing detects a regression. |
+| Alacritty | **Used, not tested** | The author runs it. No evidence beyond that. |
 
-The author also uses Alacritty and zmx, but without automated testing to detect
-regressions.
+Worth knowing if you use a multiplexer or a session-persistence layer: those
+parse the library's output with their own terminal emulator and then repaint the
+real terminal themselves. tmux and zmx are both in that category — zmx by way of
+[ghostty](https://ghostty.org)'s VT engine. So for a reader inside one of them,
+the compatibility question is about the multiplexer and not about the terminal
+underneath it, which is why testing against tmux is worth as much as it is. Two
+of the three rows above are such layers, and they are two independent
+implementations, which is the useful part: they agree.
 
 If you have a terminal that is not listed above and you see visual distortion,
 please report it. There is an example that exercises every escape sequence on

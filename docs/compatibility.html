@@ -349,9 +349,19 @@
 <td><strong>Verified continuously</strong></td>
 <td>The test suite drives a real tmux pane. Every behaviour listed above is asserted there, and every example is snapshotted frame by frame—glyph, colour, cursor and scroll position of every cell.</td>
 </tr>
+<tr class="even">
+<td>zmx 0.6.0 (ghostty-vt 1.3.2-dev)</td>
+<td><strong>Spot-checked</strong></td>
+<td>Two cases run by hand and read back with <code>zmx history --vt</code>: a plot narrowing and shortening, which leaves no columns behind; and a plot the full width of a 160-column pane animated through six differential frames, which lands where it should. Not automated, so nothing detects a regression.</td>
+</tr>
+<tr class="odd">
+<td>Alacritty</td>
+<td><strong>Used, not tested</strong></td>
+<td>The author runs it. No evidence beyond that.</td>
+</tr>
 </tbody>
 </table>
-<p>The author also uses Alacritty and zmx, but without automated testing to detect regressions.</p>
+<p>Worth knowing if you use a multiplexer or a session-persistence layer: those parse the library’s output with their own terminal emulator and then repaint the real terminal themselves. tmux and zmx are both in that category — zmx by way of <a href="https://ghostty.org">ghostty</a>’s VT engine. So for a reader inside one of them, the compatibility question is about the multiplexer and not about the terminal underneath it, which is why testing against tmux is worth as much as it is. Two of the three rows above are such layers, and they are two independent implementations, which is the useful part: they agree.</p>
 <p>If you have a terminal that is not listed above and you see visual distortion, please report it. There is an example that exercises every escape sequence on this page, in the situations where they are hardest, and says what each stage should look like so that you can judge it:</p>
 <pre class="console"><code>python examples/terminal_test.py</code></pre>
 <p>It measures your terminal’s width and draws to it, so that stage 4 puts a plot against the right margin — the deferred-wrap case above. That is the one stage testing something your terminal does not already do constantly, so it is the one to watch. (If it cannot measure the width, because output is redirected somewhere that is not a terminal, it says so and stage 4 tests nothing.)</p>

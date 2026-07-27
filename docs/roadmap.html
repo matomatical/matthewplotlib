@@ -234,7 +234,7 @@
 <li><label><input type="checkbox" />Freeze documentation with each version.</label></li>
 <li><label><input type="checkbox" checked="" />Terminal support matrix: the escape sequences and behaviours the library relies on, against the terminals people actually use. Tells a reader whether their terminal will work, and doubles as the specification of what the library is allowed to emit. Published as <code>pages/compatibility.md</code>; the terminal column is honest that only tmux is under test.</label>
 <ul class="task-list">
-<li><label><input type="checkbox" />Verify a second terminal. <code>screen</code> is the cheapest second opinion, <code>Xvfb</code> plus the installed <code>xterm</code> is the reference VT. See the caveat in <code>notes/terminal-test-backend.md</code>.</label></li>
+<li><label><input type="checkbox" />Automate a second terminal, so that tmux’s behaviour stops being the de facto specification by default. <code>zmx</code> is the cheapest second opinion and is already installed: it is a session-persistence layer over ghostty’s VT engine, an implementation wholly independent of tmux’s, and <code>zmx history --vt</code> reads a session’s screen back with colour intact, which is the capability the harness needs. Spot-checked by hand already; see the terminals table in <code>pages/compatibility.md</code>. <code>Xvfb</code> plus the installed <code>xterm</code> remains the reference VT if a real terminal is wanted too.</label></li>
 </ul></li>
 </ul>
 <p>More examples:</p>

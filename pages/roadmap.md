@@ -217,9 +217,14 @@ More elaborate documentation:
   their terminal will work, and doubles as the specification of what the
   library is allowed to emit. Published as `pages/compatibility.md`; the
   terminal column is honest that only tmux is under test.
-  * [ ] Verify a second terminal. `screen` is the cheapest second opinion,
-    `Xvfb` plus the installed `xterm` is the reference VT. See the caveat in
-    `notes/terminal-test-backend.md`.
+  * [ ] Automate a second terminal, so that tmux's behaviour stops being the de
+    facto specification by default. `zmx` is the cheapest second opinion and is
+    already installed: it is a session-persistence layer over ghostty's VT
+    engine, an implementation wholly independent of tmux's, and
+    `zmx history --vt` reads a session's screen back with colour intact, which
+    is the capability the harness needs. Spot-checked by hand already; see the
+    terminals table in `pages/compatibility.md`. `Xvfb` plus the installed
+    `xterm` remains the reference VT if a real terminal is wanted too.
 
 More examples:
 

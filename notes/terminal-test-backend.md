@@ -112,6 +112,16 @@ newline-terminated input -- so it is not evidence of anything.)
    canary for terminals that simplify wrap the same way) or collecting reports
    from real users on real terminals.
 
+   (Wrong about "only tmux", and nothing had to be installed to find out. `zmx`
+   -- Matthew's fork of a session-persistence tool, at `~/zmx` -- drives
+   **ghostty's VT engine**, an implementation entirely independent of tmux's,
+   and `zmx history --vt` reads a session's screen back with colour intact. It
+   is therefore a ready-made second backend, better than `screen` would have
+   been because ghostty is a serious modern VT rather than another old one, and
+   better than `pyte` because it is a terminal people actually use. Spot-checked
+   by hand at this point, not automated; see the roadmap and the terminals table
+   in `pages/compatibility.md`.)
+
 ## What was built
 
 `tests/tmux.py`: one tmux server on a socket private to the test process, one
