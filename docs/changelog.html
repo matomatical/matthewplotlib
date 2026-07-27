@@ -25,6 +25,7 @@
                 <li><a href="index.html">README</a></li>
                 <li><a href="quickstart.html">Quickstart</a></li>
                 <li><a href="examples.html">Examples</a></li>
+                <li><a href="compatibility.html">Compatibility</a></li>
                 <li><a href="roadmap.html">Roadmap</a></li>
                 <li><a href="changelog.html">Changelog</a></li>
             </ul>
@@ -55,11 +56,14 @@
 <li><code>life.py</code> example: Conway’s Game of Life, demonstrating differential redraw.</li>
 <li><code>quickstart3.py</code> example: <code>quickstart2.py</code> with the animation loop handed to <code>mp.animate</code>.</li>
 <li><code>boing.py</code> example: the Amiga Boing Ball, built with <code>mp.animation</code> from a computed array of frames, spinning by palette cycling as the original did, with the cycling palette shown underneath it.</li>
+<li>A compatibility page (<code>pages/compatibility.md</code>): every escape sequence the library emits, the terminal behaviours it relies on, the glyph blocks it draws with, and which terminals are actually tested.</li>
+<li><code>terminal_test.py</code> example: does your terminal render matthewplotlib correctly? Four stages exercising every escape sequence the library can emit, each saying what it should look like. Measures the terminal’s width and draws to it, so that the last stage puts a plot against the right margin.</li>
 </ul>
 <p>Change:</p>
 <ul>
 <li><code>mp.save_animation(plots, filename, ...)</code> is retired in favour of <code>mp.tstack(*plots).savegif(filename, ...)</code>.</li>
 <li><code>teacher_student.py</code> takes a <code>--log-every</code> argument, and logs its loss with <code>anim.print</code>.</li>
+<li>Animated redraws now speak only VT100, apart from the SGR colours. <code>CHA</code> (absolute column) became a carriage return plus a cursor forward, <code>CNL</code> (next line) a carriage return plus a cursor down, and <code>ECH</code> (erase character) written spaces. The screens are identical – across every example snapshot only the byte counts moved – and the point is <code>CHA</code>, whose old use depended on it cancelling a deferred wrap, which is the thing terminals disagree about most. A full repaint now costs less rather than more; a sparse diff costs one byte more. See <code>notes/closed/escape-vocabulary.md</code>.</li>
 </ul>
 <p>Fix:</p>
 <ul>
@@ -74,6 +78,7 @@
 <li>Escape sequences are now tested against a real terminal (a tmux pane, see <code>tests/test_terminal.py</code> and <code>tests/tmux.py</code>) rather than a hand-written emulator, which retires the emulator and makes tmux a development dependency. See <code>notes/terminal-test-backend.md</code>.</li>
 <li>The example smoke tests are replaced by snapshot tests. Every example is replayed into a real terminal print by print and compared against a golden in <code>tests/goldens/</code>, cell by cell in both glyph and colour, along with the byte cost of each print and a digest of the image it saved. Regenerate with <code>make   goldens</code>. See <code>notes/closed/example-snapshot-tests.md</code>.</li>
 <li><code>life.py</code> seeds <code>np.random.seed</code> rather than <code>np.random.default_rng</code>, whose stream NumPy does not guarantee across releases. Its initial board, and <code>images/life.gif</code>, change accordingly.</li>
+<li><code>TestEmittedVocabulary</code> pins the set of escape sequences the renderer is allowed to emit, over every path that emits any. It is the executable form of the compatibility page, so the page cannot go quietly out of date.</li>
 </ul>
 <h2 id="version-0.4.0">Version 0.4.0</h2>
 <p>New:</p>

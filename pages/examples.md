@@ -197,6 +197,17 @@ folder for source code.
   </tr>
   <tr>
     <td align="center">
+      <em>Nothing to show here: a picture of this one running on someone
+      else's terminal tells you nothing about yours.</em>
+    </td>
+    <td>
+      <p><strong>Terminal test</strong></p>
+      <p>Does your terminal render matthewplotlib correctly? Four stages &mdash; colour, redrawing in place, resizing, and a plot pushed against the right margin &mdash; exercising every escape sequence the library can emit, each saying what it should look like so you can judge it. Measures your terminal's width and draws to it. See the <a href="compatibility.html">compatibility page</a>.</p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/terminal_test.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="images/time_series_histogram.png">
     </td>
     <td>

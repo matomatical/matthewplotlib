@@ -130,6 +130,11 @@ EXAMPLES: tuple[Example, ...] = (
             args=("--num-steps", "5", "--log-every", "2")),
     Example("teapot.py",                21, 80, saves="gif",
             args=("--num-frames", "5")),
+    # --width is passed explicitly rather than left to the default, because the
+    # snapshot has to be the same size every time and the example's own advice
+    # is to set it to the terminal's width.
+    Example("terminal_test.py",         33, 60,
+            args=("--width", "60", "--frames", "3")),
     Example("time_series_histogram.py", 40, 80, saves="png"),
     Example("voronoi.py",               21, 70, saves="png"),
 )

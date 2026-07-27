@@ -34,6 +34,10 @@ New:
 * A compatibility page (`pages/compatibility.md`): every escape sequence the
   library emits, the terminal behaviours it relies on, the glyph blocks it
   draws with, and which terminals are actually tested.
+* `terminal_test.py` example: does your terminal render matthewplotlib
+  correctly? Four stages exercising every escape sequence the library can emit,
+  each saying what it should look like. Measures the terminal's width and draws
+  to it, so that the last stage puts a plot against the right margin.
 
 Change:
 

@@ -44,6 +44,12 @@ Specifying colors:
 * [ ] Consistent API for color specification.
 * [ ] Configurable colour scales and normalisation.
 * [ ] Color bars, vertical or horizontal.
+* [ ] An opt-in reduced-colour mode, chosen by the caller rather than sniffed
+  from the terminal, so that the fallback on a terminal without 24-bit colour
+  is ours to control rather than the terminal's to guess. Also saves bytes.
+  See `pages/compatibility.md`.
+  * [ ] Colormaps that are legible in a reduced-colour mode, since a continuous
+    map quantised to 256 colours bands badly.
 
 Rendering:
 
@@ -147,7 +153,12 @@ Advanced plot arrangement:
 * [ ] Indexing and slicing of plots.
 * [ ] Crop plot composition primitive. See `notes/terminal-aware-printing.md`.
   * [ ] By default, clip plots to terminal width and (almost) height, to enable
-    terminal-aware printing.
+    terminal-aware printing. A plot wider than the screen is currently
+    undefined behaviour, and silently so: see `pages/compatibility.md`.
+  * [ ] Have `animate` crop for the caller, and keep cropping correctly when
+    the terminal is resized mid-animation — the session already knows the
+    terminal's height, and a resize invalidates every cursor calculation the
+    next diff is written against.
 
 Advanced furnishings:
 
@@ -158,6 +169,18 @@ Advanced furnishings:
   (rounded, cut, doubled, crossed).
 * [ ] Dashboard meters: circular, vertical and ticking-number variants of
   `progress`, and scrolling text marquees.
+
+Glyphs and fonts:
+
+* [ ] A fallback for terminals whose font lacks braille, which is the densest
+  block the library draws with and the one most likely to be missing. See
+  `pages/compatibility.md`.
+* [ ] Opt-in octants (Symbols for Legacy Computing Supplement, U+1CC00–U+1CEBF,
+  new in Unicode 16.0) as an alternative to braille. Octants give the same 2 by
+  4 resolution per cell as braille dots but as solid blocks, so they tile
+  without the dot-matrix look. Newer than braille and so less widely present in
+  fonts, hence opt-in, and worth shipping with instructions for installing or
+  patching a font that has them.
 
 Advanced rendering:
 
