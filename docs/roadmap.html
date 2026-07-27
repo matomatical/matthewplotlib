@@ -84,10 +84,6 @@
 <li><label><input type="checkbox" />Consistent API for color specification.</label></li>
 <li><label><input type="checkbox" />Configurable colour scales and normalisation.</label></li>
 <li><label><input type="checkbox" />Color bars, vertical or horizontal.</label></li>
-<li><label><input type="checkbox" />An opt-in reduced-colour mode, chosen by the caller rather than sniffed from the terminal, so that the fallback on a terminal without 24-bit colour is ours to control rather than the terminal’s to guess. Also saves bytes. See <code>pages/compatibility.md</code>.</label>
-<ul class="task-list">
-<li><label><input type="checkbox" />Colormaps that are legible in a reduced-colour mode, since a continuous map quantised to 256 colours bands badly.</label></li>
-</ul></li>
 </ul>
 <p>Rendering:</p>
 <ul class="task-list">
@@ -105,9 +101,6 @@
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Unit tests for core modules (colors, colormaps, data, core).</label></li>
 <li><label><input type="checkbox" checked="" />Integration tests (all examples run).</label></li>
-<li><label><input type="checkbox" checked="" />Adopt a more well-tested virtual terminal for testing ANSI control codes: drive a real terminal (tmux) and retire the hand-written emulator in the tests. See <code>notes/terminal-test-backend.md</code>.</label></li>
-<li><label><input type="checkbox" checked="" />Audit the escape sequences we emit, preferring ones that do not vary between terminals over testing that they did not. Retired <code>CHA</code>, <code>CNL</code> and <code>ECH</code>, leaving a VT100-only vocabulary apart from the SGR colours, and pinned it with <code>TestEmittedVocabulary</code>. See <code>notes/closed/escape-vocabulary.md</code>.</label></li>
-<li><label><input type="checkbox" checked="" />Snapshot testing for str output and image output regression detection: every example is replayed into a real terminal print by print and compared against a golden, cell by cell, along with the byte cost of each print and a digest of the image it saved. See <code>notes/closed/example-snapshot-tests.md</code>.</label></li>
 </ul>
 <p>Documentation:</p>
 <ul class="task-list">
@@ -202,11 +195,6 @@
 <li><label><input type="checkbox" />More border styles: dashed and bold lines, and corner treatments (rounded, cut, doubled, crossed).</label></li>
 <li><label><input type="checkbox" />Dashboard meters: circular, vertical and ticking-number variants of <code>progress</code>, and scrolling text marquees.</label></li>
 </ul>
-<p>Glyphs and fonts:</p>
-<ul class="task-list">
-<li><label><input type="checkbox" />A fallback for terminals whose font lacks braille, which is the densest block the library draws with and the one most likely to be missing. See <code>pages/compatibility.md</code>.</label></li>
-<li><label><input type="checkbox" />Opt-in octants (Symbols for Legacy Computing Supplement, U+1CC00–U+1CEBF, new in Unicode 16.0) as an alternative to braille. Octants give the same 2 by 4 resolution per cell as braille dots but as solid blocks, so they tile without the dot-matrix look. Newer than braille and so less widely present in fonts, hence opt-in, and worth shipping with instructions for installing or patching a font that has them.</label></li>
-</ul>
 <p>Advanced rendering:</p>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Export animations to gifs, at the requested or the achieved frame rate.</label></li>
@@ -220,10 +208,10 @@
 <li><label><input type="checkbox" checked="" />Vectorised composition operations.</label></li>
 <li><label><input type="checkbox" checked="" />Vectorised bitmap rendering.</label></li>
 <li><label><input type="checkbox" checked="" />Intelligent ANSI rendering (only include necessary control codes and resets, e.g., if several characters in a row use the same colours).</label></li>
-<li><label><input type="checkbox" checked="" />Faster animated plot redraws (e.g., differential rendering with shortcut <code>-</code>).</label></li>
-<li><label><input type="checkbox" />Clean up backend code e.g. using JAX PyTrees and vectorisation.</label></li>
-<li><label><input type="checkbox" />A 3-D <code>CharArray</code> (<code>codes[T,H,W]</code>), so animations vectorise the way plots do rather than being a tuple of them. See <code>notes/animations.md</code>.</label></li>
+<li><label><input type="checkbox" checked="" />Faster animated plot redraws: differential rendering with shortcut <code>-</code>.</label></li>
 <li><label><input type="checkbox" />Automatically optimise saved gifs (lossless compression). See <code>notes/gif-size.md</code>.</label></li>
+<li><label><input type="checkbox" />A 3-D <code>CharArray</code> (<code>codes[T,H,W]</code>), so animations vectorise the way plots do rather than being a tuple of them. See <code>notes/animations.md</code>.</label></li>
+<li><label><input type="checkbox" />Clean up backend code e.g. using JAX PyTrees and vectorisation.</label></li>
 </ul>
 <p>More elaborate documentation:</p>
 <ul class="task-list">
@@ -232,16 +220,41 @@
 <li><label><input type="checkbox" checked="" />Documentation search.</label></li>
 <li><label><input type="checkbox" />Tutorials and recipes.</label></li>
 <li><label><input type="checkbox" />Freeze documentation with each version.</label></li>
-<li><label><input type="checkbox" checked="" />Terminal support matrix: the escape sequences and behaviours the library relies on, against the terminals people actually use. Tells a reader whether their terminal will work, and doubles as the specification of what the library is allowed to emit. Published as <code>pages/compatibility.md</code>; the terminal column is honest that only tmux is under test.</label>
+<li><label><input type="checkbox" checked="" />Terminal support matrix / compatibility docs</label></li>
+</ul>
+<p>Advanced testing:</p>
 <ul class="task-list">
-<li><label><input type="checkbox" />Automate a second terminal, so that tmux’s behaviour stops being the de facto specification by default. <code>zmx</code> is the cheapest second opinion and is already installed: it is a session-persistence layer over ghostty’s VT engine, an implementation wholly independent of tmux’s, and <code>zmx history --vt</code> reads a session’s screen back with colour intact, which is the capability the harness needs. Spot-checked by hand already; see the terminals table in <code>pages/compatibility.md</code>. <code>Xvfb</code> plus the installed <code>xterm</code> remains the reference VT if a real terminal is wanted too.</label></li>
+<li><label><input type="checkbox" checked="" />Tests that drive a virtual terminal for testing ANSI control codes (see <code>notes/terminal-test-backend.md</code>).</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />hand-written emulator (retired)</label></li>
+<li><label><input type="checkbox" checked="" />tmux</label></li>
+</ul></li>
+<li><label><input type="checkbox" />More virtual terminal test backends</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />zmx (backed by ghostty-vt)</label></li>
+<li><label><input type="checkbox" />more?</label></li>
+</ul></li>
+<li><label><input type="checkbox" checked="" />Test the set of escape sequences we emit</label></li>
+<li><label><input type="checkbox" checked="" />Regression testing for str output and image output of examples (See <code>notes/closed/example-snapshot-tests.md</code>).</label></li>
+</ul>
+<p>Support non-24-bit-colour modes:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" />Reduced-colour modes (See <code>pages/compatibility.md</code>.)</label></li>
+<li><label><input type="checkbox" />Colormaps that are legible in a reduced-colour mode, since a continuous map quantised to 256 colours bands badly.</label></li>
+</ul>
+<p>Advanced glyphs and fonts:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" />Fallback for terminals whose font lacks braille.</label></li>
+<li><label><input type="checkbox" />Opt-in octants (Symbols for Legacy Computing Supplement, U+1CC00–U+1CEBF, new in Unicode 16.0) as an alternative to braille.</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />Instructions for installing or patching a font that has them.</label></li>
 </ul></li>
 </ul>
 <p>More examples:</p>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Something to show bar/column plots and histograms.</label></li>
 <li><label><input type="checkbox" checked="" />Game of life as a demonstration of differential rendering.</label></li>
-<li><label><input type="checkbox" checked="" />The Amiga Boing Ball, as a demonstration of animations as values: the frames are computed as one array and played, rather than printed in a loop, and it spins by palette cycling as the original did.</label></li>
+<li><label><input type="checkbox" checked="" />Amiga Boing Ball as a demonstration of animations as values.</label></li>
 <li><label><input type="checkbox" />Webcam with ffmpeg</label></li>
 </ul>
 <p>Future design directions.</p>

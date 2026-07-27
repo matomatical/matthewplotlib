@@ -137,6 +137,7 @@ These are the behaviours the library counts on.
   xterm's own cursor-up capability as `cuu1=\E[A` — and every curses program
   relies on it. It never writes a count of zero, which would mean one and not
   none.
+
 * **Carriage return cancels a deferred wrap.** After a glyph lands in the last
   column, terminals do not move the cursor past the edge. They leave it on the
   margin and set a flag — the Last Column Flag — so that the wrap happens when
@@ -146,45 +147,47 @@ These are the behaviours the library counts on.
   This is the one behaviour on this page where the disagreements are documented
   and substantial. [wraptest](https://github.com/mattiase/wraptest) is a test
   suite for exactly this, and its finding is blunt: *no emulator tested so far
-  matches the specification* (STD-070). The axes it probes are
+  matches the specification* (STD-070).[^wraptest]
 
-  * whether the terminal defers the wrap at all, or wraps immediately;
-  * which operations clear the flag. STD-070 says cursor movement (`CUU`,
-    `CUD`, `CUF`, `CUB`), cursor positioning (`CUP`, `HVP`), the control
-    characters `BS`, `HT`, `CR` and `LF`, and the erase, delete and insert
-    operations (`ECH`, `DCH`, `ICH`) all should. In practice which ones
-    actually do varies;
-  * what column the terminal reports while the flag is set. tmux reports the
-    width rather than width − 1 — pinned by
-    `test_wrap_is_deferred_at_the_right_margin` — and a model that reports
-    width − 1 computes every subsequent relative move one column off.
+  Rather than betting on standards that are widely dismissed, we rely on
+  carriage return, which see seems to be the most robust and widely-used idiom
+  for clearing the flag and returning to a known position. Note that this is
+  the mechanism often used by live-updating terminal progress bars, for
+  example.
 
-  Even the hardware disagrees: wraptest reports that the VT100 diverges from
-  STD-070 considerably, the VT220 follows it to the letter, and the VT510
-  differs again; among emulators only recent xterm is described as faithful.
-
-  So the library's position is not that carriage return is specified to clear
-  the flag where other operations are not — the specification lists a dozen
-  operations that clear it, and no emulator implements the list faithfully.
-  It is that a specification nobody matches is not something to reason from,
-  and `CR` at the right margin is the single most exercised path in any
-  terminal, because it is what every progress bar and every `\r`-terminated
-  line in forty years of software does. An operation that common is where
-  implementations are least likely to be wrong. That is a bet on ubiquity
-  rather than on standards, and it is deliberately the more conservative bet.
 * **Cursor movement clamps; it does not scroll.** Cursor-down at the bottom row
   stays on the bottom row. This is why a plot that grows taller is extended with
   newlines rather than cursor movement — a newline at the bottom scrolls, which
   is what is wanted there.
+
 * **Blanking paints the current background.** On terminals with
   background-colour erase, an erase fills with the active background rather than
   the default; a written space does so everywhere. Rather than depend on which,
   the library resets the colour to default before it blanks anything, so both
   behaviours produce the same screen.
+
 * **`print` adds the newline.** Every string the library returns is shaped for a
   plain `print` and ends one row short, expecting the newline `print` appends.
   On a tty the line discipline turns that into carriage-return plus line-feed,
   which is what returns the cursor to column 0.
+
+[^wraptest]:
+    The axes wraptest probes are:
+
+    * whether the terminal defers the wrap at all, or wraps immediately;
+    * which operations clear the flag. STD-070 says cursor movement (`CUU`,
+      `CUD`, `CUF`, `CUB`), cursor positioning (`CUP`, `HVP`), the control
+      characters `BS`, `HT`, `CR` and `LF`, and the erase, delete and insert
+      operations (`ECH`, `DCH`, `ICH`) all should. In practice which ones
+      actually do varies;
+    * what column the terminal reports while the flag is set. tmux reports the
+      width rather than width − 1 — pinned by
+      `test_wrap_is_deferred_at_the_right_margin` — and a model that reports
+      width − 1 computes every subsequent relative move one column off.
+
+    Even the hardware disagrees: wraptest reports that the VT100 diverges from
+    STD-070 considerably, the VT220 follows it to the letter, and the VT510
+    differs again; among emulators only recent xterm is described as faithful.
 
 Three things we don't use, since terminals genuinely diverge in how they are
 handled:

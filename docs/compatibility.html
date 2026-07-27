@@ -289,14 +289,8 @@
 <ul>
 <li><p><strong>An omitted count means one.</strong> The library writes <code>ESC [ B</code> where the distance is always one row. This is the standard default — terminfo records xterm’s own cursor-up capability as <code>cuu1=\E[A</code> — and every curses program relies on it. It never writes a count of zero, which would mean one and not none.</p></li>
 <li><p><strong>Carriage return cancels a deferred wrap.</strong> After a glyph lands in the last column, terminals do not move the cursor past the edge. They leave it on the margin and set a flag — the Last Column Flag — so that the wrap happens when the <em>next</em> printable character arrives. The library stops trusting its column arithmetic at that point and issues a carriage return before counting again.</p>
-<p>This is the one behaviour on this page where the disagreements are documented and substantial. <a href="https://github.com/mattiase/wraptest">wraptest</a> is a test suite for exactly this, and its finding is blunt: <em>no emulator tested so far matches the specification</em> (STD-070). The axes it probes are</p>
-<ul>
-<li>whether the terminal defers the wrap at all, or wraps immediately;</li>
-<li>which operations clear the flag. STD-070 says cursor movement (<code>CUU</code>, <code>CUD</code>, <code>CUF</code>, <code>CUB</code>), cursor positioning (<code>CUP</code>, <code>HVP</code>), the control characters <code>BS</code>, <code>HT</code>, <code>CR</code> and <code>LF</code>, and the erase, delete and insert operations (<code>ECH</code>, <code>DCH</code>, <code>ICH</code>) all should. In practice which ones actually do varies;</li>
-<li>what column the terminal reports while the flag is set. tmux reports the width rather than width − 1 — pinned by <code>test_wrap_is_deferred_at_the_right_margin</code> — and a model that reports width − 1 computes every subsequent relative move one column off.</li>
-</ul>
-<p>Even the hardware disagrees: wraptest reports that the VT100 diverges from STD-070 considerably, the VT220 follows it to the letter, and the VT510 differs again; among emulators only recent xterm is described as faithful.</p>
-<p>So the library’s position is not that carriage return is specified to clear the flag where other operations are not — the specification lists a dozen operations that clear it, and no emulator implements the list faithfully. It is that a specification nobody matches is not something to reason from, and <code>CR</code> at the right margin is the single most exercised path in any terminal, because it is what every progress bar and every <code>\r</code>-terminated line in forty years of software does. An operation that common is where implementations are least likely to be wrong. That is a bet on ubiquity rather than on standards, and it is deliberately the more conservative bet.</p></li>
+<p>This is the one behaviour on this page where the disagreements are documented and substantial. <a href="https://github.com/mattiase/wraptest">wraptest</a> is a test suite for exactly this, and its finding is blunt: <em>no emulator tested so far matches the specification</em> (STD-070).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Rather than betting on standards that are widely dismissed, we rely on carriage return, which see seems to be the most robust and widely-used idiom for clearing the flag and returning to a known position. Note that this is the mechanism often used by live-updating terminal progress bars, for example.</p></li>
 <li><p><strong>Cursor movement clamps; it does not scroll.</strong> Cursor-down at the bottom row stays on the bottom row. This is why a plot that grows taller is extended with newlines rather than cursor movement — a newline at the bottom scrolls, which is what is wanted there.</p></li>
 <li><p><strong>Blanking paints the current background.</strong> On terminals with background-colour erase, an erase fills with the active background rather than the default; a written space does so everywhere. Rather than depend on which, the library resets the colour to default before it blanks anything, so both behaviours produce the same screen.</p></li>
 <li><p><strong><code>print</code> adds the newline.</strong> Every string the library returns is shaped for a plain <code>print</code> and ends one row short, expecting the newline <code>print</code> appends. On a tty the line discipline turns that into carriage-return plus line-feed, which is what returns the cursor to column 0.</p></li>
@@ -366,6 +360,18 @@
 <pre class="console"><code>python examples/terminal_test.py</code></pre>
 <p>It measures your terminal’s width and draws to it, so that stage 4 puts a plot against the right margin — the deferred-wrap case above. That is the one stage testing something your terminal does not already do constantly, so it is the one to watch. (If it cannot measure the width, because output is redirected somewhere that is not a terminal, it says so and stage 4 tests nothing.)</p>
 <p>If a stage misbehaves, please open an issue saying which one, along with your terminal, its version, and <code>echo $TERM</code>.</p>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>The axes wraptest probes are:</p>
+<ul>
+<li>whether the terminal defers the wrap at all, or wraps immediately;</li>
+<li>which operations clear the flag. STD-070 says cursor movement (<code>CUU</code>, <code>CUD</code>, <code>CUF</code>, <code>CUB</code>), cursor positioning (<code>CUP</code>, <code>HVP</code>), the control characters <code>BS</code>, <code>HT</code>, <code>CR</code> and <code>LF</code>, and the erase, delete and insert operations (<code>ECH</code>, <code>DCH</code>, <code>ICH</code>) all should. In practice which ones actually do varies;</li>
+<li>what column the terminal reports while the flag is set. tmux reports the width rather than width − 1 — pinned by <code>test_wrap_is_deferred_at_the_right_margin</code> — and a model that reports width − 1 computes every subsequent relative move one column off.</li>
+</ul>
+<p>Even the hardware disagrees: wraptest reports that the VT100 diverges from STD-070 considerably, the VT220 follows it to the letter, and the VT510 differs again; among emulators only recent xterm is described as faithful.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
         </div>
     </main>
     <script>

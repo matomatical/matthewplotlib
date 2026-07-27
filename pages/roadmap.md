@@ -44,12 +44,6 @@ Specifying colors:
 * [ ] Consistent API for color specification.
 * [ ] Configurable colour scales and normalisation.
 * [ ] Color bars, vertical or horizontal.
-* [ ] An opt-in reduced-colour mode, chosen by the caller rather than sniffed
-  from the terminal, so that the fallback on a terminal without 24-bit colour
-  is ours to control rather than the terminal's to guess. Also saves bytes.
-  See `pages/compatibility.md`.
-  * [ ] Colormaps that are legible in a reduced-colour mode, since a continuous
-    map quantised to 256 colours bands badly.
 
 Rendering:
 
@@ -67,18 +61,7 @@ Testing:
 
 * [x] Unit tests for core modules (colors, colormaps, data, core).
 * [x] Integration tests (all examples run).
-* [x] Adopt a more well-tested virtual terminal for testing ANSI control codes:
-  drive a real terminal (tmux) and retire the hand-written emulator in the
-  tests. See `notes/terminal-test-backend.md`.
-* [x] Audit the escape sequences we emit, preferring ones that do not vary
-  between terminals over testing that they did not. Retired `CHA`, `CNL` and
-  `ECH`, leaving a VT100-only vocabulary apart from the SGR colours, and pinned
-  it with `TestEmittedVocabulary`. See `notes/closed/escape-vocabulary.md`.
-* [x] Snapshot testing for str output and image output regression detection:
-  every example is replayed into a real terminal print by print and compared
-  against a golden, cell by cell, along with the byte cost of each print and a
-  digest of the image it saved. See `notes/closed/example-snapshot-tests.md`.
-
+  
 Documentation:
 
 * [x] Minimal docstrings for everything user-facing.
@@ -170,18 +153,6 @@ Advanced furnishings:
 * [ ] Dashboard meters: circular, vertical and ticking-number variants of
   `progress`, and scrolling text marquees.
 
-Glyphs and fonts:
-
-* [ ] A fallback for terminals whose font lacks braille, which is the densest
-  block the library draws with and the one most likely to be missing. See
-  `pages/compatibility.md`.
-* [ ] Opt-in octants (Symbols for Legacy Computing Supplement, U+1CC00–U+1CEBF,
-  new in Unicode 16.0) as an alternative to braille. Octants give the same 2 by
-  4 resolution per cell as braille dots but as solid blocks, so they tile
-  without the dot-matrix look. Newer than braille and so less widely present in
-  fonts, hence opt-in, and worth shipping with instructions for installing or
-  patching a font that has them.
-
 Advanced rendering:
 
 * [x] Export animations to gifs, at the requested or the achieved frame rate.
@@ -196,13 +167,12 @@ Backend improvements:
 * [x] Vectorised bitmap rendering.
 * [x] Intelligent ANSI rendering (only include necessary control codes and
   resets, e.g., if several characters in a row use the same colours).
-* [x] Faster animated plot redraws (e.g., differential rendering with shortcut
-  `-`).
-* [ ] Clean up backend code e.g. using JAX PyTrees and vectorisation.
-* [ ] A 3-D `CharArray` (`codes[T,H,W]`), so animations vectorise the way
-  plots do rather than being a tuple of them. See `notes/animations.md`.
+* [x] Faster animated plot redraws: differential rendering with shortcut `-`.
 * [ ] Automatically optimise saved gifs (lossless compression). See
   `notes/gif-size.md`.
+* [ ] A 3-D `CharArray` (`codes[T,H,W]`), so animations vectorise the way
+  plots do rather than being a tuple of them. See `notes/animations.md`.
+* [ ] Clean up backend code e.g. using JAX PyTrees and vectorisation.
 
 More elaborate documentation:
 
@@ -212,27 +182,39 @@ More elaborate documentation:
 * [x] Documentation search.
 * [ ] Tutorials and recipes.
 * [ ] Freeze documentation with each version.
-* [x] Terminal support matrix: the escape sequences and behaviours the library
-  relies on, against the terminals people actually use. Tells a reader whether
-  their terminal will work, and doubles as the specification of what the
-  library is allowed to emit. Published as `pages/compatibility.md`; the
-  terminal column is honest that only tmux is under test.
-  * [ ] Automate a second terminal, so that tmux's behaviour stops being the de
-    facto specification by default. `zmx` is the cheapest second opinion and is
-    already installed: it is a session-persistence layer over ghostty's VT
-    engine, an implementation wholly independent of tmux's, and
-    `zmx history --vt` reads a session's screen back with colour intact, which
-    is the capability the harness needs. Spot-checked by hand already; see the
-    terminals table in `pages/compatibility.md`. `Xvfb` plus the installed
-    `xterm` remains the reference VT if a real terminal is wanted too.
+* [x] Terminal support matrix / compatibility docs
+
+Advanced testing:
+
+* [x] Tests that drive a virtual terminal for testing ANSI control codes (see
+  `notes/terminal-test-backend.md`).
+  * [x] hand-written emulator (retired)
+  * [x] tmux
+* [ ] More virtual terminal test backends
+  * [ ] zmx (backed by ghostty-vt)
+  * [ ] more?
+* [x] Test the set of escape sequences we emit
+* [x] Regression testing for str output and image output of examples (See
+  `notes/closed/example-snapshot-tests.md`).
+
+Support non-24-bit-colour modes:
+
+* [ ] Reduced-colour modes (See `pages/compatibility.md`.)
+* [ ] Colormaps that are legible in a reduced-colour mode, since a continuous
+  map quantised to 256 colours bands badly.
+
+Advanced glyphs and fonts:
+
+* [ ] Fallback for terminals whose font lacks braille.
+* [ ] Opt-in octants (Symbols for Legacy Computing Supplement, U+1CC00–U+1CEBF,
+  new in Unicode 16.0) as an alternative to braille.
+  * [ ] Instructions for installing or patching a font that has them.
 
 More examples:
 
 * [x] Something to show bar/column plots and histograms.
 * [x] Game of life as a demonstration of differential rendering.
-* [x] The Amiga Boing Ball, as a demonstration of animations as values: the
-  frames are computed as one array and played, rather than printed in a loop,
-  and it spins by palette cycling as the original did.
+* [x] Amiga Boing Ball as a demonstration of animations as values.
 * [ ] Webcam with ffmpeg
 
 Future design directions.
