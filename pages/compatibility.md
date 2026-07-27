@@ -253,6 +253,10 @@ for i in range(60):
 print()
 ```
 
+(`mp.animate` is the comfortable way to write that loop; it is spelled out here
+because the raw form is exactly what goes down the wire, and it needs nothing
+but the library.)
+
 It should animate in place, with no drifting, no leftover columns to the right
 as it narrows, and no coloured smear. If it misbehaves, please open an issue
 with your terminal, its version, and `echo $TERM` — and if the plot drifts or

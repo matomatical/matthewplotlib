@@ -104,9 +104,10 @@ So:
 
 ## The vocabulary as a test
 
-`TestEmittedVocabulary` in `tests/test_core.py` renders thirteen scenarios --
-every path that emits anything, including each resize direction and both
-`clearstr` cases -- and asserts that every sequence in them is one of six final
+`TestEmittedVocabulary` in `tests/test_core.py` renders fourteen scenarios --
+every path that emits anything, including each resize direction, both
+`clearstr` cases, and a whole `mp.animate` session with a logged line in the
+middle of it -- and asserts that every sequence in them is one of six final
 bytes. It also insists that every escape in the string is a plain CSI, so an
 `OSC` or a two-byte escape cannot slip past a regex written for the sequences we
 know about.
@@ -131,9 +132,12 @@ off-by-one here.
 * **Erase granularity.** `EL 2` erases a whole terminal line, while the trailing
   path erases only the plot's own columns, so the two disagree about whether the
   library owns the columns beside a plot. See `notes/erase-granularity.md`.
-* **Cursor hiding.** The animation context manager
-  (`notes/animation-context-manager.md`) will add `CSI ? 25 l` / `h`, a DEC
-  private mode rather than ECMA-48. It is the most widely implemented private
-  mode there is and failure is benign -- a visible cursor -- but it will be the
-  first non-VT100 sequence added since this audit, and it needs a row on the
-  compatibility page and an entry in `ALLOWED_FINALS`.
+* **Cursor hiding.** Predicted here, and it did not happen. This note was
+  written expecting the animation context manager to add `CSI ? 25 l` / `h`;
+  `mp.animate` landed in parallel (`notes/animations.md`) and emits no escape
+  sequence of its own, routing every frame through `updatestr` and `print`. So
+  the vocabulary survived a whole new feature without widening, which is the
+  best evidence so far that it is drawn in the right place. If cursor hiding is
+  ever added it is a DEC private mode rather than ECMA-48 -- the most widely
+  implemented one there is, and failure is benign, a visible cursor -- and it
+  would need a row on the compatibility page and an entry in `ALLOWED_FINALS`.

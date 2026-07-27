@@ -18,7 +18,13 @@ def main(
     height: int = 20,
     save: str | None = None,
 ):
-    """Rotating 3D teapot with orbiting camera."""
+    """Rotating 3D teapot with orbiting camera.
+
+    A plain animation loop: subtract the previous frame, print, sleep. This is
+    all animating in a terminal requires. `mp.animate` would keep the previous
+    frame and the clock instead -- see `quickstart3.py` -- but it is an offer,
+    not a prerequisite.
+    """
     prev = None
     frames = [] if save else None
     frame = 0
@@ -45,7 +51,7 @@ def main(
         time.sleep(1/fps)
 
     if save and frames:
-        mp.save_animation(frames, save, bgcolor="black", fps=fps)
+        mp.tstack(*frames, fps=fps).savegif(save, bgcolor="black")
 
    
 

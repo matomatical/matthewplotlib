@@ -187,7 +187,7 @@ def main(
         time.sleep(max(0, deadline - time.perf_counter()))
 
     if save and frames:
-        mp.save_animation(frames, save, bgcolor="black", fps=fps)
+        mp.tstack(*frames, fps=fps).savegif(save, bgcolor="black")
 
 
 if __name__ == "__main__":

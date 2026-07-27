@@ -58,6 +58,22 @@ Example
 <tbody>
 <tr>
 <td align="center">
+<img src="images/boing.gif">
+</td>
+<td>
+<p>
+<strong>Boing</strong>
+</p>
+<p>
+The Amiga Boing Ball, 1984, animated the way the Amiga animated it: the ball is drawn once as colour <em>indices</em> and spins because the palette is rewritten between frames, while the bounce moves a rigid sprite to whole-pixel positions. Two lookups, so the whole animation is one array with a time axis — built with <code>mp.animation</code> and played as a value rather than a loop. Run it and the palette driving the spin is shown cycling underneath; the gif here is the ball on its own.
+</p>
+<p>
+<a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/boing.py">Source</a>
+</p>
+</td>
+</tr>
+<tr>
+<td align="center">
 <img src="images/calendar_heatmap.png">
 </td>
 <td>
@@ -257,10 +273,26 @@ Coloured cosine waves with phase offsets.
 <strong>Quickstart 2</strong>
 </p>
 <p>
-Animated cosine wave with shifting phase and amplitude.
+Animated cosine wave with shifting phase and amplitude, as a loop of <code>print(plot - prev)</code>.
 </p>
 <p>
 <a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart2.py">Source</a>
+</p>
+</td>
+</tr>
+<tr>
+<td align="center">
+<img src="images/quickstart3.gif">
+</td>
+<td>
+<p>
+<strong>Quickstart 3</strong>
+</p>
+<p>
+The same animation with the loop handed to <code>mp.animate</code>, which keeps the previous frame and the frame clock.
+</p>
+<p>
+<a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart3.py">Source</a>
 </p>
 </td>
 </tr>

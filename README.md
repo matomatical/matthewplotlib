@@ -19,7 +19,7 @@ functionality it does have delightful.
   </td>
   <td width="40%">
     <img src="images/teapot.gif" width="100%">
-    <img src="images/mandelbrot.gif" width="50%">
+    <img src="images/mandelbrot.gif" width="50%"><img src="images/boing.gif" width="50%">
     <img src="images/life.gif" width="100%">
   </td>
   <td width="30%">
@@ -33,13 +33,15 @@ Key features:
 * Colourful unicode-based rendering of scatter plots, small images, heatmaps,
   bar charts, histograms, 3d plots, and more.
 * Rendering plots to the terminal with `print(plot)`. No GUI windows to manage!
-* Animation is a loop of `print(plot - prev)`: subtracting the previous frame
-  repaints only the cells that changed.
 * Plots are just expressions. Compose complex plots with horizontal (`+`) and
   vertical (`/`) stacking operations, as in
     `subplots = (plotA + plotB) / (plotC + plotD)`.
 * If you absolutely need plots outside the terminal, you can render them to PNG
   using a pixel font.
+* In-place **animated plots** can be as simple as a loop of
+  `print(new_plot - prev_plot)`. Or, we offer a context manager with an
+  `.update(new_plot)` method and `.print()` for pass-through printing.
+* Animations support recording and saving to GIF, again using pixel fonts.
 
 Rough edges:
 

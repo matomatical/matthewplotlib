@@ -2,7 +2,6 @@
 Train a teacher--student linear regression model with gradient descent.
 """
 
-import time
 import tyro
 import matthewplotlib as mp
 from jaxtyping import Float, Array # pip install jaxtyping
@@ -14,6 +13,7 @@ import jax.numpy as jnp
 def main(
     num_steps: int = 400,
     learning_rate: float = 0.01,
+    log_every: int = 100,
     save: str | None = None,
 ):
     # initialise teacher
@@ -25,23 +25,25 @@ def main(
     # initialise input data
     x = jnp.linspace(-4, 4, 80)
 
-    # training loop
-    prev = None
-    plot = vis(w_student, w_teacher, x, 0)
-    plots = [plot] if save else None
-    print(plot - prev)
-    prev = plot
-    for t in range(num_steps):
-        g_student = jax.grad(loss)(w_student, w_teacher, x)
-        w_student = w_student - learning_rate * g_student
-        plot = vis(w_student, w_teacher, x, t+1)
-        print(plot - prev)
-        prev = plot
-        if plots is not None: plots.append(plot)
-        time.sleep(0.02)
+    # training loop. `anim.print` puts a line above the plot rather than through
+    # it, which is the only way to log from inside an animation.
+    animation = mp.animate(
+        fps=50,
+        record=save is not None,
+        stop_on_interrupt=True,
+    )
+    with animation as anim:
+        anim.update(vis(w_student, w_teacher, x, 0))
+        for t in range(num_steps):
+            g_student = jax.grad(loss)(w_student, w_teacher, x)
+            w_student = w_student - learning_rate * g_student
+            anim.update(vis(w_student, w_teacher, x, t+1))
+            if log_every and (t + 1) % log_every == 0:
+                l = loss(w_student, w_teacher, x)
+                anim.print(f"step {t+1:>4d}  loss {l:.5f}")
 
-    if save and plots:
-        mp.save_animation(plots, save, bgcolor="black", fps=50)
+    if save:
+        anim.frames.savegif(save, bgcolor="black")
 
 
 def forward(

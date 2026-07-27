@@ -1,7 +1,7 @@
 # Shrinking animation gifs
 
 Measured 2026-07-25 (Matthew + Claude) getting `images/life.gif` down to a size
-fit for the README. Applies to any gif `save_animation` produces, since they
+fit for the README. Applies to any gif `tstack.savegif` produces, since they
 all share the same character: a handful of flat, maximally distinct colours and
 no gradients.
 
@@ -62,7 +62,7 @@ actually present in the animation before decimating.
 
 ## Library follow-up
 
-`save_animation` calls `Image.save(...)` without `optimize=True`, so every gif
+`tstack.savegif` calls `Image.save(...)` without `optimize=True`, so every gif
 the library produces is ~13% larger than it needs to be, for users who do not
 have gifsicle. Worth passing it, together with converting frames to a single
 shared palette first, since Pillow only does inter-frame delta encoding when

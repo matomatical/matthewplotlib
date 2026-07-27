@@ -28,7 +28,8 @@ Basic plot arrangement:
 * [x] Horizontal and vertical stacking.
 * [x] Naive layering plots on top of each other.
 * [x] Automatically wrapping plots into a grid.
-* [ ] Finalise operator assignment.
+* [ ] Finalise operator assignment, including an operator for temporal
+  stacking (`tstack`), which the pre-library sketch spelled `|`.
 
 Styling plots with colors:
 
@@ -124,12 +125,25 @@ More plot types:
 
 Advanced plot arrangement:
 
-* [ ] Animation context manager, owning the printing and cursor state. See
-  `notes/animation-context-manager.md`.
-  * [ ] Opt-in frame timing.
-  * [ ] Opt-in frame collection.
-  * [ ] A way to print from inside a running animation without corrupting it.
-* [ ] Temporal stacking (`tstack`): animations as first-class values.
+* [x] Animation context manager (`animate`), owning the printing state. See
+  `notes/animations.md`.
+  * [x] Opt-in frame timing, drift corrected, with the frame's own render and
+    write time inside its budget.
+  * [x] Opt-in frame collection, reporting the achieved frame rate.
+  * [x] A way to print from inside a running animation without corrupting it,
+    as a method (`anim.print`) and as a stream (`anim.out`).
+* [x] Temporal stacking (`tstack`): animations as first-class values.
+  * [x] Indexing, slicing and mapping over frames.
+  * [x] Padding frames to a common size, so an animation cannot jitter.
+  * [x] Building one straight from an array with a time axis (`animation`).
+  * [ ] An operator for temporal stacking. `|` is vstack's; `>>` reads as
+    "then". Part of "finalise operator assignment" above.
+  * [ ] Per-frame durations as the primitive instead of a single frame rate, so
+    that concatenating animations of different rates keeps each part at its own
+    speed, and a gif can be written with non-uniform frame delays throughout
+    rather than only from a recording.
+* [ ] Mapping over the other composites, `hstack` and friends. See
+  `notes/mapping-over-composites.md`.
 * [ ] Indexing and slicing of plots.
 * [ ] Crop plot composition primitive. See `notes/terminal-aware-printing.md`.
   * [ ] By default, clip plots to terminal width and (almost) height, to enable
@@ -147,7 +161,7 @@ Advanced furnishings:
 
 Advanced rendering:
 
-* [x] Export animations to gifs.
+* [x] Export animations to gifs, at the requested or the achieved frame rate.
 * [ ] Render plots to SVG (keep console aesthetic).
 * [ ] Render plots to PDF (keep console aesthetic).
 * [ ] Render plots to TikZ/pgfplots source.
@@ -162,6 +176,8 @@ Backend improvements:
 * [x] Faster animated plot redraws (e.g., differential rendering with shortcut
   `-`).
 * [ ] Clean up backend code e.g. using JAX PyTrees and vectorisation.
+* [ ] A 3-D `CharArray` (`codes[T,H,W]`), so animations vectorise the way
+  plots do rather than being a tuple of them. See `notes/animations.md`.
 * [ ] Automatically optimise saved gifs (lossless compression). See
   `notes/gif-size.md`.
 
@@ -186,6 +202,9 @@ More examples:
 
 * [x] Something to show bar/column plots and histograms.
 * [x] Game of life as a demonstration of differential rendering.
+* [x] The Amiga Boing Ball, as a demonstration of animations as values: the
+  frames are computed as one array and played, rather than printed in a loop,
+  and it spins by palette cycling as the original did.
 * [ ] Webcam with ffmpeg
 
 Future design directions.

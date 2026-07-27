@@ -1,4 +1,6 @@
+import io
 import re
+import contextlib
 
 import numpy as np
 import pytest
@@ -705,6 +707,29 @@ def _sgr_is_allowed(params: str) -> bool:
     return True
 
 
+def _animation_session() -> str:
+    """Everything one `mp.animate` session writes to its stream.
+
+    `matthewplotlib.animations` drives a terminal too, so the vocabulary claim
+    has to reach it or it is a claim about half the library. It emits no
+    sequence of its own -- frames go through `updatestr`, and `anim.print` goes
+    through `clearstr` and back -- and this is what says so, rather than a
+    reader having to check.
+
+    The session captures `sys.stdout` on the way in, so redirecting it around
+    the block is enough to collect the lot.
+    """
+    rng = np.random.default_rng(12)
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        with mp.animate() as anim:
+            anim.update(mp.image(rng.random((6, 8))))     # seed frame
+            anim.update(mp.image(rng.random((6, 8))))     # same size: a diff
+            anim.print("a line above the animation")      # clear, log, redraw
+            anim.update(mp.image(rng.random((4, 10))))    # and a resize
+    return buffer.getvalue()
+
+
 def _vocabulary_scenarios() -> list[tuple[str, str]]:
     """One emitted string per path through the renderer that produces any."""
     rng = np.random.default_rng(11)
@@ -737,6 +762,7 @@ def _vocabulary_scenarios() -> list[tuple[str, str]]:
         ("diff, wider and taller", chars(7, 9).to_ansi_diff_str(base)),
         ("clearstr", mp.blank(height=3, width=4).clearstr()),
         ("clearstr, empty plot", mp.blank(height=0, width=0).clearstr()),
+        ("animate session", _animation_session()),
     ]
 
 

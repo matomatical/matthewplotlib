@@ -6,25 +6,54 @@ In development
 
 New:
 
+* `mp.tstack(*plots)`: animations as values. The third stacking operation,
+  arranging plots in time rather than across the screen. Supports `len`,
+  indexing and slicing (`a[0]`, `a[10:20]`, `a[::-1]`), `map` for applying a
+  combinator to every frame, `play` for showing it in the terminal, and
+  `savegif`. Frames are padded to a common size, so an animation cannot change
+  shape while it plays.
+* `mp.animation(array)`: a `tstack` straight from an array with a time axis,
+  taking what `mp.image` takes with a leading frame index.
+* `mp.animate()`: a context manager that runs an animation loop.
+  `anim.update(plot)` writes one frame and returns the string it wrote.
+  Optionally caps the frame rate (`fps=`), keeps the frames (`record=True`,
+  readable as `anim.frames`), and ends quietly on Ctrl-C
+  (`stop_on_interrupt=True`). Reports the rate actually achieved as
+  `anim.achieved_fps`.
+* `anim.print(...)`: print a line above a running animation instead of through
+  it. Also available as a stream, `anim.out`, for `print(file=...)`,
+  `logging.StreamHandler`, or redirecting `sys.stdout` for the block.
+* `mp.tstack(...).savegif(f, fps="achieved")` encodes a recorded animation at
+  the frame rate it really ran at, rather than the one that was requested.
 * `life.py` example: Conway's Game of Life, demonstrating differential redraw.
+* `quickstart3.py` example: `quickstart2.py` with the animation loop handed to
+  `mp.animate`.
+* `boing.py` example: the Amiga Boing Ball, built with `mp.animation` from a
+  computed array of frames, spinning by palette cycling as the original did,
+  with the cycling palette shown underneath it.
 * A compatibility page (`pages/compatibility.md`): every escape sequence the
   library emits, the terminal behaviours it relies on, the glyph blocks it
   draws with, and which terminals are actually tested.
 
 Change:
 
+* `mp.save_animation(plots, filename, ...)` is retired in favour of
+  `mp.tstack(*plots).savegif(filename, ...)`.
+* `teacher_student.py` takes a `--log-every` argument, and logs its loss with
+  `anim.print`.
 * Animated redraws now speak only VT100, apart from the SGR colours. `CHA`
   (absolute column) became a carriage return plus a cursor forward, `CNL` (next
   line) a carriage return plus a cursor down, and `ECH` (erase character)
-  written spaces. The screens are identical -- across all nineteen example
-  snapshots only the byte counts moved -- and the point is `CHA`, whose old use
-  depended on it cancelling a deferred wrap, which is the thing terminals
-  disagree about most. A full repaint now costs less rather than more (-121
-  bytes per frame in `mandelbrot.py`); a sparse diff costs one byte more. See
-  `notes/closed/escape-vocabulary.md`.
+  written spaces. The screens are identical -- across every example snapshot
+  only the byte counts moved -- and the point is `CHA`, whose old use depended
+  on it cancelling a deferred wrap, which is the thing terminals disagree about
+  most. A full repaint now costs less rather than more; a sparse diff costs one
+  byte more. See `notes/closed/escape-vocabulary.md`.
 
 Fix:
 
+* `dashboard.py` no longer raises `NameError` when asked to save an unbounded
+  run.
 * `axes` no longer paints the `ylabel` down the plot's right-hand border when
   the y tick labels are narrower than `ypad + 1`. The tick gutter now widens to
   make room. An absent `ylabel` no longer erases that border either.
@@ -33,9 +62,10 @@ Fix:
 
 Dev:
 
-* `TestEmittedVocabulary` pins the set of escape sequences the renderer is
-  allowed to emit, over every path that emits any. It is the executable form of
-  the compatibility page, so the page cannot go quietly out of date.
+* `tests/test_exports.py` checks that everything `plots`, `colormaps` and
+  `animations` define is reachable as `mp.something`, deriving the expectation
+  from the modules rather than from a list, so adding a feature does not mean
+  editing a third file.
 * Add module docstrings for `core`, `colors` and `data`, so every module now
   introduces itself in the API reference.
 * Escape sequences are now tested against a real terminal (a tmux pane, see
@@ -50,6 +80,9 @@ Dev:
 * `life.py` seeds `np.random.seed` rather than `np.random.default_rng`, whose
   stream NumPy does not guarantee across releases. Its initial board, and
   `images/life.gif`, change accordingly.
+* `TestEmittedVocabulary` pins the set of escape sequences the renderer is
+  allowed to emit, over every path that emits any. It is the executable form of
+  the compatibility page, so the page cannot go quietly out of date.
 
 Version 0.4.0
 -------------

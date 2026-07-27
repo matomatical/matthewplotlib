@@ -10,6 +10,9 @@ The string-level claims about the same sequences, which need no terminal, are in
 `test_core.py`.
 """
 
+import io
+import contextlib
+
 import numpy as np
 import pytest
 
@@ -537,6 +540,176 @@ class TestAnimationLoop:
             rows.append(occupied(screen))
         assert all(r == rows[0] for r in rows), rows
         assert screen.scrolled == 0
+
+
+# # #
+# THE ANIMATION SESSION
+
+
+def _session(term, block) -> Screen:
+    """Run `block(anim)` inside an `mp.animate` session, on `term`.
+
+    The session writes with `print`, so its output is captured and then replayed
+    into the terminal one print at a time -- the same route
+    `tests/examples.py` takes, and for the same reason: it keeps the session
+    under test rather than a special-cased copy of it that writes somewhere else.
+    """
+    prints: list[str] = []
+    pending: list[str] = []
+
+    class Recorder(io.TextIOBase):
+        def write(self, s: str) -> int:
+            if s == "\n":
+                prints.append("".join(pending))
+                pending.clear()
+            else:
+                pending.append(s)
+            return len(s)
+
+    with contextlib.redirect_stdout(Recorder()):    # type: ignore[arg-type]
+        with mp.animate() as anim:
+            block(anim)
+    for payload in prints:
+        term.print(payload)
+    return term.screen()
+
+
+class TestAnimateSession:
+    def test_the_session_draws_what_the_bare_loop_draws(self):
+        """`anim.update(f)` must put exactly on screen what `print(f - prev)` does."""
+        rng = np.random.default_rng(21)
+        frames = [mp.image(rng.random((6, 9))) for _ in range(5)]
+        h, w = frames[0].height, frames[0].width
+
+        term = Terminal(h + 3, w + 2)
+        screen = _session(term, lambda anim: [anim.update(f) for f in frames])
+        got = screen.region(h, w)
+
+        ref = _screen_after(h + 3, w + 2, frames[-1].renderstr())
+        want = ref.region(h, w)
+        assert got == want, _difference(got, want)
+        assert screen.cursor == (h, 0)
+        assert screen.scrolled == 0
+
+    def test_a_printed_line_lands_above_the_plot(self):
+        """The message takes the plot's first row, and the plot moves down one."""
+        p = mp.border(mp.text("frame"))
+
+        term = Terminal(12, 30)
+        term.print("$ python examples/train.py")
+
+        def block(anim):
+            anim.update(p)
+            anim.print("step 100: loss 0.5")
+
+        screen = _session(term, block)
+
+        assert screen.line(0) == "$ python examples/train.py"
+        assert screen.line(1) == "step 100: loss 0.5"
+        # the plot, intact, one row lower than it started
+        ref = _screen_after(12, 30, p.renderstr())
+        got = tuple(row[:p.width] for row in screen.cells[2:2 + p.height])
+        want = ref.region(p.height, p.width)
+        assert got == want, _difference(got, want)
+        assert screen.cursor == (2 + p.height, 0)
+
+    def test_printed_lines_stack_up_above_the_plot(self):
+        """Each message pushes the plot down one row, with the log above it."""
+        p = mp.border(mp.text("frame"))
+
+        term = Terminal(14, 30)
+        term.print("$ prompt")
+
+        def block(anim):
+            anim.update(p)
+            for i in range(3):
+                anim.print(f"line {i}")
+
+        screen = _session(term, block)
+
+        assert screen.line(0) == "$ prompt"
+        assert [screen.line(r) for r in (1, 2, 3)] == ["line 0", "line 1", "line 2"]
+        ref = _screen_after(14, 30, p.renderstr())
+        got = tuple(row[:p.width] for row in screen.cells[4:4 + p.height])
+        want = ref.region(p.height, p.width)
+        assert got == want, _difference(got, want)
+
+    def test_the_next_frame_still_diffs_after_a_printed_line(self):
+        """Printing moves the plot down the screen, which must not break the diff.
+
+        `to_ansi_diff_str` states its cursor contract relative to the cursor, not
+        absolutely on the screen, so the frame on screen stays a valid
+        predecessor even though it is no longer where it was drawn.
+        """
+        a = mp.border(mp.text("frame A"))
+        b = mp.border(mp.text("frame B"))
+
+        term = Terminal(12, 30)
+        term.print("$ prompt")
+
+        def block(anim):
+            anim.update(a)
+            anim.print("a message")
+            anim.update(b)
+
+        screen = _session(term, block)
+
+        assert screen.line(1) == "a message"
+        ref = _screen_after(12, 30, b.renderstr())
+        got = tuple(row[:b.width] for row in screen.cells[2:2 + b.height])
+        want = ref.region(b.height, b.width)
+        assert got == want, _difference(got, want)
+
+    def test_printing_from_the_top_row_costs_one_extra_row(self):
+        """A plot drawn at the very top of the screen has nowhere to step above.
+
+        `clearstr` steps a row above the plot so the newline `print` appends
+        lands where the plot began. On row 0 that move clamps, so the message
+        takes row 1 and the plot lands two rows down rather than one. Documented
+        on `plot.clearstr`, and harmless: it happens once.
+        """
+        p = mp.border(mp.text("frame"))
+
+        term = Terminal(12, 30)
+
+        def block(anim):
+            anim.update(p)
+            anim.print("a message")
+
+        screen = _session(term, block)
+
+        assert screen.line(0) == ""
+        assert screen.line(1) == "a message"
+        ref = _screen_after(12, 30, p.renderstr())
+        got = tuple(row[:p.width] for row in screen.cells[2:2 + p.height])
+        want = ref.region(p.height, p.width)
+        assert got == want, _difference(got, want)
+
+    def test_printing_at_the_bottom_of_the_screen_scrolls_the_log_away(self):
+        """With no spare rows the message scrolls off the top, plot intact."""
+        p = mp.border(mp.text("frame"))
+        # exactly enough for the plot plus the newline print appends
+        term = Terminal(p.height + 1, 30)
+
+        def block(anim):
+            anim.update(p)
+            anim.print("this will scroll away")
+
+        screen = _session(term, block)
+
+        ref = _screen_after(p.height + 1, 30, p.renderstr())
+        got = screen.region(p.height, p.width)
+        want = ref.region(p.height, p.width)
+        assert got == want, _difference(got, want)
+        assert screen.scrolled > 0
+
+    def test_a_message_before_the_first_frame_is_an_ordinary_print(self):
+        term = Terminal(8, 30)
+
+        screen = _session(term, lambda anim: anim.print("nothing drawn yet"))
+
+        assert screen.line(0) == "nothing drawn yet"
+        assert screen.cursor == (1, 0)
 
 
 # # #

@@ -100,6 +100,8 @@ class Example:
 
 
 EXAMPLES: tuple[Example, ...] = (
+    Example("boing.py",                 27, 64, saves="gif",
+            args=("--num-frames", "8", "--no-loop")),
     Example("calendar_heatmap.py",      25, 64, saves="png"),
     Example("colormaps.py",             64, 72, saves="png"),
     Example("dashboard.py",             15, 56, saves="gif",
@@ -117,9 +119,15 @@ EXAMPLES: tuple[Example, ...] = (
     Example("quickstart1.py",           14, 81, saves="png"),
     Example("quickstart2.py",           14, 81, saves="gif",
             args=("--num-frames", "5")),
+    Example("quickstart3.py",           14, 81, saves="gif",
+            args=("--num-frames", "5")),
     Example("scatter.py",               24, 46, saves="png"),
-    Example("teacher_student.py",       24, 46, saves="gif",
-            args=("--num-steps", "5")),
+    # --log-every is turned down so that a five step run still exercises
+    # `anim.print`. The pane is three rows taller than the 23 the plot needs:
+    # one for each logged line, and one for the row `clearstr` cannot step onto
+    # the first time, when the plot is still at the top of the screen.
+    Example("teacher_student.py",       27, 46, saves="gif",
+            args=("--num-steps", "5", "--log-every", "2")),
     Example("teapot.py",                21, 80, saves="gif",
             args=("--num-frames", "5")),
     Example("time_series_histogram.py", 40, 80, saves="png"),
