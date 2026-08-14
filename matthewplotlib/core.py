@@ -18,6 +18,9 @@ Drawing characters, each packing several data points into one character cell:
 
 * `unicode_braille_array`: Boolean matrices to braille characters, at 2 by 4
   dots per cell.
+* `rasterise_points`, `rasterise_segments`, and the `unicode_braille_points`
+  and `unicode_braille_segments` that draw with them: points or line segments,
+  given in dots, to a grid of dots or straight to braille characters.
 * `unicode_bar` and `unicode_col`: Values to horizontal or vertical bars, using
   partial block characters for eighth-of-a-cell resolution.
 * `unicode_image`: Images to half-block characters, at 1 by 2 pixels per cell.
@@ -838,28 +841,132 @@ def rasterise_segments(
     # the dots those samples fall in, and then the strokes around them
     dot = np.floor(points).astype(int)
     dot = (dot[:, np.newaxis, :] + offsets[np.newaxis, :, :]).reshape(-1, 2)
+
+    # accumulate coverage, and the colors to average over it
+    if color_starts is None or color_ends is None:
+        return accumulate_dots(dot, None, height=height, width=width)
+    colors = color_starts[segment] + t[:, np.newaxis] * (
+        color_ends[segment] - color_starts[segment]
+    )
+    return accumulate_dots(
+        dot,
+        np.repeat(colors, len(offsets), axis=0),
+        height=height,
+        width=width,
+    )
+
+
+def rasterise_points(
+    points: NDArray,                # float[n, 2]
+    height: int,
+    width: int,
+    colors: NDArray | None = None,  # uint8[n, 3]
+) -> tuple[
+    NDArray,                        # int[height, width]
+    NDArray | None,                 # uint8[height, width, 3]
+    NDArray | None,                 # float[height, width]
+]:
+    """
+    Mark the dots that a set of points falls in.
+
+    Coordinates are in dots and mean what they mean for `rasterise_segments`,
+    which also describes the three arrays this returns. Points that are not
+    fully specified are skipped, as is anything outside the grid.
+    """
+    points = np.asarray(points, dtype=float).reshape(-1, 2)
+    specified = np.isfinite(points).all(axis=1)
+    dot = np.floor(points[specified]).astype(int)
+    if colors is None:
+        return accumulate_dots(dot, None, height=height, width=width)
+    colors = np.asarray(colors, dtype=float).reshape(-1, 3)[specified]
+    return accumulate_dots(dot, colors, height=height, width=width)
+
+
+def accumulate_dots(
+    dot: NDArray,                   # int[n, 2]
+    colors: NDArray | None,         # float[n, 3]
+    height: int,
+    width: int,
+) -> tuple[
+    NDArray,                        # int[height, width]
+    NDArray | None,                 # uint8[height, width, 3]
+    NDArray | None,                 # float[height, width]
+]:
+    """
+    Count how many times each dot of a grid is covered, and average the colors
+    covering it.
+
+    Whatever falls outside the grid is dropped. The counts double as the weights
+    that mix the colors of one character cell together, so they come back a
+    second time as those weights, which is what `unicode_braille_array` takes.
+    """
     inside = (
         (dot[:, 0] >= 0) & (dot[:, 0] < height)
         & (dot[:, 1] >= 0) & (dot[:, 1] < width)
     )
-    flat = (dot[inside, 0] * width + dot[inside, 1])
-
-    # accumulate coverage, and the colors to average over it
+    flat = dot[inside, 0] * width + dot[inside, 1]
     dots = np.bincount(flat, minlength=height * width).reshape(height, width)
-    if color_starts is None or color_ends is None:
+    if colors is None:
         return dots, None, None
-    colors = color_starts[segment] + t[:, np.newaxis] * (
-        color_ends[segment] - color_starts[segment]
-    )
-    colors = np.repeat(colors, len(offsets), axis=0)[inside]
     total = np.stack([
-        np.bincount(flat, weights=colors[:, channel], minlength=height * width)
+        np.bincount(
+            flat,
+            weights=colors[inside, channel],
+            minlength=height * width,
+        )
         for channel in range(3)
     ], axis=1).reshape(height, width, 3)
     lit = dots > 0
     dotc = np.zeros((height, width, 3), dtype=np.uint8)
     dotc[lit] = total[lit] / dots[lit, np.newaxis]
     return dots, dotc, dots.astype(float)
+
+
+def unicode_braille_points(
+    points: NDArray,                        # float[n, 2]
+    height: int,
+    width: int,
+    colors: NDArray | None = None,          # uint8[n, 3]
+) -> CharArray: # Char[ceil(height/4), ceil(width/2)]
+    """
+    Draw a set of points as a grid of braille characters.
+
+    Coordinates are in dots, as for `rasterise_points`, which this draws with.
+    """
+    dots, dotc, dotw = rasterise_points(
+        points=points,
+        height=height,
+        width=width,
+        colors=colors,
+    )
+    return unicode_braille_array(dots=dots, dotc=dotc, dotw=dotw)
+
+
+def unicode_braille_segments(
+    starts: NDArray,                        # float[n, 2]
+    ends: NDArray,                          # float[n, 2]
+    height: int,
+    width: int,
+    start_colors: NDArray | None = None,    # uint8[n, 3]
+    end_colors: NDArray | None = None,      # uint8[n, 3]
+    thickness: float = 1.0,
+) -> CharArray: # Char[ceil(height/4), ceil(width/2)]
+    """
+    Draw line segments as a grid of braille characters.
+
+    Coordinates are in dots, as for `rasterise_segments`, which this draws with
+    and which documents what the arguments mean.
+    """
+    dots, dotc, dotw = rasterise_segments(
+        starts=starts,
+        ends=ends,
+        height=height,
+        width=width,
+        start_colors=start_colors,
+        end_colors=end_colors,
+        thickness=thickness,
+    )
+    return unicode_braille_array(dots=dots, dotc=dotc, dotw=dotw)
 
 
 # # #

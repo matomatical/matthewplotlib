@@ -1,19 +1,24 @@
 """
-Specifying individual colors.
+Specifying colors.
 
 Wherever a plot takes a color, it accepts any of several convenient spellings,
-and converts to a single internal representation.
+and converts to a single internal representation. Wherever it takes the colors
+of a whole series, it accepts either one of those or an array holding one per
+point.
 
 Types:
 
 * `Color`: The internal representation, an RGB triple of bytes.
 * `ColorLike`: Anything accepted in place of one---a named color, a hex string,
   or a triple of ints in 0 to 255 or floats in 0.0 to 1.0.
+* `ColorSpec`: Anything accepted for the colors of a series---one `ColorLike`
+  for all of it, or an array with a color per point.
 
 Conversion:
 
 * `parse_color`: Turn a `ColorLike` into a `Color`. See this function for the
   full list of accepted formats.
+* `parse_colors`: Turn a `ColorSpec` into one `Color` for each of n points.
 * `NAMED_COLORS`: The recognised color names.
 
 For mapping data to colors, rather than naming one color, see
@@ -22,9 +27,11 @@ For mapping data to colors, rather than naming one color, see
 
 from __future__ import annotations
 
+from typing import cast
+
 import numpy as np
 
-from numpy.typing import NDArray
+from numpy.typing import ArrayLike, NDArray
 
 
 # # # 
@@ -40,6 +47,13 @@ type ColorLike = (
     | tuple[int, int, int]
     | tuple[float, float, float]
     | Color
+)
+
+
+type ColorSpec = (
+    None
+    | ColorLike
+    | ArrayLike # float[n, 3] (0 to 1) or uint8[n, 3] (0 to 255)
 )
 
 
@@ -95,12 +109,57 @@ def parse_color(color: ColorLike | None) -> Color | None:
     elif isinstance(color, (np.ndarray, tuple, list)):
         color_ = np.asarray(color)
         if color_.shape == (3,):
-            if np.issubdtype(color_.dtype, np.floating):
-                return (255*np.clip(color_, 0., 1.)).astype(np.uint8)
-            if np.issubdtype(color_.dtype, np.integer):
-                return np.clip(color_, 0, 255).astype(np.uint8)
-    
+            channels = _channel_bytes(color_)
+            if channels is not None:
+                return channels
+
     raise ValueError(f"invalid color {color!r}")
+
+
+def parse_colors(
+    spec: ColorSpec,
+    n: int,
+) -> NDArray: # uint8[n, 3]
+    """
+    One color for each of n points, from either a single `ColorLike` or an
+    array holding a color per point.
+
+    Channels are read the same way in both cases: floats as 0.0 to 1.0, ints as
+    0 to 255. A spec of None means the default, white.
+    """
+    # an array of colors is the only spec with a second dimension; anything
+    # else names one color, for all n of them
+    if isinstance(spec, (np.ndarray, list, tuple)):
+        colors = np.asarray(spec)
+        if colors.ndim == 2:
+            channels = _channel_bytes(colors)
+            if channels is None:
+                raise ValueError(f"invalid colors of type {colors.dtype}")
+            if channels.shape != (n, 3):
+                raise ValueError(
+                    f"expected a color for each of {n} points, but got an "
+                    f"array of shape {colors.shape}"
+                )
+            return channels
+
+    color = parse_color(cast(ColorLike, spec))
+    if color is None:
+        return np.full((n, 3), 255, dtype=np.uint8)
+    return np.full((n, 3), color, dtype=np.uint8)
+
+
+def _channel_bytes(values: NDArray) -> NDArray | None:
+    """
+    Color channels as bytes, from floats in 0.0 to 1.0 or ints in 0 to 255.
+
+    None if the values are neither, which is how both parsers above tell that
+    what they are looking at is not a color at all.
+    """
+    if np.issubdtype(values.dtype, np.floating):
+        return (255 * np.clip(values, 0., 1.)).astype(np.uint8)
+    if np.issubdtype(values.dtype, np.integer):
+        return np.clip(values, 0, 255).astype(np.uint8)
+    return None
 
 
 NAMED_COLORS: dict[str, Color] = {

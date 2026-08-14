@@ -54,6 +54,9 @@ Basic code improvements:
 
 * [x] Split up monolithic file into a small number of modules.
 * [ ] Split up plotting module with one file per plot type.
+* [ ] A window value type for the mapping from data coordinates onto the grid,
+  so that `axes` and `dstack2` take anything that has one rather than a listed
+  union of plot types. See `notes/plot-windows.md`.
 * [x] Comprehensive type annotations, static type checking with mypy.
 * [ ] Robust input validation and error handling.
 
@@ -156,6 +159,9 @@ Advanced plot arrangement:
 Advanced furnishings:
 
 * [ ] Axis transformations (e.g. logarithmic scale).
+* [ ] Axis series that mean a segment rather than a sampling of one, and the
+  "values against an axis" form that `data` documents but does not implement.
+  See `notes/axis-series.md`.
 * [ ] Legend construction (API needs thought).
 * [x] Text embedded in borders.
 * [ ] More border styles: dashed and bold lines, and corner treatments

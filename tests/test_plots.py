@@ -244,7 +244,7 @@ class TestLine:
         plot = line((np.arange(5), np.arange(5)), width=8, height=2)
         assert repr(plot) == (
             "line(height=2, width=8, thickness=1.0, "
-            "data=<5 points, 1 strokes on [0.00,4.00]x[0.00,4.00]>)"
+            "data=<4 segments, 1 strokes on [0.00,4.00]x[0.00,4.00]>)"
         )
 
     def test_fits_inside_axes(self):
@@ -253,6 +253,14 @@ class TestLine:
         # column each side plus a gutter as wide as the y labels ("0.0")
         assert plot.height == 2 + 3
         assert plot.width == 8 + 2 + 3
+
+    def test_covers_the_scatter_of_the_same_points(self):
+        """Both map the data onto the dots the same way, so a line passes
+        through every dot a scatter of its points marks."""
+        data = (np.array([0.0, 0.4, 1.0]), np.array([0.0, 0.9, 0.3]))
+        as_scatter = drawn_cells(scatter(data, width=20, height=6))
+        as_line = drawn_cells(line(data, width=20, height=6))
+        assert not (as_scatter & ~as_line).any()
 
     def test_layers_with_a_scatter_of_the_same_range(self):
         data = (np.arange(5), np.arange(5))
@@ -280,6 +288,13 @@ class TestLine3:
         plot = line3(wire, width=20, height=5)
         assert drawn_cells(plot).any()
         assert plot.num_segments == 1
+
+    def test_a_3d_scatter_is_not_a_scatter(self):
+        """Its coordinates are projected, so `axes` would label them as though
+        they were the data's own."""
+        from matthewplotlib.plots import scatter3
+        cloud = np.array([[0.0, 0.0, 0.0], [0.5, 0.5, 0.0]])
+        assert not isinstance(scatter3(cloud, width=8, height=4), scatter)
 
     def test_a_wire_behind_the_camera_is_not_drawn(self):
         wire = np.array([[0.0, 0.0, 3.0], [0.5, 0.0, 5.0]])

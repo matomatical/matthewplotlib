@@ -1,23 +1,23 @@
 example: voronoi.py
 args: (none)
 terminal: 21x70
-image: 1 frames, 320x560, sha256:e8ef8f4e02736209
+image: 1 frames, 320x560, sha256:49dc3c0ae7e4fed5
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.
 
-frame 0: 5925 bytes, 20x70, cursor 20,0, scrolled 0
+frame 0: 5891 bytes, 20x70, cursor 20,0, scrolled 0
 palette:
   0 #007f00 #007f00
   1 #ffffff #007f00
   2 #007f00 #657f00
   3 #657f00 #657f00
   4 #7f0000 #7f0000
-  5 #ffffff #7f0000
-  6 #7f0000 #66007f
-  7 #66007f #66007f
-  8 #327f00 #327f00
-  9 #7f3300 #7f3300
+  5 #7f0000 #66007f
+  6 #66007f #66007f
+  7 #327f00 #327f00
+  8 #7f3300 #7f3300
+  9 #ffffff #7f0000
   a #ffffff #657f00
   b #66007f #327f00
   c #657f00 #7f0065
@@ -61,48 +61,48 @@ palette:
   O #7f0033 #7f0033
   P #7f0000 #7f0033
   Q #ffffff #00007f
-  R #00007f #7f0033
-  S #00337f #007f65
-  T #ffffff #7f0033
+  R #ffffff #7f0033
+  S #00007f #7f0033
+  T #00337f #007f65
 text:
-  ▀⠄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⡀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-  ▀▀▀▀⠄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀⠠▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠁▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀⡀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⡀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠁▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-  ▀▀▀▀▀▀▀▀▀▀▀▀▀⠠▀▀▀▀▀▀▀⠄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠄▀▀▀▀▀▀⠄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠠▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠁▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⡀▀▀▀▀▀▀▀▀▀▀▀
-  ▀▀▀▀▀▀▀▀▀▀⢀▀⠐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠠▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠄▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀⡀⠐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠈▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⡀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠁▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 colour:
-  0100002333333334444444444454444446677777888888888888899999999999999999
-  0022333333333334444444444444444677777778888888888888999999999999999999
-  2333a333333333344444444444444677777777b8888888888889999999999999999999
-  3333333333333333444444444466777777777788888888888899999999999999999999
-  3333333333333ccddeee44446777777f77777888888888888999999999999999999999
-  3333333333ccdddddggggggh777777777777788888i888889999999999999999999999
-  3333333ccddddddddggggggggh77777777778888888888899999999999999999999999
-  33333cdddddddddddggggggggggh7777777b8888888888999999999999999999999999
-  33cddddddddddddddjgggggggggggh777778888888888999999k99999999999999999l
-  dddddddddddddmddddgggnggggggggopppq88888888899999999999999999999llrrrr
-  ddddddddddddddddddggggggggggossssssssq8888899999999999999999llrrrrrrrr
-  ddddddddddddddddtuuuuuuvvvossssssssssssw444xx9999999999lllrrrrrrrrrrrr
-  yyyzzzzAddddddtuuuuuBuuuuussssssssssssw44444444xx99llrrrrrrrrrrrrrrrrr
+  0100002333333334444444444444444445566666777777777777788888888888888888
+  0022333333333334444444444494444566666667777777777777888888888888888888
+  2333a333333333344444444444444566666666b7777777777778888888888888888888
+  3333333333333333444444444455666666666677777777777788888888888888888888
+  3333333333333ccddeee44445666666f66666777777777777888888888888888888888
+  3333333333ccdddddggggggh666666666666677777i777778888888888888888888888
+  3333333ccddddddddggggggggh66666666667777777777788888888888888888888888
+  33333cdddddddddddggggggggggh6666666b7777777777888888888888888888888888
+  33cddddddddddddddjgggggggggggh666667777777777888888k88888888888888888l
+  ddddddddddddddmdddgggnggggggggopppq77777777788888888888888888888llrrrr
+  ddddddddddddddddddggggggggggossssssssq7777788888888888888888llrrrrrrrr
+  ddddddddddddddddtuuuuuuvvvossssssssssssw444xx8888888888lllrrrrrrrrrrrr
+  yyyzzzzAddddddtuuuuuBuuuuussssssssssssw44444444xx88llrrrrrrrrrrrrrrrrr
   yyyyyyyyCCCCCCDuuuuuuuuuusssssssssssss444444444444rrrrrrrrrrrrrrrrrrrr
   yyyyyyyyyECCCCCCDuuuuuuuusssssFssssss4444444444444rrrrrrrrrrrrrrrrrrrr
   yyyyyyyyyyECCCCCCCDuuuuussssssssssss44444444444444rrrrrrrrGrrrrrrrrrrr
-  yyyyyyyyyyHEICCCCCCCDuuJsssssssssssw44444454KKKKLLMrrrrrrrrrrrrrrrrrrr
+  yyyyyyyyyyyHICCCCCCCDuuJsssssssssssw44444494KKKKLLMrrrrrrrrrrrrrrrrrrr
   yyyyyyyyyyyyyCCCCCCCCCDsssssssssssNOOPPPLLQLLLLLLLLrrrrrrrrrrrrrrrrrrr
-  yyyyyyyyyyyyyyCCCCCCCCCsssssssssNOOOOOOOOOORRLLLLLLrrrrrrrrrrrrrrrrrrr
-  yyyyyyyyyyyyyyyECCCCCCCSssssssNOOOOOOOOOOTOOOOOORRRLrrrrrrrrrrrrrrrrrr
+  yyyyyyyyyyyyyyCCCCCCCCCsssssssssNOOOOOOOOROSSLLLLLLrrrrrrrrrrrrrrrrrrr
+  yyyyyyyyyyyyyyyECCCCCCCTssssssNOOOOOOOOOOOOOOOOOSSSLrrrrrrrrrrrrrrrrrr

@@ -7,27 +7,44 @@ In development
 New:
 
 * `mp.line(series, ...)`: line plots, connecting the points of each series in
-  order, drawn with braille dots like `mp.scatter`. Takes the same ranges and
-  size as a scatter, fits inside `mp.axes`, and layers with `mp.dstack2`.
+  order, drawn with braille dots like `mp.scatter`.
+  * Variable `thickness` measured in dots, round caps.
+  * NaN breaks lines.
+  * Colors interpolate along each segment.
 * `mp.line3(series, ...)`: the same for points in space, seen from a camera
-  configured as for `mp.scatter3`. Segments reaching behind the camera are cut
-  off in front of it rather than being reflected through the centre of the
-  view.
-* `thickness=` on both, measured in dots, with round caps and joins that fill
-  in rather than notching.
-* A non-finite coordinate breaks a line, so one series can be drawn as several
-  disconnected strokes -- a gap in measured data, or a whole mesh of separate
-  wires in one call.
-* Colors interpolate along each segment, so a series with a color per point
-  comes out as a gradient.
-* Each series is a separate stroke: the last point of one is never joined to
-  the first point of the next.
-* `lines.py` example: two loss curves, one of them measured sparsely and with a
-  stretch missing, and the same spiral drawn with four widths of pen.
+  configured as for `mp.scatter3`.
+
+Changed:
+
+* `mp.scatter` and `mp.line` map data onto dots the same way, so a scatter's
+  points move by up to one dot: the limits of the data now land on the centres
+  of the outermost dots rather than the outer edges of the outermost bins.
+* `parse_range` ignores non-finite values, and gives a range to data that
+  reaches no distance: a constant series now reports the range it is drawn in
+  rather than one of zero width.
+* 3d projection moves out of `data` into a new module, `camera`, which gains
+  `perspective` alongside `view_matrix` and the two `project3*` functions.
+* Color specs move out of `data` into `colors`, as `parse_colors`.
+
+Fixed:
+
+* `mp.scatter3` is no longer a subclass of `mp.scatter`.
+  * As a consequence, `mp.axes` no longer takes it (the axis labels would have
+    been based on the projection anyway).
+* Floats in color arays now have range [0.0, 1.0], as was already the case for
+  single float colors.
+  * Previously, floats in color arrays were interpreted in [0.0, 255.0].
+* Improved color-parsing error handling and error messages.
+
+New examples:
+
+* `vaporwave.py` example: a wireframe landscape scrolling under a banded sun,
+  terrain showcasing `mp.line3`.
+* `lines.py` example: showcasing `mp.line`, two loss curves, one of them
+  measured sparsely and with a stretch missing, and the same spiral drawn with
+  four widths of pen.
 * `starburst.py` example: a turning rose of rays whose stroke swells from one
   dot to six and back.
-* `landscape.py` example: a wireframe landscape scrolling under a banded sun,
-  terrain and sun both drawn by one call to `mp.line3`.
 
 Version 0.5.0
 -------------

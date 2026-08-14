@@ -5,7 +5,7 @@ roadmap's line plots and wanted the design to leave 3d wireframes cheap to add
 afterwards. Not reviewed line by line at the time of writing.
 
 The result is `core.rasterise_segments`, with `plots.line` and `plots.line3` on
-top of it and `data.project3_segments` between them for the 3d case.
+top of it and `camera.project3_segments` between them for the 3d case.
 
 ## Bresenham is the wrong shape for this
 
@@ -60,9 +60,9 @@ coverage counts and colour sums into the grid -- because a loop that only
 computes a list of dots and throws it away comes out only 2-3x behind, which
 would flatter the loop by omitting most of the work.
 
-For the two examples that use this, a frame costs about 3 ms either way:
-`landscape.py` draws 354 segments and `starburst.py` 24 at thickness 4. Both
-sit inside a 20 fps budget with a factor of fifteen to spare.
+For the two examples that use this, `vaporwave.py` draws 853 segments in 4.6 ms
+a frame, backdrop and all, and `starburst.py` 24 rays at thickness 4 in 2.3 ms.
+Both sit inside a 20 fps budget with a factor of ten to spare.
 
 ## Thickness is a Minkowski sum
 
@@ -103,17 +103,19 @@ to the camera arbitrarily far from the view, so without clipping first, the
 sample count of a single segment is unbounded and one wire pointed near the
 camera exhausts memory. Clipping caps it at the diagonal of the grid.
 
-Then `data.project3_segments` clips in camera space, against a near plane just
+Then `camera.project3_segments` clips in camera space, against a near plane just
 in front of the camera, before projecting at all. A segment with one end behind
 the camera cannot be projected endpoint-wise: dividing by a negative depth
 reflects that end through the centre of the image, and the wire is drawn across
 the wrong half of the view. Cutting it at the near plane keeps the part that is
-really visible. `project3` gains nothing from this and is left alone; the shared
-view matrix moved out into `data.view_matrix`.
+really visible. `project3` gains nothing from this and is left alone. What the
+two do share is factored out: `camera.view_matrix` into the camera's
+coordinates, `camera.perspective` out of them onto the film, so the only
+difference between the two functions is the cut in the middle.
 
 ## The data limits land on the outermost dot centres
 
-`plots._braille_strokes` maps the data range onto `[0.5, dots - 0.5]`, so the
+`plots._to_dots` maps the data range onto `[0.5, dots - 0.5]`, so the
 extremes of the data sit on the centres of the outermost dots rather than on the
 outer edge of the grid.
 
@@ -127,30 +129,39 @@ row. Mapping to dot centres removes the case rather than special-casing it, and
 it is what a line plot should do anyway: a line between the extremes of its data
 runs corner to corner of the plot.
 
-This leaves `line` and `scatter` disagreeing by up to half a dot on the same
-data, which is invisible, and does not stop `dstack2` layering them.
+`scatter` was brought onto the same mapping rather than left on its own, which
+it had by way of `np.histogram2d`'s bins. Its points move by at most one dot,
+and in exchange the two agree exactly: a line now passes through every dot a
+scatter of its points marks, which
+`tests/test_plots.py::TestLine::test_covers_the_scatter_of_the_same_points`
+asserts.
 
 ## Edge soup underneath, polylines on top
 
 The rasteriser takes arrays of independent segments, not a polyline. A polyline
 is the easy case of that, and a mesh is not expressible as one at all, so the
-lower layer is the general one. `plots._strokes_from_polylines` turns the parsed
-series into segments, taking each series separately so that the last point of
-one is never joined to the first point of the next.
+lower layer is the general one. `data.parse_segments` turns series into
+segments, taking each series separately so that the last point of one is never
+joined to the first point of the next -- where `parse_multiple_series` pools
+them all into one cloud, which is what a scatter wants.
 
-Gaps are what let a single series carry many strokes: a non-finite coordinate
-ends one and starts another. `landscape.py` leans on this -- rows and columns of
-a terrain mesh, and the bands of the sun, all travel as one series and are
-projected in one call.
+Separate lines are separate series, which is what `vaporwave.py` does: a series
+per wire of the mesh, all projected in one call. Gaps are for the other job,
+holes *inside* one line, as in the sparsely measured curve in `lines.py`. The
+two are not alternatives: a series padded out with holes has no two consecutive
+points left to join.
 
 Open, and the reason the internals are shaped this way:
 
 * An explicit edge list (`vertices`, `edges`) would project each vertex once
-  instead of once per wire through it. `landscape.py` currently projects every
-  mesh vertex twice, once for its row and once for its column. At 354 segments
-  this does not matter; for a real mesh it would.
+  instead of once per wire through it. `vaporwave.py` currently projects every
+  mesh vertex twice, once for its row and once for its column. At this size it
+  does not matter; for a real mesh it would.
+* A bundle of equal-length strokes, `float[strokes, points, 3]`, would save a
+  mesh from being unpacked into one series per wire. `parse_series3` takes two
+  dimensions only.
 * Hidden line removal needs a depth per dot, which the dot grid has no room
-  for. Colouring by depth, as `landscape.py` does, is the cheap stand-in.
+  for. Colouring by depth, as `vaporwave.py` does, is the cheap stand-in.
 
 ## `line3` is not a subclass of `line`
 

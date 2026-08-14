@@ -11,7 +11,6 @@ Types:
 * `number`: A scalar, Python or NumPy.
 * `Series` and `Series3`: The accepted shapes for 2d and 3d point data. See
   these aliases for the full list of forms.
-* `ColorSpec`: One color for a whole series, or one color per point.
 
 Special series:
 
@@ -24,26 +23,20 @@ Parsers:
 * `parse_series`, `parse_series3`, and their `parse_multiple_*` variants: Turn
   any accepted form into arrays of points and colors.
 * `parse_range`: Fill in missing axis limits from the data.
-* `parse_color_spec`: Turn a `ColorSpec` into one color per point.
 
-3d projection:
-
-* `view_matrix`: The coordinate system a camera sees the scene in.
-* `project3` and `project3_segments`: Project 3d points, or 3d line segments,
-  onto the viewing plane of a camera, for the 3d plot types in
-  `matthewplotlib.plots`.
+For turning 3d data into positions on a camera's film, see
+`matthewplotlib.camera`.
 """
 
 from __future__ import annotations
 
 import dataclasses
-from typing import cast
+from typing import Sequence, cast
 
 import numpy as np
-import einops
 from numpy.typing import NDArray, ArrayLike
 
-from matthewplotlib.colors import ColorLike, parse_color
+from matthewplotlib.colors import ColorSpec, parse_colors
 
 
 # # # 
@@ -51,13 +44,6 @@ from matthewplotlib.colors import ColorLike, parse_color
 
 
 type number = int | float | np.integer | np.floating
-
-
-type ColorSpec = (
-    None
-    | ColorLike
-    | ArrayLike # uint8[n, 3]
-)
 
 
 type Series = (
@@ -88,28 +74,26 @@ def parse_range(
     data: NDArray,
     range: tuple[number | None, number | None] | None,
 ) -> tuple[number, number]:
+    """
+    Fill in missing axis limits from the data.
+
+    Limits come from the data's extremes, ignoring non-finite values, since
+    those mark gaps in it rather than describing how far it reaches. Data that
+    reaches no distance at all, a constant series or an empty one, is given a
+    range around itself to be drawn in the middle of.
+    """
     if range is None:
         range = (None, None)
     lo, hi = range
-    if lo is None:
-        lo = data.min()
-    if hi is None:
-        hi = data.max()
+    if lo is None or hi is None:
+        finite = data[np.isfinite(data)]
+        if not finite.size:
+            finite = np.zeros(1)
+        lo = finite.min() if lo is None else lo
+        hi = finite.max() if hi is None else hi
+    if lo == hi:
+        lo, hi = lo - 0.5, hi + 0.5
     return lo, hi
-
-
-def parse_color_spec(
-    cs: ColorSpec,
-    n: int,
-) -> NDArray: # uint8[n, 3]
-    try:
-        color = parse_color(cs) # type: ignore
-        if color is None:
-            return np.full((n, 3), 255, dtype=np.uint8)
-        else:
-            return np.full((n, 3), color, dtype=np.uint8)
-    except ValueError:
-        return np.asarray(cs, dtype=np.uint8)
 
 
 def parse_series(
@@ -123,29 +107,29 @@ def parse_series(
         case axis() as a:
             xs = a.xs
             ys = a.ys
-            cs = parse_color_spec(None, a.n)
+            cs = parse_colors(None, a.n)
         case (axis() as a, cs_):
             xs = a.xs
             ys = a.ys
-            cs = parse_color_spec(cast(ColorSpec, cs_), a.n)
+            cs = parse_colors(cast(ColorSpec, cs_), a.n)
         case np.ndarray(shape=(n, 2)) as a:
             xs = a[:, 0]
             ys = a[:, 1]
-            cs = parse_color_spec(None, n)
+            cs = parse_colors(None, n)
         case (np.ndarray(shape=(n, 2)) as a, cs_):
             xs = a[:, 0]
             ys = a[:, 1]
-            cs = parse_color_spec(cast(ColorSpec, cs_), n)
+            cs = parse_colors(cast(ColorSpec, cs_), n)
         case (xs_, ys_):
             xs = np.asarray(xs_)
             ys = np.asarray(ys_)
             n, = xs.shape
-            cs = parse_color_spec(None, n)
+            cs = parse_colors(None, n)
         case (xs_, ys_, cs_):
             xs = np.asarray(xs_)
             ys = np.asarray(ys_)
             n, = xs.shape
-            cs = parse_color_spec(cast(ColorSpec, cs_), n)
+            cs = parse_colors(cast(ColorSpec, cs_), n)
         case _:
             raise TypeError(f"Invalid Series {series!r}")
     return xs, ys, cs
@@ -166,6 +150,26 @@ def parse_multiple_series(
     )
 
     
+def parse_segments(
+    *seriess: Series,
+) -> tuple[
+    NDArray,    # number[m, 2]
+    NDArray,    # number[m, 2]
+    NDArray,    # uint8[m, 3]
+    NDArray,    # uint8[m, 3]
+]:
+    """
+    Turn series into the segments joining their consecutive points, with the
+    colors at each end of each.
+
+    Where `parse_multiple_series` pools every series into one cloud of points,
+    this pairs the points up within each series first: a series is one stroke
+    of the pen, and the last point of one is never joined to the first point of
+    the next.
+    """
+    return _pair_up([parse_series(s) for s in seriess], dimensions=2)
+
+
 def parse_series3(
     series: Series3, # Series3<n>
 ) -> tuple[
@@ -179,34 +183,34 @@ def parse_series3(
             xs = a.xs
             ys = a.ys
             zs = a.zs
-            cs = parse_color_spec(None, a.n)
+            cs = parse_colors(None, a.n)
         case (axis() as a, cs_):
             xs = a.xs
             ys = a.ys
             zs = a.zs
-            cs = parse_color_spec(cast(ColorSpec, cs_), a.n)
+            cs = parse_colors(cast(ColorSpec, cs_), a.n)
         case np.ndarray(shape=(n, 3)) as a:
             xs = a[:, 0]
             ys = a[:, 1]
             zs = a[:, 2]
-            cs = parse_color_spec(None, n)
+            cs = parse_colors(None, n)
         case (np.ndarray(shape=(n, 3)) as a, cs_):
             xs = a[:, 0]
             ys = a[:, 1]
             zs = a[:, 2]
-            cs = parse_color_spec(cast(ColorSpec, cs_), n)
+            cs = parse_colors(cast(ColorSpec, cs_), n)
         case (xs_, ys_, zs_):
             xs = np.asarray(xs_)
             ys = np.asarray(ys_)
             zs = np.asarray(zs_)
             n, = xs.shape
-            cs = parse_color_spec(None, n)
+            cs = parse_colors(None, n)
         case (xs_, ys_, zs_, cs_):
             xs = np.asarray(xs_)
             ys = np.asarray(ys_)
             zs = np.asarray(zs_)
             n, = xs.shape
-            cs = parse_color_spec(cast(ColorSpec, cs_), n)
+            cs = parse_colors(cast(ColorSpec, cs_), n)
         case _:
             raise TypeError(f"Invalid Series3 {series!r}")
     return xs, ys, zs, cs
@@ -229,6 +233,47 @@ def parse_multiple_series3(
     )
 
     
+def parse_segments3(
+    *seriess: Series3,
+) -> tuple[
+    NDArray,    # number[m, 3]
+    NDArray,    # number[m, 3]
+    NDArray,    # uint8[m, 3]
+    NDArray,    # uint8[m, 3]
+]:
+    """
+    Turn 3d series into the segments joining their consecutive points, with the
+    colors at each end of each. See `parse_segments`.
+    """
+    return _pair_up([parse_series3(s) for s in seriess], dimensions=3)
+
+
+def _pair_up(
+    polylines: Sequence[tuple[NDArray, ...]],
+    dimensions: int,
+) -> tuple[NDArray, NDArray, NDArray, NDArray]:
+    """The consecutive pairs of each parsed series, pooled after pairing."""
+    starts = []
+    ends = []
+    start_colors = []
+    end_colors = []
+    for polyline in polylines:
+        *coordinates, colors = polyline
+        points = np.stack(coordinates, axis=1)
+        starts.append(points[:-1])
+        ends.append(points[1:])
+        start_colors.append(colors[:-1])
+        end_colors.append(colors[1:])
+    empty_points = np.zeros((0, dimensions))
+    empty_colors = np.zeros((0, 3), dtype=np.uint8)
+    return (
+        np.concatenate([*starts, empty_points]),
+        np.concatenate([*ends, empty_points]),
+        np.concatenate([*start_colors, empty_colors]),
+        np.concatenate([*end_colors, empty_colors]),
+    )
+
+
 # # # 
 # Special series
 
@@ -268,228 +313,3 @@ class zaxis(axis):
     @property
     def zs(self) -> NDArray:
         return np.linspace(self.a, self.b, self.n)
-
-
-# # #
-# 3D projection
-
-
-def view_matrix(
-    camera_position: np.ndarray = np.array([0., 0., 2.]),   # float[3]
-    camera_target: np.ndarray = np.zeros(3),                # float[3]
-    scene_up: np.ndarray = np.array([0.,1.,0.]),            # float[3]
-) -> np.ndarray: # float[3, 3]
-    """
-    The basis of a camera's own coordinate system, as columns: X to the right,
-    Y up, and Z towards whatever the camera is pointed at.
-
-    Inputs:
-
-    * camera_position: float[3] (default: [0. 0. 2.]).
-        The position at which the camera is placed.
-    * camera_target: float[3] (default: [0. 0. 0.]).
-        The position towards which the camera is facing. Should be distinct
-        from camera position.
-    * scene_up: float[3] (default: [0. 1. 0.]).
-        The unit vector designating the 'up' direction for the scene. Should
-        not have the same direction as camera_target - camera_position.
-
-    Returns:
-
-    * V: float[3, 3].
-        Right-multiply a displacement from the camera by this to express it in
-        the camera's coordinates.
-    """
-    V_z = camera_target - camera_position
-    V_z = V_z / np.linalg.norm(V_z)
-    V_x = np.cross(V_z, scene_up)
-    V_x = V_x / np.linalg.norm(V_x)
-    V_y = np.cross(V_x, V_z)
-    return np.array([V_x, V_y, V_z]).T
-
-
-def project3(
-    xyz: np.ndarray, # float[n, 3]
-    camera_position: np.ndarray = np.array([0., 0., 2.]), # float[3]
-    camera_target: np.ndarray = np.zeros(3), # float[3]
-    scene_up: np.ndarray = np.array([0.,1.,0.]), # float[3]
-    fov_degrees: float = 90.0,
-) -> tuple[
-    np.ndarray, # float[n, 2]
-    np.ndarray, # bool[n]
-]:
-    """
-    Project a 3d point cloud into two dimensions based on a given camera
-    configuration.
-
-    Inputs:
-
-    * xyz: float[n, 3].
-        The points to project, with columns corresponding to X, Y, and Z.
-    * camera_position: float[3] (default: [0. 0. 2.]).
-        The position at which the camera is placed. The default is positioned
-        along the positive Z axis.
-    * camera_target: float[3] (default: [0. 0. 0.]).
-        The position towards which the camera is facing. Should be distinct
-        from camera position. The default is that the camera is facing towards
-        the origin.
-    * scene_up: float[3] (default: [0. 1. 0.]).
-        The unit vector designating the 'up' direction for the scene. The
-        default is the positive Y direction. Should not have the same direction
-        as camera_target - camera_position.
-    * fov_degrees: float (default 90).
-        Field of view. Points within a cone (or frustum) of this angle leaving
-        the camera are projected into the unit disk (or the square [-1,1]^2).
-
-    Returns:
-
-    * xy: float[n, 2].
-        Projected points.
-    * valid: bool[n].
-        Mask indicating which of the points are in front of the camera.
-
-    Notes:
-
-    * The combined effect of the defaults is that the camera is looking down
-      the Z axis towards the origin from the positive direction, with the X
-      axis extending towards the right and the Y axis extending upwards, with
-      the field of view ensuring that points within the cube [-1,1]^3 are
-      projected into the square [-1,1]^2.
-    * The valid mask only considers whether points are in front of the camera.
-      A more comprehensive frustum clipping approach is not supported.
-    
-    Internal notes:
-
-    * This implementation uses a coordinate system for the camera where X and Y
-      point left and up respectively and Z points towards the object ahead of
-      the camera (an alternative convention is for Z to point behind the
-      camera).
-    """
-    n, _3 = xyz.shape
-
-    # transform points to camera coordinate system
-    V = view_matrix(
-        camera_position=camera_position,
-        camera_target=camera_target,
-        scene_up=scene_up,
-    )
-    xyz_ = (xyz - camera_position) @ V
-    
-    # mask for valid points
-    valid = xyz_[:, 2] > 0.
-    
-    # perspective projection
-    xy = np.zeros((n, 2))
-    np.divide(
-        xyz_[:, :2],
-        xyz_[:, 2, np.newaxis],
-        out=xy,
-        where=valid[:, np.newaxis],
-    )
-
-    # scale fov to within [-1,1]^2
-    focal_length = 1 / np.tan(np.radians(fov_degrees) / 2)
-    xy *= focal_length
-
-    return xy, valid
-
-
-def project3_segments(
-    starts: np.ndarray, # float[n, 3]
-    ends: np.ndarray,   # float[n, 3]
-    camera_position: np.ndarray = np.array([0., 0., 2.]),   # float[3]
-    camera_target: np.ndarray = np.zeros(3),                # float[3]
-    scene_up: np.ndarray = np.array([0.,1.,0.]),            # float[3]
-    fov_degrees: float = 90.0,
-    near: float = 1e-6,
-) -> tuple[
-    np.ndarray, # float[m, 2]
-    np.ndarray, # float[m, 2]
-    np.ndarray, # bool[n]
-]:
-    """
-    Project 3d line segments onto the viewing plane of a camera.
-
-    Inputs:
-
-    * starts: float[n, 3].
-        The point at which each segment begins.
-    * ends: float[n, 3].
-        The point at which each segment ends.
-    * camera_position: float[3] (default: [0. 0. 2.]).
-        The position at which the camera is placed.
-    * camera_target: float[3] (default: [0. 0. 0.]).
-        The position towards which the camera is facing. Should be distinct
-        from camera position.
-    * scene_up: float[3] (default: [0. 1. 0.]).
-        The unit vector designating the 'up' direction for the scene. Should
-        not have the same direction as camera_target - camera_position.
-    * fov_degrees: float (default 90).
-        Field of view. Points within a cone (or frustum) of this angle leaving
-        the camera are projected into the unit disk (or the square [-1,1]^2).
-    * near: float (default 1e-6).
-        Distance in front of the camera at which segments are cut off.
-
-    Returns:
-
-    * xy_starts: float[m, 2].
-        Where each drawn segment begins, projected.
-    * xy_ends: float[m, 2].
-        Where each drawn segment ends, projected.
-    * drawn: bool[n].
-        Which of the input segments are drawn at all. The two arrays of
-        projected points have one entry per set bit, in order, so anything
-        else the caller holds per segment should be masked with this.
-
-    A segment with one end behind the camera is cut at the near plane, keeping
-    the part in front. A segment with both ends behind it is not drawn, nor is
-    one with a non-finite end. Projecting the endpoints without cutting would
-    place that first kind of segment on the wrong side of the view, since
-    perspective division by a negative depth reflects a point through the
-    centre of the image.
-    """
-    V = view_matrix(
-        camera_position=camera_position,
-        camera_target=camera_target,
-        scene_up=scene_up,
-    )
-    xyz_starts = (starts - camera_position) @ V
-    xyz_ends = (ends - camera_position) @ V
-
-    # segments that are not fully specified are stood down to the camera's own
-    # position, which is behind the near plane, so they fall out below
-    specified = (
-        np.isfinite(xyz_starts).all(axis=1) & np.isfinite(xyz_ends).all(axis=1)
-    )
-    xyz_starts = np.where(specified[:, np.newaxis], xyz_starts, 0.)
-    xyz_ends = np.where(specified[:, np.newaxis], xyz_ends, 0.)
-
-    # which ends are far enough in front of the camera to project
-    ahead_starts = xyz_starts[:, 2] > near
-    ahead_ends = xyz_ends[:, 2] > near
-    drawn = ahead_starts | ahead_ends
-
-    # cut whichever end is behind back to the near plane. one crossing point
-    # serves both cases, since a segment kept here crosses the plane at most
-    # once
-    depths = xyz_ends[:, 2] - xyz_starts[:, 2]
-    t = np.divide(
-        near - xyz_starts[:, 2],
-        depths,
-        out=np.zeros_like(depths),
-        where=(depths != 0),
-    )
-    crossings = xyz_starts + t[:, np.newaxis] * (xyz_ends - xyz_starts)
-    xyz_starts = np.where(ahead_starts[:, np.newaxis], xyz_starts, crossings)
-    xyz_ends = np.where(ahead_ends[:, np.newaxis], xyz_ends, crossings)
-
-    # perspective projection, of what is left
-    xyz_starts = xyz_starts[drawn]
-    xyz_ends = xyz_ends[drawn]
-    focal_length = 1 / np.tan(np.radians(fov_degrees) / 2)
-    xy_starts = focal_length * xyz_starts[:, :2] / xyz_starts[:, 2, np.newaxis]
-    xy_ends = focal_length * xyz_ends[:, :2] / xyz_ends[:, 2, np.newaxis]
-
-    return xy_starts, xy_ends, drawn
-
-

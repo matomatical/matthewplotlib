@@ -23,8 +23,9 @@ import matthewplotlib as mp
 #
 # The others cannot be covered this way, and it is not an oversight: `data`
 # keeps its parsers back (`parse_range`, `parse_multiple_series`, ...), `colors`
-# keeps `Color` and `parse_color`, and `core` is the character-array backend,
-# where only `BoxStyle` is meant to be reached for. Covering those needs an
+# keeps `Color` and `parse_color`, `camera` keeps its projections, and `core` is
+# the character-array backend, where only `BoxStyle` is meant to be reached
+# for. Covering those needs an
 # explicit `__all__` per module, or a leading underscore on each internal name.
 # Both would also stop pdoc documenting the internals. The trade-offs, and the
 # counts to decide with, are in `notes/export-policy.md`.

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from matthewplotlib.colors import parse_color
+from matthewplotlib.colors import parse_color, parse_colors
 
 
 class TestParseColorNamed:
@@ -116,3 +116,56 @@ class TestParseColorOutput:
         result = parse_color("red")
         assert result is not None
         assert result.shape == (3,)
+
+
+# # #
+# parse_colors
+
+
+class TestParseColors:
+    def test_none_defaults_to_white(self):
+        result = parse_colors(None, 5)
+        assert result.shape == (5, 3)
+        assert result.dtype == np.uint8
+        assert np.all(result == 255)
+
+    def test_single_color_broadcasts(self):
+        result = parse_colors("red", 4)
+        assert result.shape == (4, 3)
+        assert np.all(result[:, 0] == 255)
+        assert np.all(result[:, 1] == 0)
+        assert np.all(result[:, 2] == 0)
+
+    def test_per_point_colors(self):
+        colors = np.array([
+            [255, 0, 0],
+            [0, 255, 0],
+            [0, 0, 255],
+        ], dtype=np.uint8)
+        result = parse_colors(colors, 3)
+        assert np.array_equal(result, colors)
+
+    def test_per_point_colors_from_a_list(self):
+        result = parse_colors([[255, 0, 0], [0, 0, 255]], 2)
+        assert np.array_equal(result, [[255, 0, 0], [0, 0, 255]])
+
+    def test_per_point_floats_are_read_the_same_way_as_one_color(self):
+        """Floats are 0.0 to 1.0 whether they describe one color or many. A
+        bare cast to bytes would make this array black instead of grey."""
+        one = parse_color((0.5, 0.5, 0.5))
+        many = parse_colors(np.full((3, 3), 0.5), 3)
+        assert np.array_equal(many, np.broadcast_to(one, (3, 3)))
+
+    def test_a_misspelled_name_is_reported_as_a_color(self):
+        """Not as whatever numpy makes of a string it cannot read as bytes,
+        which is what deciding by trying to parse used to produce."""
+        with pytest.raises(ValueError, match="invalid color"):
+            parse_colors("puce", 3)
+
+    def test_too_few_colors_for_the_points(self):
+        with pytest.raises(ValueError, match="color for each of 10 points"):
+            parse_colors(np.zeros((5, 3), dtype=np.uint8), 10)
+
+    def test_colors_of_the_wrong_width(self):
+        with pytest.raises(ValueError, match="color for each of 3 points"):
+            parse_colors(np.zeros((3, 4), dtype=np.uint8), 3)

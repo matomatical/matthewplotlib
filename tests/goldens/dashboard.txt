@@ -1,7 +1,7 @@
 example: dashboard.py
 args: --num-frames 5
 terminal: 15x56
-image: 5 frames, 224x448, sha256:6643de558ff33101
+image: 5 frames, 224x448, sha256:5f40faf52e0d9061
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.
@@ -84,7 +84,7 @@ colour:
   ......4444444444444444444444444444444444...0.1.2.0......
   ........................................................
 
-frame 2: 639 bytes, 14x56, cursor 14,0, scrolled 0
+frame 2: 662 bytes, 14x56, cursor 14,0, scrolled 0
 palette:
   . default default
   0 #ff0000 default
@@ -98,7 +98,7 @@ text:
   │                                        ││▁      │
   │                                        ││█      │
   │                                        ││█      │
-  │                                       ⢈││█      │
+  │                                       ⢉││█      │
   │                                        ││█      │
   │                                        ││█      │
   │                                        ││█      │
@@ -123,7 +123,7 @@ colour:
   ......4444444444444444444444444444444444...0.1.2.0......
   ........................................................
 
-frame 3: 656 bytes, 14x56, cursor 14,0, scrolled 0
+frame 3: 678 bytes, 14x56, cursor 14,0, scrolled 0
 palette:
   . default default
   0 #ff0000 default
@@ -135,9 +135,9 @@ text:
               CPU History (30s)             CPU Core Usage
   ╭────────────────────────────────────────╮╭───────╮
   │                                        ││  ▆    │
-  │                                       ⠠││▄ █    │
+  │                                       ⢀││▄ █    │
   │                                        ││█ █ ▆  │
-  │                                       ⢈││█ █ █  │
+  │                                       ⡉││█ █ █  │
   │                                        ││█ █ █  │
   │                                        ││█ █ █  │
   │                                        ││█ █ █ █│
@@ -174,9 +174,9 @@ text:
               CPU History (30s)             CPU Core Usage
   ╭────────────────────────────────────────╮╭───────╮
   │                                        ││    ▃  │
-  │                                       ⠠││    █  │
+  │                                       ⢀││    █  │
   │                                        ││    █  │
-  │                                       ⢉││    █  │
+  │                                       ⡁││    █  │
   │                                        ││█   █  │
   │                                       ⢀││█   █ ▅│
   │                                        ││█   █ █│

@@ -53,7 +53,7 @@ import hilbert as _hilbert
 
 from PIL import Image
 
-from typing import Callable, Literal, Self, Sequence, cast
+from typing import Callable, Literal, Self, cast
 from numpy.typing import ArrayLike, NDArray
 from matthewplotlib.colormaps import ColorMap
 from numbers import Number
@@ -63,10 +63,12 @@ from matthewplotlib.data import (
     Series,
     Series3,
     parse_range,
-    parse_series,
-    parse_series3,
+    parse_segments,
+    parse_segments3,
     parse_multiple_series,
     parse_multiple_series3,
+)
+from matthewplotlib.camera import (
     project3,
     project3_segments,
 )
@@ -80,7 +82,8 @@ from matthewplotlib.core import (
     unicode_bar,
     unicode_col,
     unicode_image,
-    rasterise_segments,
+    unicode_braille_points,
+    unicode_braille_segments,
 )
 
 
@@ -357,6 +360,26 @@ class plot:
 # DATA PLOTTING CLASSES
 
 
+def _to_dots(
+    points: NDArray,                    # float[n, 2]
+    xrange: tuple[number, number],
+    yrange: tuple[number, number],
+    width: int,
+    height: int,
+) -> NDArray: # float[n, 2]
+    """
+    Points in the data's coordinates, as coordinates in the plot's dots.
+
+    The limits of the data land on the centres of the outermost dots, so that a
+    line between the extremes of its data runs corner to corner of the plot
+    rather than half a dot beyond it.
+    """
+    (xmin, xmax), (ymin, ymax) = xrange, yrange
+    cols = (points[:, 0] - xmin) / (xmax - xmin) * (2 * width - 1)
+    rows = (ymax - points[:, 1]) / (ymax - ymin) * (4 * height - 1)
+    return np.stack([rows + 0.5, cols + 0.5], axis=1)
+
+
 class scatter(plot):
     """
     Render a scatterplot using a grid of braille unicode characters.
@@ -397,50 +420,18 @@ class scatter(plot):
         # parse inputs into standard format
         xs, ys, cs = parse_multiple_series(series, *etc)
         n, = xs.shape
-        xrange = parse_range(xs, xrange)
-        yrange = parse_range(ys, yrange)
-        
-        # quantise 2d float coordinates to data grid
-        counts, xedges, yedges = np.histogram2d(
-            x=xs,
-            y=ys,
-            bins=(2*width, 4*height),
-            range=(xrange, yrange),
-        )
+        xrange_ = parse_range(xs, xrange)
+        yrange_ = parse_range(ys, yrange)
 
-        # dots where counts > 0
-        dots = counts > 0
-        
-        # determine colours for each position
-        # 1: figure out which bins each point fell into
-        ci = np.searchsorted(xedges, xs, side='right') - 1
-        cj = np.searchsorted(yedges, ys, side='right') - 1
-        ci[xs == xedges[-1]] = 2 * width - 1
-        cj[ys == yedges[-1]] = 4 * height - 1
-        valid = (ci >= 0) & (ci < 2*width) & (cj >= 0) & (cj < 4*height)
-        # 2: average over colors in each cell
-        total_colors = np.zeros((2*width, 4*height, 3))
-        np.add.at(total_colors, (ci[valid], cj[valid]), cs[valid])
-        total_colors[dots] /= counts[dots,None]
-        # round to uint8
-        dotc = total_colors.astype(np.uint8)
-        dotw = counts
-        
-        # convert to Cartesian coordinates (+x right, -y down)
-        dots = dots.T[::-1]
-        if dotc is not None:
-            dotc = dotc.transpose(1,0,2)[::-1]
-            dotw = dotw.T[::-1]
-
-        # render data grid as a grid of braille characters
-        chars = unicode_braille_array(
-            dots=dots,
-            dotc=dotc,
-            dotw=dotw,
-        )
-        super().__init__(chars)
-        self.xrange = xrange
-        self.yrange = yrange
+        points = np.stack([xs, ys], axis=1)
+        super().__init__(unicode_braille_points(
+            points=_to_dots(points, xrange_, yrange_, width, height),
+            height=4 * height,
+            width=2 * width,
+            colors=cs,
+        ))
+        self.xrange = xrange_
+        self.yrange = yrange_
         self.num_points = n
 
     def __repr__(self):
@@ -452,7 +443,7 @@ class scatter(plot):
         )
 
 
-class scatter3(scatter):
+class scatter3(plot):
     """
     Scatter plot representing a 3d point cloud.
 
@@ -485,11 +476,13 @@ class scatter3(scatter):
     * height : int.
         The number of character rows in the plot.
 
+    Projected coordinates are not the data's own, so this is not a `scatter`
+    and `axes` does not take it: there is nothing meaningful to label an axis
+    with.
+
     TODO:
 
     * Maybe allow configurable xyz ranges with clipping prior to projection?
-    * Make sure this is not a subclass of scatter for the purposes of labelling
-      axes as that would use projected coordinates.
     """
     def __init__(
         self,
@@ -515,111 +508,22 @@ class scatter3(scatter):
         )
         if aspect_ratio is None:
             aspect_ratio = width / (2*height)
+        xrange = (-aspect_ratio, aspect_ratio)
+        yrange = (-1., 1.)
 
-        # create the scatter plot
-        super().__init__(
-            (xy[valid], cs[valid]),
-            width=width,
-            height=height,
-            xrange=(-aspect_ratio, aspect_ratio),
-            yrange=(-1.,1.),
-        )
-        
+        super().__init__(unicode_braille_points(
+            points=_to_dots(xy[valid], xrange, yrange, width, height),
+            height=4 * height,
+            width=2 * width,
+            colors=cs[valid],
+        ))
+        self.num_points = int(valid.sum())
+
     def __repr__(self):
-        return ("scatter3(TODO)")
-
-
-def _polyline_range(
-    values: NDArray,
-    range: tuple[number | None, number | None] | None,
-) -> tuple[number, number]:
-    """
-    Axis limits for a line, from the points that have a coordinate at all.
-
-    A line's data may contain gaps, marked by non-finite coordinates, and those
-    say nothing about how far the data reaches. A line whose data reaches no
-    distance at all, such as a constant series, is given a range around itself
-    to be drawn in the middle of.
-    """
-    finite = values[np.isfinite(values)]
-    if not len(finite):
-        finite = np.zeros(1)
-    lo, hi = parse_range(finite, range)
-    if lo == hi:
-        lo, hi = lo - 0.5, hi + 0.5
-    return lo, hi
-
-
-def _braille_strokes(
-    starts: NDArray,                    # float[n, 2]
-    ends: NDArray,                      # float[n, 2]
-    start_colors: NDArray,              # uint8[n, 3]
-    end_colors: NDArray,                # uint8[n, 3]
-    xrange: tuple[number, number],
-    yrange: tuple[number, number],
-    width: int,
-    height: int,
-    thickness: float,
-) -> CharArray:
-    """
-    Draw line segments given in data coordinates as a grid of braille
-    characters.
-
-    The limits of the data map onto the centres of the outermost dots, so that
-    a line between the extremes of its data runs corner to corner of the plot
-    rather than half a dot beyond it.
-    """
-    (xmin, xmax), (ymin, ymax) = xrange, yrange
-    dot_height = 4 * height
-    dot_width = 2 * width
-
-    def to_dots(points: NDArray) -> NDArray: # float[n, 2] -> float[n, 2]
-        cols = (points[:, 0] - xmin) / (xmax - xmin) * (dot_width - 1)
-        rows = (ymax - points[:, 1]) / (ymax - ymin) * (dot_height - 1)
-        return np.stack([rows + 0.5, cols + 0.5], axis=1)
-
-    dots, dotc, dotw = rasterise_segments(
-        starts=to_dots(starts),
-        ends=to_dots(ends),
-        height=dot_height,
-        width=dot_width,
-        start_colors=start_colors,
-        end_colors=end_colors,
-        thickness=thickness,
-    )
-    return unicode_braille_array(dots=dots, dotc=dotc, dotw=dotw)
-
-
-def _strokes_from_polylines(
-    polylines: Sequence[tuple[NDArray, ...]],
-    dimensions: int,
-) -> tuple[NDArray, NDArray, NDArray, NDArray]:
-    """
-    Turn parsed series into the segments joining their consecutive points.
-
-    Each series is one stroke of the pen, so the segments of each are taken
-    separately and only then pooled: the last point of one series is never
-    joined to the first point of the next.
-    """
-    starts = []
-    ends = []
-    start_colors = []
-    end_colors = []
-    for polyline in polylines:
-        *coordinates, colors = polyline
-        points = np.stack(coordinates, axis=1)
-        starts.append(points[:-1])
-        ends.append(points[1:])
-        start_colors.append(colors[:-1])
-        end_colors.append(colors[1:])
-    empty_points = np.zeros((0, dimensions))
-    empty_colors = np.zeros((0, 3), dtype=np.uint8)
-    return (
-        np.concatenate([*starts, empty_points]),
-        np.concatenate([*ends, empty_points]),
-        np.concatenate([*start_colors, empty_colors]),
-        np.concatenate([*end_colors, empty_colors]),
-    )
+        return (
+            f"scatter3(height={self.height}, width={self.width}, "
+            f"data=<{self.num_points} points in front of the camera>)"
+        )
 
 
 class line(plot):
@@ -670,39 +574,33 @@ class line(plot):
         height: int = 10,
         thickness: float = 1.0,
     ):
-        # parse each series separately, so that they stay separate strokes
-        polylines = [parse_series(s) for s in (series, *etc)]
-        xs = np.concatenate([xs for xs, _ys, _cs in polylines])
-        ys = np.concatenate([ys for _xs, ys, _cs in polylines])
-        xrange_ = _polyline_range(xs, xrange)
-        yrange_ = _polyline_range(ys, yrange)
+        # the segments joining each series' own points, pooled after pairing
+        starts, ends, start_colors, end_colors = parse_segments(series, *etc)
+        points = np.concatenate([starts, ends])
+        xrange_ = parse_range(points[:, 0], xrange)
+        yrange_ = parse_range(points[:, 1], yrange)
 
-        starts, ends, start_colors, end_colors = _strokes_from_polylines(
-            polylines=polylines,
-            dimensions=2,
-        )
-        super().__init__(_braille_strokes(
-            starts=starts,
-            ends=ends,
+        super().__init__(unicode_braille_segments(
+            starts=_to_dots(starts, xrange_, yrange_, width, height),
+            ends=_to_dots(ends, xrange_, yrange_, width, height),
+            height=4 * height,
+            width=2 * width,
             start_colors=start_colors,
             end_colors=end_colors,
-            xrange=xrange_,
-            yrange=yrange_,
-            width=width,
-            height=height,
             thickness=thickness,
         ))
         self.xrange = xrange_
         self.yrange = yrange_
-        self.num_points = len(xs)
-        self.num_strokes = len(polylines)
+        self.num_segments = len(starts)
+        self.num_strokes = 1 + len(etc)
         self.thickness = thickness
 
     def __repr__(self):
         return (
             f"line(height={self.height}, width={self.width}, "
             f"thickness={self.thickness}, "
-            f"data=<{self.num_points} points, {self.num_strokes} strokes on "
+            f"data=<{self.num_segments} segments, {self.num_strokes} "
+            f"strokes on "
             f"[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]x"
             f"[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]>)"
         )
@@ -766,13 +664,7 @@ class line3(plot):
         height: int = 15,
         thickness: float = 1.0,
     ):
-        # parse each series separately, so that they stay separate strokes
-        polylines = [parse_series3(s) for s in (series, *etc)]
-        starts, ends, start_colors, end_colors = _strokes_from_polylines(
-            polylines=polylines,
-            dimensions=3,
-        )
-
+        starts, ends, start_colors, end_colors = parse_segments3(series, *etc)
         xy_starts, xy_ends, drawn = project3_segments(
             starts=starts,
             ends=ends,
@@ -784,18 +676,17 @@ class line3(plot):
         if aspect_ratio is None:
             aspect_ratio = width / (2*height)
 
-        super().__init__(_braille_strokes(
-            starts=xy_starts,
-            ends=xy_ends,
+        xrange = (-aspect_ratio, aspect_ratio)
+        yrange = (-1., 1.)
+        super().__init__(unicode_braille_segments(
+            starts=_to_dots(xy_starts, xrange, yrange, width, height),
+            ends=_to_dots(xy_ends, xrange, yrange, width, height),
+            height=4 * height,
+            width=2 * width,
             start_colors=start_colors[drawn],
             end_colors=end_colors[drawn],
-            xrange=(-aspect_ratio, aspect_ratio),
-            yrange=(-1., 1.),
-            width=width,
-            height=height,
             thickness=thickness,
         ))
-        self.num_points = len(starts) + len(polylines)
         self.num_segments = int(drawn.sum())
         self.thickness = thickness
 

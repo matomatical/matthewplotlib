@@ -16,6 +16,7 @@ from matthewplotlib.core import (
     unicode_braille_array,
     unicode_image,
     disc_offsets,
+    rasterise_points,
     rasterise_segments,
 )
 
@@ -1103,3 +1104,58 @@ class TestRasteriseSegmentsColors:
         assert dotw is not None
         assert np.array_equal(dotw, dots.astype(float))
         assert dots.max() > 1, "a thick stroke should cover some dots twice"
+
+
+# # #
+# rasterise_points
+
+
+class TestRasterisePoints:
+    def test_points_land_in_their_own_dot(self):
+        dots, _c, _w = rasterise_points(
+            np.array([[0.5, 0.5], [2.9, 4.1]]), height=6, width=6,
+        )
+        assert lit(dots) == {(0, 0), (2, 4)}
+
+    def test_points_sharing_a_dot_are_counted(self):
+        dots, _c, _w = rasterise_points(
+            np.array([[1.1, 1.2], [1.9, 1.8]]), height=4, width=4,
+        )
+        assert dots[1, 1] == 2
+
+    def test_points_outside_the_grid_are_dropped(self):
+        dots, _c, _w = rasterise_points(
+            np.array([[-1.0, 2.0], [2.0, 9.0], [1.0, 1.0]]), height=4, width=4,
+        )
+        assert lit(dots) == {(1, 1)}
+
+    def test_a_non_finite_point_is_dropped(self):
+        dots, _c, _w = rasterise_points(
+            np.array([[np.nan, 1.0], [np.inf, 1.0], [2.5, 2.5]]),
+            height=4,
+            width=4,
+        )
+        assert lit(dots) == {(2, 2)}
+
+    def test_colors_are_averaged_over_a_shared_dot(self):
+        _dots, dotc, dotw = rasterise_points(
+            np.array([[1.1, 1.1], [1.9, 1.9]]),
+            height=4,
+            width=4,
+            colors=np.array([[255, 0, 0], [0, 0, 255]]),
+        )
+        assert dotc is not None and dotw is not None
+        assert dotc[1, 1].tolist() == [127, 0, 127]
+        assert dotw[1, 1] == 2
+
+    def test_no_colors_asked_for_none_given(self):
+        dots, dotc, dotw = rasterise_points(
+            np.array([[1.0, 1.0]]), height=4, width=4,
+        )
+        assert dots.any()
+        assert dotc is None and dotw is None
+
+    def test_no_points_at_all(self):
+        dots, _c, _w = rasterise_points(np.zeros((0, 2)), height=3, width=5)
+        assert dots.shape == (3, 5)
+        assert not dots.any()
