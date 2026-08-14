@@ -24,7 +24,7 @@ functionality it does have delightful.
   </td>
   <td width="30%">
     <img src="images/colormaps.png" width="100%">
-    <img src="images/voronoi.png" width="100%">
+    <img src="images/vaporwave.gif" width="100%">
   </td>
 </tr></table>
 
