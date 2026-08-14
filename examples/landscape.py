@@ -56,7 +56,7 @@ RIDGES = ((SCROLL / 2, 0.5), (SCROLL / 3, 0.3), (SCROLL / 6, 0.15))
 # The ridges are gentle down the middle and steepen towards the sides, where
 # the ground climbs as well, which is what makes this read as a valley to fly
 # along rather than a rumpled sheet.
-VALLEY_RISE = 0.8
+VALLEY_RISE = 8
 
 # The sun: how big, how high, how far off, and how its bands are spaced. The
 # gaps grow towards the bottom of the disc.
@@ -147,11 +147,16 @@ def terrain(distance: float) -> tuple[np.ndarray, np.ndarray]:
     towards the camera and wrap after one cell, so that the grid appears to
     travel without ever running out of wires, and the terrain is sampled a full
     `distance` further along, so what passes underneath is new ground.
+
+    A cell here means a cell of the *drawn* grid, `CROSSWISE * SPACING`, and not
+    of the grid the terrain is sampled on. Wrapping every `SPACING` instead
+    steps the crosswise wires by half of their own spacing, which lands them
+    exactly between where they were: they appear to swap places every few
+    frames rather than to travel.
     """
     xs = np.linspace(-1, 1, ACROSS) * (ACROSS - 1) / 2 * SPACING
-    # the wires walk towards the camera and wrap after a cell, so that one
-    # arrives at the horizon as one leaves under the viewer's feet
-    zs = -(AHEAD + np.arange(BACK) * SPACING - distance % SPACING)
+    walked = distance % (CROSSWISE * SPACING)
+    zs = -(AHEAD + np.arange(BACK) * SPACING - walked)
     grid_x, grid_z = np.meshgrid(xs, zs)
     grid_y = ground(grid_x, grid_z - distance)
 
