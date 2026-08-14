@@ -1,6 +1,34 @@
 Changelog
 =========
 
+In development
+--------------
+
+New:
+
+* `mp.line(series, ...)`: line plots, connecting the points of each series in
+  order, drawn with braille dots like `mp.scatter`. Takes the same ranges and
+  size as a scatter, fits inside `mp.axes`, and layers with `mp.dstack2`.
+* `mp.line3(series, ...)`: the same for points in space, seen from a camera
+  configured as for `mp.scatter3`. Segments reaching behind the camera are cut
+  off in front of it rather than being reflected through the centre of the
+  view.
+* `thickness=` on both, measured in dots, with round caps and joins that fill
+  in rather than notching.
+* A non-finite coordinate breaks a line, so one series can be drawn as several
+  disconnected strokes -- a gap in measured data, or a whole mesh of separate
+  wires in one call.
+* Colors interpolate along each segment, so a series with a color per point
+  comes out as a gradient.
+* Each series is a separate stroke: the last point of one is never joined to
+  the first point of the next.
+* `lines.py` example: two loss curves, one of them measured sparsely and with a
+  stretch missing, and the same spiral drawn with four widths of pen.
+* `starburst.py` example: a turning rose of rays whose stroke swells from one
+  dot to six and back.
+* `landscape.py` example: a wireframe landscape scrolling under a banded sun,
+  terrain and sun both drawn by one call to `mp.line3`.
+
 Version 0.5.0
 -------------
 

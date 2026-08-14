@@ -138,6 +138,48 @@
 
             </li>
             <li>
+                    <a class="class" href="#line">line</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#line.__init__">line</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#line.xrange">xrange</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#line.yrange">yrange</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#line.num_points">num_points</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#line.num_strokes">num_strokes</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#line.thickness">thickness</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#line3">line3</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#line3.__init__">line3</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#line3.num_points">num_points</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#line3.num_segments">num_segments</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#line3.thickness">thickness</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#image">image</a>
                             <ul class="memberlist">
                         <li>
@@ -459,6 +501,8 @@ properties, and shortcut operators available with every plot object.</li>
 <li><code><a href="#scatter">scatter</a></code></li>
 <li><code>function</code></li>
 <li><code><a href="#scatter3">scatter3</a></code></li>
+<li><code><a href="#line">line</a></code></li>
+<li><code><a href="#line3">line3</a></code></li>
 <li><code><a href="#image">image</a></code></li>
 <li><code><a href="#function2">function2</a></code></li>
 <li><code><a href="#histogram2">histogram2</a></code></li>
@@ -873,6 +917,259 @@ axes as that would use projected coordinates.</li>
                 <dd id="scatter3.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
                 <dd id="scatter3.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
                 <dd id="scatter3.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="line">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">line</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#line"></a>
+    
+            <div class="docstring"><p>Render a line plot by connecting a sequence of points, using a grid of
+braille unicode characters.</p>
+
+<p>Each character cell in the plot corresponds to a 2x4 grid of sub-pixels,
+represented by braille dots.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>series : Series.
+X Y data, for example a tuple (xs, ys) or triple (xs, ys, cs) where
+cs is a ColorLike or a list of RGB triples. See documentation for more
+examples.</li>
+<li>*etc.
+Further series. Each is a separate line: the end of one is not joined
+to the start of the next.</li>
+<li>xrange : optional (number, number).
+The x-axis limits <code>(xmin, xmax)</code>. If not provided, the limits are
+inferred from the min and max x-values in the data.</li>
+<li>yrange : optional (number, number).
+The y-axis limits <code>(ymin, ymax)</code>. If not provided, the limits are
+inferred from the min and max y-values in the data.</li>
+<li>width : int (default: 30).
+The width of the plot in characters. The effective pixel width will be
+2 * width.</li>
+<li>height : int (default: 10).
+The height of the plot in rows. The effective pixel height will be 4 *
+height.</li>
+<li>thickness : float (default: 1.0).
+How wide to draw the line, in dots. Corners between segments are
+filled and the ends are rounded.</li>
+</ul>
+
+<p>A point with a non-finite coordinate breaks the line, so that one series
+can be drawn as several disconnected strokes. Colors are interpolated
+along each segment, so a series with a color per point comes out as a
+gradient.</p>
+</div>
+
+
+                            <div id="line.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">line</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">series</span><span class="p">:</span> <span class="n">Series</span>,</span><span class="param">	<span class="o">*</span><span class="n">etc</span><span class="p">:</span> <span class="n">Series</span>,</span><span class="param">	<span class="n">xrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">yrange</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>,</span><span class="param">	<span class="n">thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#line.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="line.xrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">xrange</span>
+
+        
+    </div>
+    <a class="headerlink" href="#line.xrange"></a>
+    
+    
+
+                            </div>
+                            <div id="line.yrange" class="classattr">
+                                <div class="attr variable">
+            <span class="name">yrange</span>
+
+        
+    </div>
+    <a class="headerlink" href="#line.yrange"></a>
+    
+    
+
+                            </div>
+                            <div id="line.num_points" class="classattr">
+                                <div class="attr variable">
+            <span class="name">num_points</span>
+
+        
+    </div>
+    <a class="headerlink" href="#line.num_points"></a>
+    
+    
+
+                            </div>
+                            <div id="line.num_strokes" class="classattr">
+                                <div class="attr variable">
+            <span class="name">num_strokes</span>
+
+        
+    </div>
+    <a class="headerlink" href="#line.num_strokes"></a>
+    
+    
+
+                            </div>
+                            <div id="line.thickness" class="classattr">
+                                <div class="attr variable">
+            <span class="name">thickness</span>
+
+        
+    </div>
+    <a class="headerlink" href="#line.thickness"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="line.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="line.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="line.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="line.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="line.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="line.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="line.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="line.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="line3">
+                    <div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">line3</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
+
+        
+    </div>
+    <a class="headerlink" href="#line3"></a>
+    
+            <div class="docstring"><p>Render a wireframe by connecting a sequence of 3d points, seen from a
+camera.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>series : Series3.
+X Y Z data, for example a triple (xs, ys, zs) or quad (xs, ys, zs, cs)
+where cs is a ColorLike or a list of RGB triples. See documentation
+for more examples.</li>
+<li>*etc.: Series3
+Further series. Each is a separate line: the end of one is not joined
+to the start of the next.</li>
+<li>camera_position: float[3] (default: [0. 0. 2.]).
+The position at which the camera is placed.</li>
+<li>camera_target: float[3] (default: [0. 0. 0.]).
+The position towards which the camera is facing. Should be distinct
+from camera position. The default is that the camera is facing towards
+the origin.</li>
+<li>scene_up: float[3] (default: [0. 1. 0.]).
+The unit vector designating the 'up' direction for the scene. The
+default is the positive Y direction. Should not have the same direction
+as camera_target - camera_position.</li>
+<li>vertical_fov_degrees: float (default 90).
+Vertical field of view. Points within a vertical cone of this angle are
+projected into the viewing area. The horizontal field of view is then
+determined based on the aspect ratio.</li>
+<li>aspect_ratio: optional float.
+Aspect ratio for the scene, as a fraction (W:H represented as W/H). If
+not provided, uses W=width, H=2*height, which is uniform given the
+resolution of the plot.</li>
+<li>width : int.
+The number of character columns in the plot.</li>
+<li>height : int.
+The number of character rows in the plot.</li>
+<li>thickness : float (default: 1.0).
+How wide to draw the line, in dots. Corners between segments are
+filled and the ends are rounded.</li>
+</ul>
+
+<p>A point with a non-finite coordinate breaks the line, which is how a mesh
+of several separate wires is drawn in one call. A segment reaching behind
+the camera is cut off in front of it, and one entirely behind the camera is
+not drawn.</p>
+</div>
+
+
+                            <div id="line3.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">line3</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">series</span><span class="p">:</span> <span class="n">Series3</span>,</span><span class="param">	<span class="o">*</span><span class="n">etc</span><span class="p">:</span> <span class="n">Series3</span>,</span><span class="param">	<span class="n">camera_position</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>,</span><span class="param">	<span class="n">camera_target</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">scene_up</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">vertical_fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span>,</span><span class="param">	<span class="n">aspect_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span>,</span><span class="param">	<span class="n">thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#line3.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="line3.num_points" class="classattr">
+                                <div class="attr variable">
+            <span class="name">num_points</span>
+
+        
+    </div>
+    <a class="headerlink" href="#line3.num_points"></a>
+    
+    
+
+                            </div>
+                            <div id="line3.num_segments" class="classattr">
+                                <div class="attr variable">
+            <span class="name">num_segments</span>
+
+        
+    </div>
+    <a class="headerlink" href="#line3.num_segments"></a>
+    
+    
+
+                            </div>
+                            <div id="line3.thickness" class="classattr">
+                                <div class="attr variable">
+            <span class="name">thickness</span>
+
+        
+    </div>
+    <a class="headerlink" href="#line3.thickness"></a>
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#plot">plot</a></dt>
+                                <dd id="line3.chars" class="variable"><a href="#plot.chars">chars</a></dd>
+                <dd id="line3.height" class="variable"><a href="#plot.height">height</a></dd>
+                <dd id="line3.width" class="variable"><a href="#plot.width">width</a></dd>
+                <dd id="line3.renderstr" class="function"><a href="#plot.renderstr">renderstr</a></dd>
+                <dd id="line3.clearstr" class="function"><a href="#plot.clearstr">clearstr</a></dd>
+                <dd id="line3.renderimg" class="function"><a href="#plot.renderimg">renderimg</a></dd>
+                <dd id="line3.saveimg" class="function"><a href="#plot.saveimg">saveimg</a></dd>
+                <dd id="line3.updatestr" class="function"><a href="#plot.updatestr">updatestr</a></dd>
 
             </div>
                                 </dl>
@@ -1967,7 +2264,7 @@ default foreground color.</li>
 <p>Inputs:</p>
 
 <ul>
-<li>plot : scatter | function2 | histogram2 | dstack2.
+<li>plot : scatter | line | function2 | histogram2 | dstack2.
 The plot object to be enclosed by the axes. Must have an xrange and a
 yrange.</li>
 <li>title: optional str.
@@ -1999,7 +2296,7 @@ Set to <code>None</code> to use foreground color.</li>
                             <div id="axes.__init__" class="classattr">
                                 <div class="attr function">
             
-        <span class="name">axes</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">plot</span><span class="p">:</span> <span class="n"><a href="#scatter">scatter</a></span> <span class="o">|</span> <span class="n"><a href="#function2">function2</a></span> <span class="o">|</span> <span class="n"><a href="#histogram2">histogram2</a></span> <span class="o">|</span> <span class="n"><a href="#dstack2">dstack2</a></span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">xfmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{x:.1f}</span><span class="s1">&#39;</span>,</span><span class="param">	<span class="n">yfmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{y:.1f}</span><span class="s1">&#39;</span>,</span><span class="param">	<span class="n">ypad</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">style</span><span class="p">:</span> <span class="n"><a href="core.html#BoxStyle">matthewplotlib.core.BoxStyle</a></span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">BoxStyle</span><span class="o">.</span><span class="n">LIGHTX</span><span class="p">:</span> <span class="s1">&#39;┬─┐││┼─┤&#39;</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span></span>)</span>
+        <span class="name">axes</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">plot</span><span class="p">:</span> <span class="n"><a href="#scatter">scatter</a></span> <span class="o">|</span> <span class="n"><a href="#line">line</a></span> <span class="o">|</span> <span class="n"><a href="#function2">function2</a></span> <span class="o">|</span> <span class="n"><a href="#histogram2">histogram2</a></span> <span class="o">|</span> <span class="n"><a href="#dstack2">dstack2</a></span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">xfmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{x:.1f}</span><span class="s1">&#39;</span>,</span><span class="param">	<span class="n">yfmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{y:.1f}</span><span class="s1">&#39;</span>,</span><span class="param">	<span class="n">ypad</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">style</span><span class="p">:</span> <span class="n"><a href="core.html#BoxStyle">matthewplotlib.core.BoxStyle</a></span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">BoxStyle</span><span class="o">.</span><span class="n">LIGHTX</span><span class="p">:</span> <span class="s1">&#39;┬─┐││┼─┤&#39;</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span></span>)</span>
 
         
     </div>
@@ -2313,13 +2610,13 @@ determined by the maximum width and height among all input plots. Non-blank
 characters from upper layers will obscure characters from lower layers.</p>
 
 <p>Unlike dstack, the plots must have xrange and range attributes, and these
-must all match. The allowable types are scatter, function2, histogram2, and
-dstack2.</p>
+must all match. The allowable types are scatter, line, function2,
+histogram2, and dstack2.</p>
 
 <p>Inputs:</p>
 
 <ul>
-<li>*plots : scatter | function2 | histogram2 | dstack2.
+<li>*plots : scatter | line | function2 | histogram2 | dstack2.
 A sequence of plot objects to be overlaid. Must have matching xrange
 and yrange.</li>
 </ul>
@@ -2329,7 +2626,7 @@ and yrange.</li>
                             <div id="dstack2.__init__" class="classattr">
                                 <div class="attr function">
             
-        <span class="name">dstack2</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">plots</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#scatter">scatter</a></span><span class="p">,</span> <span class="n"><a href="#function2">function2</a></span><span class="p">,</span> <span class="n"><a href="#histogram2">histogram2</a></span><span class="p">,</span> <span class="n">Self</span><span class="p">]</span></span>)</span>
+        <span class="name">dstack2</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">plots</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#scatter">scatter</a></span><span class="p">,</span> <span class="n"><a href="#line">line</a></span><span class="p">,</span> <span class="n"><a href="#function2">function2</a></span><span class="p">,</span> <span class="n"><a href="#histogram2">histogram2</a></span><span class="p">,</span> <span class="n">Self</span><span class="p">]</span></span>)</span>
 
         
     </div>

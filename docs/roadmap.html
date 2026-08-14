@@ -49,7 +49,7 @@
 <p>Basic plot types:</p>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Scatter plots.</label></li>
-<li><label><input type="checkbox" />Line plots (connect the dots).</label></li>
+<li><label><input type="checkbox" checked="" />Line plots (connect the dots). See <code>notes/lines.md</code>.</label></li>
 <li><label><input type="checkbox" checked="" />Image plots / matrix heatmaps.</label></li>
 <li><label><input type="checkbox" checked="" />Function heatmap plots.</label></li>
 <li><label><input type="checkbox" checked="" />Progress bars.</label></li>
@@ -129,8 +129,17 @@
 </ul></li>
 <li><label><input type="checkbox" />Advanced line plots:</label>
 <ul class="task-list">
+<li><label><input type="checkbox" checked="" />Configurable stroke thickness, with round caps and filled joins.</label></li>
+<li><label><input type="checkbox" checked="" />Gaps, where a coordinate is non-finite.</label></li>
 <li><label><input type="checkbox" />Error bars on line plots.</label></li>
 <li><label><input type="checkbox" />Fill plots.</label></li>
+<li><label><input type="checkbox" />Dashed and dotted strokes.</label></li>
+</ul></li>
+<li><label><input type="checkbox" />Wireframes in three dimensions:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />Broken polylines projected from a camera (<code>line3</code>), cut off at a near plane. See <code>notes/lines.md</code>.</label></li>
+<li><label><input type="checkbox" />An explicit edge list, so a mesh with shared vertices is projected once per vertex rather than once per wire through it.</label></li>
+<li><label><input type="checkbox" />Hidden line removal, or some depth ordering. Colouring by depth is the stand-in for now.</label></li>
 </ul></li>
 <li><label><input type="checkbox" />Advanced bar charts:</label>
 <ul class="task-list">
@@ -255,6 +264,8 @@
 <li><label><input type="checkbox" checked="" />Something to show bar/column plots and histograms.</label></li>
 <li><label><input type="checkbox" checked="" />Game of life as a demonstration of differential rendering.</label></li>
 <li><label><input type="checkbox" checked="" />Amiga Boing Ball as a demonstration of animations as values.</label></li>
+<li><label><input type="checkbox" checked="" />Line charts, and what thickness does to a stroke.</label></li>
+<li><label><input type="checkbox" checked="" />A wireframe landscape, as a demonstration of <code>line3</code>.</label></li>
 <li><label><input type="checkbox" />Webcam with ffmpeg</label></li>
 </ul>
 <p>Future design directions.</p>

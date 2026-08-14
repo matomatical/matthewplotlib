@@ -231,6 +231,11 @@ class TestLine:
         assert cells[1].all()
         assert cells.sum() == cells[1].sum()
 
+    def test_a_series_with_no_points_at_all(self):
+        plot = line((np.array([]), np.array([])), width=8, height=2)
+        assert plot.width == 8
+        assert not drawn_cells(plot).any()
+
     def test_takes_an_axis_series(self):
         plot = line(mp.xaxis(0, 1, 10), width=10, height=3)
         assert drawn_cells(plot).any()
@@ -310,6 +315,11 @@ class TestLine3:
         here = np.array([[-0.5, 0.5, 0.0]])
         there = np.array([[0.5, -0.5, 0.0]])
         plot = line3(here, there, width=20, height=5)
+        assert plot.num_segments == 0
+        assert not drawn_cells(plot).any()
+
+    def test_a_wire_with_no_points_at_all(self):
+        plot = line3(np.zeros((0, 3)), width=8, height=2)
         assert plot.num_segments == 0
         assert not drawn_cells(plot).any()
 

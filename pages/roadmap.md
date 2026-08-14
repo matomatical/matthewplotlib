@@ -7,7 +7,7 @@ Roadmap to version 1
 Basic plot types:
 
 * [x] Scatter plots.
-* [ ] Line plots (connect the dots).
+* [x] Line plots (connect the dots). See `notes/lines.md`.
 * [x] Image plots / matrix heatmaps.
 * [x] Function heatmap plots.
 * [x] Progress bars.
@@ -88,8 +88,18 @@ More plot types:
   * [x] Multiple point clouds on a single scatter plot.
   * [x] 3d scatter plots.
 * [ ] Advanced line plots:
+  * [x] Configurable stroke thickness, with round caps and filled joins.
+  * [x] Gaps, where a coordinate is non-finite.
   * [ ] Error bars on line plots.
   * [ ] Fill plots.
+  * [ ] Dashed and dotted strokes.
+* [ ] Wireframes in three dimensions:
+  * [x] Broken polylines projected from a camera (`line3`), cut off at a near
+    plane. See `notes/lines.md`.
+  * [ ] An explicit edge list, so a mesh with shared vertices is projected once
+    per vertex rather than once per wire through it.
+  * [ ] Hidden line removal, or some depth ordering. Colouring by depth is the
+    stand-in for now.
 * [ ] Advanced bar charts:
   * [x] Bar/column charts with configurable sizes and spacing.
   * [ ] Bar/column charts with other alignments.
@@ -215,6 +225,8 @@ More examples:
 * [x] Something to show bar/column plots and histograms.
 * [x] Game of life as a demonstration of differential rendering.
 * [x] Amiga Boing Ball as a demonstration of animations as values.
+* [x] Line charts, and what thickness does to a stroke.
+* [x] A wireframe landscape, as a demonstration of `line3`.
 * [ ] Webcam with ffmpeg
 
 Future design directions.

@@ -351,7 +351,7 @@ class TestProject3Segments:
         _xy_starts, _xy_ends, drawn = project3_segments(starts, ends)
         assert not drawn.any()
 
-    def test_a_segment_reaching_behind_the_camera_is_cut_at_the_near_plane(self):
+    def test_a_segment_reaching_behind_the_camera_is_cut(self):
         # from behind the camera to in front of it, passing it on the +x side
         starts = np.array([[1.0, 0.0, 4.0]])
         ends = np.array([[1.0, 0.0, -4.0]])

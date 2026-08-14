@@ -45,6 +45,19 @@
         </a>
         <div class="docstring page-content">
 <h1 id="changelog">Changelog</h1>
+<h2 id="in-development">In development</h2>
+<p>New:</p>
+<ul>
+<li><code>mp.line(series, ...)</code>: line plots, connecting the points of each series in order, drawn with braille dots like <code>mp.scatter</code>. Takes the same ranges and size as a scatter, fits inside <code>mp.axes</code>, and layers with <code>mp.dstack2</code>.</li>
+<li><code>mp.line3(series, ...)</code>: the same for points in space, seen from a camera configured as for <code>mp.scatter3</code>. Segments reaching behind the camera are cut off in front of it rather than being reflected through the centre of the view.</li>
+<li><code>thickness=</code> on both, measured in dots, with round caps and joins that fill in rather than notching.</li>
+<li>A non-finite coordinate breaks a line, so one series can be drawn as several disconnected strokes – a gap in measured data, or a whole mesh of separate wires in one call.</li>
+<li>Colors interpolate along each segment, so a series with a color per point comes out as a gradient.</li>
+<li>Each series is a separate stroke: the last point of one is never joined to the first point of the next.</li>
+<li><code>lines.py</code> example: two loss curves, one of them measured sparsely and with a stretch missing, and the same spiral drawn with four widths of pen.</li>
+<li><code>starburst.py</code> example: a turning rose of rays whose stroke swells from one dot to six and back.</li>
+<li><code>landscape.py</code> example: a wireframe landscape scrolling under a banded sun, terrain and sun both drawn by one call to <code>mp.line3</code>.</li>
+</ul>
 <h2 id="version-0.5.0">Version 0.5.0</h2>
 <p>New:</p>
 <ul>

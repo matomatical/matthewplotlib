@@ -111,8 +111,11 @@ EXAMPLES: tuple[Example, ...] = (
     Example("hilbert_curve.py",         33, 64, saves="png"),
     Example("image.py",                 33, 96, saves="png"),
     Example("jointplot.py",             35, 64, saves="png"),
+    Example("landscape.py",             23, 76, saves="gif",
+            args=("--num-frames", "5", "--no-loop")),
     Example("life.py",                  26, 74, saves="gif",
             args=("--num-frames", "5")),
+    Example("lines.py",                 28, 72, saves="png"),
     Example("lissajous.py",             46, 75, saves="png"),
     Example("mandelbrot.py",            43, 80, saves="gif",
             args=("--num-frames", "5")),
@@ -122,6 +125,8 @@ EXAMPLES: tuple[Example, ...] = (
     Example("quickstart3.py",           14, 81, saves="gif",
             args=("--num-frames", "5")),
     Example("scatter.py",               24, 46, saves="png"),
+    Example("starburst.py",             26, 48, saves="gif",
+            args=("--num-frames", "6", "--no-loop")),
     # --log-every is turned down so that a five step run still exercises
     # `anim.print`. The pane is three rows taller than the 23 the plot needs:
     # one for each logged line, and one for the row `clearstr` cannot step onto

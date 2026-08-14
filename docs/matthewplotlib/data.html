@@ -156,7 +156,13 @@
 
             </li>
             <li>
+                    <a class="function" href="#view_matrix">view_matrix</a>
+            </li>
+            <li>
                     <a class="function" href="#project3">project3</a>
+            </li>
+            <li>
+                    <a class="function" href="#project3_segments">project3_segments</a>
             </li>
     </ul>
 
@@ -239,8 +245,10 @@ any accepted form into arrays of points and colors.</li>
 <p>3d projection:</p>
 
 <ul>
-<li><code><a href="#project3">project3</a></code>: Project 3d points onto the viewing plane of a camera, for the 3d
-plot types in <code><a href="plots.html">matthewplotlib.plots</a></code>.</li>
+<li><code><a href="#view_matrix">view_matrix</a></code>: The coordinate system a camera sees the scene in.</li>
+<li><code><a href="#project3">project3</a></code> and <code><a href="#project3_segments">project3_segments</a></code>: Project 3d points, or 3d line segments,
+onto the viewing plane of a camera, for the 3d plot types in
+<code><a href="plots.html">matthewplotlib.plots</a></code>.</li>
 </ul>
 </div>
 
@@ -591,6 +599,43 @@ plot types in <code><a href="plots.html">matthewplotlib.plots</a></code>.</li>
                                 </dl>
                             </div>
                 </section>
+                <section id="view_matrix">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">view_matrix</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">camera_position</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>,</span><span class="param">	<span class="n">camera_target</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">scene_up</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#view_matrix"></a>
+    
+            <div class="docstring"><p>The basis of a camera's own coordinate system, as columns: X to the right,
+Y up, and Z towards whatever the camera is pointed at.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>camera_position: float[3] (default: [0. 0. 2.]).
+The position at which the camera is placed.</li>
+<li>camera_target: float[3] (default: [0. 0. 0.]).
+The position towards which the camera is facing. Should be distinct
+from camera position.</li>
+<li>scene_up: float[3] (default: [0. 1. 0.]).
+The unit vector designating the 'up' direction for the scene. Should
+not have the same direction as camera_target - camera_position.</li>
+</ul>
+
+<p>Returns:</p>
+
+<ul>
+<li>V: float[3, 3].
+Right-multiply a displacement from the camera by this to express it in
+the camera's coordinates.</li>
+</ul>
+</div>
+
+
+                </section>
                 <section id="project3">
                     <div class="attr function">
             
@@ -654,6 +699,63 @@ point left and up respectively and Z points towards the object ahead of
 the camera (an alternative convention is for Z to point behind the
 camera).</li>
 </ul>
+</div>
+
+
+                </section>
+                <section id="project3_segments">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">project3_segments</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">starts</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">ends</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">camera_position</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>,</span><span class="param">	<span class="n">camera_target</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">scene_up</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span>,</span><span class="param">	<span class="n">near</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-06</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#project3_segments"></a>
+    
+            <div class="docstring"><p>Project 3d line segments onto the viewing plane of a camera.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>starts: float[n, 3].
+The point at which each segment begins.</li>
+<li>ends: float[n, 3].
+The point at which each segment ends.</li>
+<li>camera_position: float[3] (default: [0. 0. 2.]).
+The position at which the camera is placed.</li>
+<li>camera_target: float[3] (default: [0. 0. 0.]).
+The position towards which the camera is facing. Should be distinct
+from camera position.</li>
+<li>scene_up: float[3] (default: [0. 1. 0.]).
+The unit vector designating the 'up' direction for the scene. Should
+not have the same direction as camera_target - camera_position.</li>
+<li>fov_degrees: float (default 90).
+Field of view. Points within a cone (or frustum) of this angle leaving
+the camera are projected into the unit disk (or the square [-1,1]^2).</li>
+<li>near: float (default 1e-6).
+Distance in front of the camera at which segments are cut off.</li>
+</ul>
+
+<p>Returns:</p>
+
+<ul>
+<li>xy_starts: float[m, 2].
+Where each drawn segment begins, projected.</li>
+<li>xy_ends: float[m, 2].
+Where each drawn segment ends, projected.</li>
+<li>drawn: bool[n].
+Which of the input segments are drawn at all. The two arrays of
+projected points have one entry per set bit, in order, so anything
+else the caller holds per segment should be masked with this.</li>
+</ul>
+
+<p>A segment with one end behind the camera is cut at the near plane, keeping
+the part in front. A segment with both ends behind it is not drawn, nor is
+one with a non-finite end. Projecting the endpoints without cutting would
+place that first kind of segment on the wrong side of the view, since
+perspective division by a negative depth reflects a point through the
+centre of the image.</p>
 </div>
 
 

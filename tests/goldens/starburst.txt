@@ -1,0 +1,2274 @@
+example: starburst.py
+args: --num-frames 6 --no-loop
+terminal: 26x48
+image: 6 frames, 400x384, sha256:32dffd1f75af76f9
+
+# Regenerate with `make goldens`. One frame per print; the text and
+# colour grids are the terminal screen, cropped to its content.
+
+frame 0: 4837 bytes, 25x47, cursor 25,0, scrolled 0
+palette:
+  .. default default
+  00 #7dfc00 default
+  01 #76ee00 default
+  02 #6ddc00 default
+  03 #64c900 default
+  04 #5ab700 default
+  05 #00fa00 default
+  06 #51a500 default
+  07 #fafa00 default
+  08 #00e400 default
+  09 #00d200 default
+  0a #3fff00 default
+  0b #489200 default
+  0c #bfff00 default
+  0d #d2d200 default
+  0e #e4e400 default
+  0f #00c000 default
+  0g #00ae00 default
+  0h #36dd00 default
+  0i #3f8000 default
+  0j #a6dd00 default
+  0k #aeae00 default
+  0l #c0c000 default
+  0m #00fa7c default
+  0n #00e873 default
+  0o #00db6d default
+  0p #00f63c default
+  0q #00d434 default
+  0r #009c00 default
+  0s #008500 default
+  0t #2cb600 default
+  0u #249500 default
+  0v #366d00 default
+  0w #709500 default
+  0x #88b600 default
+  0y #858500 default
+  0z #9c9c00 default
+  0A #d49e00 default
+  0B #f6b800 default
+  0C #db6d00 default
+  0D #e87300 default
+  0E #fa7c00 default
+  0F #00d268 default
+  0G #00c461 default
+  0H #00b258 default
+  0I #009c4d default
+  0J #00b22c default
+  0K #009023 default
+  0L #007800 default
+  0M #006600 default
+  0N #196800 default
+  0O #2d5b00 default
+  0P #4d6800 default
+  0Q #666600 default
+  0R #787800 default
+  0S #906b00 default
+  0T #b28500 default
+  0U #9c4d00 default
+  0V #b25800 default
+  0W #c46100 default
+  0X #d26800 default
+  0Y #00ffbf default
+  0Z #00eab0 default
+  10 #00d09c default
+  11 #00b688 default
+  12 #008542 default
+  13 #007339 default
+  14 #006130 default
+  15 #00611d default
+  16 #005500 default
+  17 #555500 default
+  18 #614300 default
+  19 #613000 default
+  1a #733900 default
+  1b #854200 default
+  1c #b62c00 default
+  1d #d03300 default
+  1e #ea3900 default
+  1f #ff3f00 default
+  1g #00fcfc default
+  1h #00f3f3 default
+  1i #00eaea default
+  1j #00e0e0 default
+  1k #00d7d7 default
+  1l #00cece default
+  1m #00c5c5 default
+  1n #00bcbc default
+  1o #00b2b2 default
+  1p #00acac default
+  1q #009570 default
+  1r #007557 default
+  1s #005b43 default
+  1t #5b1600 default
+  1u #751c00 default
+  1v #952400 default
+  1w #00a7a7 default
+  1x #00a0a0 default
+  1y #009797 default
+  1z #008e8e default
+  1A #008484 default
+  1B #007b7b default
+  1C #007272 default
+  1D #006d83 default
+  1E #005b6a default
+  1F #004d59 default
+  1G #59000b default
+  1H #6a000e default
+  1I #830015 default
+  1J #720000 default
+  1K #7b0000 default
+  1L #840000 default
+  1M #8e0000 default
+  1N #970000 default
+  1O #a00000 default
+  1P #a90000 default
+  1Q #b20000 default
+  1R #bc0000 default
+  1S #c50000 default
+  1T #ce0000 default
+  1U #d70000 default
+  1V #e00000 default
+  1W #ea0000 default
+  1X #f30000 default
+  1Y #fc0000 default
+  1Z #00bfff default
+  20 #00b0ea default
+  21 #009cd0 default
+  22 #0088b6 default
+  23 #004285 default
+  24 #003973 default
+  25 #003061 default
+  26 #001d61 default
+  27 #000055 default
+  28 #550055 default
+  29 #610043 default
+  2a #610030 default
+  2b #730039 default
+  2c #850042 default
+  2d #b6002c default
+  2e #d00033 default
+  2f #ea0039 default
+  2g #ff003f default
+  2h #0068d2 default
+  2i #0061c4 default
+  2j #0058b2 default
+  2k #004d9c default
+  2l #002cb2 default
+  2m #002390 default
+  2n #000078 default
+  2o #000066 default
+  2p #190068 default
+  2q #2d005b default
+  2r #4d0068 default
+  2s #660066 default
+  2t #780078 default
+  2u #90006b default
+  2v #b20085 default
+  2w #9c004d default
+  2x #b20058 default
+  2y #c40061 default
+  2z #d20068 default
+  2A #007cfa default
+  2B #0073e8 default
+  2C #006ddb default
+  2D #003cf6 default
+  2E #0034d4 default
+  2F #00009c default
+  2G #000085 default
+  2H #2c00b6 default
+  2I #240095 default
+  2J #36006d default
+  2K #700095 default
+  2L #8800b6 default
+  2M #850085 default
+  2N #9c009c default
+  2O #d4009e default
+  2P #f600b8 default
+  2Q #db006d default
+  2R #e80073 default
+  2S #fa007c default
+  2T #0000c0 default
+  2U #0000ae default
+  2V #3600dd default
+  2W #3f0080 default
+  2X #a600dd default
+  2Y #ae00ae default
+  2Z #c000c0 default
+  30 #0000e4 default
+  31 #0000d2 default
+  32 #3f00ff default
+  33 #480092 default
+  34 #bf00ff default
+  35 #d200d2 default
+  36 #e400e4 default
+  37 #0000fa default
+  38 #5500ac default
+  39 #5000a2 default
+  3a #fa00fa default
+  3b #5a00b7 default
+  3c #6400c9 default
+  3d #6d00dc default
+  3e #7600ee default
+  3f #7d00fc default
+  3g #7f7f7f default
+text:
+                          ⡄
+                          ⡇
+                          ⡇
+                          ⡇
+                          ⡇
+                  ⢠       ⡇      ⡄
+                   ⠣⡀  ⡀  ⡇ ⢀  ⢀⠜
+                    ⠱⡀ ⢣  ⡇ ⡜ ⢀⠎
+             ⠒⠤⡀  ⠑⢄ ⠙⡄⠘⡄ ⡇⢠⠃⢠⠋ ⡠⠊  ⢀⠤⠒
+               ⠈⠑⠢⣄ ⠑⢄⠈⢆⢸ ⡇⡇⡰⠁⡠⠊ ⣠⠔⠊⠁
+               ⠠⠤⣀⣀⠉⠢⢄⡑⠈    ⠁⢊⡠⠔⠉⣀⣀⠤⠄
+   ⣀⣀⣀⣀⣀⣀⣀⣀⣀⡀      ⠉⠒⠒        ⠒⠒⠉
+            ⠈⠉⠉⠉⠉⠉⠉⣉⠭⠭        ⠭⠭⣉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉
+               ⠐⠒⠉⠉⣀⠔⠊⡡⢀    ⡀⢌⠑⠢⣀⠉⠉⠒⠂
+               ⢀⡠⠔⠋ ⡠⠊⢀⠎⢸ ⡇⡇⠱⡀⠑⢄ ⠙⠢⢄⡀
+             ⠤⠒⠁  ⡠⠊ ⣠⠃⢠⠃ ⡇⠘⡄⠘⣄ ⠑⢄  ⠈⠒⠤
+                    ⡰⠁ ⡜  ⡇ ⢣ ⠈⢆
+                   ⡔⠁  ⠁  ⡇ ⠈  ⠈⢢
+                  ⠘      ⢀⠇      ⠃
+                         ⢸
+                         ⢸
+                         ⢸
+                         ⢸
+                         ⠘
+                 thickness 1.0 dots
+colour:
+  ................................................00............................................
+  ................................................01............................................
+  ................................................02............................................
+  ................................................03............................................
+  ................................................04............................................
+  ................................05..............06............07..............................
+  ..................................0809....0a....0b..0c....0d0e................................
+  ....................................0f0g..0h....0i..0j..0k0l..................................
+  ......................0m0n0o....0p0q..0r0s0t0u..0v0w0x0y0z..0A0B....0C0D0E....................
+  ..........................0F0G0H0I..0J0K0L0M0N..0O0P0Q0R0S0T..0U0V0W0X........................
+  ..........................0Y0Z10111213141516........1718191a1b1c1d1e1f........................
+  ..1g1h1i1j1k1l1m1n1o1p............1q1r1s................1t1u1v................................
+  ....................1w1x1y1z1A1B1C1D1E1F................1G1H1I1J1K1L1M1N1O1P1Q1R1S1T1U1V1W1X1Y
+  ..........................1Z2021222324252627........28292a2b2c2d2e2f2g........................
+  ..........................2h2i2j2k..2l2m2n2o2p..2q2r2s2t2u2v..2w2x2y2z........................
+  ......................2A2B2C....2D2E..2F2G2H2I..2J2K2L2M2N..2O2P....2Q2R2S....................
+  ....................................2T2U..2V....2W..2X..2Y2Z..................................
+  ..................................3031....32....33..34....3536................................
+  ................................37............3839............3a..............................
+  ..............................................3b..............................................
+  ..............................................3c..............................................
+  ..............................................3d..............................................
+  ..............................................3e..............................................
+  ..............................................3f..............................................
+  ..............................3g3g3g3g3g3g3g3g3g3g3g3g3g3g3g3g3g3g............................
+
+frame 1: 5746 bytes, 25x47, cursor 25,0, scrolled 0
+palette:
+  .. default default
+  00 #3fff00 default
+  01 #3dfa00 default
+  02 #3cf600 default
+  03 #3bf000 default
+  04 #38e600 default
+  05 #37e000 default
+  06 #34d400 default
+  07 #33d100 default
+  08 #32cb00 default
+  09 #2fc200 default
+  0a #2ebb00 default
+  0b #bdfc00 default
+  0c #bfff00 default
+  0d #2bb000 default
+  0e #2aac00 default
+  0f #29a700 default
+  0g #a9e200 default
+  0h #afea00 default
+  0i #b5f200 default
+  0j #00ff3f default
+  0k #00f93d default
+  0l #269b00 default
+  0m #249300 default
+  0n #7bf800 default
+  0o #7af600 default
+  0p #92c400 default
+  0q #9bcf00 default
+  0r #f9ba00 default
+  0s #ffbf00 default
+  0t #00ea39 default
+  0u #00d935 default
+  0v #00cc32 default
+  0w #00f400 default
+  0x #00e600 default
+  0y #218800 default
+  0z #1f8100 default
+  0A #1f7f00 default
+  0B #67d000 default
+  0C #78a100 default
+  0D #7ea900 default
+  0E #85b200 default
+  0F #e6e600 default
+  0G #f4f400 default
+  0H #cc9800 default
+  0I #d9a200 default
+  0J #eaaf00 default
+  0K #00bd2e default
+  0L #00ac2a default
+  0M #00b01a default
+  0N #00c400 default
+  0O #00a600 default
+  0P #187700 default
+  0Q #1a6c00 default
+  0R #4d9c00 default
+  0S #5e7f00 default
+  0T #6c8d00 default
+  0U #a6a600 default
+  0V #c4c400 default
+  0W #b09500 default
+  0X #ac8000 default
+  0Y #bd8d00 default
+  0Z #f53c00 default
+  10 #fc3e00 default
+  11 #00ffbf default
+  12 #00f2b5 default
+  13 #00fb7d default
+  14 #00e973 default
+  15 #00cd66 default
+  16 #00b04c default
+  17 #008d22 default
+  18 #00791d default
+  19 #008405 default
+  1a #017100 default
+  1b #155c00 default
+  1c #266200 default
+  1d #386800 default
+  1e #4a6200 default
+  1f #727200 default
+  1g #847e00 default
+  1h #795a00 default
+  1i #8d6900 default
+  1j #b06300 default
+  1k #cd6600 default
+  1l #e97300 default
+  1m #fb7d00 default
+  1n #b02b00 default
+  1o #bc2e00 default
+  1p #c43000 default
+  1q #cd3200 default
+  1r #d63400 default
+  1s #df3700 default
+  1t #e93900 default
+  1u #f23b00 default
+  1v #fb3d00 default
+  1w #ff3f00 default
+  1x #00fcbd default
+  1y #00e2a9 default
+  1z #00d29d default
+  1A #00c291 default
+  1B #00b285 default
+  1C #00a178 default
+  1D #00966a default
+  1E #009953 default
+  1F #008943 default
+  1G #00692f default
+  1H #00591d default
+  1I #005704 default
+  1J #0a5500 default
+  1K #2a5500 default
+  1L #4a5500 default
+  1M #575300 default
+  1N #593a00 default
+  1O #693800 default
+  1P #864000 default
+  1Q #974600 default
+  1R #832800 default
+  1S #7c1e00 default
+  1T #862100 default
+  1U #922300 default
+  1V #9c2600 default
+  1W #a72800 default
+  1X #b92d00 default
+  1Y #c12f00 default
+  1Z #cb3200 default
+  20 #00f8f8 default
+  21 #00dddd default
+  22 #00b29d default
+  23 #009076 default
+  24 #007d64 default
+  25 #006b54 default
+  26 #005b45 default
+  27 #005534 default
+  28 #551f00 default
+  29 #591400 default
+  2a #631300 default
+  2b #711400 default
+  2c #801300 default
+  2d #a00f00 default
+  2e #bf0a00 default
+  2f #f80000 default
+  2g #00ffff default
+  2h #00f5f5 default
+  2i #00cfd3 default
+  2j #00afb5 default
+  2k #008893 default
+  2l #006f7c default
+  2m #005c6a default
+  2n #004c5a default
+  2o #003f55 default
+  2p #550015 default
+  2q #5c000e default
+  2r #6e000e default
+  2s #84000f default
+  2t #9b000e default
+  2u #bc0008 default
+  2v #dd0000 default
+  2w #f50000 default
+  2x #ff0000 default
+  2y #0097cb default
+  2z #0090c1 default
+  2A #008ab9 default
+  2B #0084b0 default
+  2C #007ca7 default
+  2D #00749c default
+  2E #006c92 default
+  2F #006486 default
+  2G #005d7c default
+  2H #005983 default
+  2I #004f97 default
+  2J #004486 default
+  2K #002f69 default
+  2L #001d59 default
+  2M #000457 default
+  2N #0a0055 default
+  2O #2a0055 default
+  2P #4a0055 default
+  2Q #570053 default
+  2R #59003a default
+  2S #690038 default
+  2T #890043 default
+  2U #990044 default
+  2V #96002a default
+  2W #a10028 default
+  2X #b2002c default
+  2Y #c20030 default
+  2Z #d20034 default
+  30 #e20038 default
+  31 #f2003c default
+  32 #fc003e default
+  33 #00bfff default
+  34 #00bcfb default
+  35 #00b5f2 default
+  36 #00aee9 default
+  37 #00a7df default
+  38 #00a0d6 default
+  39 #0099cd default
+  3a #0092c4 default
+  3b #008dbc default
+  3c #007dfb default
+  3d #0073e9 default
+  3e #0066cd default
+  3f #004cb0 default
+  3g #00228d default
+  3h #001d79 default
+  3i #000584 default
+  3j #000072 default
+  3k #160062 default
+  3l #2e0068 default
+  3m #390062 default
+  3n #46005c default
+  3o #6f0071 default
+  3p #84007e default
+  3q #79005a default
+  3r #8d0069 default
+  3s #b00063 default
+  3t #cd0066 default
+  3u #e90073 default
+  3v #fb007d default
+  3w #ff003f default
+  3x #00bdfc default
+  3y #00b7f5 default
+  3z #0032cc default
+  3A #002ebd default
+  3B #002aac default
+  3C #001ab0 default
+  3D #0000c4 default
+  3E #0000a6 default
+  3F #1f008d default
+  3G #1f007f default
+  3H #4d009c default
+  3I #50006c default
+  3J #5d0077 default
+  3K #a600a6 default
+  3L #c400c4 default
+  3M #b00095 default
+  3N #ac0080 default
+  3O #bd008d default
+  3P #cc0098 default
+  3Q #003df9 default
+  3R #0039ea default
+  3S #0035d9 default
+  3T #0000f4 default
+  3U #0000e6 default
+  3V #2c00b2 default
+  3W #2a00a9 default
+  3X #2800a1 default
+  3Y #6700d0 default
+  3Z #5e007f default
+  40 #600081 default
+  41 #660088 default
+  42 #e600e6 default
+  43 #f400f4 default
+  44 #d900a2 default
+  45 #ea00af default
+  46 #f900ba default
+  47 #003fff default
+  48 #3300cf default
+  49 #3000c4 default
+  4a #7a00f6 default
+  4b #7b00f8 default
+  4c #6d0093 default
+  4d #73009b default
+  4e #ff00bf default
+  4f #3c00f2 default
+  4g #3a00ea default
+  4h #3800e2 default
+  4i #7d00a7 default
+  4j #8000ac default
+  4k #8400b0 default
+  4l #3f00ff default
+  4m #3e00fc default
+  4n #8c00bb default
+  4o #9100c2 default
+  4p #9700cb default
+  4q #9c00d1 default
+  4r #9e00d4 default
+  4s #a800e0 default
+  4t #ac00e6 default
+  4u #b400f0 default
+  4v #b800f6 default
+  4w #bb00fa default
+  4x #bf00ff default
+  4y #7f7f7f default
+text:
+                    ⡀
+                   ⠸⣿⡀
+                    ⢿⣇
+                    ⠸⣿⡀
+                     ⢻⣧      ⣠⡀
+                     ⠘⣿⡄    ⢠⣿⠃
+               ⣠⡀     ⢻⣧ ⢠⣦ ⣼⡟     ⢀⣄
+               ⠈⠻⣦⡀ ⢾⣆⠈⣿⡆⢸⣿⢠⣿⠃⣰⡷ ⢀⣴⠟⠁
+                 ⠈⠻⣦⡈⢿⣦⣹⣷⢸⣿⣾⣟⣴⡿⢁⣴⠟⠁           ⢀⣀
+           ⢀⣀   ⠺⢷⣦⣌⠻⣦⡹⣿⣿⣾⣿⣿⣾⢏⣴⠟⣡⣴⡾⠗   ⣀⣀⣤⣴⣶⡾⠿⠟⠛⠁
+           ⠙⠛⠿⠿⣶⣶⣤⣬⣻⢷⣮⣿⠛⠉ ⠁⠉⠛⣿⣵⣾⣟⣡⣤⣴⣶⠿⠿⠛⠛⠉⠁
+               ⣀⣀⣉⣙⣛⣿⣿⠃      ⠘⣿⣟⣛⣋⣉⣁⣀
+              ⠈⠛⢛⣛⣻⣿⣿⣿⡅      ⢨⣿⣿⣿⣟⣛⠛⠛⠁
+         ⢀⣀⣤⣤⣶⣶⠿⠟⠛⢋⣽⡿⢟⣿⣤⣀⢀ ⣀⣤⣿⡻⢷⣯⡛⠛⠿⠿⣶⣶⣤⣄
+   ⢀⣤⣴⣶⡾⠿⠟⠛⠉⠉   ⢴⡾⠟⢋⣴⠟⣱⡿⣿⣿⡿⣿⣿⣎⠻⣦⡙⠻⢷⡦   ⠉⠁
+    ⠉⠁           ⢀⣴⠟⢁⣾⠟⣽⡿⣿⡇⢿⣏⠻⣷⡈⠻⣦⡀
+               ⢀⣴⠟⠁ ⢾⠏⢠⣿⠃⣿⡇⠸⣿⡀⠹⡷ ⠈⠻⣦⡀
+               ⠙⠁     ⣼⡟ ⠻⠃ ⢻⣧     ⠈⠋
+                     ⢠⣿⠃    ⠘⣿⡄
+                     ⠈⠋      ⢻⣧
+                             ⠈⣿⡆
+                              ⢹⣷
+                              ⠈⣿⡆
+                               ⠈
+                 thickness 2.2 dots
+colour:
+  ....................................00........................................................
+  ..................................010203......................................................
+  ....................................0405......................................................
+  ....................................060708....................................................
+  ......................................090a............0b0c....................................
+  ......................................0d0e0f........0g0h0i....................................
+  ..........................0j0k..........0l0m..0n0o..0p0q..........0r0s........................
+  ..........................0k0t0u0v..0w0x0y0z0A0B0B0C0D0E0F0G..0H0I0J0r........................
+  ..............................0v0K0L0M0N0O0P0Q0R0R0S0T0U0V0W0X0Y0H......................0Z10..
+  ..................1112......131415161718191a1b1c1d1e1f1g1h1i1j1k1l1m......1n1o1p1q1r1s1t1u1v1w
+  ..................1x121y1z1A1B1C1D1E1F1G1H1I1J..1K1L1M1N1O1P1Q1R1S1T1U1V1W1n1X1Y1Z............
+  ..........................2021222324252627............28292a2b2c2d2e2f........................
+  ........................2g2h2i2j2k2l2m2n2o............2p2q2r2s2t2u2v2w2x......................
+  ..............2y2z2A2B2C2D2E2F2G2H2I2J2K2L2M2N2O..2P2Q2R2S2T2U2V2W2X2Y2Z303132................
+  ..333435363738393a3b2B......3c3d3e3f3g3h3i3j3k3l3m3n3o3p3q3r3s3t3u3v......313w................
+  ....3x3y......................3z3A3B3C3D3E3F3G3H3H3I3J3K3L3M3N3O3P............................
+  ..........................3Q3R3S3z..3T3U3V3W3X3Y3Y3Z40414243..3P444546........................
+  ..........................473Q..........4849..4a4b..4c4d..........464e........................
+  ......................................4f4g4h........4i4j4k....................................
+  ......................................4l4m............4n4o....................................
+  ......................................................4p4q4r..................................
+  ........................................................4s4t..................................
+  ........................................................4u4v4w................................
+  ..........................................................4x..................................
+  ..............................4y4y4y4y4y4y4y4y4y4y4y4y4y4y4y4y4y4y............................
+
+frame 2: 7177 bytes, 25x45, cursor 25,0, scrolled 0
+palette:
+  .. default default
+  00 #00ff00 default
+  01 #00fd00 default
+  02 #00fc00 default
+  03 #00f700 default
+  04 #00f400 default
+  05 #00ef00 default
+  06 #00ed00 default
+  07 #00e500 default
+  08 #00e000 default
+  09 #00d900 default
+  0a #00d400 default
+  0b #00dc00 default
+  0c #00d100 default
+  0d #00cb00 default
+  0e #00c600 default
+  0f #00bf00 default
+  0g #7af700 default
+  0h #7af600 default
+  0i #7bf800 default
+  0j #00c400 default
+  0k #00bd00 default
+  0l #00b700 default
+  0m #00b100 default
+  0n #00ab00 default
+  0o #70e200 default
+  0p #eded00 default
+  0q #f5f500 default
+  0r #f7f700 default
+  0s #fbfb00 default
+  0t #ff7f00 default
+  0u #00a800 default
+  0v #00a200 default
+  0w #009d00 default
+  0x #009500 default
+  0y #3cf700 default
+  0z #3cf500 default
+  0A #3dfa00 default
+  0B #60c200 default
+  0C #72cd00 default
+  0D #b8f500 default
+  0E #b9f700 default
+  0F #cbcb00 default
+  0G #d5d500 default
+  0H #e0e000 default
+  0I #eaea00 default
+  0J #f6f600 default
+  0K #dc6d00 default
+  0L #e16f00 default
+  0M #e97400 default
+  0N #f27800 default
+  0O #f87b00 default
+  0P #fd7d00 default
+  0Q #00ff7f default
+  0R #00fa7c default
+  0S #00f67a default
+  0T #00ff3f default
+  0U #00f93d default
+  0V #00a208 default
+  0W #008e00 default
+  0X #008800 default
+  0Y #27c700 default
+  0Z #36db00 default
+  10 #34d500 default
+  11 #50a100 default
+  12 #83c200 default
+  13 #a4db00 default
+  14 #a8d400 default
+  15 #b1b100 default
+  16 #bcbc00 default
+  17 #ccc500 default
+  18 #f9ba00 default
+  19 #ffbf00 default
+  1a #b85b00 default
+  1b #bf5f00 default
+  1c #c86300 default
+  1d #d16800 default
+  1e #da6c00 default
+  1f #e37100 default
+  1g #ed7500 default
+  1h #f57900 default
+  1i #00fc7d default
+  1j #00f479 default
+  1k #00ea74 default
+  1l #00db6d default
+  1m #00ca64 default
+  1n #00e447 default
+  1o #00ea39 default
+  1p #00dc35 default
+  1q #00aa1d default
+  1r #007c02 default
+  1s #077f00 default
+  1t #219d00 default
+  1u #27a000 default
+  1v #378400 default
+  1w #498300 default
+  1x #6b9900 default
+  1y #7ea000 default
+  1z #8c9300 default
+  1A #979500 default
+  1B #b49c00 default
+  1C #dca400 default
+  1D #eaaf00 default
+  1E #e3a300 default
+  1F #964a00 default
+  1G #9f4e00 default
+  1H #a85300 default
+  1I #b05700 default
+  1J #b95c00 default
+  1K #c26000 default
+  1L #cc6500 default
+  1M #d46900 default
+  1N #00ed76 default
+  1O #00de6e default
+  1P #00cf66 default
+  1Q #00c15f default
+  1R #00af56 default
+  1S #00a34d default
+  1T #00a43d default
+  1U #00a22d default
+  1V #00901d default
+  1W #006d0a default
+  1X #086601 default
+  1Y #136b00 default
+  1Z #256600 default
+  20 #3d6600 default
+  21 #516b00 default
+  22 #626a00 default
+  23 #746900 default
+  24 #937300 default
+  25 #9f7100 default
+  26 #986200 default
+  27 #844500 default
+  28 #874200 default
+  29 #904700 default
+  2a #994b00 default
+  2b #a35000 default
+  2c #ab5400 default
+  2d #00ffbf default
+  2e #00f4b7 default
+  2f #00e9af default
+  2g #00c98e default
+  2h #00a76d default
+  2i #008e57 default
+  2j #007740 default
+  2k #006a2c default
+  2l #00621e default
+  2m #005c0e default
+  2n #095700 default
+  2o #205700 default
+  2p #335700 default
+  2q #4c5800 default
+  2r #5b4d00 default
+  2s #614200 default
+  2t #663900 default
+  2u #6e3000 default
+  2v #842f00 default
+  2w #9e3200 default
+  2x #c13600 default
+  2y #e63900 default
+  2z #f43c00 default
+  2A #ff3f00 default
+  2B #00fcfb default
+  2C #00f4f3 default
+  2D #00eae9 default
+  2E #00dad9 default
+  2F #00cac9 default
+  2G #00c0b9 default
+  2H #00b8a8 default
+  2I #00a998 default
+  2J #009984 default
+  2K #008571 default
+  2L #006f5b default
+  2M #00604b default
+  2N #005840 default
+  2O #00552a default
+  2P #552a00 default
+  2Q #571800 default
+  2R #601600 default
+  2S #701500 default
+  2T #881700 default
+  2U #9d1900 default
+  2V #af1600 default
+  2W #be1400 default
+  2X #c40900 default
+  2Y #ca0000 default
+  2Z #da0000 default
+  30 #ea0000 default
+  31 #f50000 default
+  32 #fc0000 default
+  33 #00f5f4 default
+  34 #00bac3 default
+  35 #00a9bd default
+  36 #0098af default
+  37 #00839d default
+  38 #007088 default
+  39 #005970 default
+  3a #004860 default
+  3b #003d57 default
+  3c #002a55 default
+  3d #55002a default
+  3e #580015 default
+  3f #600013 default
+  3g #6f0012 default
+  3h #850013 default
+  3i #990014 default
+  3j #a90010 default
+  3k #b8000e default
+  3l #c00006 default
+  3m #f40000 default
+  3n #00bfff default
+  3o #00b7f4 default
+  3p #00abe6 default
+  3q #0089c1 default
+  3r #006a9e default
+  3s #005284 default
+  3t #003c6e default
+  3u #002a66 default
+  3v #001d61 default
+  3w #000e5c default
+  3x #090058 default
+  3y #200057 default
+  3z #330057 default
+  3A #4b0057 default
+  3B #5b004c default
+  3C #620042 default
+  3D #6a003b default
+  3E #770035 default
+  3F #8e0035 default
+  3G #a70038 default
+  3H #c90039 default
+  3I #e90039 default
+  3J #f4003c default
+  3K #ff003f default
+  3L #0054ab default
+  3M #0050a3 default
+  3N #004b99 default
+  3O #004790 default
+  3P #004287 default
+  3Q #003d84 default
+  3R #003598 default
+  3S #002c9f default
+  3T #001d93 default
+  3U #000a74 default
+  3V #08016c default
+  3W #13006d default
+  3X #250066 default
+  3Y #3d0066 default
+  3Z #4f0069 default
+  40 #5d0065 default
+  41 #6d0062 default
+  42 #900070 default
+  43 #a20073 default
+  44 #a40065 default
+  45 #a30053 default
+  46 #af0056 default
+  47 #c1005f default
+  48 #cf0066 default
+  49 #de006e default
+  4a #ed0076 default
+  4b #0069d4 default
+  4c #0065cc default
+  4d #0060c2 default
+  4e #005cb9 default
+  4f #0057b0 default
+  4g #0053a8 default
+  4h #004e9f default
+  4i #004a96 default
+  4j #003fe3 default
+  4k #0039ea default
+  4l #0035dc default
+  4m #0017b4 default
+  4n #000297 default
+  4o #060093 default
+  4p #2100a0 default
+  4q #2700a0 default
+  4r #370084 default
+  4s #490083 default
+  4t #6b0099 default
+  4u #7b009d default
+  4v #78007f default
+  4w #7c007a default
+  4x #aa008c default
+  4y #dc00a4 default
+  4z #ea00af default
+  4A #e4009b default
+  4B #ca0064 default
+  4C #db006d default
+  4D #ea0074 default
+  4E #f40079 default
+  4F #fc007d default
+  4G #0079f5 default
+  4H #0075ed default
+  4I #0071e3 default
+  4J #006cda default
+  4K #0068d1 default
+  4L #0063c8 default
+  4M #005fbf default
+  4N #005bb8 default
+  4O #003fff default
+  4P #003df9 default
+  4Q #0006cc default
+  4R #0000bc default
+  4S #0000b1 default
+  4T #2a00d4 default
+  4U #3600db default
+  4V #3800d0 default
+  4W #5000a3 default
+  4X #4f009f default
+  4Y #8700c4 default
+  4Z #a400db default
+  50 #9f00c7 default
+  51 #880088 default
+  52 #8e008e default
+  53 #a2009a default
+  54 #f900ba default
+  55 #ff00bf default
+  56 #f6007a default
+  57 #fa007c default
+  58 #ff007f default
+  59 #007dfd default
+  5a #007bf8 default
+  5b #0078f2 default
+  5c #0074e9 default
+  5d #006fe1 default
+  5e #006ddc default
+  5f #0000f6 default
+  5g #0000ea default
+  5h #0000e0 default
+  5i #0000d5 default
+  5j #0000cb default
+  5k #3c00f7 default
+  5l #3c00f5 default
+  5m #5900cd default
+  5n #6000c2 default
+  5o #5f00c1 default
+  5p #bb00fa default
+  5q #b800f5 default
+  5r #b900f7 default
+  5s #950095 default
+  5t #9d009d default
+  5u #a200a2 default
+  5v #a800a8 default
+  5w #007fff default
+  5x #0000fb default
+  5y #0000f7 default
+  5z #0000f5 default
+  5A #0000ed default
+  5B #7000e2 default
+  5C #ab00ab default
+  5D #b100b1 default
+  5E #b700b7 default
+  5F #bd00bd default
+  5G #c400c4 default
+  5H #7b00f8 default
+  5I #7a00f6 default
+  5J #7a00f7 default
+  5K #bf00bf default
+  5L #c600c6 default
+  5M #cb00cb default
+  5N #d100d1 default
+  5O #dc00dc default
+  5P #d400d4 default
+  5Q #d900d9 default
+  5R #e000e0 default
+  5S #e500e5 default
+  5T #ed00ed default
+  5U #ef00ef default
+  5V #f400f4 default
+  5W #f700f7 default
+  5X #ff00ff default
+  5Y #fc00fc default
+  5Z #fd00fd default
+  60 #7f7f7f default
+text:
+
+             ⢀⣤⣄
+             ⠘⣿⣿⣧
+              ⠘⣿⣿⣧⡀
+               ⠈⢿⣿⣷⡀     ⣾⣿⡆
+                ⠈⢿⣿⣷⡄    ⣿⣿⡇   ⢀⣾⣿⡆          ⣀⡀
+                  ⢻⣿⣿⡄⣴⣶⡄⣿⣿⣧⣶⣦⢠⣾⣿⡿⠁      ⢀⣤⣶⣿⣿⡿
+            ⢀⣀⡀  ⣠⣤⡻⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣟⣤⣄   ⣠⣴⣾⣿⣿⠿⠛⠉
+            ⢿⣿⣿⣷⣤⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢟⣤⣶⣿⣿⡿⠟⠋⠁
+             ⠈⠙⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠉
+              ⢰⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠛⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⡆
+          ⣴⣶⣶⣶⣶⣿⣿⣿⣿⣿⣿⣿⣿⠁    ⠈⣿⣿⣿⣿⣿⣿⣯⣭⣤⣤⣤⣤⣄
+          ⠙⠛⠛⠛⠛⣛⣻⣿⣿⣿⣿⣿⣿⡀    ⢀⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⠿⠟
+              ⠸⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣤⣤⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⠇
+             ⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣄⡀
+         ⢀⣠⣴⣾⣿⣿⠿⠛⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⠛⢿⣿⣿⣷
+      ⣀⣤⣶⣿⣿⡿⠟⠋   ⠙⠛⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⠛⠋  ⠈⠉⠁
+     ⣾⣿⣿⠿⠛⠁      ⢀⣾⣿⡿⠃⠻⠿⢻⣿⣿⠘⠿⠟⠘⣿⣿⣧
+     ⠈⠉          ⠸⣿⡿⠁   ⢸⣿⣿    ⠘⢿⣿⣷⡀
+                        ⠸⣿⡿     ⠈⢿⣿⣷⡀
+                                 ⠈⢻⣿⣿⡄
+                                   ⢻⣿⣿⡄
+                                    ⠙⠛⠁
+
+                 thickness 4.8 dots
+colour:
+  ..........................................................................................
+  ......................000102..............................................................
+  ......................00030405............................................................
+  ........................060708090a........................................................
+  ..........................0b0c0d0e0f..........0g0h0i......................................
+  ............................0j0k0l0m0n........0o0o0o......0p0q0r0s....................0t0t
+  ................................0u0v0w0x0y0z0A0B0B0C0D0E0F0G0H0I0J............0K0L0M0N0O0P
+  ....................0Q0R0S....0T0U0V0W0X0Y0Z1011111213141516171819......1a1b1c1d1e1f1g1h..
+  ....................1i1j1k1l1m1n1o1p1q1r1s1t1u1v1w1x1y1z1A1B1C1D1E1F1G1H1I1J1K1L1M........
+  ......................1N1O1P1Q1R1S1T1U1V1W1X1Y1Z202122232425262728292a2b2c................
+  ........................2d2e2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z2A..................
+  ................2B2C2D2E2F2G2H2I2J2K2L2M2N2O........2P2Q2R2S2T2U2V2W2X2Y2Z303132..........
+  ................2B332D2E2F3435363738393a3b3c........3d3e3f3g3h3i3j3k3l2Y2Z303m32..........
+  ........................3n3o3p3q3r3s3t3u3v3w3x3y3z3A3B3C3D3E3F3G3H3I3J3K..................
+  ......................3L3M3N3O3P3Q3R3S3T3U3V3W3X3Y3Z404142434445464748494a................
+  ..............4b4c4d4e4f4g4h4i4j4k4l4m4n4o4p4q4r4s4t4u4v4w4x4y4z4A4B4C4D4E4F..............
+  ........4G4H4I4J4K4L4M4N......4O4P4Q4R4S4T4U4V4W4X4Y4Z505152535455....565758..............
+  ......595a5b5c5d5e............5f5g5h5i5j5k5l5m5n5o5p5q5r5s5t5u5v..........................
+  ......5w5w....................5x5y5z5A......5B5B5B........5C5D5E5F5G......................
+  ............................................5H5I5J..........5K5L5M5N5O....................
+  ..............................................................5P5Q5R5S5T..................
+  ..................................................................5U5V5W5X................
+  ....................................................................5Y5Z5X................
+  ..........................................................................................
+  ..............................606060606060606060606060606060606060........................
+
+frame 3: 7749 bytes, 25x42, cursor 25,0, scrolled 0
+palette:
+  .. default default
+  00 #00fd3e default
+  01 #00fc3e default
+  02 #00f93d default
+  03 #f9bb00 default
+  04 #fcbc00 default
+  05 #fdbd00 default
+  06 #00ff3f default
+  07 #00fa3d default
+  08 #00f53c default
+  09 #00f03b default
+  0a #00e939 default
+  0b #00e137 default
+  0c #3fff00 default
+  0d #3df800 default
+  0e #3df700 default
+  0f #3df900 default
+  0g #baf900 default
+  0h #b8f700 default
+  0i #baf800 default
+  0j #bfff00 default
+  0k #e1a800 default
+  0l #e9ae00 default
+  0m #f0b400 default
+  0n #f5b800 default
+  0o #fabb00 default
+  0p #ffbf00 default
+  0q #00ee3a default
+  0r #00e538 default
+  0s #00de36 default
+  0t #00d634 default
+  0u #00cf32 default
+  0v #00c731 default
+  0w #3cf200 default
+  0x #3aeb00 default
+  0y #39e800 default
+  0z #38e400 default
+  0A #38e200 default
+  0B #7fff00 default
+  0C #a9e200 default
+  0D #abe400 default
+  0E #ade800 default
+  0F #b0eb00 default
+  0G #b5f200 default
+  0H #c79400 default
+  0I #cf9b00 default
+  0J #d6a000 default
+  0K #dea600 default
+  0L #e5ab00 default
+  0M #eeb200 default
+  0N #00d434 default
+  0O #00cb31 default
+  0P #00c430 default
+  0Q #00bc2e default
+  0R #00b52c default
+  0S #00ad2a default
+  0T #00ff00 default
+  0U #00fb00 default
+  0V #2dd800 default
+  0W #32cc00 default
+  0X #31c700 default
+  0Y #39c800 default
+  0Z #78f100 default
+  10 #76ee00 default
+  11 #85d800 default
+  12 #95c700 default
+  13 #98cc00 default
+  14 #a9d800 default
+  15 #fbfb00 default
+  16 #ffff00 default
+  17 #ad8100 default
+  18 #b58700 default
+  19 #bc8c00 default
+  1a #c49200 default
+  1b #cb9800 default
+  1c #d49e00 default
+  1d #00ba2d default
+  1e #00b12b default
+  1f #00aa29 default
+  1g #00a127 default
+  1h #009825 default
+  1i #00ca0e default
+  1j #00eb00 default
+  1k #02e300 default
+  1l #20b900 default
+  1m #29a800 default
+  1n #2ea700 default
+  1o #62cc00 default
+  1p #67cc00 default
+  1q #72b400 default
+  1r #7da800 default
+  1s #97b900 default
+  1t #e0e300 default
+  1u #ebeb00 default
+  1v #cabb00 default
+  1w #987200 default
+  1x #a17800 default
+  1y #aa7e00 default
+  1z #b18400 default
+  1A #ba8a00 default
+  1B #00ff7f default
+  1C #00c84d default
+  1D #00a634 default
+  1E #009025 default
+  1F #00891f default
+  1G #00a90d default
+  1H #00b603 default
+  1I #09a800 default
+  1J #178d00 default
+  1K #228400 default
+  1L #3c9000 default
+  1M #519100 default
+  1N #5c8b00 default
+  1O #748d00 default
+  1P #9ea800 default
+  1Q #b6b200 default
+  1R #a99b00 default
+  1S #896900 default
+  1T #906800 default
+  1U #a67000 default
+  1V #c87900 default
+  1W #ff7f00 default
+  1X #00ffbf default
+  1Y #00f8b9 default
+  1Z #00f2b5 default
+  20 #00e4ab default
+  21 #00d6a0 default
+  22 #00e589 default
+  23 #00eb78 default
+  24 #00e371 default
+  25 #00c45c default
+  26 #009d42 default
+  27 #00812b default
+  28 #007a12 default
+  29 #007907 default
+  2a #087001 default
+  2b #126800 default
+  2c #296800 default
+  2d #3e6a00 default
+  2e #4e6900 default
+  2f #676e00 default
+  2g #797000 default
+  2h #7a6600 default
+  2i #815400 default
+  2j #9d5a00 default
+  2k #c46600 default
+  2l #e37100 default
+  2m #eb7100 default
+  2n #e55b00 default
+  2o #d63500 default
+  2p #e43800 default
+  2q #f23c00 default
+  2r #f83d00 default
+  2s #ff3f00 default
+  2t #00fdbd default
+  2u #00f6b8 default
+  2v #00edb1 default
+  2w #00e0a8 default
+  2x #00d29d default
+  2y #00c291 default
+  2z #00b585 default
+  2A #00aa76 default
+  2B #00a065 default
+  2C #009356 default
+  2D #007f43 default
+  2E #006930 default
+  2F #005e1e default
+  2G #015b0c default
+  2H #095a00 default
+  2I #1d5800 default
+  2J #365900 default
+  2K #4b5900 default
+  2L #594d00 default
+  2M #5e3d00 default
+  2N #693700 default
+  2O #7f3a00 default
+  2P #933b00 default
+  2Q #a03900 default
+  2R #aa3300 default
+  2S #b52f00 default
+  2T #c23000 default
+  2U #d23400 default
+  2V #e03700 default
+  2W #ed3a00 default
+  2X #f63d00 default
+  2Y #fd3e00 default
+  2Z #00e2a9 default
+  30 #00e4cc default
+  31 #00dccb default
+  32 #00cab8 default
+  33 #00ad99 default
+  34 #009680 default
+  35 #00806b default
+  36 #006c58 default
+  37 #00614a default
+  38 #005a3e default
+  39 #005530 default
+  3a #552200 default
+  3b #5a1a00 default
+  3c #621600 default
+  3d #6d1400 default
+  3e #801400 default
+  3f #961400 default
+  3g #ad1300 default
+  3h #ca1100 default
+  3i #dc1000 default
+  3j #e41600 default
+  3k #e23800 default
+  3l #00c5eb default
+  3m #00d9e8 default
+  3n #00d2df default
+  3o #00c1ce default
+  3p #00a2b2 default
+  3q #00889a default
+  3r #007283 default
+  3s #005d6e default
+  3t #004e62 default
+  3u #00425a default
+  3v #003955 default
+  3w #55001a default
+  3x #5a0016 default
+  3y #630013 default
+  3z #6f0011 default
+  3A #830010 default
+  3B #9a0010 default
+  3C #b2000e default
+  3D #ce000c default
+  3E #df000c default
+  3F #e8000f default
+  3G #eb0025 default
+  3H #00bdfd default
+  3I #00b8f6 default
+  3J #00b1ed default
+  3K #00a8e0 default
+  3L #009dd2 default
+  3M #0091c2 default
+  3N #0085b5 default
+  3O #0076aa default
+  3P #0065a0 default
+  3Q #005693 default
+  3R #00437f default
+  3S #003069 default
+  3T #001e5e default
+  3U #010c5b default
+  3V #09005a default
+  3W #1d0058 default
+  3X #360059 default
+  3Y #4b0059 default
+  3Z #59004d default
+  40 #5e003d default
+  41 #690037 default
+  42 #7f003a default
+  43 #93003b default
+  44 #a00039 default
+  45 #aa0033 default
+  46 #b5002f default
+  47 #c20030 default
+  48 #d20034 default
+  49 #e00037 default
+  4a #ed003a default
+  4b #f6003d default
+  4c #fd003e default
+  4d #00bfff default
+  4e #00b9f8 default
+  4f #00b5f2 default
+  4g #00abe4 default
+  4h #00a0d6 default
+  4i #0089e5 default
+  4j #0078eb default
+  4k #0071e3 default
+  4l #005cc4 default
+  4m #00429d default
+  4n #002b81 default
+  4o #00127a default
+  4p #000779 default
+  4q #080170 default
+  4r #120068 default
+  4s #290068 default
+  4t #3e006a default
+  4u #4e0069 default
+  4v #67006e default
+  4w #790070 default
+  4x #7a0066 default
+  4y #810054 default
+  4z #9d005a default
+  4A #c40066 default
+  4B #e30071 default
+  4C #eb0071 default
+  4D #e5005b default
+  4E #d60035 default
+  4F #e40038 default
+  4G #f2003c default
+  4H #f8003d default
+  4I #ff003f default
+  4J #007fff default
+  4K #004dc8 default
+  4L #0034a6 default
+  4M #002590 default
+  4N #001f89 default
+  4O #000da9 default
+  4P #0003b6 default
+  4Q #0900a8 default
+  4R #17008d default
+  4S #270089 default
+  4T #3e0093 default
+  4U #50008e default
+  4V #5c0087 default
+  4W #74008d default
+  4X #9e00a8 default
+  4Y #b600b2 default
+  4Z #a9009b default
+  50 #890069 default
+  51 #900068 default
+  52 #a60070 default
+  53 #c80079 default
+  54 #ff007f default
+  55 #002dba default
+  56 #002bb1 default
+  57 #0029aa default
+  58 #0027a1 default
+  59 #002598 default
+  5a #000eca default
+  5b #0000eb default
+  5c #0200e3 default
+  5d #2000b9 default
+  5e #2900a8 default
+  5f #4000b5 default
+  5g #6300ce default
+  5h #6700ca default
+  5i #7600a6 default
+  5j #7d00a8 default
+  5k #9700b9 default
+  5l #e000e3 default
+  5m #eb00eb default
+  5n #ca00bb default
+  5o #980072 default
+  5p #a10078 default
+  5q #aa007e default
+  5r #b10084 default
+  5s #ba008a default
+  5t #0034d4 default
+  5u #0031cb default
+  5v #0030c4 default
+  5w #002ebc default
+  5x #002cb5 default
+  5y #002aad default
+  5z #0000ff default
+  5A #0000fb default
+  5B #2d00d8 default
+  5C #3200cc default
+  5D #3100c7 default
+  5E #5100d8 default
+  5F #7600ee default
+  5G #7800f1 default
+  5H #8d00c8 default
+  5I #9500c7 default
+  5J #9800cc default
+  5K #a900d8 default
+  5L #fb00fb default
+  5M #ff00ff default
+  5N #ad0081 default
+  5O #b50087 default
+  5P #bc008c default
+  5Q #c40092 default
+  5R #cb0098 default
+  5S #d4009e default
+  5T #003aee default
+  5U #0038e5 default
+  5V #0036de default
+  5W #0034d6 default
+  5X #0032cf default
+  5Y #0031c7 default
+  5Z #3c00f2 default
+  60 #3a00eb default
+  61 #3900e8 default
+  62 #3800e4 default
+  63 #3800e2 default
+  64 #7f00ff default
+  65 #a900e2 default
+  66 #ab00e4 default
+  67 #ad00e8 default
+  68 #b000eb default
+  69 #b500f2 default
+  6a #c70094 default
+  6b #cf009b default
+  6c #d600a0 default
+  6d #de00a6 default
+  6e #e500ab default
+  6f #ee00b2 default
+  6g #003fff default
+  6h #003dfa default
+  6i #003cf5 default
+  6j #003bf0 default
+  6k #0039e9 default
+  6l #0037e1 default
+  6m #3f00ff default
+  6n #3d00f8 default
+  6o #3d00f7 default
+  6p #3d00f9 default
+  6q #ba00f9 default
+  6r #b800f7 default
+  6s #ba00f8 default
+  6t #bf00ff default
+  6u #e100a8 default
+  6v #e900ae default
+  6w #f000b4 default
+  6x #f500b8 default
+  6y #fa00bb default
+  6z #ff00bf default
+  6A #003efd default
+  6B #003efc default
+  6C #003df9 default
+  6D #f900bb default
+  6E #fc00bc default
+  6F #fd00bd default
+  6G #7f7f7f default
+text:
+
+
+
+         ⣤⣦⣄                            ⣠⣴⣤
+        ⠈⢿⣿⣿⣷⣄      ⢀⣶⣷⣆    ⣰⣾⣶⡀      ⣠⣾⣿⣿⡿⠁
+          ⠙⢿⣿⣿⣷⣄    ⠘⣿⣿⣿⡄ ⡀⢠⣿⣿⣿⠃    ⣠⣾⣿⣿⡿⠋
+            ⠙⢿⣿⣿⣷⣄ ⢀⣠⣻⣿⣿⣧⣿⣿⣿⣿⣿⣟⣄⡀ ⣠⣾⣿⣿⡿⠋
+              ⠙⢿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣾⣿⣿⡿⠋
+               ⢀⣹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⡀
+          ⢠⣴⣶⣤⣤⣺⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣗⣤⣤⣶⣦⡄
+          ⠹⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠟⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠏
+             ⠉⣭⣿⣿⣿⣿⣿⣿⣿⣿⠃    ⠘⣿⣿⣿⣿⣿⣿⣿⣿⣭⠉
+             ⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⡅    ⢨⣿⣿⣿⣿⣿⣿⣿⣿⣿⣁
+          ⣰⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣤⣦⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣆
+          ⠘⠻⠿⠛⠛⢽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡯⠛⠛⠿⠟⠃
+               ⠈⣹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⠁
+              ⣠⣾⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢿⣿⣿⣷⣄
+            ⣠⣾⣿⣿⡿⠋ ⠈⠙⣽⣿⣿⣿⣿⣿⢻⣿⣿⣯⠋⠁ ⠙⢿⣿⣿⣷⣄
+          ⣠⣾⣿⣿⡿⠋    ⢠⣿⣿⣿⠃⠈ ⠘⣿⣿⣿⡄    ⠙⢿⣿⣿⣷⣄
+        ⢀⣾⣿⣿⡿⠋      ⠈⠿⡿⠏    ⠹⢿⠿⠁      ⠙⢿⣿⣿⣷⡀
+         ⠛⠟⠋                            ⠙⠻⠛
+
+
+
+                 thickness 6.0 dots
+colour:
+  ....................................................................................
+  ....................................................................................
+  ....................................................................................
+  ..............000102........................................................030405..
+  ............060708090a0b............0c0d0e0f........0g0h0i0j............0k0l0m0n0o0p
+  ................0q0r0s0t0u0v........0w0x0y0z0A..0B0C0D0E0F0G........0H0I0J0K0L0M....
+  ....................0N0O0P0Q0R0S..0T0U0V0W0X0Y0Z10111213141516..1718191a1b1c........
+  ........................1d1e1f1g1h1i1j1k1l1m1n1o1p1q1r1s1t1u1v1w1x1y1z1A............
+  ..........................1B1C1D1E1F1G1H1I1J1K1L1M1N1O1P1Q1R1S1T1U1V1W..............
+  ................1X1Y1Z202122232425262728292a2b2c2d2e2f2g2h2i2j2k2l2m2n2o2p2q2r2s....
+  ................2t2u2v2w2x2y2z2A2B2C2D2E2F2G2H2I2J2K2L2M2N2O2P2Q2R2S2T2U2V2W2X2Y....
+  ......................2Z30313233343536373839........3a3b3c3d3e3f3g3h3i3j3k..........
+  ......................3l3m3n3o3p3q3r3s3t3u3v........3w3x3y3z3A3B3C3D3E3F3G..........
+  ................3H3I3J3K3L3M3N3O3P3Q3R3S3T3U3V3W3X3Y3Z404142434445464748494a4b4c....
+  ................4d4e4f4g4h4i4j4k4l4m4n4o4p4q4r4s4t4u4v4w4x4y4z4A4B4C4D4E4F4G4H4I....
+  ..........................4J4K4L4M4N4O4P4Q4R4S4T4U4V4W4X4Y4Z5051525354..............
+  ........................55565758595a5b5c5d5e5f5g5h5i5j5k5l5m5n5o5p5q5r5s............
+  ....................5t5u5v5w5x5y..5z5A5B5C5D5E5F5G5H5I5J5K5L5M..5N5O5P5Q5R5S........
+  ................5T5U5V5W5X5Y........5Z6061626364..6566676869........6a6b6c6d6e6f....
+  ............6g6h6i6j6k6l............6m6n6o6p........6q6r6s6t............6u6v6w6x6y6z
+  ..............6A6B6C........................................................6D6E6F..
+  ....................................................................................
+  ....................................................................................
+  ....................................................................................
+  ..............................6G6G6G6G6G6G6G6G6G6G6G6G6G6G6G6G6G6G..................
+
+frame 4: 7191 bytes, 25x45, cursor 25,0, scrolled 0
+palette:
+  .. default default
+  00 #fcfc00 default
+  01 #fdfd00 default
+  02 #ffff00 default
+  03 #efef00 default
+  04 #f4f400 default
+  05 #f7f700 default
+  06 #d4d400 default
+  07 #d9d900 default
+  08 #e0e000 default
+  09 #e5e500 default
+  0a #eded00 default
+  0b #7af700 default
+  0c #7af600 default
+  0d #7bf800 default
+  0e #bfbf00 default
+  0f #c6c600 default
+  0g #cbcb00 default
+  0h #d1d100 default
+  0i #dcdc00 default
+  0j #00ff7f default
+  0k #00fb00 default
+  0l #00f700 default
+  0m #00f500 default
+  0n #00ed00 default
+  0o #70e200 default
+  0p #abab00 default
+  0q #b1b100 default
+  0r #b7b700 default
+  0s #bdbd00 default
+  0t #c4c400 default
+  0u #00fd7d default
+  0v #00f87b default
+  0w #00f278 default
+  0x #00e974 default
+  0y #00e16f default
+  0z #00dc6d default
+  0A #00f600 default
+  0B #00ea00 default
+  0C #00e000 default
+  0D #00d500 default
+  0E #00cb00 default
+  0F #3cf700 default
+  0G #3cf500 default
+  0H #3dfa00 default
+  0I #60c200 default
+  0J #72cd00 default
+  0K #b8f500 default
+  0L #b9f700 default
+  0M #959500 default
+  0N #9d9d00 default
+  0O #a2a200 default
+  0P #a8a800 default
+  0Q #00f579 default
+  0R #00ed75 default
+  0S #00e371 default
+  0T #00da6c default
+  0U #00d168 default
+  0V #00c863 default
+  0W #00bf5f default
+  0X #00b85b default
+  0Y #00ff3f default
+  0Z #00f93d default
+  10 #00cc06 default
+  11 #00bc00 default
+  12 #00b100 default
+  13 #2ad400 default
+  14 #36db00 default
+  15 #34d500 default
+  16 #50a100 default
+  17 #83c200 default
+  18 #a4db00 default
+  19 #9fc700 default
+  1a #888800 default
+  1b #8e8e00 default
+  1c #a29a00 default
+  1d #f9ba00 default
+  1e #ffbf00 default
+  1f #f67a00 default
+  1g #fa7c00 default
+  1h #ff7f00 default
+  1i #00d469 default
+  1j #00cc65 default
+  1k #00c260 default
+  1l #00b95c default
+  1m #00b057 default
+  1n #00a853 default
+  1o #009f4e default
+  1p #00964a default
+  1q #00e33f default
+  1r #00ea39 default
+  1s #00dc35 default
+  1t #00b417 default
+  1u #009702 default
+  1v #069300 default
+  1w #21a000 default
+  1x #27a000 default
+  1y #378400 default
+  1z #498300 default
+  1A #6b9900 default
+  1B #7b9d00 default
+  1C #787f00 default
+  1D #7c7a00 default
+  1E #aa8c00 default
+  1F #dca400 default
+  1G #eaaf00 default
+  1H #e49b00 default
+  1I #ca6400 default
+  1J #db6d00 default
+  1K #ea7400 default
+  1L #f47900 default
+  1M #fc7d00 default
+  1N #00ab54 default
+  1O #00a350 default
+  1P #00994b default
+  1Q #009047 default
+  1R #008742 default
+  1S #00843d default
+  1T #009835 default
+  1U #009f2c default
+  1V #00931d default
+  1W #00740a default
+  1X #086c01 default
+  1Y #136d00 default
+  1Z #256600 default
+  20 #3d6600 default
+  21 #4f6900 default
+  22 #5d6500 default
+  23 #6d6200 default
+  24 #907000 default
+  25 #a27300 default
+  26 #a46500 default
+  27 #a35300 default
+  28 #af5600 default
+  29 #c15f00 default
+  2a #cf6600 default
+  2b #de6e00 default
+  2c #ed7600 default
+  2d #00ffbf default
+  2e #00f4b7 default
+  2f #00e6ab default
+  2g #00c189 default
+  2h #009e6a default
+  2i #008452 default
+  2j #006e3c default
+  2k #00662a default
+  2l #00611d default
+  2m #005c0e default
+  2n #095800 default
+  2o #205700 default
+  2p #335700 default
+  2q #4b5700 default
+  2r #5b4c00 default
+  2s #624200 default
+  2t #6a3b00 default
+  2u #773500 default
+  2v #8e3500 default
+  2w #a73800 default
+  2x #c93900 default
+  2y #e93900 default
+  2z #f43c00 default
+  2A #ff3f00 default
+  2B #00fcfc default
+  2C #00f4f4 default
+  2D #00eaea default
+  2E #00dada default
+  2F #00caca default
+  2G #00c1ba default
+  2H #00bcab default
+  2I #00af99 default
+  2J #009d83 default
+  2K #008870 default
+  2L #007059 default
+  2M #006048 default
+  2N #00573d default
+  2O #00552a default
+  2P #552a00 default
+  2Q #581800 default
+  2R #611600 default
+  2S #711500 default
+  2T #881700 default
+  2U #9d1900 default
+  2V #af1600 default
+  2W #be1400 default
+  2X #c40900 default
+  2Y #ca0000 default
+  2Z #da0000 default
+  30 #ea0000 default
+  31 #f50000 default
+  32 #fc0000 default
+  33 #00f5f5 default
+  34 #00b9c2 default
+  35 #00a7b8 default
+  36 #0098a9 default
+  37 #008499 default
+  38 #007185 default
+  39 #005c6f default
+  3a #004b60 default
+  3b #004158 default
+  3c #002a55 default
+  3d #55002a default
+  3e #570015 default
+  3f #600013 default
+  3g #6f0012 default
+  3h #850013 default
+  3i #990014 default
+  3j #a90010 default
+  3k #b8000e default
+  3l #c00006 default
+  3m #f40000 default
+  3n #00bfff default
+  3o #00b7f4 default
+  3p #00afe9 default
+  3q #008ec9 default
+  3r #006da7 default
+  3s #00578e default
+  3t #004077 default
+  3u #002c6a default
+  3v #001e62 default
+  3w #000e5c default
+  3x #090057 default
+  3y #200057 default
+  3z #330057 default
+  3A #4c0058 default
+  3B #5b004d default
+  3C #610042 default
+  3D #660039 default
+  3E #6e0030 default
+  3F #84002f default
+  3G #9e0032 default
+  3H #c10036 default
+  3I #e60039 default
+  3J #f4003c default
+  3K #ff003f default
+  3L #0076ed default
+  3M #006ede default
+  3N #0066cf default
+  3O #005fc1 default
+  3P #0056af default
+  3Q #004da3 default
+  3R #003da4 default
+  3S #002da2 default
+  3T #001d90 default
+  3U #000a6d default
+  3V #080166 default
+  3W #13006b default
+  3X #250066 default
+  3Y #3d0066 default
+  3Z #51006b default
+  40 #62006a default
+  41 #740069 default
+  42 #930073 default
+  43 #9f0071 default
+  44 #980062 default
+  45 #840045 default
+  46 #870042 default
+  47 #900047 default
+  48 #99004b default
+  49 #a30050 default
+  4a #ab0054 default
+  4b #007dfc default
+  4c #0079f4 default
+  4d #0074ea default
+  4e #006ddb default
+  4f #0064ca default
+  4g #0047e4 default
+  4h #0039ea default
+  4i #0035dc default
+  4j #001daa default
+  4k #00027c default
+  4l #07007f default
+  4m #21009d default
+  4n #2700a0 default
+  4o #370084 default
+  4p #490083 default
+  4q #6b0099 default
+  4r #7e00a0 default
+  4s #8c0093 default
+  4t #970095 default
+  4u #b4009c default
+  4v #dc00a4 default
+  4w #ea00af default
+  4x #e300a3 default
+  4y #96004a default
+  4z #9f004e default
+  4A #a80053 default
+  4B #b00057 default
+  4C #b9005c default
+  4D #c20060 default
+  4E #cc0065 default
+  4F #d40069 default
+  4G #007fff default
+  4H #007cfa default
+  4I #007af6 default
+  4J #003fff default
+  4K #003df9 default
+  4L #0008a2 default
+  4M #00008e default
+  4N #000088 default
+  4O #2700c7 default
+  4P #3600db default
+  4Q #3800d0 default
+  4R #5000a3 default
+  4S #4f009f default
+  4T #8700c4 default
+  4U #a400db default
+  4V #a800d4 default
+  4W #b100b1 default
+  4X #bc00bc default
+  4Y #cc00c5 default
+  4Z #f900ba default
+  50 #ff00bf default
+  51 #b8005b default
+  52 #bf005f default
+  53 #c80063 default
+  54 #d10068 default
+  55 #da006c default
+  56 #e30071 default
+  57 #ed0075 default
+  58 #f50079 default
+  59 #0000a8 default
+  5a #0000a2 default
+  5b #00009d default
+  5c #000095 default
+  5d #3c00f7 default
+  5e #3c00f5 default
+  5f #5900cd default
+  5g #6000c2 default
+  5h #5f00c1 default
+  5i #bb00fa default
+  5j #b800f5 default
+  5k #b900f7 default
+  5l #cb00cb default
+  5m #d500d5 default
+  5n #e000e0 default
+  5o #ea00ea default
+  5p #f600f6 default
+  5q #dc006d default
+  5r #e1006f default
+  5s #e90074 default
+  5t #f20078 default
+  5u #f8007b default
+  5v #fd007d default
+  5w #0000c4 default
+  5x #0000bd default
+  5y #0000b7 default
+  5z #0000b1 default
+  5A #0000ab default
+  5B #7000e2 default
+  5C #ed00ed default
+  5D #f500f5 default
+  5E #f700f7 default
+  5F #fb00fb default
+  5G #ff007f default
+  5H #0000dc default
+  5I #0000d1 default
+  5J #0000cb default
+  5K #0000c6 default
+  5L #0000bf default
+  5M #7b00f8 default
+  5N #7a00f6 default
+  5O #7a00f7 default
+  5P #0000ed default
+  5Q #0000e5 default
+  5R #0000e0 default
+  5S #0000d9 default
+  5T #0000d4 default
+  5U #0000ff default
+  5V #0000f7 default
+  5W #0000f4 default
+  5X #0000ef default
+  5Y #0000fd default
+  5Z #0000fc default
+  60 #7f7f7f default
+text:
+
+                                    ⣠⣤⡀
+                                   ⣼⣿⣿⠃
+                                 ⢀⣼⣿⣿⠃
+                         ⣾⣿⡆    ⢀⣾⣿⡿⠁
+     ⢀⣀          ⢰⣿⣷⡀    ⣿⣿⡇   ⢠⣾⣿⡿⠁
+     ⢿⣿⣿⣶⣤⡀      ⠈⢿⣿⣷⡄⣴⣶⡄⣿⣿⣧⣶⣦⢠⣿⣿⡟
+      ⠉⠛⠿⣿⣿⣷⣦⣄   ⣠⣤⣻⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⢟⣤⣄  ⢀⣀⡀
+         ⠈⠙⠻⢿⣿⣿⣶⣤⡻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣤⣾⣿⣿⡿
+             ⠉⠛⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠋⠁
+              ⢰⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠛⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⡆
+          ⣴⣶⣶⣶⣶⣿⣿⣿⣿⣿⣿⣿⣿⠁    ⠈⣿⣿⣿⣿⣿⣿⣯⣭⣤⣤⣤⣤⣄
+          ⠙⠛⠛⠛⠛⣛⣿⣿⣿⣿⣿⣿⣿⡀    ⢀⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⠿⠟
+              ⠸⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣤⣤⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⠇
+             ⢀⣠⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣤⣀
+            ⣾⣿⣿⡿⠛⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⠛⠿⣿⣿⣷⣦⣄⡀
+            ⠈⠉⠁  ⠙⠛⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⠛⠋   ⠙⠻⢿⣿⣿⣶⣤⣀
+                  ⣼⣿⣿⠃⠻⠿⢻⣿⣿⠘⠿⠟⠘⢿⣿⣷⡀      ⠈⠛⠿⣿⣿⣷
+                ⢀⣾⣿⡿⠃   ⢸⣿⣿    ⠈⢿⣿⠇          ⠉⠁
+               ⢀⣾⣿⡿⠁    ⠸⣿⡿
+              ⢠⣿⣿⡟⠁
+             ⢠⣿⣿⡟
+             ⠈⠛⠋
+
+                 thickness 4.8 dots
+colour:
+  ..........................................................................................
+  ....................................................................000102................
+  ..................................................................03040502................
+  ..............................................................060708090a..................
+  ..............................................0b0c0d........0e0f0g0h0i....................
+  ......0j0j....................0k0l0m0n........0o0o0o......0p0q0r0s0t......................
+  ......0u0v0w0x0y0z............0A0B0C0D0E0F0G0H0I0I0J0K0L0M0N0O0P..........................
+  ........0Q0R0S0T0U0V0W0X......0Y0Z10111213141516161718191a1b1c1d1e....1f1g1h..............
+  ..............1i1j1k1l1m1n1o1p1q1r1s1t1u1v1w1x1y1z1A1B1C1D1E1F1G1H1I1J1K1L1M..............
+  ......................1N1O1P1Q1R1S1T1U1V1W1X1Y1Z202122232425262728292a2b2c................
+  ........................2d2e2f2g2h2i2j2k2l2m2n2o2p2q2r2s2t2u2v2w2x2y2z2A..................
+  ................2B2C2D2E2F2G2H2I2J2K2L2M2N2O........2P2Q2R2S2T2U2V2W2X2Y2Z303132..........
+  ................2B332D2E2F3435363738393a3b3c........3d3e3f3g3h3i3j3k3l2Y2Z303m32..........
+  ........................3n3o3p3q3r3s3t3u3v3w3x3y3z3A3B3C3D3E3F3G3H3I3J3K..................
+  ......................3L3M3N3O3P3Q3R3S3T3U3V3W3X3Y3Z404142434445464748494a................
+  ....................4b4c4d4e4f4g4h4i4j4k4l4m4n4o4p4q4r4s4t4u4v4w4x4y4z4A4B4C4D4E4F........
+  ....................4G4H4I....4J4K4L4M4N4O4P4Q4R4S4T4U4V4W4X4Y4Z50......5152535455565758..
+  ................................595a5b5c5d5e5f5g5h5i5j5k5l5m5n5o5p............5q5r5s5t5u5v
+  ............................5w5x5y5z5A......5B5B5B........5C5D5E5F....................5G5G
+  ..........................5H5I5J5K5L........5M5N5O........................................
+  ........................5P5Q5R5S5T........................................................
+  ......................5U5V5W5X............................................................
+  ......................5U5Y5Z..............................................................
+  ..........................................................................................
+  ..............................606060606060606060606060606060606060........................
+
+frame 5: 5863 bytes, 25x47, cursor 25,0, scrolled 0
+palette:
+  .. default default
+  00 #bfff00 default
+  01 #b4f000 default
+  02 #b8f600 default
+  03 #bbfa00 default
+  04 #a8e000 default
+  05 #ace600 default
+  06 #97cb00 default
+  07 #9cd100 default
+  08 #9ed400 default
+  09 #3fff00 default
+  0a #3efc00 default
+  0b #8cbb00 default
+  0c #91c200 default
+  0d #3cf200 default
+  0e #3aea00 default
+  0f #38e200 default
+  0g #7da700 default
+  0h #80ac00 default
+  0i #84b000 default
+  0j #00ff3f default
+  0k #00f93d default
+  0l #33cf00 default
+  0m #30c400 default
+  0n #7bf800 default
+  0o #7af600 default
+  0p #6d9300 default
+  0q #739b00 default
+  0r #f9ba00 default
+  0s #ffbf00 default
+  0t #00ea39 default
+  0u #00d935 default
+  0v #00cc32 default
+  0w #00f400 default
+  0x #00e600 default
+  0y #2cb200 default
+  0z #2aa900 default
+  0A #28a100 default
+  0B #67d000 default
+  0C #5e7f00 default
+  0D #608100 default
+  0E #668800 default
+  0F #e6e500 default
+  0G #f4f300 default
+  0H #cc9800 default
+  0I #d9a200 default
+  0J #eaaf00 default
+  0K #00fcbd default
+  0L #00f5b7 default
+  0M #00bd2e default
+  0N #00ac2a default
+  0O #00b01a default
+  0P #00c400 default
+  0Q #00a600 default
+  0R #1f8d00 default
+  0S #1f7f00 default
+  0T #4d9c00 default
+  0U #506c00 default
+  0V #5d7700 default
+  0W #a6a500 default
+  0X #c4c300 default
+  0Y #b09500 default
+  0Z #ac8000 default
+  10 #bd8d00 default
+  11 #00ffbf default
+  12 #00fbbc default
+  13 #00f2b5 default
+  14 #00e9ae default
+  15 #00dfa7 default
+  16 #00d6a0 default
+  17 #00cd99 default
+  18 #00c492 default
+  19 #00bc8d default
+  1a #00b084 default
+  1b #00fb7d default
+  1c #00e973 default
+  1d #00cd66 default
+  1e #00b04c default
+  1f #008d22 default
+  1g #00791d default
+  1h #008405 default
+  1i #007200 default
+  1j #166200 default
+  1k #256400 default
+  1l #366700 default
+  1m #465c00 default
+  1n #6f7000 default
+  1o #847d00 default
+  1p #795a00 default
+  1q #8d6900 default
+  1r #b06300 default
+  1s #cd6600 default
+  1t #e97300 default
+  1u #fb7d00 default
+  1v #f23c00 default
+  1w #ff3f00 default
+  1x #00cb97 default
+  1y #00c190 default
+  1z #00b98a default
+  1A #00a77c default
+  1B #009c74 default
+  1C #00926c default
+  1D #008664 default
+  1E #007c5d default
+  1F #008359 default
+  1G #00974f default
+  1H #008644 default
+  1I #00692f default
+  1J #00591d default
+  1K #005704 default
+  1L #0a5500 default
+  1M #2a5500 default
+  1N #4a5400 default
+  1O #575200 default
+  1P #593a00 default
+  1Q #693800 default
+  1R #894300 default
+  1S #994400 default
+  1T #962a00 default
+  1U #a12800 default
+  1V #b22c00 default
+  1W #c23000 default
+  1X #d23400 default
+  1Y #e23800 default
+  1Z #fc3e00 default
+  20 #00f8f8 default
+  21 #00bfb4 default
+  22 #00a090 default
+  23 #00806c default
+  24 #00715b default
+  25 #00634f default
+  26 #005944 default
+  27 #005534 default
+  28 #551f00 default
+  29 #5b1400 default
+  2a #6b1500 default
+  2b #7d1800 default
+  2c #901900 default
+  2d #b21400 default
+  2e #dd0000 default
+  2f #f80000 default
+  2g #00ffff default
+  2h #00f5f5 default
+  2i #00dddd default
+  2j #00b4bc default
+  2k #008c9b default
+  2l #007484 default
+  2m #005f6e default
+  2n #004d5c default
+  2o #003f55 default
+  2p #550015 default
+  2q #5a000e default
+  2r #6a000c default
+  2s #7c000c default
+  2t #93000a default
+  2u #b50006 default
+  2v #d30003 default
+  2w #f50000 default
+  2x #ff0000 default
+  2y #00bdfc default
+  2z #00b5f2 default
+  2A #00a9e2 default
+  2B #009dd2 default
+  2C #0091c2 default
+  2D #0085b2 default
+  2E #0078a1 default
+  2F #006a96 default
+  2G #005399 default
+  2H #004389 default
+  2I #002f69 default
+  2J #001d59 default
+  2K #000457 default
+  2L #0a0055 default
+  2M #2a0055 default
+  2N #4a0055 default
+  2O #570053 default
+  2P #59003a default
+  2Q #690038 default
+  2R #860040 default
+  2S #970046 default
+  2T #830028 default
+  2U #7c001e default
+  2V #860021 default
+  2W #920023 default
+  2X #9c0026 default
+  2Y #a70028 default
+  2Z #b0002b default
+  30 #b9002d default
+  31 #c1002f default
+  32 #cb0032 default
+  33 #00bfff default
+  34 #007dfb default
+  35 #0073e9 default
+  36 #0066cd default
+  37 #004cb0 default
+  38 #00228d default
+  39 #001d79 default
+  3a #000584 default
+  3b #010071 default
+  3c #15005c default
+  3d #260062 default
+  3e #380068 default
+  3f #4a0062 default
+  3g #720072 default
+  3h #84007e default
+  3i #79005a default
+  3j #8d0069 default
+  3k #b00063 default
+  3l #cd0066 default
+  3m #e90073 default
+  3n #fb007d default
+  3o #bc002e default
+  3p #c40030 default
+  3q #cd0032 default
+  3r #d60034 default
+  3s #df0037 default
+  3t #e90039 default
+  3u #f2003b default
+  3v #fb003d default
+  3w #ff003f default
+  3x #0032cc default
+  3y #002ebd default
+  3z #002aac default
+  3A #001ab0 default
+  3B #0000c4 default
+  3C #0000a6 default
+  3D #180077 default
+  3E #1a006c default
+  3F #5200a7 default
+  3G #4a0097 default
+  3H #5e007f default
+  3I #6c008d default
+  3J #a600a6 default
+  3K #c400c4 default
+  3L #b00095 default
+  3M #ac0080 default
+  3N #bd008d default
+  3O #cc0098 default
+  3P #f5003c default
+  3Q #fc003e default
+  3R #003df9 default
+  3S #0039ea default
+  3T #0035d9 default
+  3U #0000f4 default
+  3V #0000e6 default
+  3W #210088 default
+  3X #1f0081 default
+  3Y #1f007f default
+  3Z #6700d0 default
+  40 #7800a1 default
+  41 #7e00a9 default
+  42 #8500b2 default
+  43 #e600e6 default
+  44 #f400f4 default
+  45 #d900a2 default
+  46 #ea00af default
+  47 #f900ba default
+  48 #003fff default
+  49 #26009b default
+  4a #240093 default
+  4b #7a00f6 default
+  4c #7b00f8 default
+  4d #9200c4 default
+  4e #9b00cf default
+  4f #ff00bf default
+  4g #2b00b0 default
+  4h #2a00ac default
+  4i #2900a7 default
+  4j #a900e2 default
+  4k #af00ea default
+  4l #b500f2 default
+  4m #2f00c2 default
+  4n #2e00bb default
+  4o #bd00fc default
+  4p #bf00ff default
+  4q #3400d4 default
+  4r #3300d1 default
+  4s #3200cb default
+  4t #3800e6 default
+  4u #3700e0 default
+  4v #3d00fa default
+  4w #3c00f6 default
+  4x #3b00f0 default
+  4y #3f00ff default
+  4z #7f7f7f default
+text:
+                               ⢀
+                              ⢀⣿⠇
+                              ⣸⡿
+                             ⢀⣿⠇
+                     ⢀⣄      ⣼⡟
+                     ⠘⣿⡄    ⢠⣿⠃
+               ⣠⡀     ⢻⣧ ⢠⣦ ⣼⡟     ⢀⣄
+               ⠈⠻⣦⡀ ⢾⣆⠘⣿⡄⢸⣿⢰⣿⠁⣰⡷ ⢀⣴⠟⠁
+    ⣀⡀           ⠈⠻⣦⡈⢿⣦⣻⣷⢸⣿⣾⣏⣴⡿⢁⣴⠟⠁
+   ⠈⠛⠻⠿⢷⣶⣦⣤⣀⣀   ⠺⢷⣦⣌⠻⣦⡹⣷⣿⣿⣿⣿⣿⢏⣴⠟⣡⣴⡾⠗   ⣀⡀
+         ⠈⠉⠛⠛⠿⠿⣶⣦⣤⣌⣻⣷⣮⣿⠛⠉ ⠁⠉⠛⣿⣵⡾⣟⣥⣤⣶⣶⠿⠿⠛⠋
+               ⣀⣈⣉⣙⣛⣻⣿⠃      ⠘⣿⣿⣛⣋⣉⣀⣀
+              ⠈⠛⠛⣛⣻⣿⣿⣿⡅      ⢨⣿⣿⣿⣟⣛⡛⠛⠁
+           ⣠⣤⣶⣶⠿⠿⠛⢛⣽⡾⢟⣿⣤⣀ ⡀⣀⣤⣿⡻⢿⣯⡙⠛⠻⠿⣶⣶⣤⣤⣀⡀
+           ⠈⠉   ⢴⡾⠟⢋⣴⠟⣱⣿⣿⢿⣿⣿⢿⣎⠻⣦⡙⠻⢷⡦   ⠉⠉⠛⠻⠿⢷⣶⣦⣤⡀
+                 ⢀⣴⠟⢁⣾⠟⣹⡿⣸⡿⢿⣯⠻⣷⡈⠻⣦⡀           ⠈⠉
+               ⢀⣴⠟⠁ ⢾⠏⢀⣿⠇⣿⡇⠘⣿⡄⠹⡷ ⠈⠻⣦⡀
+               ⠙⠁     ⣼⡟ ⠻⠃ ⢻⣧     ⠈⠋
+                     ⢠⣿⠃    ⠘⣿⡄
+                     ⣼⡟      ⠙⠁
+                    ⢰⣿⠁
+                    ⣾⡏
+                   ⢰⣿⠁
+                    ⠁
+                 thickness 2.2 dots
+colour:
+  ..........................................................00..................................
+  ........................................................010203................................
+  ........................................................0405..................................
+  ......................................................060708..................................
+  ......................................090a............0b0c....................................
+  ......................................0d0e0f........0g0h0i....................................
+  ..........................0j0k..........0l0m..0n0o..0p0q..........0r0s........................
+  ..........................0k0t0u0v..0w0x0y0z0A0B0B0C0D0E0F0G..0H0I0J0r........................
+  ....0K0L......................0v0M0N0O0P0Q0R0S0T0T0U0V0W0X0Y0Z100H............................
+  ..1112131415161718191a......1b1c1d1e1f1g1h1i1j1k1l1m1n1o1p1q1r1s1t1u......1v1w................
+  ..............1x1y1z1a1A1B1C1D1E1F1G1H1I1J1K1L..1M1N1O1P1Q1R1S1T1U1V1W1X1Y1v1Z................
+  ..........................2021222324252627............28292a2b2c2d2e2f........................
+  ........................2g2h2i2j2k2l2m2n2o............2p2q2r2s2t2u2v2w2x......................
+  ..................2y2z2A2B2C2D2E2F2G2H2I2J2K2L..2M2N2O2P2Q2R2S2T2U2V2W2X2Y2Z303132............
+  ..................332z......3435363738393a3b3c3d3e3f3g3h3i3j3k3l3m3n......2Z3o3p3q3r3s3t3u3v3w
+  ..............................3x3y3z3A3B3C3D3E3F3G3H3I3J3K3L3M3N3O......................3P3Q..
+  ..........................3R3S3T3x..3U3V3W3X3Y3Z3Z4041424344..3O454647........................
+  ..........................483R..........494a..4b4c..4d4e..........474f........................
+  ......................................4g4h4i........4j4k4l....................................
+  ......................................4m4n............4o4p....................................
+  ....................................4q4r4s....................................................
+  ....................................4t4u......................................................
+  ..................................4v4w4x......................................................
+  ....................................4y........................................................
+  ..............................4z4z4z4z4z4z4z4z4z4z4z4z4z4z4z4z4z4z............................
