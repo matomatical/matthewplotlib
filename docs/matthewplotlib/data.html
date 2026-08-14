@@ -49,6 +49,12 @@
                             </li>
                             <li>
                                 <a class="module"
+                                   href="../matthewplotlib/camera.html">
+                                    camera
+                                </a>
+                            </li>
+                            <li>
+                                <a class="module"
                                    href="../matthewplotlib/colormaps.html">
                                     colormaps
                                 </a>
@@ -75,9 +81,6 @@
                     <a class="variable" href="#number">number</a>
             </li>
             <li>
-                    <a class="variable" href="#ColorSpec">ColorSpec</a>
-            </li>
-            <li>
                     <a class="variable" href="#Series">Series</a>
             </li>
             <li>
@@ -87,19 +90,22 @@
                     <a class="function" href="#parse_range">parse_range</a>
             </li>
             <li>
-                    <a class="function" href="#parse_color_spec">parse_color_spec</a>
-            </li>
-            <li>
                     <a class="function" href="#parse_series">parse_series</a>
             </li>
             <li>
                     <a class="function" href="#parse_multiple_series">parse_multiple_series</a>
             </li>
             <li>
+                    <a class="function" href="#parse_segments">parse_segments</a>
+            </li>
+            <li>
                     <a class="function" href="#parse_series3">parse_series3</a>
             </li>
             <li>
                     <a class="function" href="#parse_multiple_series3">parse_multiple_series3</a>
+            </li>
+            <li>
+                    <a class="function" href="#parse_segments3">parse_segments3</a>
             </li>
             <li>
                     <a class="class" href="#axis">axis</a>
@@ -154,15 +160,6 @@
                         </li>
                 </ul>
 
-            </li>
-            <li>
-                    <a class="function" href="#view_matrix">view_matrix</a>
-            </li>
-            <li>
-                    <a class="function" href="#project3">project3</a>
-            </li>
-            <li>
-                    <a class="function" href="#project3_segments">project3_segments</a>
             </li>
     </ul>
 
@@ -222,7 +219,6 @@ defines what is accepted and normalises it before plotting.</p>
 <li><code><a href="#number">number</a></code>: A scalar, Python or NumPy.</li>
 <li><code><a href="#Series">Series</a></code> and <code><a href="#Series3">Series3</a></code>: The accepted shapes for 2d and 3d point data. See
 these aliases for the full list of forms.</li>
-<li><code><a href="#ColorSpec">ColorSpec</a></code>: One color for a whole series, or one color per point.</li>
 </ul>
 
 <p>Special series:</p>
@@ -239,17 +235,10 @@ sequence of values against an axis rather than as two sequences.</li>
 <li><code><a href="#parse_series">parse_series</a></code>, <code><a href="#parse_series3">parse_series3</a></code>, and their <code>parse_multiple_*</code> variants: Turn
 any accepted form into arrays of points and colors.</li>
 <li><code><a href="#parse_range">parse_range</a></code>: Fill in missing axis limits from the data.</li>
-<li><code><a href="#parse_color_spec">parse_color_spec</a></code>: Turn a <code><a href="#ColorSpec">ColorSpec</a></code> into one color per point.</li>
 </ul>
 
-<p>3d projection:</p>
-
-<ul>
-<li><code><a href="#view_matrix">view_matrix</a></code>: The coordinate system a camera sees the scene in.</li>
-<li><code><a href="#project3">project3</a></code> and <code><a href="#project3_segments">project3_segments</a></code>: Project 3d points, or 3d line segments,
-onto the viewing plane of a camera, for the 3d plot types in
-<code><a href="plots.html">matthewplotlib.plots</a></code>.</li>
-</ul>
+<p>For turning 3d data into positions on a camera's film, see
+<code><a href="camera.html">matthewplotlib.camera</a></code>.</p>
 </div>
 
                 
@@ -264,18 +253,6 @@ onto the viewing plane of a camera, for the 3d plot types in
         
     </div>
     <a class="headerlink" href="#number"></a>
-    
-    
-
-                </section>
-                <section id="ColorSpec">
-                    <div class="attr variable">
-            <span class="def">type</span> <span class="name">ColorSpec</span>        =
-<span class="default_value">None | ColorLike | ArrayLike</span>
-
-        
-    </div>
-    <a class="headerlink" href="#ColorSpec"></a>
     
     
 
@@ -316,20 +293,14 @@ onto the viewing plane of a camera, for the 3d plot types in
     </div>
     <a class="headerlink" href="#parse_range"></a>
     
-    
+            <div class="docstring"><p>Fill in missing axis limits from the data.</p>
 
-                </section>
-                <section id="parse_color_spec">
-                    <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">parse_color_spec</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">cs</span><span class="p">:</span> <span class="n">ColorSpec</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n">NDArray</span>:</span></span>
+<p>Limits come from the data's extremes, ignoring non-finite values, since
+those mark gaps in it rather than describing how far it reaches. Data that
+reaches no distance at all, a constant series or an empty one, is given a
+range around itself to be drawn in the middle of.</p>
+</div>
 
-        
-    </div>
-    <a class="headerlink" href="#parse_color_spec"></a>
-    
-    
 
                 </section>
                 <section id="parse_series">
@@ -358,6 +329,27 @@ onto the viewing plane of a camera, for the 3d plot types in
     
 
                 </section>
+                <section id="parse_segments">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">parse_segments</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">seriess</span><span class="p">:</span> <span class="n">Series</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#parse_segments"></a>
+    
+            <div class="docstring"><p>Turn series into the segments joining their consecutive points, with the
+colors at each end of each.</p>
+
+<p>Where <code><a href="#parse_multiple_series">parse_multiple_series</a></code> pools every series into one cloud of points,
+this pairs the points up within each series first: a series is one stroke
+of the pen, and the last point of one is never joined to the first point of
+the next.</p>
+</div>
+
+
+                </section>
                 <section id="parse_series3">
                     <div class="attr function">
             
@@ -382,6 +374,22 @@ onto the viewing plane of a camera, for the 3d plot types in
     <a class="headerlink" href="#parse_multiple_series3"></a>
     
     
+
+                </section>
+                <section id="parse_segments3">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">parse_segments3</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">seriess</span><span class="p">:</span> <span class="n">Series3</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#parse_segments3"></a>
+    
+            <div class="docstring"><p>Turn 3d series into the segments joining their consecutive points, with the
+colors at each end of each. See <code><a href="#parse_segments">parse_segments</a></code>.</p>
+</div>
+
 
                 </section>
                 <section id="axis">
@@ -598,167 +606,6 @@ onto the viewing plane of a camera, for the 3d plot types in
             </div>
                                 </dl>
                             </div>
-                </section>
-                <section id="view_matrix">
-                    <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">view_matrix</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">camera_position</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>,</span><span class="param">	<span class="n">camera_target</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">scene_up</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>:</span></span>
-
-        
-    </div>
-    <a class="headerlink" href="#view_matrix"></a>
-    
-            <div class="docstring"><p>The basis of a camera's own coordinate system, as columns: X to the right,
-Y up, and Z towards whatever the camera is pointed at.</p>
-
-<p>Inputs:</p>
-
-<ul>
-<li>camera_position: float[3] (default: [0. 0. 2.]).
-The position at which the camera is placed.</li>
-<li>camera_target: float[3] (default: [0. 0. 0.]).
-The position towards which the camera is facing. Should be distinct
-from camera position.</li>
-<li>scene_up: float[3] (default: [0. 1. 0.]).
-The unit vector designating the 'up' direction for the scene. Should
-not have the same direction as camera_target - camera_position.</li>
-</ul>
-
-<p>Returns:</p>
-
-<ul>
-<li>V: float[3, 3].
-Right-multiply a displacement from the camera by this to express it in
-the camera's coordinates.</li>
-</ul>
-</div>
-
-
-                </section>
-                <section id="project3">
-                    <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">project3</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">xyz</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">camera_position</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>,</span><span class="param">	<span class="n">camera_target</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">scene_up</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
-
-        
-    </div>
-    <a class="headerlink" href="#project3"></a>
-    
-            <div class="docstring"><p>Project a 3d point cloud into two dimensions based on a given camera
-configuration.</p>
-
-<p>Inputs:</p>
-
-<ul>
-<li>xyz: float[n, 3].
-The points to project, with columns corresponding to X, Y, and Z.</li>
-<li>camera_position: float[3] (default: [0. 0. 2.]).
-The position at which the camera is placed. The default is positioned
-along the positive Z axis.</li>
-<li>camera_target: float[3] (default: [0. 0. 0.]).
-The position towards which the camera is facing. Should be distinct
-from camera position. The default is that the camera is facing towards
-the origin.</li>
-<li>scene_up: float[3] (default: [0. 1. 0.]).
-The unit vector designating the 'up' direction for the scene. The
-default is the positive Y direction. Should not have the same direction
-as camera_target - camera_position.</li>
-<li>fov_degrees: float (default 90).
-Field of view. Points within a cone (or frustum) of this angle leaving
-the camera are projected into the unit disk (or the square [-1,1]^2).</li>
-</ul>
-
-<p>Returns:</p>
-
-<ul>
-<li>xy: float[n, 2].
-Projected points.</li>
-<li>valid: bool[n].
-Mask indicating which of the points are in front of the camera.</li>
-</ul>
-
-<p>Notes:</p>
-
-<ul>
-<li>The combined effect of the defaults is that the camera is looking down
-the Z axis towards the origin from the positive direction, with the X
-axis extending towards the right and the Y axis extending upwards, with
-the field of view ensuring that points within the cube [-1,1]^3 are
-projected into the square [-1,1]^2.</li>
-<li>The valid mask only considers whether points are in front of the camera.
-A more comprehensive frustum clipping approach is not supported.</li>
-</ul>
-
-<p>Internal notes:</p>
-
-<ul>
-<li>This implementation uses a coordinate system for the camera where X and Y
-point left and up respectively and Z points towards the object ahead of
-the camera (an alternative convention is for Z to point behind the
-camera).</li>
-</ul>
-</div>
-
-
-                </section>
-                <section id="project3_segments">
-                    <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">project3_segments</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">starts</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">ends</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">camera_position</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>,</span><span class="param">	<span class="n">camera_target</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">scene_up</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span>,</span><span class="param">	<span class="n">near</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-06</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
-
-        
-    </div>
-    <a class="headerlink" href="#project3_segments"></a>
-    
-            <div class="docstring"><p>Project 3d line segments onto the viewing plane of a camera.</p>
-
-<p>Inputs:</p>
-
-<ul>
-<li>starts: float[n, 3].
-The point at which each segment begins.</li>
-<li>ends: float[n, 3].
-The point at which each segment ends.</li>
-<li>camera_position: float[3] (default: [0. 0. 2.]).
-The position at which the camera is placed.</li>
-<li>camera_target: float[3] (default: [0. 0. 0.]).
-The position towards which the camera is facing. Should be distinct
-from camera position.</li>
-<li>scene_up: float[3] (default: [0. 1. 0.]).
-The unit vector designating the 'up' direction for the scene. Should
-not have the same direction as camera_target - camera_position.</li>
-<li>fov_degrees: float (default 90).
-Field of view. Points within a cone (or frustum) of this angle leaving
-the camera are projected into the unit disk (or the square [-1,1]^2).</li>
-<li>near: float (default 1e-6).
-Distance in front of the camera at which segments are cut off.</li>
-</ul>
-
-<p>Returns:</p>
-
-<ul>
-<li>xy_starts: float[m, 2].
-Where each drawn segment begins, projected.</li>
-<li>xy_ends: float[m, 2].
-Where each drawn segment ends, projected.</li>
-<li>drawn: bool[n].
-Which of the input segments are drawn at all. The two arrays of
-projected points have one entry per set bit, in order, so anything
-else the caller holds per segment should be masked with this.</li>
-</ul>
-
-<p>A segment with one end behind the camera is cut at the near plane, keeping
-the part in front. A segment with both ends behind it is not drawn, nor is
-one with a non-finite end. Projecting the endpoints without cutting would
-place that first kind of segment on the wrong side of the view, since
-perspective division by a negative depth reflects a point through the
-centre of the image.</p>
-</div>
-
-
                 </section>
     </main>
 <script>

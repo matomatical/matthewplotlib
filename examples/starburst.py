@@ -1,24 +1,10 @@
 """
 A rose of rays, turning, with the pen swelling from one dot to six and back.
 
-Between them the rays ask for everything a line rasteriser has to do:
-twenty-four directions, so every octant and every slope; three lengths, so the
-same pen has to draw a stub and a full radius; and a thickness that changes
-under the whole figure at once.
-
-Three things worth watching:
-
-* the short rays and the long rays keep the same weight of line, because a
-  stroke's thickness belongs to the pen and not to how far it travels;
-* as the pen thickens the rays meet in a disc rather than a knot, because a
-  thick stroke is its segment widened by a disc, and a bundle of them widens
-  into the union of those discs;
-* the colour of a ray is not one colour: each is dim at the hub and saturated
-  at the tip, interpolated along the segment as it is drawn.
-
-The figure returns to itself exactly. Ray lengths repeat every six rays, which
-is a quarter of the way round, so a quarter turn over the loop puts every ray
-back where an identical ray was and the last frame is the first frame again.
+Twenty-four directions and three lengths, so one pen has to draw a stub and a
+full radius, and each ray runs from a dim hub to a saturated tip along the way.
+Ray lengths repeat every quarter turn, which is how far the rose turns, so the
+loop closes exactly.
 """
 
 import tyro
@@ -48,11 +34,7 @@ def main(
     loop: bool = True,
     save: str | None = None,
 ):
-    """A turning rose of rays, drawn with a pen of changing thickness.
-
-    The animation is periodic in `num_frames`, so it loops seamlessly however
-    many frames you ask for. Pass `--no-caption` for the rose on its own.
-    """
+    """A turning rose of rays, drawn with a pen of changing thickness."""
     phase = np.arange(num_frames) / num_frames
 
     # a quarter turn per loop, which is one period of the pattern of lengths
@@ -92,13 +74,7 @@ def main(
 
 
 def rose(rotation: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """The rays of the rose at a given rotation, as one broken line.
-
-    Each ray is a stroke of its own, which is what the gaps are for: a
-    non-finite point ends a stroke, so a single series can carry all
-    twenty-four of them without the tip of one being joined to the hub of the
-    next.
-    """
+    """The rays at a given rotation, as one line broken between each."""
     angles = np.linspace(0, 2 * np.pi, RAYS, endpoint=False) + rotation
     reach = np.tile(REACH, RAYS // len(REACH))
 
@@ -110,8 +86,7 @@ def rose(rotation: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     # the next ray from being joined onto it
     xs, ys = np.stack([hubs, tips, gaps], axis=2).reshape(2, -1)
 
-    # each ray runs from a dim version of its hue at the hub to the full hue at
-    # the tip, and the segment is drawn as the gradient between the two
+    # dim at the hub, full hue at the tip, as a gradient along the segment
     hues = mp.rainbow(angles % (2 * np.pi) / (2 * np.pi))
     colors = np.stack([hues // 3, hues, hues], axis=1).reshape(-1, 3)
 

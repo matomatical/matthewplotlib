@@ -48,15 +48,38 @@
 <h2 id="in-development">In development</h2>
 <p>New:</p>
 <ul>
-<li><code>mp.line(series, ...)</code>: line plots, connecting the points of each series in order, drawn with braille dots like <code>mp.scatter</code>. Takes the same ranges and size as a scatter, fits inside <code>mp.axes</code>, and layers with <code>mp.dstack2</code>.</li>
-<li><code>mp.line3(series, ...)</code>: the same for points in space, seen from a camera configured as for <code>mp.scatter3</code>. Segments reaching behind the camera are cut off in front of it rather than being reflected through the centre of the view.</li>
-<li><code>thickness=</code> on both, measured in dots, with round caps and joins that fill in rather than notching.</li>
-<li>A non-finite coordinate breaks a line, so one series can be drawn as several disconnected strokes – a gap in measured data, or a whole mesh of separate wires in one call.</li>
-<li>Colors interpolate along each segment, so a series with a color per point comes out as a gradient.</li>
-<li>Each series is a separate stroke: the last point of one is never joined to the first point of the next.</li>
-<li><code>lines.py</code> example: two loss curves, one of them measured sparsely and with a stretch missing, and the same spiral drawn with four widths of pen.</li>
+<li><code>mp.line(series, ...)</code>: line plots, connecting the points of each series in order, drawn with braille dots like <code>mp.scatter</code>.
+<ul>
+<li>Variable <code>thickness</code> measured in dots, round caps.</li>
+<li>NaN breaks lines.</li>
+<li>Colors interpolate along each segment.</li>
+</ul></li>
+<li><code>mp.line3(series, ...)</code>: the same for points in space, seen from a camera configured as for <code>mp.scatter3</code>.</li>
+</ul>
+<p>Changed:</p>
+<ul>
+<li><code>mp.scatter</code> and <code>mp.line</code> map data onto dots the same way, so a scatter’s points move by up to one dot: the limits of the data now land on the centres of the outermost dots rather than the outer edges of the outermost bins.</li>
+<li><code>parse_range</code> ignores non-finite values, and gives a range to data that reaches no distance: a constant series now reports the range it is drawn in rather than one of zero width.</li>
+<li>3d projection moves out of <code>data</code> into a new module, <code>camera</code>, which gains <code>perspective</code> alongside <code>view_matrix</code> and the two <code>project3*</code> functions.</li>
+<li>Color specs move out of <code>data</code> into <code>colors</code>, as <code>parse_colors</code>.</li>
+</ul>
+<p>Fixed:</p>
+<ul>
+<li><code>mp.scatter3</code> is no longer a subclass of <code>mp.scatter</code>.
+<ul>
+<li>As a consequence, <code>mp.axes</code> no longer takes it (the axis labels would have been based on the projection anyway).</li>
+</ul></li>
+<li>Floats in color arays now have range [0.0, 1.0], as was already the case for single float colors.
+<ul>
+<li>Previously, floats in color arrays were interpreted in [0.0, 255.0].</li>
+</ul></li>
+<li>Improved color-parsing error handling and error messages.</li>
+</ul>
+<p>New examples:</p>
+<ul>
+<li><code>vaporwave.py</code> example: a wireframe landscape scrolling under a banded sun, terrain showcasing <code>mp.line3</code>.</li>
+<li><code>lines.py</code> example: showcasing <code>mp.line</code>, two loss curves, one of them measured sparsely and with a stretch missing, and the same spiral drawn with four widths of pen.</li>
 <li><code>starburst.py</code> example: a turning rose of rays whose stroke swells from one dot to six and back.</li>
-<li><code>landscape.py</code> example: a wireframe landscape scrolling under a banded sun, terrain and sun both drawn by one call to <code>mp.line3</code>.</li>
 </ul>
 <h2 id="version-0.5.0">Version 0.5.0</h2>
 <p>New:</p>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="pdoc 16.0.0"/>
-    <title>matthewplotlib.colors API documentation</title>
+    <title>matthewplotlib.camera API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
     <style>/*! syntax-highlighting.css */pre{line-height:125%;}span.linenos{color:inherit; background-color:transparent; padding-left:5px; padding-right:20px;}.pdoc-code .hll{background-color:#ffffcc}.pdoc-code{background:#f8f8f8;}.pdoc-code .c{color:#3D7B7B; font-style:italic}.pdoc-code .err{border:1px solid #FF0000}.pdoc-code .k{color:#008000; font-weight:bold}.pdoc-code .o{color:#666666}.pdoc-code .ch{color:#3D7B7B; font-style:italic}.pdoc-code .cm{color:#3D7B7B; font-style:italic}.pdoc-code .cp{color:#9C6500}.pdoc-code .cpf{color:#3D7B7B; font-style:italic}.pdoc-code .c1{color:#3D7B7B; font-style:italic}.pdoc-code .cs{color:#3D7B7B; font-style:italic}.pdoc-code .gd{color:#A00000}.pdoc-code .ge{font-style:italic}.pdoc-code .gr{color:#E40000}.pdoc-code .gh{color:#000080; font-weight:bold}.pdoc-code .gi{color:#008400}.pdoc-code .go{color:#717171}.pdoc-code .gp{color:#000080; font-weight:bold}.pdoc-code .gs{font-weight:bold}.pdoc-code .gu{color:#800080; font-weight:bold}.pdoc-code .gt{color:#0044DD}.pdoc-code .kc{color:#008000; font-weight:bold}.pdoc-code .kd{color:#008000; font-weight:bold}.pdoc-code .kn{color:#008000; font-weight:bold}.pdoc-code .kp{color:#008000}.pdoc-code .kr{color:#008000; font-weight:bold}.pdoc-code .kt{color:#B00040}.pdoc-code .m{color:#666666}.pdoc-code .s{color:#BA2121}.pdoc-code .na{color:#687822}.pdoc-code .nb{color:#008000}.pdoc-code .nc{color:#0000FF; font-weight:bold}.pdoc-code .no{color:#880000}.pdoc-code .nd{color:#AA22FF}.pdoc-code .ni{color:#717171; font-weight:bold}.pdoc-code .ne{color:#CB3F38; font-weight:bold}.pdoc-code .nf{color:#0000FF}.pdoc-code .nl{color:#767600}.pdoc-code .nn{color:#0000FF; font-weight:bold}.pdoc-code .nt{color:#008000; font-weight:bold}.pdoc-code .nv{color:#19177C}.pdoc-code .ow{color:#AA22FF; font-weight:bold}.pdoc-code .w{color:#bbbbbb}.pdoc-code .mb{color:#666666}.pdoc-code .mf{color:#666666}.pdoc-code .mh{color:#666666}.pdoc-code .mi{color:#666666}.pdoc-code .mo{color:#666666}.pdoc-code .sa{color:#BA2121}.pdoc-code .sb{color:#BA2121}.pdoc-code .sc{color:#BA2121}.pdoc-code .dl{color:#BA2121}.pdoc-code .sd{color:#BA2121; font-style:italic}.pdoc-code .s2{color:#BA2121}.pdoc-code .se{color:#AA5D1F; font-weight:bold}.pdoc-code .sh{color:#BA2121}.pdoc-code .si{color:#A45A77; font-weight:bold}.pdoc-code .sx{color:#008000}.pdoc-code .sr{color:#A45A77}.pdoc-code .s1{color:#BA2121}.pdoc-code .ss{color:#19177C}.pdoc-code .bp{color:#008000}.pdoc-code .fm{color:#0000FF}.pdoc-code .vc{color:#19177C}.pdoc-code .vg{color:#19177C}.pdoc-code .vi{color:#19177C}.pdoc-code .vm{color:#19177C}.pdoc-code .il{color:#666666}</style>
@@ -48,10 +48,25 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="module"
+                                <a class="module nav-active"
                                    href="../matthewplotlib/camera.html">
                                     camera
                                 </a>
+                                        <ul class="memberlist">
+            <li>
+                    <a class="function" href="#view_matrix">view_matrix</a>
+            </li>
+            <li>
+                    <a class="function" href="#perspective">perspective</a>
+            </li>
+            <li>
+                    <a class="function" href="#project3">project3</a>
+            </li>
+            <li>
+                    <a class="function" href="#project3_segments">project3_segments</a>
+            </li>
+    </ul>
+
                             </li>
                             <li>
                                 <a class="module"
@@ -60,31 +75,10 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="module nav-active"
+                                <a class="module"
                                    href="../matthewplotlib/colors.html">
                                     colors
                                 </a>
-                                        <ul class="memberlist">
-            <li>
-                    <a class="variable" href="#Color">Color</a>
-            </li>
-            <li>
-                    <a class="variable" href="#ColorLike">ColorLike</a>
-            </li>
-            <li>
-                    <a class="variable" href="#ColorSpec">ColorSpec</a>
-            </li>
-            <li>
-                    <a class="function" href="#parse_color">parse_color</a>
-            </li>
-            <li>
-                    <a class="function" href="#parse_colors">parse_colors</a>
-            </li>
-            <li>
-                    <a class="variable" href="#NAMED_COLORS">NAMED_COLORS</a>
-            </li>
-    </ul>
-
                             </li>
                             <li>
                                 <a class="module"
@@ -134,147 +128,235 @@
         <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     </button>
-        <a class="pdoc-button git-button" href="https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py" title="Edit on GitHub">
+        <a class="pdoc-button git-button" href="https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/camera.py" title="Edit on GitHub">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 496 512" fill="currentColor"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
         </a>
                     <h1 class="modulename">
-<a href="./../matthewplotlib.html">matthewplotlib</a><wbr>.colors    </h1>
+<a href="./../matthewplotlib.html">matthewplotlib</a><wbr>.camera    </h1>
 
-                        <div class="docstring"><p>Specifying colors.</p>
+                        <div class="docstring"><p>Seeing three dimensions from a camera.</p>
 
-<p>Wherever a plot takes a color, it accepts any of several convenient spellings,
-and converts to a single internal representation. Wherever it takes the colors
-of a whole series, it accepts either one of those or an array holding one per
-point.</p>
+<p>A camera is a position, a thing it is pointed at, and how much of the world it
+takes in. This module turns points and line segments in space into positions on
+the film, for the 3d plot types in <code><a href="plots.html">matthewplotlib.plots</a></code>.</p>
 
-<p>Types:</p>
-
-<ul>
-<li><code><a href="#Color">Color</a></code>: The internal representation, an RGB triple of bytes.</li>
-<li><code><a href="#ColorLike">ColorLike</a></code>: Anything accepted in place of one---a named color, a hex string,
-or a triple of ints in 0 to 255 or floats in 0.0 to 1.0.</li>
-<li><code><a href="#ColorSpec">ColorSpec</a></code>: Anything accepted for the colors of a series---one <code><a href="#ColorLike">ColorLike</a></code>
-for all of it, or an array with a color per point.</li>
-</ul>
-
-<p>Conversion:</p>
+<p>The two stages:</p>
 
 <ul>
-<li><code><a href="#parse_color">parse_color</a></code>: Turn a <code><a href="#ColorLike">ColorLike</a></code> into a <code><a href="#Color">Color</a></code>. See this function for the
-full list of accepted formats.</li>
-<li><code><a href="#parse_colors">parse_colors</a></code>: Turn a <code><a href="#ColorSpec">ColorSpec</a></code> into one <code><a href="#Color">Color</a></code> for each of n points.</li>
-<li><code><a href="#NAMED_COLORS">NAMED_COLORS</a></code>: The recognised color names.</li>
+<li><code><a href="#view_matrix">view_matrix</a></code>: The coordinate system the camera sees the scene in.</li>
+<li><code><a href="#perspective">perspective</a></code>: Divide out the depth of points already in that system.</li>
 </ul>
 
-<p>For mapping data to colors, rather than naming one color, see
-<code><a href="colormaps.html">matthewplotlib.colormaps</a></code>.</p>
+<p>End to end:</p>
+
+<ul>
+<li><code><a href="#project3">project3</a></code>: Project 3d points onto the viewing plane of a camera.</li>
+<li><code><a href="#project3_segments">project3_segments</a></code>: The same for line segments, cutting those that reach
+behind the camera. A segment needs its own function because its image is not
+the line between the images of its ends.</li>
+</ul>
 </div>
 
                 
                 
                 
             </section>
-                <section id="Color">
-                    <div class="attr variable">
-            <span class="def">type</span> <span class="name">Color</span>        =
-<span class="default_value">NDArray</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Color"></a>
-    
-    
-
-                </section>
-                <section id="ColorLike">
-                    <div class="attr variable">
-            <span class="def">type</span> <span class="name">ColorLike</span>        =
-<span class="default_value">str | NDArray | tuple[int, int, int] | tuple[float, float, float] | Color</span>
-
-        
-    </div>
-    <a class="headerlink" href="#ColorLike"></a>
-    
-    
-
-                </section>
-                <section id="ColorSpec">
-                    <div class="attr variable">
-            <span class="def">type</span> <span class="name">ColorSpec</span>        =
-<span class="default_value">None | ColorLike | ArrayLike</span>
-
-        
-    </div>
-    <a class="headerlink" href="#ColorSpec"></a>
-    
-    
-
-                </section>
-                <section id="parse_color">
+                <section id="view_matrix">
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">parse_color</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Color</span> <span class="o">|</span> <span class="kc">None</span>:</span></span>
+        <span class="name">view_matrix</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">camera_position</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>,</span><span class="param">	<span class="n">camera_target</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">scene_up</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>:</span></span>
 
         
     </div>
-    <a class="headerlink" href="#parse_color"></a>
+    <a class="headerlink" href="#view_matrix"></a>
     
-            <div class="docstring"><p>Accept and standardise RGB triples in any of the following 'color like'
-formats:</p>
+            <div class="docstring"><p>The basis of a camera's own coordinate system, as columns: X to the right,
+Y up, and Z towards whatever the camera is pointed at.</p>
 
-<ol>
-<li><p><strong>Named colours:</strong> The following strings are recognised and translated
-to RGB triples: <code>"black"</code>, <code>"red"</code>, <code>"green"</code>, <code>"blue"</code>, <code>"cyan"</code>,
-<code>"magenta"</code>, <code>"yellow"</code>, <code>"white"</code>.</p></li>
-<li><p><strong>Hexadecimal:</strong> A hexadecimal string like <code>"#ff0000"</code> specifying the
-RGB values in the usual manner.</p></li>
-<li><p><strong>Short hexadecimal:</strong> A three-character hexadecimal string like
-<code>"#f00"</code>, where <code>"#RGB"</code> is equivalent to <code>"#RRGGBB"</code> in the usual
-hexadecimal format.</p></li>
-<li><p><strong>Integer triple:</strong> An array or tuple of three integers in the range 0
-to 255, converted directly to an RGB triple.</p></li>
-<li><p><strong>Float triple:</strong> An array or tuple of three floats in the range 0.0 to
-1.0, converted to an RGB triple by multiplying by 255 and rounding down
-to the nearest integer.</p></li>
-</ol>
+<p>Inputs:</p>
 
-<p>(Arrays or tuples with mixed integers and floats are promoted by NumPy to
-become float triples.)</p>
+<ul>
+<li>camera_position: float[3] (default: [0. 0. 2.]).
+The position at which the camera is placed.</li>
+<li>camera_target: float[3] (default: [0. 0. 0.]).
+The position towards which the camera is facing. Should be distinct
+from camera position.</li>
+<li>scene_up: float[3] (default: [0. 1. 0.]).
+The unit vector designating the 'up' direction for the scene. Should
+not have the same direction as camera_target - camera_position.</li>
+</ul>
+
+<p>Returns:</p>
+
+<ul>
+<li>V: float[3, 3].
+Right-multiply a displacement from the camera by this to express it in
+the camera's coordinates.</li>
+</ul>
 </div>
 
 
                 </section>
-                <section id="parse_colors">
+                <section id="perspective">
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">parse_colors</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">spec</span><span class="p">:</span> <span class="n">ColorSpec</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n">NDArray</span>:</span></span>
+        <span class="name">perspective</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">xyz</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span>,</span><span class="param">	<span class="n">valid</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>:</span></span>
 
         
     </div>
-    <a class="headerlink" href="#parse_colors"></a>
+    <a class="headerlink" href="#perspective"></a>
     
-            <div class="docstring"><p>One color for each of n points, from either a single <code><a href="#ColorLike">ColorLike</a></code> or an
-array holding a color per point.</p>
+            <div class="docstring"><p>Where points already in camera coordinates land on the film.</p>
 
-<p>Channels are read the same way in both cases: floats as 0.0 to 1.0, ints as
-0 to 255. A spec of None means the default, white.</p>
+<p>Inputs:</p>
+
+<ul>
+<li>xyz: float[n, 3].
+Points in the camera's own coordinate system, so that the third column
+is depth into the scene.</li>
+<li>fov_degrees: float (default 90).
+Field of view. Points within a cone (or frustum) of this angle leaving
+the camera are projected into the unit disk (or the square [-1,1]^2).</li>
+<li>valid: optional bool[n].
+Which points to divide, for callers holding points at or behind the
+camera. Those come back as zeros rather than as a division by a depth
+of zero or less.</li>
+</ul>
+
+<p>Returns:</p>
+
+<ul>
+<li>xy: float[n, 2].
+Projected points.</li>
+</ul>
 </div>
 
 
                 </section>
-                <section id="NAMED_COLORS">
-                    <div class="attr variable">
-            <span class="name">NAMED_COLORS</span><span class="annotation">: dict[str, Color]</span>        =
-<input id="NAMED_COLORS-view-value" class="view-value-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-            <label class="view-value-button pdoc-button" for="NAMED_COLORS-view-value"></label><span class="default_value">{&#39;black&#39;: array([0, 0, 0], dtype=uint8), &#39;red&#39;: array([255,   0,   0], dtype=uint8), &#39;green&#39;: array([  0, 255,   0], dtype=uint8), &#39;blue&#39;: array([  0,   0, 255], dtype=uint8), &#39;cyan&#39;: array([  0, 255, 255], dtype=uint8), &#39;magenta&#39;: array([255,   0, 255], dtype=uint8), &#39;yellow&#39;: array([255, 255,   0], dtype=uint8), &#39;white&#39;: array([255, 255, 255], dtype=uint8)}</span>
+                <section id="project3">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">project3</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">xyz</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">camera_position</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>,</span><span class="param">	<span class="n">camera_target</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">scene_up</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
 
         
     </div>
-    <a class="headerlink" href="#NAMED_COLORS"></a>
+    <a class="headerlink" href="#project3"></a>
     
+            <div class="docstring"><p>Project a 3d point cloud into two dimensions based on a given camera
+configuration.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>xyz: float[n, 3].
+The points to project, with columns corresponding to X, Y, and Z.</li>
+<li>camera_position: float[3] (default: [0. 0. 2.]).
+The position at which the camera is placed. The default is positioned
+along the positive Z axis.</li>
+<li>camera_target: float[3] (default: [0. 0. 0.]).
+The position towards which the camera is facing. Should be distinct
+from camera position. The default is that the camera is facing towards
+the origin.</li>
+<li>scene_up: float[3] (default: [0. 1. 0.]).
+The unit vector designating the 'up' direction for the scene. The
+default is the positive Y direction. Should not have the same direction
+as camera_target - camera_position.</li>
+<li>fov_degrees: float (default 90).
+Field of view. Points within a cone (or frustum) of this angle leaving
+the camera are projected into the unit disk (or the square [-1,1]^2).</li>
+</ul>
+
+<p>Returns:</p>
+
+<ul>
+<li>xy: float[n, 2].
+Projected points.</li>
+<li>valid: bool[n].
+Mask indicating which of the points are in front of the camera.</li>
+</ul>
+
+<p>Notes:</p>
+
+<ul>
+<li>The combined effect of the defaults is that the camera is looking down
+the Z axis towards the origin from the positive direction, with the X
+axis extending towards the right and the Y axis extending upwards, with
+the field of view ensuring that points within the cube [-1,1]^3 are
+projected into the square [-1,1]^2.</li>
+<li>The valid mask only considers whether points are in front of the camera.
+A more comprehensive frustum clipping approach is not supported.</li>
+</ul>
+
+<p>Internal notes:</p>
+
+<ul>
+<li>This implementation uses a coordinate system for the camera where X and Y
+point left and up respectively and Z points towards the object ahead of
+the camera (an alternative convention is for Z to point behind the
+camera).</li>
+</ul>
+</div>
+
+
+                </section>
+                <section id="project3_segments">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">project3_segments</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">starts</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">ends</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">camera_position</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>,</span><span class="param">	<span class="n">camera_target</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">scene_up</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>,</span><span class="param">	<span class="n">fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span>,</span><span class="param">	<span class="n">near</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-06</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#project3_segments"></a>
     
+            <div class="docstring"><p>Project 3d line segments onto the viewing plane of a camera.</p>
+
+<p>Inputs:</p>
+
+<ul>
+<li>starts: float[n, 3].
+The point at which each segment begins.</li>
+<li>ends: float[n, 3].
+The point at which each segment ends.</li>
+<li>camera_position: float[3] (default: [0. 0. 2.]).
+The position at which the camera is placed.</li>
+<li>camera_target: float[3] (default: [0. 0. 0.]).
+The position towards which the camera is facing. Should be distinct
+from camera position.</li>
+<li>scene_up: float[3] (default: [0. 1. 0.]).
+The unit vector designating the 'up' direction for the scene. Should
+not have the same direction as camera_target - camera_position.</li>
+<li>fov_degrees: float (default 90).
+Field of view. Points within a cone (or frustum) of this angle leaving
+the camera are projected into the unit disk (or the square [-1,1]^2).</li>
+<li>near: float (default 1e-6).
+Distance in front of the camera at which segments are cut off.</li>
+</ul>
+
+<p>Returns:</p>
+
+<ul>
+<li>xy_starts: float[m, 2].
+Where each drawn segment begins, projected.</li>
+<li>xy_ends: float[m, 2].
+Where each drawn segment ends, projected.</li>
+<li>drawn: bool[n].
+Which of the input segments are drawn at all. The two arrays of
+projected points have one entry per set bit, in order, so anything
+else the caller holds per segment should be masked with this.</li>
+</ul>
+
+<p>A segment with one end behind the camera is cut at the near plane, keeping
+the part in front. A segment with both ends behind it is not drawn, nor is
+one with a non-finite end. Projecting the endpoints without cutting would
+place that first kind of segment on the wrong side of the view, since
+perspective division by a negative depth reflects a point through the
+centre of the image.</p>
+</div>
+
 
                 </section>
     </main>

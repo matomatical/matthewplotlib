@@ -1,17 +1,10 @@
 """
 What line plots are for, and what a thicker pen does to one.
 
-Above: two curves of the kind that made connecting the dots worth
-implementing. A scatter of the same points leaves the eye to guess the order
-they came in; a line states it. The lower curve is measured less often than the
-upper one and has a stretch missing entirely, which is drawn as a gap rather
-than as a straight line across the missing part: a non-finite coordinate ends
-one stroke, and the next point starts another.
-
-Below: one spiral, drawn four times with the pen set wider each time. The
-stroke is the curve widened by a disc, so it stays the same width around the
-tightest part of the turn as it is along the outside, and the joins between the
-segments approximating the curve fill in rather than showing as notches.
+Two loss curves, the lower measured less often and with a stretch missing
+altogether, drawn as a gap rather than as a line across it. Then one spiral
+four times over with the pen set wider each time: a stroke is the curve widened
+by a disc, so it keeps its width around the tightest part of the turn.
 """
 
 import tyro
@@ -83,17 +76,15 @@ def main(
 def curves(seed: int) -> tuple[np.ndarray, ...]:
     """Two loss curves: one measured every step, one every eighth of one.
 
-    A line joins the consecutive points of a series, so a curve measured less
-    often is its own shorter series rather than a long one padded out with
-    holes -- padding it would leave no two consecutive points to join at all.
-    The one real hole, where the sparse curve stopped being measured, is the
-    one non-finite point.
+    The sparse curve is its own shorter series, not a long one padded with
+    holes: padding leaves no two consecutive points to join.
     """
     rng = np.random.default_rng(seed)
     steps = np.arange(STEPS, dtype=float)
 
     settling = np.exp(-steps / 70)
-    train = 0.15 + 2.4 * settling + 0.12 * settling * rng.standard_normal(STEPS)
+    noise = rng.standard_normal(STEPS)
+    train = 0.15 + 2.4 * settling + 0.12 * settling * noise
 
     sparse_steps = steps[::8]
     sparse_settling = settling[::8]
@@ -103,13 +94,13 @@ def curves(seed: int) -> tuple[np.ndarray, ...]:
     )
     # a stretch in the middle that was never measured: one gap, not a straight
     # line drawn across the missing part
-    sparse_test[(sparse_steps >= GAP[0]) & (sparse_steps < GAP[1])] = np.nan
+    missing = (sparse_steps >= GAP[0]) & (sparse_steps < GAP[1])
+    sparse_test[missing] = np.nan
     return steps, train, sparse_steps, sparse_test
 
 
 def spiral(turns: float = 2.0, points: int = 200) -> tuple[np.ndarray, ...]:
-    """An Archimedean spiral, as a series: tight turns at one end, wide at the
-    other, so one pen has to cope with both."""
+    """An Archimedean spiral: tight turns at one end, wide at the other."""
     angle = np.linspace(0, turns * 2 * np.pi, points)
     radius = angle / angle[-1]
     return radius * np.cos(angle), radius * np.sin(angle)

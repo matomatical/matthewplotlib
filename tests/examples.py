@@ -111,8 +111,6 @@ EXAMPLES: tuple[Example, ...] = (
     Example("hilbert_curve.py",         33, 64, saves="png"),
     Example("image.py",                 33, 96, saves="png"),
     Example("jointplot.py",             35, 64, saves="png"),
-    Example("landscape.py",             23, 76, saves="gif",
-            args=("--num-frames", "5", "--no-loop")),
     Example("life.py",                  26, 74, saves="gif",
             args=("--num-frames", "5")),
     Example("lines.py",                 28, 72, saves="png"),
@@ -141,6 +139,8 @@ EXAMPLES: tuple[Example, ...] = (
     Example("terminal_test.py",         33, 60,
             args=("--width", "60", "--frames", "3")),
     Example("time_series_histogram.py", 40, 80, saves="png"),
+    Example("vaporwave.py",             25, 80, saves="gif",
+            args=("--num-frames", "5", "--no-loop")),
     Example("voronoi.py",               21, 70, saves="png"),
 )
 

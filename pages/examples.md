@@ -121,7 +121,7 @@ folder for source code.
     </td>
     <td>
       <p><strong>Line charts</strong></p>
-      <p>Two loss curves, one measured every step and one every eighth of one with a stretch missing, drawn as a gap rather than as a straight line across the hole. Underneath, one spiral drawn four times with the pen set wider each time: the stroke is the curve widened by a disc, so it keeps its width around the tightest part of the turn and the joins fill in rather than notching.</p>
+      <p>Two loss curves, the lower measured less often and with a stretch missing altogether, drawn as a gap rather than as a line across it. Underneath, one spiral four times over with the pen set wider each time.</p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/lines.py">Source</a></p>
     </td>
   </tr>
@@ -191,7 +191,7 @@ folder for source code.
     </td>
     <td>
       <p><strong>Starburst</strong></p>
-      <p>A rose of rays, turning, with the pen swelling from one dot to six and back. Twenty-four directions and three lengths, so the same pen has to draw a stub and a full radius; each ray runs from a dim version of its hue at the hub to the full hue at the tip, interpolated along the segment as it is drawn. The rays are separate strokes of one series, separated by gaps.</p>
+      <p>A rose of rays, turning, with the pen swelling from one dot to six and back. Twenty-four directions and three lengths, and each ray a gradient from a dim hub to a saturated tip.</p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/starburst.py">Source</a></p>
     </td>
   </tr>
@@ -248,12 +248,12 @@ folder for source code.
   </tr>
   <tr>
     <td align="center">
-      <img src="images/landscape.gif">
+      <img src="images/vaporwave.gif">
     </td>
     <td>
-      <p><strong>Wireframe landscape</strong></p>
-      <p>A landscape scrolling under a banded sun, with the terrain mesh and the sun both drawn by a single call to <code>mp.line3</code>: every wire is a separate stroke of one series, separated by gaps, and there is no surface or shading anywhere. Colour by depth is the only cue that a wire is far away. The scroll loops seamlessly, the terrain being a sum of sines whose periods divide the distance travelled over one loop.</p>
-      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/landscape.py">Source</a></p>
+      <p><strong>Vaporwave</strong></p>
+      <p>A wireframe landscape scrolling under a banded sun, for ever. The backdrop of sky, ground and sun is an image of half-blocks; the terrain is one <code>mp.line3</code> over the top of it, a series per wire, running out at the ground's own colour as it recedes.</p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/vaporwave.py">Source</a></p>
     </td>
   </tr>
 </tbody>

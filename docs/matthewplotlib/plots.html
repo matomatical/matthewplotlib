@@ -49,6 +49,12 @@
                             </li>
                             <li>
                                 <a class="module"
+                                   href="../matthewplotlib/camera.html">
+                                    camera
+                                </a>
+                            </li>
+                            <li>
+                                <a class="module"
                                    href="../matthewplotlib/colormaps.html">
                                     colormaps
                                 </a>
@@ -134,6 +140,9 @@
                         <li>
                                 <a class="function" href="#scatter3.__init__">scatter3</a>
                         </li>
+                        <li>
+                                <a class="variable" href="#scatter3.num_points">num_points</a>
+                        </li>
                 </ul>
 
             </li>
@@ -150,7 +159,7 @@
                                 <a class="variable" href="#line.yrange">yrange</a>
                         </li>
                         <li>
-                                <a class="variable" href="#line.num_points">num_points</a>
+                                <a class="variable" href="#line.num_segments">num_segments</a>
                         </li>
                         <li>
                                 <a class="variable" href="#line.num_strokes">num_strokes</a>
@@ -166,9 +175,6 @@
                             <ul class="memberlist">
                         <li>
                                 <a class="function" href="#line3.__init__">line3</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#line3.num_points">num_points</a>
                         </li>
                         <li>
                                 <a class="variable" href="#line3.num_segments">num_segments</a>
@@ -838,7 +844,7 @@ height.</li>
                     <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">scatter3</span><wbr>(<span class="base"><a href="#scatter">scatter</a></span>):
+    <span class="name">scatter3</span><wbr>(<span class="base"><a href="#plot">plot</a></span>):
 
         
     </div>
@@ -877,12 +883,14 @@ The number of character columns in the plot.</li>
 The number of character rows in the plot.</li>
 </ul>
 
+<p>Projected coordinates are not the data's own, so this is not a <code><a href="#scatter">scatter</a></code>
+and <code><a href="#axes">axes</a></code> does not take it: there is nothing meaningful to label an axis
+with.</p>
+
 <p>TODO:</p>
 
 <ul>
 <li>Maybe allow configurable xyz ranges with clipping prior to projection?</li>
-<li>Make sure this is not a subclass of scatter for the purposes of labelling
-axes as that would use projected coordinates.</li>
 </ul>
 </div>
 
@@ -899,16 +907,21 @@ axes as that would use projected coordinates.</li>
     
 
                             </div>
+                            <div id="scatter3.num_points" class="classattr">
+                                <div class="attr variable">
+            <span class="name">num_points</span>
+
+        
+    </div>
+    <a class="headerlink" href="#scatter3.num_points"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="#scatter">scatter</a></dt>
-                                <dd id="scatter3.xrange" class="variable"><a href="#scatter.xrange">xrange</a></dd>
-                <dd id="scatter3.yrange" class="variable"><a href="#scatter.yrange">yrange</a></dd>
-                <dd id="scatter3.num_points" class="variable"><a href="#scatter.num_points">num_points</a></dd>
-
-            </div>
-            <div><dt><a href="#plot">plot</a></dt>
+                                    <div><dt><a href="#plot">plot</a></dt>
                                 <dd id="scatter3.chars" class="variable"><a href="#plot.chars">chars</a></dd>
                 <dd id="scatter3.height" class="variable"><a href="#plot.height">height</a></dd>
                 <dd id="scatter3.width" class="variable"><a href="#plot.width">width</a></dd>
@@ -1006,13 +1019,13 @@ gradient.</p>
     
 
                             </div>
-                            <div id="line.num_points" class="classattr">
+                            <div id="line.num_segments" class="classattr">
                                 <div class="attr variable">
-            <span class="name">num_points</span>
+            <span class="name">num_segments</span>
 
         
     </div>
-    <a class="headerlink" href="#line.num_points"></a>
+    <a class="headerlink" href="#line.num_segments"></a>
     
     
 
@@ -1121,17 +1134,6 @@ not drawn.</p>
         
     </div>
     <a class="headerlink" href="#line3.__init__"></a>
-    
-    
-
-                            </div>
-                            <div id="line3.num_points" class="classattr">
-                                <div class="attr variable">
-            <span class="name">num_points</span>
-
-        
-    </div>
-    <a class="headerlink" href="#line3.num_points"></a>
     
     
 

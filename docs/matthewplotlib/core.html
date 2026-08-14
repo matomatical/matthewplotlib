@@ -49,6 +49,12 @@
                             </li>
                             <li>
                                 <a class="module"
+                                   href="../matthewplotlib/camera.html">
+                                    camera
+                                </a>
+                            </li>
+                            <li>
+                                <a class="module"
                                    href="../matthewplotlib/colormaps.html">
                                     colormaps
                                 </a>
@@ -142,6 +148,18 @@
             </li>
             <li>
                     <a class="function" href="#rasterise_segments">rasterise_segments</a>
+            </li>
+            <li>
+                    <a class="function" href="#rasterise_points">rasterise_points</a>
+            </li>
+            <li>
+                    <a class="function" href="#accumulate_dots">accumulate_dots</a>
+            </li>
+            <li>
+                    <a class="function" href="#unicode_braille_points">unicode_braille_points</a>
+            </li>
+            <li>
+                    <a class="function" href="#unicode_braille_segments">unicode_braille_segments</a>
             </li>
             <li>
                     <a class="variable" href="#PARTIAL_BLOCKS_ROW">PARTIAL_BLOCKS_ROW</a>
@@ -285,6 +303,9 @@ gifs using an embedded pixel font.</li>
 <ul>
 <li><code><a href="#unicode_braille_array">unicode_braille_array</a></code>: Boolean matrices to braille characters, at 2 by 4
 dots per cell.</li>
+<li><code><a href="#rasterise_points">rasterise_points</a></code>, <code><a href="#rasterise_segments">rasterise_segments</a></code>, and the <code><a href="#unicode_braille_points">unicode_braille_points</a></code>
+and <code><a href="#unicode_braille_segments">unicode_braille_segments</a></code> that draw with them: points or line segments,
+given in dots, to a grid of dots or straight to braille characters.</li>
 <li><code><a href="#unicode_bar">unicode_bar</a></code> and <code><a href="#unicode_col">unicode_col</a></code>: Values to horizontal or vertical bars, using
 partial block characters for eighth-of-a-cell resolution.</li>
 <li><code><a href="#unicode_image">unicode_image</a></code>: Images to half-block characters, at 1 by 2 pixels per cell.</li>
@@ -823,6 +844,80 @@ discs centred along it. Round caps and correctly filled joins between
 consecutive segments both follow from that, without either being a case
 to handle.</li>
 </ul>
+</div>
+
+
+                </section>
+                <section id="rasterise_points">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">rasterise_points</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">points</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#rasterise_points"></a>
+    
+            <div class="docstring"><p>Mark the dots that a set of points falls in.</p>
+
+<p>Coordinates are in dots and mean what they mean for <code><a href="#rasterise_segments">rasterise_segments</a></code>,
+which also describes the three arrays this returns. Points that are not
+fully specified are skipped, as is anything outside the grid.</p>
+</div>
+
+
+                </section>
+                <section id="accumulate_dots">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">accumulate_dots</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">dot</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#accumulate_dots"></a>
+    
+            <div class="docstring"><p>Count how many times each dot of a grid is covered, and average the colors
+covering it.</p>
+
+<p>Whatever falls outside the grid is dropped. The counts double as the weights
+that mix the colors of one character cell together, so they come back a
+second time as those weights, which is what <code><a href="#unicode_braille_array">unicode_braille_array</a></code> takes.</p>
+</div>
+
+
+                </section>
+                <section id="unicode_braille_points">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">unicode_braille_points</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">points</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#CharArray">CharArray</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#unicode_braille_points"></a>
+    
+            <div class="docstring"><p>Draw a set of points as a grid of braille characters.</p>
+
+<p>Coordinates are in dots, as for <code><a href="#rasterise_points">rasterise_points</a></code>, which this draws with.</p>
+</div>
+
+
+                </section>
+                <section id="unicode_braille_segments">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">unicode_braille_segments</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">starts</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">ends</span><span class="p">:</span> <span class="n">NDArray</span>,</span><span class="param">	<span class="n">height</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">width</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">start_colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">end_colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span></span><span class="return-annotation">) -> <span class="n"><a href="#CharArray">CharArray</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#unicode_braille_segments"></a>
+    
+            <div class="docstring"><p>Draw line segments as a grid of braille characters.</p>
+
+<p>Coordinates are in dots, as for <code><a href="#rasterise_segments">rasterise_segments</a></code>, which this draws with
+and which documents what the arguments mean.</p>
 </div>
 
 
