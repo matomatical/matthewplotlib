@@ -665,7 +665,204 @@ def unicode_braille_array(
     )
 
 
-# # # 
+# # #
+# SEGMENT RASTERISATION
+
+
+def disc_offsets(
+    thickness: float,
+) -> NDArray: # int[k, 2]
+    """
+    The dots covered by a disc of the given thickness centred on a dot, as
+    offsets from that dot.
+
+    A dot is included when its centre lies within `thickness / 2` of the
+    centre of the disc, so a thickness of 1 covers one dot, 2 covers a plus of
+    five, 3 covers a three-by-three square, and so on.
+
+    Inputs:
+
+    * thickness: float.
+        Diameter of the disc, measured in dots.
+
+    Returns:
+
+    * offsets: int[k, 2].
+        One `(row, col)` offset per covered dot, always including `(0, 0)`.
+    """
+    radius = max(thickness, 0.) / 2
+    reach = int(np.floor(radius))
+    span = np.arange(-reach, reach + 1)
+    rows, cols = np.meshgrid(span, span, indexing="ij")
+    covered = rows ** 2 + cols ** 2 <= radius ** 2
+    return np.stack([rows[covered], cols[covered]], axis=1)
+
+
+def rasterise_segments(
+    starts: NDArray,                        # float[n, 2]
+    ends: NDArray,                          # float[n, 2]
+    height: int,
+    width: int,
+    start_colors: NDArray | None = None,    # uint8[n, 3]
+    end_colors: NDArray | None = None,      # uint8[n, 3]
+    thickness: float = 1.0,
+) -> tuple[
+    NDArray,                                # int[height, width]
+    NDArray | None,                         # uint8[height, width, 3]
+    NDArray | None,                         # float[height, width]
+]:
+    """
+    Draw straight line segments onto a grid of dots.
+
+    Coordinates are in dots, with rows increasing downwards, so that dot
+    `(i, j)` covers the unit square from `(i, j)` up to but not including
+    `(i+1, j+1)`, and the centre of that dot is at `(i+0.5, j+0.5)`. Whatever
+    falls outside the grid is clipped away.
+
+    Inputs:
+
+    * starts: float[n, 2].
+        One `(row, col)` coordinate per segment, where each segment begins.
+    * ends: float[n, 2].
+        Where each segment ends.
+    * height: int.
+        Number of rows of dots in the grid.
+    * width: int.
+        Number of columns of dots in the grid.
+    * start_colors: optional uint8[n, 3].
+        Color at the start of each segment. If omitted, no colors are
+        computed and the color outputs are None.
+    * end_colors: optional uint8[n, 3].
+        Color at the end of each segment, interpolated along it. If omitted
+        while `start_colors` is given, segments are a single flat color.
+    * thickness: float (default 1.0).
+        Width of the stroke, in dots. See `disc_offsets`.
+
+    Returns:
+
+    * dots: int[height, width].
+        How many times each dot was covered. Zero where the dot is not part of
+        any segment.
+    * dotc: optional uint8[height, width, 3].
+        The average of the colors covering each dot, or None if no colors were
+        given.
+    * dotw: optional float[height, width].
+        The coverage counts again, as the weights that mix these colors
+        together within a character cell, or None if no colors were given.
+
+    The three outputs are exactly the `dots`, `dotc` and `dotw` inputs of
+    `unicode_braille_array`.
+
+    Segments with a non-finite endpoint are skipped, which is how a gap in a
+    sequence of points becomes a gap in the line drawn through them.
+
+    Notes:
+
+    * Segments are clipped to the grid before they are drawn, so a segment may
+      run arbitrarily far outside it without costing anything to skip.
+    * A stroke is the segment thickened by a disc, which is to say the union of
+      discs centred along it. Round caps and correctly filled joins between
+      consecutive segments both follow from that, without either being a case
+      to handle.
+    """
+    starts = np.asarray(starts, dtype=float).reshape(-1, 2)
+    ends = np.asarray(ends, dtype=float).reshape(-1, 2)
+
+    # a stroke reaches this far to either side of its segment
+    offsets = disc_offsets(thickness)
+    reach = int(np.abs(offsets).max())
+
+    # skip segments that are not fully specified: this is where gaps come from.
+    # their coordinates are stood down to zero as well, to keep the arithmetic
+    # below free of non-finite values
+    drawable = np.isfinite(starts).all(axis=1) & np.isfinite(ends).all(axis=1)
+    starts = np.where(drawable[:, np.newaxis], starts, 0.)
+    ends = np.where(drawable[:, np.newaxis], ends, 0.)
+
+    # clip to the grid, plus the margin a stroke can reach in from (Liang and
+    # Barsky's algorithm: intersect the parameter interval [0,1] of each
+    # segment with the four half planes bounding the region)
+    deltas = ends - starts
+    enter = np.zeros(len(starts))
+    leave = np.ones(len(starts))
+    limits = ((-reach, height + reach), (-reach, width + reach))
+    for axis, (low, high) in enumerate(limits):
+        run = deltas[:, axis]
+        start = starts[:, axis]
+        for slope, offset in ((-run, start - low), (run, high - start)):
+            # the constraint is `slope * t <= offset` for t in the interval
+            ratio = np.divide(
+                offset,
+                slope,
+                out=np.zeros_like(offset),
+                where=(slope != 0),
+            )
+            enter = np.where(slope < 0, np.maximum(enter, ratio), enter)
+            leave = np.where(slope > 0, np.minimum(leave, ratio), leave)
+            # a segment parallel to a boundary is in or out on its own
+            drawable &= (slope != 0) | (offset >= 0)
+    drawable &= enter <= leave
+
+    # trim the segments (and the colors along them) to what survived
+    enter = enter[drawable, np.newaxis]
+    leave = leave[drawable, np.newaxis]
+    deltas = deltas[drawable]
+    clipped_starts = starts[drawable] + enter * deltas
+    clipped_ends = starts[drawable] + leave * deltas
+    color_starts: NDArray | None = None
+    color_ends: NDArray | None = None
+    if start_colors is not None:
+        c0 = np.asarray(start_colors, dtype=float).reshape(-1, 3)[drawable]
+        if end_colors is None:
+            c1 = c0
+        else:
+            c1 = np.asarray(end_colors, dtype=float).reshape(-1, 3)[drawable]
+        color_starts = c0 + enter * (c1 - c0)
+        color_ends = c0 + leave * (c1 - c0)
+
+    # sample each segment densely enough that consecutive samples land in the
+    # same dot or in adjacent ones, which is what makes the line unbroken
+    deltas = clipped_ends - clipped_starts
+    samples = np.ceil(np.abs(deltas).max(axis=1)).astype(int) + 1
+
+    # ...and flatten the ragged result: one index within its own segment for
+    # every sample of every segment, without padding any of them out
+    segment = np.repeat(np.arange(len(samples)), samples)
+    within = np.arange(samples.sum()) - np.repeat(
+        np.cumsum(samples) - samples,
+        samples,
+    )
+    t = within / np.maximum(samples - 1, 1)[segment]
+    points = clipped_starts[segment] + t[:, np.newaxis] * deltas[segment]
+
+    # the dots those samples fall in, and then the strokes around them
+    dot = np.floor(points).astype(int)
+    dot = (dot[:, np.newaxis, :] + offsets[np.newaxis, :, :]).reshape(-1, 2)
+    inside = (
+        (dot[:, 0] >= 0) & (dot[:, 0] < height)
+        & (dot[:, 1] >= 0) & (dot[:, 1] < width)
+    )
+    flat = (dot[inside, 0] * width + dot[inside, 1])
+
+    # accumulate coverage, and the colors to average over it
+    dots = np.bincount(flat, minlength=height * width).reshape(height, width)
+    if color_starts is None or color_ends is None:
+        return dots, None, None
+    colors = color_starts[segment] + t[:, np.newaxis] * (
+        color_ends[segment] - color_starts[segment]
+    )
+    colors = np.repeat(colors, len(offsets), axis=0)[inside]
+    total = np.stack([
+        np.bincount(flat, weights=colors[:, channel], minlength=height * width)
+        for channel in range(3)
+    ], axis=1).reshape(height, width, 3)
+    lit = dots > 0
+    dotc = np.zeros((height, width, 3), dtype=np.uint8)
+    dotc[lit] = total[lit] / dots[lit, np.newaxis]
+    return dots, dotc, dots.astype(float)
+
+
+# # #
 # UNICODE PARTIAL BLOCKS
 
 

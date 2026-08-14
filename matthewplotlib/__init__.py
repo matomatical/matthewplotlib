@@ -11,6 +11,8 @@ from matthewplotlib.plots import (
     plot,
     scatter,
     scatter3,
+    line,
+    line3,
     image,
     function2,
     histogram2,

@@ -12,6 +12,8 @@ Data plots:
 * `scatter`
 * `function`
 * `scatter3`
+* `line`
+* `line3`
 * `image`
 * `function2`
 * `histogram2`
@@ -51,7 +53,7 @@ import hilbert as _hilbert
 
 from PIL import Image
 
-from typing import Callable, Literal, Self, cast
+from typing import Callable, Literal, Self, Sequence, cast
 from numpy.typing import ArrayLike, NDArray
 from matthewplotlib.colormaps import ColorMap
 from numbers import Number
@@ -61,9 +63,12 @@ from matthewplotlib.data import (
     Series,
     Series3,
     parse_range,
+    parse_series,
+    parse_series3,
     parse_multiple_series,
     parse_multiple_series3,
     project3,
+    project3_segments,
 )
 from matthewplotlib.core import (
     ColorLike,
@@ -75,6 +80,7 @@ from matthewplotlib.core import (
     unicode_bar,
     unicode_col,
     unicode_image,
+    rasterise_segments,
 )
 
 
@@ -521,6 +527,284 @@ class scatter3(scatter):
         
     def __repr__(self):
         return ("scatter3(TODO)")
+
+
+def _polyline_range(
+    values: NDArray,
+    range: tuple[number | None, number | None] | None,
+) -> tuple[number, number]:
+    """
+    Axis limits for a line, from the points that have a coordinate at all.
+
+    A line's data may contain gaps, marked by non-finite coordinates, and those
+    say nothing about how far the data reaches. A line whose data reaches no
+    distance at all, such as a constant series, is given a range around itself
+    to be drawn in the middle of.
+    """
+    finite = values[np.isfinite(values)]
+    if not len(finite):
+        finite = np.zeros(1)
+    lo, hi = parse_range(finite, range)
+    if lo == hi:
+        lo, hi = lo - 0.5, hi + 0.5
+    return lo, hi
+
+
+def _braille_strokes(
+    starts: NDArray,                    # float[n, 2]
+    ends: NDArray,                      # float[n, 2]
+    start_colors: NDArray,              # uint8[n, 3]
+    end_colors: NDArray,                # uint8[n, 3]
+    xrange: tuple[number, number],
+    yrange: tuple[number, number],
+    width: int,
+    height: int,
+    thickness: float,
+) -> CharArray:
+    """
+    Draw line segments given in data coordinates as a grid of braille
+    characters.
+
+    The limits of the data map onto the centres of the outermost dots, so that
+    a line between the extremes of its data runs corner to corner of the plot
+    rather than half a dot beyond it.
+    """
+    (xmin, xmax), (ymin, ymax) = xrange, yrange
+    dot_height = 4 * height
+    dot_width = 2 * width
+
+    def to_dots(points: NDArray) -> NDArray: # float[n, 2] -> float[n, 2]
+        cols = (points[:, 0] - xmin) / (xmax - xmin) * (dot_width - 1)
+        rows = (ymax - points[:, 1]) / (ymax - ymin) * (dot_height - 1)
+        return np.stack([rows + 0.5, cols + 0.5], axis=1)
+
+    dots, dotc, dotw = rasterise_segments(
+        starts=to_dots(starts),
+        ends=to_dots(ends),
+        height=dot_height,
+        width=dot_width,
+        start_colors=start_colors,
+        end_colors=end_colors,
+        thickness=thickness,
+    )
+    return unicode_braille_array(dots=dots, dotc=dotc, dotw=dotw)
+
+
+def _strokes_from_polylines(
+    polylines: Sequence[tuple[NDArray, ...]],
+    dimensions: int,
+) -> tuple[NDArray, NDArray, NDArray, NDArray]:
+    """
+    Turn parsed series into the segments joining their consecutive points.
+
+    Each series is one stroke of the pen, so the segments of each are taken
+    separately and only then pooled: the last point of one series is never
+    joined to the first point of the next.
+    """
+    starts = []
+    ends = []
+    start_colors = []
+    end_colors = []
+    for polyline in polylines:
+        *coordinates, colors = polyline
+        points = np.stack(coordinates, axis=1)
+        starts.append(points[:-1])
+        ends.append(points[1:])
+        start_colors.append(colors[:-1])
+        end_colors.append(colors[1:])
+    empty_points = np.zeros((0, dimensions))
+    empty_colors = np.zeros((0, 3), dtype=np.uint8)
+    return (
+        np.concatenate([*starts, empty_points]),
+        np.concatenate([*ends, empty_points]),
+        np.concatenate([*start_colors, empty_colors]),
+        np.concatenate([*end_colors, empty_colors]),
+    )
+
+
+class line(plot):
+    """
+    Render a line plot by connecting a sequence of points, using a grid of
+    braille unicode characters.
+
+    Each character cell in the plot corresponds to a 2x4 grid of sub-pixels,
+    represented by braille dots.
+
+    Inputs:
+
+    * series : Series.
+         X Y data, for example a tuple (xs, ys) or triple (xs, ys, cs) where
+         cs is a ColorLike or a list of RGB triples. See documentation for more
+         examples.
+    * *etc.
+        Further series. Each is a separate line: the end of one is not joined
+        to the start of the next.
+    * xrange : optional (number, number).
+        The x-axis limits `(xmin, xmax)`. If not provided, the limits are
+        inferred from the min and max x-values in the data.
+    * yrange : optional (number, number).
+        The y-axis limits `(ymin, ymax)`. If not provided, the limits are
+        inferred from the min and max y-values in the data.
+    * width : int (default: 30).
+        The width of the plot in characters. The effective pixel width will be
+        2 * width.
+    * height : int (default: 10).
+        The height of the plot in rows. The effective pixel height will be 4 *
+        height.
+    * thickness : float (default: 1.0).
+        How wide to draw the line, in dots. Corners between segments are
+        filled and the ends are rounded.
+
+    A point with a non-finite coordinate breaks the line, so that one series
+    can be drawn as several disconnected strokes. Colors are interpolated
+    along each segment, so a series with a color per point comes out as a
+    gradient.
+    """
+    def __init__(
+        self,
+        series: Series,
+        *etc: Series,
+        xrange: tuple[number | None, number | None] | None = None,
+        yrange: tuple[number | None, number | None] | None = None,
+        width: int = 30,
+        height: int = 10,
+        thickness: float = 1.0,
+    ):
+        # parse each series separately, so that they stay separate strokes
+        polylines = [parse_series(s) for s in (series, *etc)]
+        xs = np.concatenate([xs for xs, _ys, _cs in polylines])
+        ys = np.concatenate([ys for _xs, ys, _cs in polylines])
+        xrange_ = _polyline_range(xs, xrange)
+        yrange_ = _polyline_range(ys, yrange)
+
+        starts, ends, start_colors, end_colors = _strokes_from_polylines(
+            polylines=polylines,
+            dimensions=2,
+        )
+        super().__init__(_braille_strokes(
+            starts=starts,
+            ends=ends,
+            start_colors=start_colors,
+            end_colors=end_colors,
+            xrange=xrange_,
+            yrange=yrange_,
+            width=width,
+            height=height,
+            thickness=thickness,
+        ))
+        self.xrange = xrange_
+        self.yrange = yrange_
+        self.num_points = len(xs)
+        self.num_strokes = len(polylines)
+        self.thickness = thickness
+
+    def __repr__(self):
+        return (
+            f"line(height={self.height}, width={self.width}, "
+            f"thickness={self.thickness}, "
+            f"data=<{self.num_points} points, {self.num_strokes} strokes on "
+            f"[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]x"
+            f"[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]>)"
+        )
+
+
+class line3(plot):
+    """
+    Render a wireframe by connecting a sequence of 3d points, seen from a
+    camera.
+
+    Inputs:
+
+    * series : Series3.
+         X Y Z data, for example a triple (xs, ys, zs) or quad (xs, ys, zs, cs)
+         where cs is a ColorLike or a list of RGB triples. See documentation
+         for more examples.
+    * *etc.: Series3
+        Further series. Each is a separate line: the end of one is not joined
+        to the start of the next.
+    * camera_position: float[3] (default: [0. 0. 2.]).
+        The position at which the camera is placed.
+    * camera_target: float[3] (default: [0. 0. 0.]).
+        The position towards which the camera is facing. Should be distinct
+        from camera position. The default is that the camera is facing towards
+        the origin.
+    * scene_up: float[3] (default: [0. 1. 0.]).
+        The unit vector designating the 'up' direction for the scene. The
+        default is the positive Y direction. Should not have the same direction
+        as camera_target - camera_position.
+    * vertical_fov_degrees: float (default 90).
+        Vertical field of view. Points within a vertical cone of this angle are
+        projected into the viewing area. The horizontal field of view is then
+        determined based on the aspect ratio.
+    * aspect_ratio: optional float.
+        Aspect ratio for the scene, as a fraction (W:H represented as W/H). If
+        not provided, uses W=width, H=2*height, which is uniform given the
+        resolution of the plot.
+    * width : int.
+        The number of character columns in the plot.
+    * height : int.
+        The number of character rows in the plot.
+    * thickness : float (default: 1.0).
+        How wide to draw the line, in dots. Corners between segments are
+        filled and the ends are rounded.
+
+    A point with a non-finite coordinate breaks the line, which is how a mesh
+    of several separate wires is drawn in one call. A segment reaching behind
+    the camera is cut off in front of it, and one entirely behind the camera is
+    not drawn.
+    """
+    def __init__(
+        self,
+        series: Series3,
+        *etc: Series3,
+        camera_position: np.ndarray = np.array([0., 0., 2.]),   # float[3]
+        camera_target: np.ndarray = np.zeros(3),                # float[3]
+        scene_up: np.ndarray = np.array([0.,1.,0.]),            # float[3]
+        vertical_fov_degrees: float = 90.0,
+        aspect_ratio: float | None = None,
+        width: int = 30,
+        height: int = 15,
+        thickness: float = 1.0,
+    ):
+        # parse each series separately, so that they stay separate strokes
+        polylines = [parse_series3(s) for s in (series, *etc)]
+        starts, ends, start_colors, end_colors = _strokes_from_polylines(
+            polylines=polylines,
+            dimensions=3,
+        )
+
+        xy_starts, xy_ends, drawn = project3_segments(
+            starts=starts,
+            ends=ends,
+            camera_position=camera_position,
+            camera_target=camera_target,
+            scene_up=scene_up,
+            fov_degrees=vertical_fov_degrees,
+        )
+        if aspect_ratio is None:
+            aspect_ratio = width / (2*height)
+
+        super().__init__(_braille_strokes(
+            starts=xy_starts,
+            ends=xy_ends,
+            start_colors=start_colors[drawn],
+            end_colors=end_colors[drawn],
+            xrange=(-aspect_ratio, aspect_ratio),
+            yrange=(-1., 1.),
+            width=width,
+            height=height,
+            thickness=thickness,
+        ))
+        self.num_points = len(starts) + len(polylines)
+        self.num_segments = int(drawn.sum())
+        self.thickness = thickness
+
+    def __repr__(self):
+        return (
+            f"line3(height={self.height}, width={self.width}, "
+            f"thickness={self.thickness}, "
+            f"data=<{self.num_segments} segments drawn>)"
+        )
 
 
 class image(plot):
@@ -1370,7 +1654,7 @@ class axes(plot):
 
     Inputs:
 
-    * plot : scatter | function2 | histogram2 | dstack2.
+    * plot : scatter | line | function2 | histogram2 | dstack2.
         The plot object to be enclosed by the axes. Must have an xrange and a
         yrange.
     * title: optional str.
@@ -1398,7 +1682,7 @@ class axes(plot):
     """
     def __init__(
         self,
-        plot: scatter | function2 | histogram2 | dstack2,
+        plot: scatter | line | function2 | histogram2 | dstack2,
         title: str = "",
         xlabel: str = "",
         ylabel: str = "",
@@ -1602,18 +1886,18 @@ class dstack2(dstack):
     characters from upper layers will obscure characters from lower layers.
 
     Unlike dstack, the plots must have xrange and range attributes, and these
-    must all match. The allowable types are scatter, function2, histogram2, and
-    dstack2.
+    must all match. The allowable types are scatter, line, function2,
+    histogram2, and dstack2.
 
     Inputs:
 
-    * *plots : scatter | function2 | histogram2 | dstack2.
+    * *plots : scatter | line | function2 | histogram2 | dstack2.
         A sequence of plot objects to be overlaid. Must have matching xrange
         and yrange.
     """
     def __init__(
         self,
-        *plots: scatter | function2 | histogram2 | Self,
+        *plots: scatter | line | function2 | histogram2 | Self,
     ):
         # check the shared xrange, yrange
         xrange: tuple[number, number] | None = None

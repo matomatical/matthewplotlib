@@ -15,6 +15,8 @@ from matthewplotlib.core import (
     unicode_box,
     unicode_braille_array,
     unicode_image,
+    disc_offsets,
+    rasterise_segments,
 )
 
 
@@ -821,3 +823,283 @@ class TestEmittedVocabulary:
                     f"{label} emits CSI {params}{final}, retired by the audit:"
                     f" {RETIRED_FINALS[final]}"
                 )
+
+
+# # #
+# disc_offsets
+
+
+class TestDiscOffsets:
+    def test_thin_line_covers_one_dot(self):
+        assert disc_offsets(1.0).tolist() == [[0, 0]]
+
+    def test_zero_thickness_still_covers_its_own_dot(self):
+        assert disc_offsets(0.0).tolist() == [[0, 0]]
+
+    def test_thickness_two_is_a_plus(self):
+        offsets = {tuple(offset) for offset in disc_offsets(2.0)}
+        assert offsets == {(0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)}
+
+    def test_thickness_three_is_a_square(self):
+        offsets = {tuple(offset) for offset in disc_offsets(3.0)}
+        assert offsets == {(r, c) for r in (-1, 0, 1) for c in (-1, 0, 1)}
+
+    def test_thickness_grows_by_inclusion(self):
+        for thickness in (2.0, 3.0, 4.0, 7.5):
+            thinner = {tuple(o) for o in disc_offsets(thickness - 1)}
+            thicker = {tuple(o) for o in disc_offsets(thickness)}
+            assert thinner <= thicker
+
+    def test_offsets_stay_within_the_radius(self):
+        for offset in disc_offsets(5.0):
+            assert offset @ offset <= 2.5 ** 2
+
+
+# # #
+# rasterise_segments
+
+
+def bresenham(r0, c0, r1, c1):
+    """Which dots a thin line covers, by Bresenham's algorithm.
+
+    The reference implementation for `rasterise_segments` on a single segment
+    between two dot centres: integer arithmetic, one dot per step along the
+    major axis, in the order the line visits them.
+    """
+    dr, dc = abs(r1 - r0), abs(c1 - c0)
+    step_r = 1 if r1 >= r0 else -1
+    step_c = 1 if c1 >= c0 else -1
+    r, c = r0, c0
+    dots = [(r, c)]
+    if dc >= dr:
+        error = 2 * dr - dc
+        for _ in range(dc):
+            if error > 0:
+                r += step_r
+                error -= 2 * dc
+            error += 2 * dr
+            c += step_c
+            dots.append((r, c))
+    else:
+        error = 2 * dc - dr
+        for _ in range(dr):
+            if error > 0:
+                c += step_c
+                error -= 2 * dr
+            error += 2 * dc
+            r += step_r
+            dots.append((r, c))
+    return dots
+
+
+def lit(dots):
+    """The set of covered dots, as (row, col) pairs."""
+    return {(int(r), int(c)) for r, c in zip(*np.nonzero(dots))}
+
+
+def rasterise_one(r0, c0, r1, c1, height, width, thickness=1.0):
+    """One segment, given by the dots its ends are centred on."""
+    dots, _dotc, _dotw = rasterise_segments(
+        starts=np.array([[r0 + 0.5, c0 + 0.5]]),
+        ends=np.array([[r1 + 0.5, c1 + 0.5]]),
+        height=height,
+        width=width,
+        thickness=thickness,
+    )
+    return dots
+
+
+def has_tie(r0, c0, r1, c1):
+    """Whether the line's samples land exactly on a boundary between dots.
+
+    Where they do, which of the two dots is covered is a matter of convention
+    and the two algorithms are entitled to disagree.
+    """
+    steps = max(abs(r1 - r0), abs(c1 - c0))
+    if steps == 0:
+        return False
+    t = np.arange(steps + 1) / steps
+    for start, end in ((r0, r1), (c0, c1)):
+        exact = start + 0.5 + t * (end - start)
+        if np.any(np.abs(exact - np.round(exact)) < 1e-9):
+            return True
+    return False
+
+
+class TestRasteriseSegmentsThin:
+    GRID = 24
+
+    def segments(self, seed=0, count=200):
+        """Random segments between dot centres, within the grid."""
+        rng = np.random.default_rng(seed)
+        ends = rng.integers(0, self.GRID, size=(count, 4))
+        return [tuple(int(v) for v in row) for row in ends]
+
+    def test_matches_bresenham(self):
+        compared = 0
+        for r0, c0, r1, c1 in self.segments():
+            if has_tie(r0, c0, r1, c1):
+                continue
+            compared += 1
+            dots = rasterise_one(r0, c0, r1, c1, self.GRID, self.GRID)
+            assert lit(dots) == set(bresenham(r0, c0, r1, c1)), (
+                f"disagreed on ({r0},{c0})-({r1},{c1})"
+            )
+        assert compared > 20, "too few tie-free segments to be worth much"
+
+    def test_covers_one_dot_per_step_along_the_major_axis(self):
+        for r0, c0, r1, c1 in self.segments():
+            dots = rasterise_one(r0, c0, r1, c1, self.GRID, self.GRID)
+            steps = max(abs(r1 - r0), abs(c1 - c0))
+            assert len(lit(dots)) == steps + 1
+
+    def test_covers_both_ends(self):
+        for r0, c0, r1, c1 in self.segments():
+            dots = rasterise_one(r0, c0, r1, c1, self.GRID, self.GRID)
+            assert (r0, c0) in lit(dots)
+            assert (r1, c1) in lit(dots)
+
+    def test_is_unbroken(self):
+        """Consecutive dots along the line are neighbours, including
+        diagonally, so there is no gap to see."""
+        for r0, c0, r1, c1 in self.segments():
+            dots = rasterise_one(r0, c0, r1, c1, self.GRID, self.GRID)
+            major = 0 if abs(r1 - r0) >= abs(c1 - c0) else 1
+            visited = sorted(lit(dots), key=lambda dot: dot[major])
+            for before, after in zip(visited, visited[1:]):
+                assert abs(before[0] - after[0]) <= 1
+                assert abs(before[1] - after[1]) <= 1
+
+
+class TestRasteriseSegmentsThick:
+    def test_thickness_widens_a_horizontal_line(self):
+        dots = rasterise_one(4, 3, 4, 8, height=9, width=12, thickness=3.0)
+        assert lit(dots) == {
+            (row, col) for row in (3, 4, 5) for col in range(2, 10)
+        }
+
+    def test_thickness_widens_a_vertical_line(self):
+        dots = rasterise_one(3, 4, 8, 4, height=12, width=9, thickness=3.0)
+        assert lit(dots) == {
+            (row, col) for row in range(2, 10) for col in (3, 4, 5)
+        }
+
+    def test_thickness_only_adds_dots(self):
+        for thickness in (2.0, 3.0, 4.0, 6.0):
+            thinner = lit(rasterise_one(2, 3, 14, 19, 24, 24, thickness - 1))
+            thicker = lit(rasterise_one(2, 3, 14, 19, 24, 24, thickness))
+            assert thinner <= thicker
+
+    def test_stays_near_the_segment(self):
+        """Every dot covered belongs to the segment thickened by a disc, give
+        or take the dot the sample itself landed in."""
+        start = np.array([4.5, 2.5])
+        end = np.array([19.5, 17.5])
+        thickness = 5.0
+        dots = rasterise_one(4, 2, 19, 17, 24, 24, thickness)
+        along = end - start
+        for row, col in lit(dots):
+            offset = np.array([row + 0.5, col + 0.5]) - start
+            t = np.clip(offset @ along / (along @ along), 0, 1)
+            distance = np.linalg.norm(offset - t * along)
+            assert distance <= thickness / 2 + np.sqrt(2)
+
+
+class TestRasteriseSegmentsClipping:
+    def test_a_segment_reaching_far_outside_draws_its_visible_part(self):
+        dots = rasterise_one(-1000, -1000, 1000, 1000, height=10, width=10)
+        assert lit(dots) == {(i, i) for i in range(10)}
+
+    def test_a_segment_entirely_outside_draws_nothing(self):
+        dots = rasterise_one(-50, -50, -40, -30, height=10, width=10)
+        assert not lit(dots)
+
+    def test_a_thick_segment_just_outside_still_bleeds_in(self):
+        dots = rasterise_one(-1, 2, -1, 6, height=10, width=10, thickness=3.0)
+        assert lit(dots) == {(0, col) for col in range(1, 8)}
+
+    def test_a_non_finite_end_draws_nothing(self):
+        for bad in (np.nan, np.inf, -np.inf):
+            dots, _c, _w = rasterise_segments(
+                starts=np.array([[bad, 1.0]]),
+                ends=np.array([[5.0, 5.0]]),
+                height=10,
+                width=10,
+            )
+            assert not lit(dots)
+
+    def test_gaps_leave_the_rest_of_the_line_alone(self):
+        dots, _c, _w = rasterise_segments(
+            starts=np.array([[0.5, 0.5], [np.nan, np.nan], [4.5, 0.5]]),
+            ends=np.array([[0.5, 9.5], [4.0, 4.0], [4.5, 9.5]]),
+            height=8,
+            width=10,
+        )
+        assert lit(dots) == (
+            {(0, col) for col in range(10)} | {(4, col) for col in range(10)}
+        )
+
+    def test_no_segments_at_all(self):
+        dots, dotc, dotw = rasterise_segments(
+            starts=np.zeros((0, 2)),
+            ends=np.zeros((0, 2)),
+            height=4,
+            width=6,
+            start_colors=np.zeros((0, 3)),
+        )
+        assert dots.shape == (4, 6)
+        assert not dots.any()
+        assert dotc is not None and not dotc.any()
+        assert dotw is not None and not dotw.any()
+
+
+class TestRasteriseSegmentsColors:
+    def test_no_colors_asked_for_none_given(self):
+        dots, dotc, dotw = rasterise_segments(
+            starts=np.array([[0.5, 0.5]]),
+            ends=np.array([[0.5, 5.5]]),
+            height=2,
+            width=8,
+        )
+        assert dots.any()
+        assert dotc is None
+        assert dotw is None
+
+    def test_one_color_per_segment(self):
+        _dots, dotc, _dotw = rasterise_segments(
+            starts=np.array([[0.5, 0.5]]),
+            ends=np.array([[0.5, 5.5]]),
+            height=1,
+            width=8,
+            start_colors=np.array([[10, 20, 30]]),
+        )
+        assert dotc is not None
+        assert dotc[0, 0].tolist() == [10, 20, 30]
+        assert dotc[0, 5].tolist() == [10, 20, 30]
+
+    def test_colors_interpolate_along_a_segment(self):
+        _dots, dotc, _dotw = rasterise_segments(
+            starts=np.array([[0.5, 0.5]]),
+            ends=np.array([[0.5, 10.5]]),
+            height=1,
+            width=12,
+            start_colors=np.array([[255, 0, 0]]),
+            end_colors=np.array([[0, 0, 255]]),
+        )
+        assert dotc is not None
+        assert dotc[0, 0].tolist() == [255, 0, 0]
+        assert dotc[0, 10].tolist() == [0, 0, 255]
+        assert dotc[0, 5].tolist() == [127, 0, 127]
+
+    def test_weights_are_the_coverage_counts(self):
+        dots, _dotc, dotw = rasterise_segments(
+            starts=np.array([[0.5, 0.5]]),
+            ends=np.array([[3.5, 3.5]]),
+            height=6,
+            width=6,
+            start_colors=np.array([[1, 2, 3]]),
+            thickness=3.0,
+        )
+        assert dotw is not None
+        assert np.array_equal(dotw, dots.astype(float))
+        assert dots.max() > 1, "a thick stroke should cover some dots twice"
