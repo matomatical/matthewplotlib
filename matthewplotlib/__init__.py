@@ -4,7 +4,7 @@ them available under the top-level namespace.
 """
 
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 
 from matthewplotlib.plots import (
