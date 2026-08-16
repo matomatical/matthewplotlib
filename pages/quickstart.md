@@ -86,7 +86,7 @@ Subtracting the previous frame repaints only the cells that changed, which is
 far fewer bytes than redrawing the whole plot. On the first pass `prev` is None
 -- there is nothing on screen yet -- so the whole plot is drawn.
 
-![](images/quickstart.gif)
+![](images/quickstart2.gif)
 
 That loop is the whole mechanism, and it stays fully supported. But the parts of
 it that are about terminals rather than about plots can be handed over, which
