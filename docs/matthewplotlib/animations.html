@@ -423,7 +423,7 @@ interrupting playback is the only way to end <code>loop=True</code>.</li>
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">savegif</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">filename</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">fps</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;achieved&#39;</span><span class="p">],</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">upscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">downscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+        <span class="name">savegif</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">filename</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">fps</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;achieved&#39;</span><span class="p">],</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">upscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">downscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">palette</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;unified&#39;</span><span class="p">,</span> <span class="s1">&#39;per-frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;unified&#39;</span>,</span><span class="param">	<span class="n">colors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
 
         
     </div>
@@ -455,6 +455,19 @@ used.</li>
 <li>repeat : bool (default True).
 If true (default), the gif loops indefinitely. If false, the gif
 only plays once.</li>
+<li>palette : 'unified' or 'per-frame' (default 'unified').
+Whether the frames share one palette or each get their own. Sharing
+keeps a colour the same colour throughout, and lets the file store
+a frame as its difference from the one before. Per-frame spends the
+whole budget on each frame separately, which can hold more of a
+frame's own colours at the price of the animation agreeing with
+itself.</li>
+<li>colors : int (2 to 256, default 256).
+How many colours a palette may hold, which is what a gif has
+instead of a colour per pixel. Fewer means a smaller file. If what
+is being coloured fits in the budget it is stored exactly; past
+that, colours are chosen by median cut and every pixel takes the
+nearest one.</li>
 </ul>
 
 <p>Notes:</p>

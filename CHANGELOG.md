@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+Version 0.6.1
+-------------
 
 New:
 
@@ -17,20 +17,24 @@ New:
 
 Changed:
 
-* Gifs are saved in the colours the plots were rendered in, where the animation
-  has 256 colours or fewer. Previously each frame was quantised on its own, and
-  to far fewer colours than a gif allows: frames holding 228 colours were
-  stored in 29, banding smooth colourmaps and letting still content change
-  colour from frame to frame. Animations with more colours than the budget are
-  now quantised once for the whole animation rather than per frame.
-  * Colourful gifs are larger as a result. `colors=32` asks for the small files
-    back explicitly.
+* Gifs are saved in the colours the plots were drawn in, for an animation of
+  256 colours or fewer. Previously each frame was reduced on its own, and to
+  far fewer colours than a gif allows, which banded smooth colourmaps and let
+  still content change colour from frame to frame. Animations with more colours
+  than the budget are now reduced once for the whole animation instead.
+  * Colourful gifs are larger as a result. `colors=32` asks for small files
+    back explicitly. See `notes/gif-size.md` for the measurements.
 
 Fixed:
 
 * `savegif` no longer ghosts an animation with a transparent background.
   Frames after the first kept the pixels of the frames before them, so moving
   content smeared over everywhere it had been.
+
+Examples:
+
+* `teapot.py` orbits once over `num_frames` rather than once every two seconds,
+  so a saved gif loops at any length. The showcase gifs are regenerated.
 
 Version 0.6.0
 -------------

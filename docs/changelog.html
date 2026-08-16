@@ -45,6 +45,31 @@
         </a>
         <div class="docstring page-content">
 <h1 id="changelog">Changelog</h1>
+<h2 id="version-0.6.1">Version 0.6.1</h2>
+<p>New:</p>
+<ul>
+<li><code>savegif</code> takes <code>palette</code> and <code>colors</code>, choosing how an animation’s colours are fitted into the palettes a gif stores instead of a colour per pixel.
+<ul>
+<li><code>palette='unified'</code> (the default) builds one palette for the whole animation, so a colour is the same colour in every frame.</li>
+<li><code>palette='per-frame'</code> gives each frame its own, spending the whole budget on each frame separately.</li>
+<li><code>colors</code> (2 to 256, default 256) is how many colours a palette may hold. Fewer means a smaller file.</li>
+</ul></li>
+</ul>
+<p>Changed:</p>
+<ul>
+<li>Gifs are saved in the colours the plots were drawn in, for an animation of 256 colours or fewer. Previously each frame was reduced on its own, and to far fewer colours than a gif allows, which banded smooth colourmaps and let still content change colour from frame to frame. Animations with more colours than the budget are now reduced once for the whole animation instead.
+<ul>
+<li>Colourful gifs are larger as a result. <code>colors=32</code> asks for small files back explicitly. See <code>notes/gif-size.md</code> for the measurements.</li>
+</ul></li>
+</ul>
+<p>Fixed:</p>
+<ul>
+<li><code>savegif</code> no longer ghosts an animation with a transparent background. Frames after the first kept the pixels of the frames before them, so moving content smeared over everywhere it had been.</li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><code>teapot.py</code> orbits once over <code>num_frames</code> rather than once every two seconds, so a saved gif loops at any length. The showcase gifs are regenerated.</li>
+</ul>
 <h2 id="version-0.6.0">Version 0.6.0</h2>
 <p>New:</p>
 <ul>

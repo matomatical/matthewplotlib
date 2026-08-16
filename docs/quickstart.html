@@ -106,7 +106,7 @@
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">1</span><span class="op">/</span><span class="dv">20</span>)</span></code></pre></div>
 <p>Subtracting the previous frame repaints only the cells that changed, which is far fewer bytes than redrawing the whole plot. On the first pass <code>prev</code> is None – there is nothing on screen yet – so the whole plot is drawn.</p>
-<p><img src="images/quickstart.gif" /></p>
+<p><img src="images/quickstart2.gif" /></p>
 <p>That loop is the whole mechanism, and it stays fully supported. But the parts of it that are about terminals rather than about plots can be handed over, which draws exactly the same animation:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> mp.animate(fps<span class="op">=</span><span class="dv">20</span>) <span class="im">as</span> anim:</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
