@@ -8,7 +8,7 @@ import matthewplotlib as mp
 # configure camera path
 ORBIT_RADIUS = 4.5
 ORBIT_HEIGHT = 2.5
-ORBIT_SPEED = 0.5*np.pi # radians per second
+ORBIT_FRAMES = 40 # a revolution, when there is no frame count to spread over
 
 
 def main(
@@ -24,13 +24,19 @@ def main(
     all animating in a terminal requires. `mp.animate` would keep the previous
     frame and the clock instead -- see `quickstart3.py` -- but it is an offer,
     not a prerequisite.
+
+    The camera goes around once over `num_frames`, so the animation is periodic
+    in it and a saved gif loops seamlessly however many frames you ask for.
     """
     prev = None
     frames = [] if save else None
+    # with no frame count to spread a revolution over -- the default, which
+    # runs until interrupted -- the camera falls back to a fixed rate
+    orbit_frames = num_frames or ORBIT_FRAMES
     frame = 0
     while num_frames == 0 or frame < num_frames:
         # sweep camera
-        p = camera_pos(frame / fps)
+        p = camera_pos(frame / orbit_frames)
 
         # plot
         plot = mp.scatter3(
@@ -55,8 +61,8 @@ def main(
 
    
 
-def camera_pos(t: float) -> np.ndarray:
-    angle = ORBIT_SPEED * t
+def camera_pos(revolutions: float) -> np.ndarray:
+    angle = 2 * np.pi * revolutions
     return np.array([
         ORBIT_RADIUS * np.sin(angle),
         ORBIT_HEIGHT,
