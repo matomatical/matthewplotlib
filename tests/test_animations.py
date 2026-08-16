@@ -540,6 +540,163 @@ class TestSaveGif:
 
 
 # # #
+# tstack: THE COLOURS A GIF IS SAVED IN
+
+
+def gif_frames(path) -> list[np.ndarray]:
+    """Every frame of a gif as it plays back, in RGBA."""
+    gif = Image.open(path)
+    out = []
+    for i in range(gif.n_frames):
+        gif.seek(i)
+        out.append(np.asarray(gif.convert("RGBA")))
+    return out
+
+
+def rendered(a: tstack) -> list[np.ndarray]:
+    """The frames as the plots really are, before a palette touches them."""
+    return [p.renderimg() for p in a.plots]
+
+
+def colours_in(arrays: list[np.ndarray]) -> int:
+    """How many distinct colours a set of frames holds between them."""
+    pixels = np.concatenate([a.reshape(-1, 4) for a in arrays])
+    return len(np.unique(pixels, axis=0))
+
+
+def gradient(n: int = 4, width: int = 24) -> tstack:
+    """An animation of a rolling colour ramp: many colours, but under 256."""
+    ramp = np.linspace(0, 1, width)
+    return tstack(*[
+        image(np.stack([np.roll(ramp, i)] * 8), colormap=viridis)
+        for i in range(n)
+    ])
+
+
+def hues(n: int = 3) -> tstack:
+    """Frames sharing no colours, so one palette has to choose between them."""
+    ramp = np.linspace(0.2, 1.0, 16)
+    out = []
+    for i in range(n):
+        rgb = np.zeros((4, 16, 3))
+        rgb[:, :, i] = ramp
+        out.append(image(rgb))
+    return tstack(*out)
+
+
+class TestSaveGifTransparency:
+    def test_a_transparent_animation_does_not_ghost(self, tmp_path):
+        # a gif marks a pixel that did not change with the transparent index,
+        # which is the same index that draws a hole. Without frame disposal the
+        # two readings collide: a pixel that stops being drawn keeps the colour
+        # it had, and moving content smears over everywhere it has been.
+        out = tmp_path / "a.gif"
+        a = tstack(*[text(" " * i + "x" + " " * (3 - i)) for i in range(4)])
+
+        a.savegif(str(out))
+
+        for want, have in zip(rendered(a), gif_frames(out)):
+            assert (have[:, :, 3] == want[:, :, 3]).all()
+
+    def test_a_transparent_animation_draws_no_more_than_it_should(self, tmp_path):
+        out = tmp_path / "a.gif"
+        a = tstack(*[text(" " * i + "x" + " " * (3 - i)) for i in range(4)])
+
+        a.savegif(str(out))
+
+        drawn = [int((f[:, :, 3] == 255).sum()) for f in gif_frames(out)]
+        want = [int((f[:, :, 3] == 255).sum()) for f in rendered(a)]
+        assert drawn == want
+
+    def test_transparency_survives_a_palette_too_small_for_the_colours(
+        self, tmp_path,
+    ):
+        # the transparent index is spent before the colours are chosen, so
+        # reducing them must not spend it on a colour
+        out = tmp_path / "a.gif"
+        a = tstack(*[
+            border(image(np.full((4, 8), i / 8), colormap=viridis))
+            for i in range(8)
+        ])
+
+        a.savegif(str(out), colors=4)
+
+        for want, have in zip(rendered(a), gif_frames(out)):
+            assert (have[:, :, 3] == want[:, :, 3]).all()
+
+    def test_an_opaque_animation_reserves_no_transparent_index(self, tmp_path):
+        out = tmp_path / "a.gif"
+
+        gradient().savegif(str(out))
+
+        assert "transparency" not in Image.open(out).info
+
+
+class TestSaveGifPalette:
+    def test_colours_that_fit_the_budget_are_kept_exactly(self, tmp_path):
+        out = tmp_path / "a.gif"
+        a = gradient()
+
+        a.savegif(str(out))
+
+        for want, have in zip(rendered(a), gif_frames(out)):
+            assert (have == want).all()
+
+    def test_colours_beyond_the_budget_are_reduced_to_it(self, tmp_path):
+        out = tmp_path / "a.gif"
+        a = gradient(width=600)
+        assert colours_in(rendered(a)) > 16
+
+        a.savegif(str(out), colors=16)
+
+        assert colours_in(gif_frames(out)) <= 16
+
+    def test_one_palette_serves_every_frame(self, tmp_path):
+        # the whole animation is held to the budget, not each frame separately
+        out = tmp_path / "a.gif"
+
+        hues().savegif(str(out), colors=6)
+
+        assert colours_in(gif_frames(out)) <= 6
+
+    def test_a_palette_each_lets_the_frames_disagree(self, tmp_path):
+        out = tmp_path / "a.gif"
+
+        hues().savegif(str(out), palette='per-frame', colors=6)
+
+        assert colours_in(gif_frames(out)) > 6
+
+    def test_a_shared_palette_holds_unchanging_content_still(self, tmp_path):
+        # the point of one palette: a quantiser that reconsiders each frame on
+        # its own can put a different colour on something that never moved
+        out = tmp_path / "a.gif"
+        still = np.stack([np.linspace(0, 1, 600)] * 4)
+        a = tstack(*[
+            image(
+                np.concatenate([still, np.full((4, 600), i / 8)]),
+                colormap=viridis,
+            )
+            for i in range(8)
+        ])
+
+        a.savegif(str(out), colors=32)
+
+        top = [f[:32] for f in gif_frames(out)]    # the two rows that never move
+        assert all((f == top[0]).all() for f in top)
+
+    def test_an_unknown_palette_is_refused(self, tmp_path):
+        with pytest.raises(ValueError, match="'unified' or 'per-frame'"):
+            gradient().savegif(
+                str(tmp_path / "a.gif"), palette='adaptive',  # type: ignore[arg-type]
+            )
+
+    @pytest.mark.parametrize("colors", [1, 0, -3, 257, 1000])
+    def test_an_impossible_budget_is_refused(self, colors, tmp_path):
+        with pytest.raises(ValueError, match="between 2 and 256"):
+            gradient().savegif(str(tmp_path / "a.gif"), colors=colors)
+
+
+# # #
 # animate: WRITING FRAMES
 
 

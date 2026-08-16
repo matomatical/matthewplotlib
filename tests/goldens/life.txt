@@ -1,7 +1,7 @@
 example: life.py
 args: --num-frames 5
 terminal: 26x74
-image: 5 frames, 400x592, sha256:a81b097fa48e2c70
+image: 5 frames, 400x592, sha256:59d08fc25d1c9ff4
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.

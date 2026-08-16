@@ -1,7 +1,7 @@
 example: mandelbrot.py
 args: --num-frames 5
 terminal: 43x80
-image: 5 frames, 80x80, sha256:deba8410428b2d74
+image: 5 frames, 80x80, sha256:22012b78d1e3b1f9
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.

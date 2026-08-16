@@ -1,7 +1,7 @@
 example: starburst.py
 args: --num-frames 6 --no-loop
 terminal: 26x48
-image: 6 frames, 400x384, sha256:32dffd1f75af76f9
+image: 6 frames, 400x384, sha256:788468bec0880c0f
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.

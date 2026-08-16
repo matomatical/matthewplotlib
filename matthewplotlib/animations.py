@@ -67,6 +67,149 @@ from matthewplotlib.plots import image, plot
 _GIF_MIN_DELAY_MS = 10.0
 
 
+# A gif addresses at most this many colours, one of which is spent on
+# transparency if any pixel is transparent.
+_GIF_PALETTE_SIZE = 256
+
+
+# Median cut wants the distribution of colours rather than every last pixel of
+# it, so a group with more pixels than this is thinned before choosing, which
+# keeps the cost of a long animation off the length of the animation.
+_GIF_PALETTE_SAMPLE = 1 << 20
+
+
+def _rgb_keys(stack: np.ndarray) -> np.ndarray: # uint32[...]
+    """
+    Pack the RGB of each pixel into one integer, so that `np.unique` runs over
+    colours rather than over components.
+    """
+    return (
+        stack[..., 0].astype(np.uint32) << 16
+        | stack[..., 1].astype(np.uint32) << 8
+        | stack[..., 2].astype(np.uint32)
+    )
+
+
+def _reference(
+    stack: np.ndarray,  # uint8[t, height, width, RGB]
+    opaque: np.ndarray, # bool[t, height, width]
+    budget: int,
+) -> Image.Image:
+    """
+    Choose `budget` colours to represent a group of frames, by median cut.
+
+    The result is a Pillow palette image, which is both the choice of colours
+    and what maps pixels onto them.
+    """
+    pixels = stack[opaque]                      # uint8[n, RGB]
+    if len(pixels) > _GIF_PALETTE_SAMPLE:
+        pixels = pixels[::len(pixels) // _GIF_PALETTE_SAMPLE]
+    return Image.fromarray(pixels.reshape(-1, 1, 3)).quantize(
+        colors=budget,
+        method=Image.Quantize.MEDIANCUT,
+    )
+
+
+def _index_group(
+    stack: np.ndarray,  # uint8[t, height, width, RGBA]
+    opaque: np.ndarray, # bool[t, height, width]
+    budget: int,
+    offset: int,
+) -> tuple[np.ndarray, list[int]]:
+    """
+    Index a group of frames into one palette of at most `budget` colours.
+
+    Exactly, if the group has no more colours than that: every pixel keeps the
+    colour it was rendered in. Otherwise by median cut, which is the point at
+    which a gif stops being able to say what the plot looks like.
+
+    Returns the indices (`uint8[t, height, width]`) and the palette as Pillow's
+    flat list of RGB components, with the first `offset` entries left for
+    transparency.
+    """
+    keys = _rgb_keys(stack)                     # uint32[t, height, width]
+    colors, inverse = np.unique(keys[opaque], return_inverse=True)
+
+    if len(colors) <= budget:
+        rgb = np.stack(
+            (colors >> 16 & 255, colors >> 8 & 255, colors & 255),
+            axis=-1,
+        ).astype(np.uint8)
+        indices = np.zeros(keys.shape, dtype=np.uint8)
+        indices[opaque] = (inverse + offset).astype(np.uint8)
+    else:
+        reference = _reference(stack[..., :3], opaque, budget)
+        palette = reference.getpalette() or []
+        rgb = np.array(palette, dtype=np.uint8).reshape(-1, 3)[:budget]
+        indices = np.stack([
+            np.asarray(
+                Image.fromarray(frame).quantize(
+                    palette=reference,
+                    dither=Image.Dither.NONE,
+                ),
+                dtype=np.uint8,
+            ) + offset
+            for frame in stack[..., :3]
+        ])
+        # a transparent pixel's colour components are arbitrary, so whatever
+        # the mapping made of them is discarded
+        indices[~opaque] = 0
+
+    flat = np.zeros((_GIF_PALETTE_SIZE, 3), dtype=np.uint8)
+    flat[offset:offset+len(rgb)] = rgb
+    return indices, flat.reshape(-1).tolist()
+
+
+def _palettise(
+    frames: list[np.ndarray], # uint8[height, width, RGBA]
+    unified: bool,
+    colors: int,
+) -> tuple[list[Image.Image], int | None]:
+    """
+    Convert rendered frames into the palette images a gif is written from.
+
+    One palette for the whole animation, or one for each frame. Unified is
+    worth the name twice over: a colour is then the same colour in every frame,
+    where a per-frame palette lets something that never moves shift under a
+    quantiser that reconsiders it each time; and Pillow stores a frame as its
+    difference from the one before only when the two agree on a palette.
+
+    Returns the frames as Pillow palette images, and the index reserved for
+    transparent pixels, if the animation has any.
+
+    A gif's transparency is all or nothing, one index that is drawn as a hole,
+    so a partly transparent pixel becomes a fully transparent one. Rendering
+    only ever produces alpha 0 or 255, so in practice nothing is on that edge.
+    """
+    stack = np.stack(frames)            # uint8[t, height, width, RGBA]
+    opaque = stack[..., 3] == 255       # bool[t, height, width]
+
+    # a transparent pixel keeps its own index, since its colour components are
+    # arbitrary and would otherwise collide with an opaque pixel of that colour
+    transparent = None if bool(opaque.all()) else 0
+    offset = 0 if transparent is None else 1
+    budget = colors - offset
+
+    groups = [(stack, opaque)] if unified else [
+        (stack[i:i+1], opaque[i:i+1]) for i in range(len(stack))
+    ]
+
+    images = []
+    for group_stack, group_opaque in groups:
+        indices, palette = _index_group(
+            stack=group_stack,
+            opaque=group_opaque,
+            budget=budget,
+            offset=offset,
+        )
+        for index_frame in indices:
+            image = Image.fromarray(index_frame, mode='P')
+            image.putpalette(palette)
+            images.append(image)
+
+    return images, transparent
+
+
 def _padded(frames: list[plot]) -> tuple[plot, ...]:
     """
     Pad frames with blank space to the size of the largest, top-left aligned.
@@ -309,6 +452,8 @@ class tstack:
         downscale: int = 1,
         bgcolor: ColorLike | None = None,
         repeat: bool = True,
+        palette: Literal['unified', 'per-frame'] = 'unified',
+        colors: int = 256,
     ) -> None:
         """
         Render the frames and save them as an animated gif.
@@ -336,6 +481,19 @@ class tstack:
         * repeat : bool (default True).
             If true (default), the gif loops indefinitely. If false, the gif
             only plays once.
+        * palette : 'unified' or 'per-frame' (default 'unified').
+            Whether the frames share one palette or each get their own. Sharing
+            keeps a colour the same colour throughout, and lets the file store
+            a frame as its difference from the one before. Per-frame spends the
+            whole budget on each frame separately, which can hold more of a
+            frame's own colours at the price of the animation agreeing with
+            itself.
+        * colors : int (2 to 256, default 256).
+            How many colours a palette may hold, which is what a gif has
+            instead of a colour per pixel. Fewer means a smaller file. If what
+            is being coloured fits in the budget it is stored exactly; past
+            that, colours are chosen by median cut and every pixel takes the
+            nearest one.
 
         Notes:
 
@@ -351,6 +509,15 @@ class tstack:
         """
         if not self.plots:
             raise ValueError("cannot save a gif of an animation with no frames")
+        if palette not in ('unified', 'per-frame'):
+            raise ValueError(
+                f"palette should be 'unified' or 'per-frame', not {palette!r}"
+            )
+        if not 2 <= colors <= _GIF_PALETTE_SIZE:
+            raise ValueError(
+                f"colors must be between 2 and {_GIF_PALETTE_SIZE}, not "
+                f"{colors!r}"
+            )
 
         # decide the frame delay(s), in milliseconds
         duration: float | list[float]
@@ -394,8 +561,25 @@ class tstack:
             ) for frame in frames
         ]
 
-        # convert to PIL images
-        images = [Image.fromarray(frame) for frame in frames_uniform]
+        # convert to PIL images, through one palette shared by every frame if
+        # the colours fit in one, since that is what lets Pillow store a frame
+        # as its difference from the one before
+        images, transparent = _palettise(
+            frames=frames_uniform,
+            unified=(palette == 'unified'),
+            colors=colors,
+        )
+
+        transparency: dict[str, Any] = {}
+        if transparent is not None:
+            # A frame stored as a difference from the one before marks a pixel
+            # that did not change with the transparent index, which is the same
+            # index that draws a hole. Where the animation is really
+            # transparent the two meanings collide, and a pixel that stops
+            # being drawn keeps the colour it had. Disposal 2 clears each frame
+            # before the next is drawn, which costs the difference encoding and
+            # is the only thing that keeps the holes.
+            transparency = {'transparency': transparent, 'disposal': 2}
 
         # save
         loop = 0 if repeat else None  # 0 = loop forever, None = play once
@@ -405,6 +589,8 @@ class tstack:
             append_images=images[1:],
             duration=duration,
             loop=loop,
+            optimize=True,
+            **transparency,
         )
 
 

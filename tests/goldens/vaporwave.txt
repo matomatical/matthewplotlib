@@ -1,7 +1,7 @@
 example: vaporwave.py
 args: --num-frames 5 --no-loop
 terminal: 25x80
-image: 5 frames, 96x160, sha256:b43230fa1f33af59
+image: 5 frames, 96x160, sha256:ce7f14f5821464c7
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.

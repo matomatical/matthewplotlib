@@ -1,7 +1,7 @@
 example: teacher_student.py
 args: --num-steps 5 --log-every 2
 terminal: 27x46
-image: 6 frames, 368x368, sha256:5e7e40cd26bdd1ac
+image: 6 frames, 368x368, sha256:b93c4d582228d8ba
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.

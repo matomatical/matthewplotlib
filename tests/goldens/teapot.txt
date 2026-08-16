@@ -1,7 +1,7 @@
 example: teapot.py
 args: --num-frames 5
 terminal: 21x80
-image: 5 frames, 320x640, sha256:40616c176a2fb110
+image: 5 frames, 320x640, sha256:7da0f2972501a851
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.

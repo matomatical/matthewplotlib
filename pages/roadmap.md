@@ -172,6 +172,8 @@ Advanced furnishings:
 Advanced rendering:
 
 * [x] Export animations to gifs, at the requested or the achieved frame rate.
+  * [x] Control over the palette: one for the animation or one per frame, and
+    how many colours it holds. See `notes/gif-size.md`.
 * [ ] Render plots to SVG (keep console aesthetic).
 * [ ] Render plots to PDF (keep console aesthetic).
 * [ ] Render plots to TikZ/pgfplots source.

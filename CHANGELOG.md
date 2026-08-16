@@ -1,6 +1,37 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+New:
+
+* `savegif` takes `palette` and `colors`, choosing how an animation's colours
+  are fitted into the palettes a gif stores instead of a colour per pixel.
+  * `palette='unified'` (the default) builds one palette for the whole
+    animation, so a colour is the same colour in every frame.
+  * `palette='per-frame'` gives each frame its own, spending the whole budget
+    on each frame separately.
+  * `colors` (2 to 256, default 256) is how many colours a palette may hold.
+    Fewer means a smaller file.
+
+Changed:
+
+* Gifs are saved in the colours the plots were rendered in, where the animation
+  has 256 colours or fewer. Previously each frame was quantised on its own, and
+  to far fewer colours than a gif allows: frames holding 228 colours were
+  stored in 29, banding smooth colourmaps and letting still content change
+  colour from frame to frame. Animations with more colours than the budget are
+  now quantised once for the whole animation rather than per frame.
+  * Colourful gifs are larger as a result. `colors=32` asks for the small files
+    back explicitly.
+
+Fixed:
+
+* `savegif` no longer ghosts an animation with a transparent background.
+  Frames after the first kept the pixels of the frames before them, so moving
+  content smeared over everywhere it had been.
+
 Version 0.6.0
 -------------
 

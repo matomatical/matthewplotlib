@@ -74,3 +74,55 @@ optimisation crops to the changed *bounding box*, and in an animation whose
 changes are sparse but scattered -- which is exactly the animation that
 differential terminal rendering is best at -- the bounding box is most of the
 frame anyway.
+
+## What happened when it was done
+
+Measured 2026-08-16 (Claude, reviewed by Matthew) carrying out the follow-up
+above. The ~13% did not appear, and the reason is the paragraph directly above
+it: on a 64-frame Life-like animation, the shared palette plus `optimize=True`
+came to 431 kB either way, **0.0%**. The changes are scattered, so the bounding
+box is the whole frame, and there is no delta to win. The two halves of that
+section were written as a recommendation and its own refutation; only the first
+half survived into the roadmap.
+
+What the shared palette is actually worth is **colour**, which this note did
+not think to measure. Saving frame by frame lets Pillow pick a palette per
+frame, and it picks a small one: on frames holding 228 distinct colours it
+stored **29**, altering 98.7% of pixels, maximum channel error 17 -- visible
+banding across any smooth ramp. Worse, it re-picks per frame, so content that
+never moves changes colour underneath it: in a 12-frame animation with a static
+ramp across the top, 10 frames disagreed with frame 0 about a region that is
+byte-identical in the source.
+
+One palette for the whole animation fixes both, and is exact when the animation
+has 256 colours or fewer -- which is most terminal plots, though not the
+colourmapped ones. The cost is size, and it is the opposite of what was
+predicted: 154 kB to 245 kB on that animation, since flat bands compress better
+than the gradients they were flattening.
+
+So `savegif` grew `palette` and `colors` rather than a fixed choice. Small
+files are still available, by asking for fewer colours (`colors=32`), which is
+an honest way to trade colour for bytes; the old behaviour was making that
+trade without saying so.
+
+Palette *order* is not a lever: sorting the 253 colours of a viridis animation
+by luminance instead of by packed RGB gave a byte-identical file. Size here is
+colour entropy, not layout.
+
+## The ghosting bug, found the same day
+
+Sharing a palette makes Pillow store frames as differences, and that exposed a
+bug that predates it. A difference frame marks an unchanged pixel with the
+transparent index -- the same index that means "draw a hole". An animation with
+a transparent background therefore smeared: on 0.6.0, scrolling text left every
+position it had passed through still painted, its last frame drawing 823 pixels
+where 143 belonged. Every frame after the first was wrong.
+
+It went unnoticed because every example either fills each cell (`image` plots)
+or sets a `bgcolor`, and nothing read a saved gif back.
+
+The fix is disposal method 2, "restore to background before the next frame",
+which is the only setting that keeps the two meanings apart. It costs the
+difference encoding for transparent animations -- they go back to whole frames,
+a few percent larger. `tests/test_animations.py::TestSaveGifTransparency`
+pins it; both tests fail if the disposal is dropped.
