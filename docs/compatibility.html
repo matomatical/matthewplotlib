@@ -97,6 +97,7 @@
 </tbody>
 </table>
 <p>(The library also allows you to render arbitrary glyphs through <code>text</code> plots, those glyphs are your responsibility.)</p>
+<p>C0 and C1 control characters are not glyphs, and are rejected in text, titles, and labels. In particular, raw ANSI formatting sequences cannot be smuggled in as text: styling has to be represented by the plot so that composition, terminal redraws, and image rendering all agree about how many cells it takes.</p>
 <p>Braille is the one to check. It is the densest and the least likely to be in an older bitmap font, and a font that lacks it turns a scatter plot into a field of replacement boxes. Most modern terminal fonts have it.</p>
 <p>The library generally operates on the following assumption about how these characters are rendered:</p>
 <ul>
@@ -298,7 +299,7 @@
 <p>Three things we don’t use, since terminals genuinely diverge in how they are handled:</p>
 <ul>
 <li><strong>No cursor save/restore.</strong> There are two incompatible conventions for it (<code>ESC 7</code>/<code>ESC 8</code> and <code>ESC [ s</code>/<code>ESC [ u</code>) and terminals differ over which they implement.</li>
-<li><strong>No absolute cursor positioning</strong> (<code>CUP</code>), no scroll regions, no alternate screen buffer, no tab stops, no private modes, no OSC. The library moves relative to where the cursor already is, and stays inside the rows it printed.</li>
+<li><strong>No absolute cursor positioning</strong> (<code>CUP</code>), no scroll regions, no alternate screen buffer, no tab stops, no private modes, no OSC. The library moves relative to where the cursor already is, and stays inside the rows it printed. Textual inputs reject the control characters that could introduce any of these sequences themselves.</li>
 <li><strong>No queries.</strong> It never asks the terminal a question and waits for a reply, so it cannot hang on a terminal that does not answer.</li>
 </ul>
 <p>Because the library only ever moves relative to the cursor and never addresses the screen absolutely, output composes with whatever else is on screen. It does not own the display.</p>

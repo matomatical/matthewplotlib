@@ -4,6 +4,13 @@ Changelog
 In development
 --------------
 
+Fixed:
+
+* Text, titles, and labels reject terminal control characters instead of
+  emitting them verbatim. Raw ANSI styling was never structurally supported:
+  its invisible bytes were counted as character cells, breaking composition,
+  differential redraws, and image rendering.
+
 Examples:
 
 * Attribute examples to their designers.

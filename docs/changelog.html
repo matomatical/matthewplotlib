@@ -46,6 +46,10 @@
         <div class="docstring page-content">
 <h1 id="changelog">Changelog</h1>
 <h2 id="in-development">In development</h2>
+<p>Fixed:</p>
+<ul>
+<li>Text, titles, and labels reject terminal control characters instead of emitting them verbatim. Raw ANSI styling was never structurally supported: its invisible bytes were counted as character cells, breaking composition, differential redraws, and image rendering.</li>
+</ul>
 <p>Examples:</p>
 <ul>
 <li>Attribute examples to their designers.

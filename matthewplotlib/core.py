@@ -35,7 +35,7 @@ import dataclasses
 import numpy as np
 import einops
 
-from typing import Self, Callable
+from typing import Self, Callable, Sequence
 from numpy.typing import NDArray
 
 from matthewplotlib.unscii16 import bitmaps
@@ -506,10 +506,37 @@ class CharArray:
         return img
         
 
-def ords(chrs):
+def _validate_text(
+    chrs: Sequence[str],
+    *,
+    allow_line_breaks: bool = False,
+) -> None:
+    """Reject terminal control characters from text that will become glyphs."""
+    allowed = "\r\n" if allow_line_breaks else ""
+    controls = sorted({
+        ord(char)
+        for char in chrs
+        if char not in allowed
+        and (ord(char) < 0x20 or 0x7f <= ord(char) <= 0x9f)
+    })
+    if controls:
+        names = ", ".join(f"U+{code:04X}" for code in controls)
+        raise ValueError(
+            f"text contains unsupported control characters: {names}. Raw "
+            "terminal control sequences are not supported"
+        )
+
+
+def ords(chrs: Sequence[str]) -> list[int]:
     """
-    Convert a string or list of characters to a list of unicode code points.
+    Convert a string or list of glyphs to a list of unicode code points.
+
+    C0 and C1 control characters are not glyphs and are rejected. In
+    particular, raw ANSI formatting is not supported: terminal styling has to
+    be represented in the character array so that its size and rendering stay
+    well-defined.
     """
+    _validate_text(chrs)
     return [ord(c) for c in chrs]
 
 
@@ -1317,5 +1344,4 @@ def unicode_image(
         chars.bg[-1,:] = False
 
     return chars
-
 

@@ -38,6 +38,13 @@ class TestOrds:
     def test_empty(self):
         assert ords("") == []
 
+    @pytest.mark.parametrize(
+        "control", ["\0", "\t", "\x1b", "\x7f", "\x85", "\x9f"]
+    )
+    def test_control_characters_are_not_glyphs(self, control):
+        with pytest.raises(ValueError, match=f"U\\+{ord(control):04X}"):
+            ords(f"before{control}after")
+
 
 # # #
 # CharArray properties

@@ -3,11 +3,13 @@
 import os
 
 import numpy as np
+import pytest
 
 import matthewplotlib as mp
 
 from matthewplotlib.plots import (
     axes,
+    border,
     dstack2,
     line,
     line3,
@@ -15,6 +17,30 @@ from matthewplotlib.plots import (
     text,
     wrap,
 )
+
+
+# # #
+# text
+
+
+class TestTextControls:
+    def test_cr_and_lf_are_line_breaks(self):
+        plot = text("one\r\ntwo\nthree\rfour")
+
+        assert plot.chars.to_plain_str() == "one  \ntwo  \nthree\nfour "
+
+    @pytest.mark.parametrize("control", ["\0", "\t", "\x1b", "\x7f", "\x85"])
+    def test_other_controls_are_rejected(self, control):
+        with pytest.raises(ValueError, match=f"U\\+{ord(control):04X}"):
+            text(f"before{control}after")
+
+    def test_a_border_title_cannot_add_a_terminal_sequence(self):
+        with pytest.raises(ValueError, match="U\\+001B"):
+            border(text("plot"), title="\x1b[1mbold")
+
+    def test_an_axis_label_cannot_add_a_terminal_sequence(self):
+        with pytest.raises(ValueError, match="U\\+001B"):
+            axes(_narrow_ticks_scatter(), xlabel="\x1b]52;c;SGVsbG8=\x07")
 
 
 # # #

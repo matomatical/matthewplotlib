@@ -51,6 +51,11 @@ terminal. The library uses four blocks:
 (The library also allows you to render arbitrary glyphs through `text` plots,
 those glyphs are your responsibility.)
 
+C0 and C1 control characters are not glyphs, and are rejected in text, titles,
+and labels. In particular, raw ANSI formatting sequences cannot be smuggled in
+as text: styling has to be represented by the plot so that composition,
+terminal redraws, and image rendering all agree about how many cells it takes.
+
 Braille is the one to check. It is the densest and the least likely to be in an
 older bitmap font, and a font that lacks it turns a scatter plot into a field
 of replacement boxes. Most modern terminal fonts have it.
@@ -198,6 +203,8 @@ handled:
 * **No absolute cursor positioning** (`CUP`), no scroll regions, no alternate
   screen buffer, no tab stops, no private modes, no OSC. The library moves
   relative to where the cursor already is, and stays inside the rows it printed.
+  Textual inputs reject the control characters that could introduce any of
+  these sequences themselves.
 * **No queries.** It never asks the terminal a question and waits for a reply,
   so it cannot hang on a terminal that does not answer.
 

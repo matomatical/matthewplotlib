@@ -76,6 +76,7 @@ from matthewplotlib.core import (
     ColorLike,
     CharArray,
     ords,
+    _validate_text,
     BoxStyle,
     unicode_box,
     unicode_braille_array,
@@ -1457,6 +1458,11 @@ class text(plot):
     * bgcolor : optional ColorLike.
         The background color for the text. Defaults to a transparent
         background.
+
+    Carriage returns and newlines separate lines. Other C0 and C1 control
+    characters are rejected, including the escapes used for raw ANSI
+    formatting: styling has to be part of the plot so that composition and
+    rendering know its size.
     
     TODO:
 
@@ -1469,6 +1475,7 @@ class text(plot):
         fgcolor: ColorLike | None = None,
         bgcolor: ColorLike | None = None,
     ):
+        _validate_text(text, allow_line_breaks=True)
         lines = text.splitlines()
         height = len(lines)
         width = max(len(line) for line in lines)
