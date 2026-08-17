@@ -4,6 +4,9 @@ Changelog
 In development
 --------------
 
+Version 0.6.2
+-------------
+
 Changed:
 
 * `parse_colors` can now standardise scalar and RGB arrays of a requested shape
