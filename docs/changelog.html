@@ -49,6 +49,7 @@
 <p>Fixed:</p>
 <ul>
 <li>Text, titles, and labels reject terminal control characters instead of emitting them verbatim. Raw ANSI styling was never structurally supported: its invisible bytes were counted as character cells, breaking composition, differential redraws, and image rendering.</li>
+<li><code>function2</code> values outside <code>zrange</code> and <code>histogram2</code> counts above <code>max_count</code> saturate at the colour-scale endpoints instead of wrapping around with some colormaps. All-zero histograms no longer divide by zero, and an explicit <code>max_count</code> must be positive.</li>
 </ul>
 <p>Examples:</p>
 <ul>

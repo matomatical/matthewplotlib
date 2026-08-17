@@ -789,7 +789,8 @@ class function2(image):
     * zrange : optional (float, float).
         Expected lower and upper bounds on the f(x, y) values. Used for
         determining the bounds of the colour scale. By default, the minimum and
-        maximum output over the grid are used.
+        maximum output over the grid are used. Values outside these bounds
+        saturate at the nearest end of the colour scale.
     * colormap : optional colormap (e.g. mp.viridis).
         By default, the output will be in greyscale, with black corresponding
         to zrange[0] and white corresponding to zrange[1]. You can choose a
@@ -833,6 +834,7 @@ class function2(image):
             zgrid_norm = np.zeros_like(zgrid)
         else:
             zgrid_norm = (zgrid - zrange[0]) / (zrange[1] - zrange[0])
+            zgrid_norm = np.clip(zgrid_norm, 0., 1.)
 
         # create the image plot itself
         super().__init__(
@@ -885,6 +887,8 @@ class histogram2(image):
         If provided, cell colours are scaled so that only bars matching or
         exceeding this count max out the colour. Otherwise, the colours are
         scaled so that the bin with the highest count has the colour maxed out.
+        An explicitly supplied value must be positive. If every bin has a count
+        of zero, all cells remain at the bottom of the colour scale.
     * colormap : optional colormap (e.g. mp.viridis).
         By default, the output will be in greyscale, with black corresponding
         to zero density and white corresponding to max_count. You can choose a
@@ -932,7 +936,16 @@ class histogram2(image):
         # transform counts: scale and reorient
         if max_count is None:
             max_count = hist.max()
-        hist /= max_count
+            if max_count == 0:
+                hist = np.zeros_like(hist)
+            else:
+                hist = np.clip(hist / max_count, 0., 1.)
+        else:
+            if max_count <= 0:
+                raise ValueError(
+                    f"max_count must be positive, not {max_count!r}"
+                )
+            hist = np.clip(hist / max_count, 0., 1.)
         hist = hist.T[::-1]
 
         # construct the image

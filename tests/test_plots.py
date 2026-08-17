@@ -11,12 +11,29 @@ from matthewplotlib.plots import (
     axes,
     border,
     dstack2,
+    function2,
+    histogram2,
     line,
     line3,
     scatter,
     text,
     wrap,
 )
+
+
+class RecordingColormap:
+    """A greyscale colormap that retains the scalar grid it received."""
+
+    def __init__(self):
+        self.input = None
+
+    def __call__(self, values):
+        self.input = np.array(values, copy=True)
+        return np.repeat(
+            (255 * values[..., np.newaxis]).astype(np.uint8),
+            3,
+            axis=-1,
+        )
 
 
 # # #
@@ -141,6 +158,75 @@ class TestAxesYLabelGutter:
         plain = axes(_narrow_ticks_scatter(), yfmt="{y:2.0f}")
 
         assert labelled.width == plain.width
+
+
+# # #
+# heatmaps
+
+
+class TestFunction2:
+    def test_values_outside_zrange_saturate_before_colormapping(self):
+        colormap = RecordingColormap()
+
+        function2(
+            lambda xy: xy[:, 0],
+            xrange=(-1.0, 2.0),
+            yrange=(0.0, 1.0),
+            width=2,
+            height=1,
+            zrange=(0.0, 1.0),
+            colormap=colormap,
+            endpoints=True,
+        )
+
+        assert np.array_equal(colormap.input, [[0.0, 1.0], [0.0, 1.0]])
+
+
+class TestHistogram2:
+    def test_counts_above_max_count_saturate_before_colormapping(self):
+        colormap = RecordingColormap()
+
+        histogram2(
+            x=[0.0, 0.0, 0.0],
+            y=[0.0, 0.0, 0.0],
+            width=1,
+            height=1,
+            xrange=(-1.0, 1.0),
+            yrange=(-1.0, 1.0),
+            max_count=2,
+            colormap=colormap,
+        )
+
+        assert colormap.input.max() == 1.0
+        assert np.count_nonzero(colormap.input == 1.0) == 1
+
+    def test_an_inferred_zero_maximum_produces_a_blank_heatmap(self):
+        colormap = RecordingColormap()
+
+        histogram2(
+            x=[2.0],
+            y=[2.0],
+            width=1,
+            height=1,
+            xrange=(0.0, 1.0),
+            yrange=(0.0, 1.0),
+            colormap=colormap,
+        )
+
+        assert np.array_equal(colormap.input, np.zeros((2, 1)))
+
+    @pytest.mark.parametrize("max_count", [0, -1])
+    def test_an_explicit_maximum_must_be_positive(self, max_count):
+        with pytest.raises(ValueError, match="max_count must be positive"):
+            histogram2(
+                x=[0.0],
+                y=[0.0],
+                width=1,
+                height=1,
+                xrange=(-1.0, 1.0),
+                yrange=(-1.0, 1.0),
+                max_count=max_count,
+            )
 
 
 # # #

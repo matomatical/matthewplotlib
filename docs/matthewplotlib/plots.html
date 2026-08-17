@@ -1294,7 +1294,8 @@ half-character-pixels per row.</li>
 <li>zrange : optional (float, float).
 Expected lower and upper bounds on the f(x, y) values. Used for
 determining the bounds of the colour scale. By default, the minimum and
-maximum output over the grid are used.</li>
+maximum output over the grid are used. Values outside these bounds
+saturate at the nearest end of the colour scale.</li>
 <li>colormap : optional colormap (e.g. mp.viridis).
 By default, the output will be in greyscale, with black corresponding
 to zrange[0] and white corresponding to zrange[1]. You can choose a
@@ -1425,7 +1426,9 @@ np.histogram2d's density argument for details.</li>
 <li>max_count : optional number.
 If provided, cell colours are scaled so that only bars matching or
 exceeding this count max out the colour. Otherwise, the colours are
-scaled so that the bin with the highest count has the colour maxed out.</li>
+scaled so that the bin with the highest count has the colour maxed out.
+An explicitly supplied value must be positive. If every bin has a count
+of zero, all cells remain at the bottom of the colour scale.</li>
 <li>colormap : optional colormap (e.g. mp.viridis).
 By default, the output will be in greyscale, with black corresponding
 to zero density and white corresponding to max_count. You can choose a

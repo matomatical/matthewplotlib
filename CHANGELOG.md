@@ -10,6 +10,10 @@ Fixed:
   emitting them verbatim. Raw ANSI styling was never structurally supported:
   its invisible bytes were counted as character cells, breaking composition,
   differential redraws, and image rendering.
+* `function2` values outside `zrange` and `histogram2` counts above `max_count`
+  saturate at the colour-scale endpoints instead of wrapping around with some
+  colormaps. All-zero histograms no longer divide by zero, and an explicit
+  `max_count` must be positive.
 
 Examples:
 
