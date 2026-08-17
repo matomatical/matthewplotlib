@@ -29,7 +29,7 @@ def main(
         frame = 0
         while num_frames == 0 or frame < num_frames:
             k = (frame / fps % period) / period * 6
-            A = 0.85 + 0.15 * np.cos(k)
+            A = 0.85 + 0.15 * np.cos(2*np.pi*k/6)
             y = A * np.cos(x - 2*np.pi*k/6)
             c = mp.rainbow(1-k/6)
             anim.update(mp.axes(

@@ -77,7 +77,7 @@ prev = None
 while True:
     # construct the new frame's data
     k = (time.time() % 3) * 2
-    A = 0.85 + 0.15 * np.cos(k)
+    A = 0.85 + 0.15 * np.cos(2*np.pi*k/6)
     y = A * np.cos(x - 2*np.pi*k/6)
     c = mp.rainbow(1-k/6)
 
@@ -118,7 +118,7 @@ with mp.animate(fps=20) as anim: # <- manages timing, printing
     while True:
         # construct the new frame's data
         k = (time.time() % 3) * 2
-        A = 0.85 + 0.15 * np.cos(k)
+        A = 0.85 + 0.15 * np.cos(2*np.pi*k/6)
         y = A * np.cos(x - 2*np.pi*k/6)
         c = mp.rainbow(1-k/6)
 

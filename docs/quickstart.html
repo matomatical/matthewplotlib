@@ -91,7 +91,7 @@
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># construct the new frame&#39;s data</span></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> (time.time() <span class="op">%</span> <span class="dv">3</span>) <span class="op">*</span> <span class="dv">2</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> <span class="fl">0.85</span> <span class="op">+</span> <span class="fl">0.15</span> <span class="op">*</span> np.cos(k)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> <span class="fl">0.85</span> <span class="op">+</span> <span class="fl">0.15</span> <span class="op">*</span> np.cos(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>k<span class="op">/</span><span class="dv">6</span>)</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> A <span class="op">*</span> np.cos(x <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>k<span class="op">/</span><span class="dv">6</span>)</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> mp.rainbow(<span class="dv">1</span><span class="op">-</span>k<span class="op">/</span><span class="dv">6</span>)</span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
@@ -126,7 +126,7 @@
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># construct the new frame&#39;s data</span></span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        k <span class="op">=</span> (time.time() <span class="op">%</span> <span class="dv">3</span>) <span class="op">*</span> <span class="dv">2</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        A <span class="op">=</span> <span class="fl">0.85</span> <span class="op">+</span> <span class="fl">0.15</span> <span class="op">*</span> np.cos(k)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        A <span class="op">=</span> <span class="fl">0.85</span> <span class="op">+</span> <span class="fl">0.15</span> <span class="op">*</span> np.cos(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>k<span class="op">/</span><span class="dv">6</span>)</span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> A <span class="op">*</span> np.cos(x <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>k<span class="op">/</span><span class="dv">6</span>)</span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> mp.rainbow(<span class="dv">1</span><span class="op">-</span>k<span class="op">/</span><span class="dv">6</span>)</span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
