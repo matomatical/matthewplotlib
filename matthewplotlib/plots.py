@@ -56,6 +56,7 @@ from PIL import Image
 from typing import Callable, Literal, Self, cast
 from numpy.typing import ArrayLike, NDArray
 from matthewplotlib.colormaps import ColorMap
+from matthewplotlib.colors import ColorLike, parse_colors
 from numbers import Number
 
 from matthewplotlib.data import (
@@ -73,7 +74,6 @@ from matthewplotlib.camera import (
     project3_segments,
 )
 from matthewplotlib.core import (
-    ColorLike,
     CharArray,
     ords,
     _validate_text,
@@ -711,26 +711,27 @@ class image(plot):
     Inputs:
 
     * im : float[h,w,3] | int[h,w,3] | float[h,w] | int[h,w].
-        The image data. An array-like matching any of the following formats:
+        The image data. Without a colormap, an array-like matching any of the
+        following formats:
         * `float[h,w,3]`: A 2D array of RGB triples of floats in range [0,1].
         * `int[h,w,3]`: A 2D array of RGB triples of ints in range [0,255].
-        * `float[h,w]`: A 2D array of scalars in the range [0,1]. If no
-          colormap is provided, values are treated as greyscale (uniform
-          colorisation). If a continuous colormap is provided, values are
-          mapped to RGB values.
-        * `int[h,w]`: A 2D array of ints. If no colormap is provided, values
-          should be in the range [0,255], they are treated as greyscale
-          (uniform colorisation). If a discrete colormap is provided, values
-          should be in range as indices for the colormap, they will be mapped
-          to RGB triples as such.
+        * `float[h,w]`: A 2D array of scalars in the range [0,1], treated as
+          greyscale (uniform colorisation).
+        * `int[h,w]`: A 2D array of ints in the range [0,255], treated as
+          greyscale (uniform colorisation).
+
+        With a colormap, the input may instead be any array accepted by that
+        function, provided the colormap returns an RGB image of shape [h,w,3].
           
     * colormap : optional ColorMap.
-        Function mapping (batches of) scalars to (batches of) RGB triples.
-        Examples are provided by this library, such as:
+        Applied to the input before its colour shape is validated. The
+        colormaps provided by this library map (batches of) scalars to
+        (batches of) RGB triples, such as:
         * continuous colormaps like `viridis : float[...] -> uint8[...,3]`, and
         * discrete colormaps like `pico8 : int[...] -> uint8[...,3]`.
-        If `im` has no RGB dimension, it is transformed to a grid of RGB
-        triples using one of these colormaps.
+
+        A custom colormap may consume any array data but must return an RGB
+        image of shape [h,w,3].
 
     TODO:
 
@@ -742,19 +743,11 @@ class image(plot):
         colormap: ColorMap | None = None,
     ):
         # preprocessing: all inputs become uint8[h, w, rgb]
-        arr = np.asarray(im)
-        if colormap is not None:
-            # colormap provided: map image to u8 rgb
-            arr = colormap(arr)
-        if arr.ndim == 2:
-            # greyscale -> uniform colourisation
-            arr = einops.repeat(arr, 'h w -> h w 3')
-        if np.issubdtype(arr.dtype, np.integer):
-            # clip uint8
-            arr = np.clip(arr, 0, 255).astype(np.uint8)
-        if np.issubdtype(arr.dtype, np.floating):
-            # floats -> clipped uint8
-            arr = (255 * np.clip(arr, 0., 1.)).astype(np.uint8)
+        arr = parse_colors(
+            im,
+            shape=("h", "w"),
+            colormap=colormap,
+        )
 
         # construct the plot
         chars = unicode_image(arr)

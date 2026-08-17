@@ -50,7 +50,7 @@ from typing import (
 from numpy.typing import ArrayLike
 
 from matthewplotlib.colormaps import ColorMap
-from matthewplotlib.colors import ColorLike
+from matthewplotlib.colors import ColorLike, parse_colors
 from matthewplotlib.plots import image, plot
 
 
@@ -614,15 +614,18 @@ class animation(tstack):
     Inputs:
 
     * ims : float[t,h,w] | float[t,h,w,rgb] | int[t,h,w] | int[t,h,w,rgb].
-        The frames. As for `image`, floats are clipped to the unit interval and
-        integers to 0..255, and the second and third axes are the image's rows
-        and columns -- each pair of rows becomes one row of half-block
-        characters, so a `2n` row image is `n` character rows tall.
+        The frames without a colormap. As for `image`, floats are clipped to
+        the unit interval and integers to 0..255, and the second and third axes
+        are the image's rows and columns -- each pair of rows becomes one row
+        of half-block characters, so a `2n` row image is `n` character rows
+        tall. With a colormap, this may instead be any array accepted by that
+        function, provided it returns RGB frames of shape [t,h,w,3].
     * colormap : optional ColorMap.
-        Applied to a scalar array to colour it, exactly as in `image`. Applied
-        to the whole tensor in one call, which is both faster than doing it frame
-        by frame and the only way to be sure every frame is coloured on the same
-        scale.
+        Applied to the whole input in one call before its colour shape is
+        validated. The provided colormaps map scalar arrays to RGB, exactly as
+        in `image`; a custom colormap may consume any array data but must return
+        [t,h,w,3]. Applying it once is both faster than doing it frame by frame
+        and the only way to be sure every frame is coloured on the same scale.
     * fps : optional float (default 12.0).
         The rate the animation is meant to play at.
 
@@ -642,26 +645,15 @@ class animation(tstack):
         colormap: ColorMap | None = None,
         fps: float | None = None,
     ):
-        arr = np.asarray(ims)
-        if arr.ndim not in (3, 4):
-            raise ValueError(
-                "an animation needs an array of shape [t,h,w] or [t,h,w,rgb], "
-                f"not one of shape {arr.shape}"
-            )
-        if arr.ndim == 4 and arr.shape[-1] != 3:
-            raise ValueError(
-                "the last axis of a [t,h,w,rgb] animation should have 3 "
-                f"channels, not {arr.shape[-1]}"
-            )
+        arr = parse_colors(
+            ims,
+            shape=("t", "h", "w"),
+            colormap=colormap,
+        )
         if arr.shape[0] == 0:
             raise ValueError("an animation needs at least one frame")
-        # Colour the whole tensor at once. The colormaps are elementwise, so this
-        # matches doing it frame by frame, but in one vectorised call.
-        if colormap is not None:
-            arr = colormap(arr)
-            colormap = None
         super().__init__(
-            *[image(frame, colormap=colormap) for frame in arr],
+            *[image(frame) for frame in arr],
             fps=fps,
         )
 

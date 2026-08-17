@@ -162,12 +162,13 @@ for all of it, or an array with a color per point.</li>
 <ul>
 <li><code><a href="#parse_color">parse_color</a></code>: Turn a <code><a href="#ColorLike">ColorLike</a></code> into a <code><a href="#Color">Color</a></code>. See this function for the
 full list of accepted formats.</li>
-<li><code><a href="#parse_colors">parse_colors</a></code>: Turn a <code><a href="#ColorSpec">ColorSpec</a></code> into one <code><a href="#Color">Color</a></code> for each of n points.</li>
+<li><code><a href="#parse_colors">parse_colors</a></code>: Turn a <code><a href="#ColorSpec">ColorSpec</a></code>, scalar array, RGB array, or colormapped
+array into RGB bytes with requested leading dimensions.</li>
 <li><code><a href="#NAMED_COLORS">NAMED_COLORS</a></code>: The recognised color names.</li>
 </ul>
 
-<p>For mapping data to colors, rather than naming one color, see
-<code><a href="colormaps.html">matthewplotlib.colormaps</a></code>.</p>
+<p>Predefined functions for mapping data to colors live in
+<code><a href="colormaps.html">matthewplotlib.colormaps</a></code> and can be passed to <code><a href="#parse_colors">parse_colors</a></code>.</p>
 </div>
 
                 
@@ -249,17 +250,40 @@ become float triples.)</p>
                     <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">parse_colors</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">spec</span><span class="p">:</span> <span class="n">ColorSpec</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n">NDArray</span>:</span></span>
+        <span class="name">parse_colors</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">spec</span><span class="p">:</span> <span class="n">ColorSpec</span>,</span><span class="param">	<span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">colormap</span><span class="p">:</span> <span class="n">ColorMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">NDArray</span>:</span></span>
 
         
     </div>
     <a class="headerlink" href="#parse_colors"></a>
     
-            <div class="docstring"><p>One color for each of n points, from either a single <code><a href="#ColorLike">ColorLike</a></code> or an
-array holding a color per point.</p>
+            <div class="docstring"><p>Parse colour specifications or array data into an array of RGB bytes.</p>
 
-<p>Channels are read the same way in both cases: floats as 0.0 to 1.0, ints as
-0 to 255. A spec of None means the default, white.</p>
+<p>Exactly one output-shape specification is required:</p>
+
+<ul>
+<li><code>n</code> requests one colour for each of n points, preserving the original
+<code>parse_colors(spec, n)</code> interface.</li>
+<li><code>shape</code> describes any number of leading dimensions. An integer requires
+that exact size; <code>None</code> accepts any size and displays as <code>*</code> in errors;
+and a string such as <code>"h"</code> or <code>"w"</code> also accepts any size but retains
+that useful name in errors.</li>
+</ul>
+
+<p>Without a colormap, an array matching the requested leading shape is read
+as scalar data and repeated over the three RGB channels. An array with an
+additional final axis of length three is read directly as RGB. A single
+<code><a href="#ColorLike">ColorLike</a></code>, or <code>None</code> for white, can instead be broadcast over a fully
+specified shape. In the <code>n</code> form, a three-element array remains one RGB
+colour rather than becoming three greyscale point colours.</p>
+
+<p>If a colormap is supplied, the input array is passed to it without any
+shape interpretation. Its output must have the requested leading shape and
+a final RGB axis of length three. This permits a custom colormap to consume
+arbitrary array data, including feature vectors, provided it produces the
+requested colour array.</p>
+
+<p>In every form, float channels are read in the range 0.0 to 1.0 and integer
+channels in the range 0 to 255. Values outside those ranges are clipped.</p>
 </div>
 
 

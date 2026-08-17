@@ -4,6 +4,13 @@ Changelog
 In development
 --------------
 
+Changed:
+
+* `parse_colors` can now standardise scalar and RGB arrays of a requested shape
+  and apply a colormap. `image` and `animation` use it as their shared
+  colour-input path; custom colormaps may accept arrays of any shape provided
+  they return `[h,w,3]` or `[t,h,w,3]`.
+
 Fixed:
 
 * Text, titles, and labels reject terminal control characters instead of
@@ -14,6 +21,8 @@ Fixed:
   saturate at the colour-scale endpoints instead of wrapping around with some
   colormaps. All-zero histograms no longer divide by zero, and an explicit
   `max_count` must be positive.
+* `image` rejects arrays with non-RGB channel counts instead of producing
+  malformed terminal colour sequences or failing later during image rendering.
 
 Examples:
 

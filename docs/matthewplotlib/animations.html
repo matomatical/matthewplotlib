@@ -507,15 +507,18 @@ evolving over time goes straight to the screen without a loop in sight.</p>
 
 <ul>
 <li>ims : float[t,h,w] | float[t,h,w,rgb] | int[t,h,w] | int[t,h,w,rgb].
-The frames. As for <code>image</code>, floats are clipped to the unit interval and
-integers to 0..255, and the second and third axes are the image's rows
-and columns -- each pair of rows becomes one row of half-block
-characters, so a <code>2n</code> row image is <code>n</code> character rows tall.</li>
+The frames without a colormap. As for <code>image</code>, floats are clipped to
+the unit interval and integers to 0..255, and the second and third axes
+are the image's rows and columns -- each pair of rows becomes one row
+of half-block characters, so a <code>2n</code> row image is <code>n</code> character rows
+tall. With a colormap, this may instead be any array accepted by that
+function, provided it returns RGB frames of shape [t,h,w,3].</li>
 <li>colormap : optional ColorMap.
-Applied to a scalar array to colour it, exactly as in <code>image</code>. Applied
-to the whole tensor in one call, which is both faster than doing it frame
-by frame and the only way to be sure every frame is coloured on the same
-scale.</li>
+Applied to the whole input in one call before its colour shape is
+validated. The provided colormaps map scalar arrays to RGB, exactly as
+in <code>image</code>; a custom colormap may consume any array data but must return
+[t,h,w,3]. Applying it once is both faster than doing it frame by frame
+and the only way to be sure every frame is coloured on the same scale.</li>
 <li>fps : optional float (default 12.0).
 The rate the animation is meant to play at.</li>
 </ul>

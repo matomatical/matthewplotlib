@@ -362,8 +362,19 @@ class TestAnimationFromArray:
             animation(np.zeros((8, 6)))
 
     def test_a_bad_channel_count_is_refused(self):
-        with pytest.raises(ValueError, match="3 channels, not 4"):
+        with pytest.raises(ValueError, match="RGB colors of shape"):
             animation(np.zeros((5, 4, 6, 4)))
+
+    def test_a_colormap_may_reduce_feature_vectors_to_rgb(self):
+        features = np.zeros((3, 4, 6, 5))
+
+        result = animation(
+            features,
+            colormap=lambda values: np.zeros((*values.shape[:3], 3)),
+        )
+
+        assert len(result) == 3
+        assert (result.height, result.width) == (2, 6)
 
     def test_no_frames_is_refused(self):
         with pytest.raises(ValueError, match="at least one frame"):

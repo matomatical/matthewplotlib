@@ -164,6 +164,23 @@ class TestAxesYLabelGutter:
 # heatmaps
 
 
+class TestImage:
+    @pytest.mark.parametrize("channels", [1, 2, 4])
+    def test_an_rgb_image_must_have_three_channels(self, channels):
+        with pytest.raises(ValueError, match="RGB colors of shape"):
+            mp.image(np.zeros((4, 5, channels), dtype=np.uint8))
+
+    def test_a_colormap_may_reduce_feature_vectors_to_rgb(self):
+        features = np.zeros((4, 5, 7))
+
+        plot = mp.image(
+            features,
+            colormap=lambda values: np.zeros((*values.shape[:2], 3)),
+        )
+
+        assert (plot.height, plot.width) == (2, 5)
+
+
 class TestFunction2:
     def test_values_outside_zrange_saturate_before_colormapping(self):
         colormap = RecordingColormap()

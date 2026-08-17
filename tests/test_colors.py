@@ -136,6 +136,13 @@ class TestParseColors:
         assert np.all(result[:, 1] == 0)
         assert np.all(result[:, 2] == 0)
 
+    def test_single_color_broadcasts_over_a_concrete_shape(self):
+        result = parse_colors("red", shape=(2, 4))
+
+        assert result.shape == (2, 4, 3)
+        assert np.all(result[..., 0] == 255)
+        assert np.all(result[..., 1:] == 0)
+
     def test_per_point_colors(self):
         colors = np.array([
             [255, 0, 0],
@@ -169,3 +176,64 @@ class TestParseColors:
     def test_colors_of_the_wrong_width(self):
         with pytest.raises(ValueError, match="color for each of 3 points"):
             parse_colors(np.zeros((3, 4), dtype=np.uint8), 3)
+
+    def test_a_scalar_array_becomes_greyscale(self):
+        result = parse_colors(
+            np.array([[0.0, 0.5], [1.0, 0.25]]),
+            shape=(None, None),
+        )
+
+        assert result.shape == (2, 2, 3)
+        assert np.array_equal(result[0, 1], [127, 127, 127])
+
+    def test_an_rgb_array_keeps_its_leading_shape(self):
+        colors = np.zeros((2, 4, 3), dtype=np.uint8)
+        colors[1, 2] = [10, 20, 30]
+
+        result = parse_colors(colors, shape=(None, None))
+
+        assert np.array_equal(result, colors)
+
+    def test_a_colormap_may_accept_arbitrary_array_data(self):
+        features = np.zeros((2, 4, 7))
+
+        def map_features(values):
+            assert values.shape == (2, 4, 7)
+            return np.full((2, 4, 3), 0.5)
+
+        result = parse_colors(
+            features,
+            shape=(None, None),
+            colormap=map_features,
+        )
+
+        assert result.shape == (2, 4, 3)
+        assert np.all(result == 127)
+
+    def test_a_colormap_output_must_match_the_color_shape(self):
+        with pytest.raises(ValueError, match=r"\[h,w,3\]"):
+            parse_colors(
+                np.zeros((2, 4)),
+                shape=("h", "w"),
+                colormap=lambda values: np.zeros((*values.shape, 4)),
+            )
+
+    def test_exactly_one_output_shape_is_required(self):
+        with pytest.raises(ValueError, match="exactly one"):
+            parse_colors(np.zeros(3))
+        with pytest.raises(ValueError, match="exactly one"):
+            parse_colors(np.zeros(3), n=3, shape=(3,))
+
+    def test_shape_entries_are_sizes_or_wildcards(self):
+        with pytest.raises(ValueError, match="integers, strings, or None"):
+            parse_colors(np.zeros(3), shape=(3.0,))
+
+    def test_the_point_interface_can_also_use_a_colormap(self):
+        result = parse_colors(
+            np.array([0.0, 0.5, 1.0]),
+            n=3,
+            colormap=lambda values: np.repeat(values[:, None], 3, axis=1),
+        )
+
+        assert result.shape == (3, 3)
+        assert np.array_equal(result[:, 0], [0, 127, 255])

@@ -46,10 +46,15 @@
         <div class="docstring page-content">
 <h1 id="changelog">Changelog</h1>
 <h2 id="in-development">In development</h2>
+<p>Changed:</p>
+<ul>
+<li><code>parse_colors</code> can now standardise scalar and RGB arrays of a requested shape and apply a colormap. <code>image</code> and <code>animation</code> use it as their shared colour-input path; custom colormaps may accept arrays of any shape provided they return <code>[h,w,3]</code> or <code>[t,h,w,3]</code>.</li>
+</ul>
 <p>Fixed:</p>
 <ul>
 <li>Text, titles, and labels reject terminal control characters instead of emitting them verbatim. Raw ANSI styling was never structurally supported: its invisible bytes were counted as character cells, breaking composition, differential redraws, and image rendering.</li>
 <li><code>function2</code> values outside <code>zrange</code> and <code>histogram2</code> counts above <code>max_count</code> saturate at the colour-scale endpoints instead of wrapping around with some colormaps. All-zero histograms no longer divide by zero, and an explicit <code>max_count</code> must be positive.</li>
+<li><code>image</code> rejects arrays with non-RGB channel counts instead of producing malformed terminal colour sequences or failing later during image rendering.</li>
 </ul>
 <p>Examples:</p>
 <ul>
