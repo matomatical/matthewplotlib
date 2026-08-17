@@ -50,6 +50,23 @@ that has one instead of a listed union. It is deferred because it changes how
 every 2d plot is built, which deserves its own change rather than riding along
 behind line plots.
 
+The refactor should also make a window the unit of compatibility for
+coordinate-aware overlays. `dstack2` currently compares only `xrange` and
+`yrange`, and does so with `assert`, so the checks disappear under `python -O`.
+It does not compare rendered dimensions at all. Two plots can therefore report
+the same ranges while mapping a coordinate to different cells because their
+widths or heights differ, after which `dstack2` simply overlays them from the
+top left.
+
+Once plots carry windows, `dstack2` should require every child to have the same
+window as the first: both ranges and both rendered dimensions. It should reject
+an empty input and mismatches with explicit `ValueError`s, not assertions. A
+rendered plot no longer contains enough information to be faithfully resampled,
+so differently sized windows should be rejected rather than padded or scaled.
+Tests should cover range and dimension mismatches and run the validation under
+`python -O`; if resampling is wanted later, it should be a separate operation
+on plots that retain enough source data to do it deliberately.
+
 ## Also considered
 
 * **Stroke bundles.** Add `float[strokes, points, dims]` to the series grammar,
