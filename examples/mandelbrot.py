@@ -1,3 +1,9 @@
+"""
+Animated Mandelbrot fractal zoom using function heatmaps and colormaps.
+
+By Gemini 2.5 Pro.
+"""
+
 import tyro
 import numpy as np
 import matthewplotlib as mp

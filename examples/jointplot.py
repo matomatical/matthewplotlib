@@ -3,7 +3,7 @@ Joint distribution plot with marginal histograms.
 
 Demonstrates: scatter, histogram, vistogram, columns, bars, hstack, vstack.
 
-Author: Claude (claude.ai)
+By Claude Opus 4.6.
 """
 
 import tyro

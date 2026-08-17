@@ -4,6 +4,8 @@ Examples
 See the [examples/](https://github.com/matomatical/matthewplotlib/tree/main/examples)
 folder for source code.
 
+Do you have a cool, standalone matthewplotlib example? Consider sharing!
+
 <table>
 <thead>
   <th width="50%">Image</th>
@@ -21,6 +23,7 @@ folder for source code.
       <p><strong>Boing</strong></p>
       <p>The Amiga Boing Ball, 1984, animated using a rotating colour
       palette.</p>
+      <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/boing.py">Source</a></p>
     </td>
   </tr>
@@ -31,6 +34,7 @@ folder for source code.
     <td>
       <p><strong>Calendar heatmap</strong></p>
       <p>Calendar heatmap of daily maximum temperatures in Oxford, 2025.</p>
+      <p><em>By Matthew Farrugia-Roberts and Claude Opus 4.6.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/calendar_heatmap.py">Source</a></p>
     </td>
   </tr>
@@ -41,6 +45,7 @@ folder for source code.
     <td>
       <p><strong>Colormaps</strong></p>
       <p>Gallery of all available continuous and discrete colormaps.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/colormaps.py">Source</a></p>
     </td>
   </tr>
@@ -51,6 +56,7 @@ folder for source code.
     <td>
       <p><strong>Dashboard</strong></p>
       <p>Live system monitoring dashboard showing CPU and memory usage.</p>
+      <p><em>By Gemini 2.5 Pro.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/dashboard.py">Source</a></p>
     </td>
   </tr>
@@ -61,6 +67,7 @@ folder for source code.
     <td>
       <p><strong>Demo</strong></p>
       <p>General demonstration combining images, borders, and scatter plots.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/demo.py">Source</a></p>
     </td>
   </tr>
@@ -71,6 +78,7 @@ folder for source code.
     <td>
       <p><strong>Functions</strong></p>
       <p>Mathematical function visualisation with scatter and function2.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/functions.py">Source</a></p>
     </td>
   </tr>
@@ -83,6 +91,7 @@ folder for source code.
       <p>Conway's Game of Life with extra colours for newly alive/dead cells.
       The panels underneath track the cell counts and, on the right, number of
       terminal bytes written using different rendering methods.</p>
+      <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/life.py">Source</a></p>
     </td>
   </tr>
@@ -93,6 +102,7 @@ folder for source code.
     <td>
       <p><strong>Hilbert curve</strong></p>
       <p>Hilbert curve visualisation of binomial data.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/hilbert_curve.py">Source</a></p>
     </td>
   </tr>
@@ -103,6 +113,7 @@ folder for source code.
     <td>
       <p><strong>Image rendering</strong></p>
       <p>Image rendering with various colormaps.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/image.py">Source</a></p>
     </td>
   </tr>
@@ -114,6 +125,7 @@ folder for source code.
       <p><strong>Joint distribution</strong></p>
       <p>Joint distribution with marginal histograms, demonstrating plot
       composition with hstack and vstack.</p>
+      <p><em>By Claude Opus 4.6.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/jointplot.py">Source</a></p>
     </td>
   </tr>
@@ -124,6 +136,7 @@ folder for source code.
     <td>
       <p><strong>Line charts</strong></p>
       <p>Line plot test, including series with missing values (NaN).</p>
+      <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/lines.py">Source</a></p>
     </td>
   </tr>
@@ -135,6 +148,7 @@ folder for source code.
       <p><strong>Lissajous curves</strong></p>
       <p>Brownian motion PCA visualisation with scatterplots and plot
       arrangement.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/lissajous.py">Source</a></p>
     </td>
   </tr>
@@ -149,6 +163,7 @@ folder for source code.
       <p><strong>Mandelbrot</strong></p>
       <p>Animated Mandelbrot fractal zoom using function heatmaps and
       colormaps.</p>
+      <p><em>By Gemini 2.5 Pro.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/mandelbrot.py">Source</a></p>
     </td>
   </tr>
@@ -159,6 +174,7 @@ folder for source code.
     <td>
       <p><strong>Quickstart 1</strong></p>
       <p>Coloured cosine waves with phase offsets.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart1.py">Source</a></p>
     </td>
   </tr>
@@ -170,6 +186,7 @@ folder for source code.
       <p><strong>Quickstart 2</strong></p>
       <p>Animated cosine wave with shifting phase and amplitude, as a loop of
       <code>print(plot - prev)</code>.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart2.py">Source</a></p>
     </td>
   </tr>
@@ -181,6 +198,7 @@ folder for source code.
       <p><strong>Quickstart 3</strong></p>
       <p>The same animation with the loop handed to <code>mp.animate</code>,
       which keeps the previous frame and the frame clock.</p>
+      <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart3.py">Source</a></p>
     </td>
   </tr>
@@ -191,6 +209,7 @@ folder for source code.
     <td>
       <p><strong>Scatter</strong></p>
       <p>Spiral scatter plot with viridis colormap.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/scatter.py">Source</a></p>
     </td>
   </tr>
@@ -201,6 +220,7 @@ folder for source code.
     <td>
       <p><strong>Starburst</strong></p>
       <p>Line plot colour and thickness test.</p>
+      <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/starburst.py">Source</a></p>
     </td>
   </tr>
@@ -212,6 +232,7 @@ folder for source code.
       <p><strong>Teacher-student regression</strong></p>
       <p>Gradient descent on a simple teacher-student linear regression
       model.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/teacher_student.py">Source</a></p>
     </td>
   </tr>
@@ -222,6 +243,7 @@ folder for source code.
     <td>
       <p><strong>Teapot</strong></p>
       <p>3D scatter plot with animated camera orbit.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/teapot.py">Source</a></p>
     </td>
   </tr>
@@ -235,6 +257,7 @@ folder for source code.
       sequences for colour, redrawing in place, resizing, and a plot pushed
       against the right margin.</p>
       <p>See also <a href="compatibility.html">compatibility</a>.</p>
+      <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/terminal_test.py">Source</a></p>
     </td>
   </tr>
@@ -246,6 +269,7 @@ folder for source code.
       <p><strong>Time series histogram</strong></p>
       <p>Time series visualisation with stacked scatter, pooled scatter, and 2D
       histogram.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/time_series_histogram.py">Source</a></p>
     </td>
   </tr>
@@ -256,6 +280,7 @@ folder for source code.
     <td>
       <p><strong>Voronoi diagram</strong></p>
       <p>Voronoi diagram using function heatmaps and scipy.</p>
+      <p><em>By Gemini 2.5 Pro.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/voronoi.py">Source</a></p>
     </td>
   </tr>
@@ -271,6 +296,7 @@ folder for source code.
       <p>A wireframe landscape scrolling under a banded sun. The backdrop of
       sky, ground and sun is an image of half-blocks; the terrain is one
       <code>mp.line3</code> over the top of it.</p>
+      <p><em>By Matthew Farrugia-Roberts and Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/vaporwave.py">Source</a></p>
     </td>
   </tr>

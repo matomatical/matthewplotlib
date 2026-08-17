@@ -1,3 +1,11 @@
+"""
+Conway's Game of Life with extra colours for newly alive/dead cells. The panels
+underneath track the cell counts and, on the right, number of terminal bytes
+written using different rendering methods.
+
+By Claude Opus 5.
+"""
+
 import collections
 import math
 import time

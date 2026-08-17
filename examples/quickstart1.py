@@ -1,3 +1,9 @@
+"""
+Coloured cosine waves with phase offsets.
+
+By Matthew Farrugia-Roberts.
+"""
+
 import tyro
 import numpy as np
 import matthewplotlib as mp

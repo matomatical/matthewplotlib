@@ -5,6 +5,8 @@ Two loss curves, the lower measured less often and with a stretch missing
 altogether, drawn as a gap rather than as a line across it. Then one spiral
 four times over with the pen set wider each time: a stroke is the curve widened
 by a disc, so it keeps its width around the tightest part of the turn.
+
+By Claude Opus 5.
 """
 
 import tyro

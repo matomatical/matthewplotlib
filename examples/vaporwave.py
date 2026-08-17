@@ -2,6 +2,8 @@
 A wireframe landscape scrolling under a banded sun. The backdrop -- sky,
 ground, sun -- is an image of half-blocks. The terrain is one `mp.line3` over
 the top of it, a series per wire.
+
+By Matthew Farrugia-Roberts and Claude Opus 5.
 """
 
 import tyro

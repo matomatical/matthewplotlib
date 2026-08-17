@@ -1,3 +1,11 @@
+"""
+3D scatter plot with animated camera orbit.
+
+The mesh is a point cloud of the Utah teapot (Martin Newell, 1975).
+
+By Matthew Farrugia-Roberts.
+"""
+
 import time
 import tyro
 import numpy as np

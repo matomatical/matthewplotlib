@@ -1,3 +1,9 @@
+"""
+General demonstration combining images, borders, and scatter plots.
+
+By Matthew Farrugia-Roberts.
+"""
+
 import tyro
 import numpy as np
 import matthewplotlib as mp

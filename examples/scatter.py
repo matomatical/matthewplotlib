@@ -1,3 +1,9 @@
+"""
+Spiral scatter plot with viridis colormap.
+
+By Matthew Farrugia-Roberts.
+"""
+
 import tyro
 import numpy as np
 

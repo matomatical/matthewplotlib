@@ -1,5 +1,7 @@
 """
 Interpretation of https://matplotlib.org/stable/gallery/statistics/time_series_histogram.html
+
+By Matthew Farrugia-Roberts.
 """
 
 import tyro

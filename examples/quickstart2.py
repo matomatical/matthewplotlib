@@ -1,3 +1,10 @@
+"""
+Animated cosine wave with shifting phase and amplitude, as a loop of
+`print(plot - prev)`.
+
+By Matthew Farrugia-Roberts.
+"""
+
 import time
 import tyro
 import numpy as np

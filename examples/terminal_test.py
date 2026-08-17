@@ -19,6 +19,8 @@ The stages, in the order they run:
 
 If a stage misbehaves, please open an issue saying which one, along with your
 terminal, its version, and `echo $TERM`.
+
+By Claude Opus 5.
 """
 
 import os

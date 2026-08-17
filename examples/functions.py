@@ -1,3 +1,9 @@
+"""
+Mathematical function visualisation with scatter and function2.
+
+By Matthew Farrugia-Roberts.
+"""
+
 import tyro
 import numpy as np
 import matthewplotlib as mp

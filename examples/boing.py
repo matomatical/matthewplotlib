@@ -21,6 +21,8 @@ a lookup into one precomputed sprite, this is the example for animations as
 *values* -- the whole thing is an array with a time axis, which is what
 `mp.animation` takes. Compare `examples/teapot.py`, which cannot precompute
 anything because it is a loop.
+
+By Claude Opus 5.
 """
 
 import tyro

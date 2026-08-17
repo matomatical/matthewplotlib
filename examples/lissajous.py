@@ -1,3 +1,9 @@
+"""
+Brownian motion PCA visualisation with scatterplots and plot arrangement.
+
+By Matthew Farrugia-Roberts.
+"""
+
 import tyro
 import numpy as np
 import sklearn.decomposition # pip install scikit-learn

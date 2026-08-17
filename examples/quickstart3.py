@@ -4,6 +4,8 @@ The same animation as quickstart2.py, with the library running the loop.
 quickstart2.py is the mechanism: `print(plot - prev)`, with the previous frame,
 the clock and the frame count all kept by hand. This is the same animation handed
 to `mp.animate`, which keeps them instead.
+
+By Claude Opus 5.
 """
 
 import tyro

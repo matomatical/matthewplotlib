@@ -2,6 +2,8 @@
 Calendar heatmap of daily maximum temperatures in Oxford, 2025.
 
 Temperature data from Open-Meteo Archive API (51.75°N, 1.25°W).
+
+By Matthew Farrugia-Roberts and Claude Opus 4.6.
 """
 
 import tyro

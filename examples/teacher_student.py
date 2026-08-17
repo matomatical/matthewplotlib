@@ -1,5 +1,7 @@
 """
 Train a teacher--student linear regression model with gradient descent.
+
+By Matthew Farrugia-Roberts.
 """
 
 import tyro

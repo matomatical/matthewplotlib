@@ -1,3 +1,9 @@
+"""
+Voronoi diagram using function heatmaps and scipy.
+
+By Gemini 2.5 Pro.
+"""
+
 import tyro
 import numpy as np
 import matthewplotlib as mp

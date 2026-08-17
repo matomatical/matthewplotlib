@@ -1,3 +1,9 @@
+"""
+Live system monitoring dashboard showing CPU and memory usage.
+
+By Gemini 2.5 Pro.
+"""
+
 import collections
 
 import tyro

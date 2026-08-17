@@ -1,3 +1,9 @@
+"""
+Image rendering with various colormaps.
+
+By Matthew Farrugia-Roberts.
+"""
+
 import tyro
 import numpy as np
 import einops

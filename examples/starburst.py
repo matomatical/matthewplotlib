@@ -5,6 +5,8 @@ Twenty-four directions and three lengths, so one pen has to draw a stub and a
 full radius, and each ray runs from a dim hub to a saturated tip along the way.
 Ray lengths repeat every quarter turn, which is how far the rose turns, so the
 loop closes exactly.
+
+By Claude Opus 5.
 """
 
 import tyro

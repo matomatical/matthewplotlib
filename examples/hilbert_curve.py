@@ -1,3 +1,9 @@
+"""
+Hilbert curve visualisation of binomial data.
+
+By Matthew Farrugia-Roberts.
+"""
+
 import tyro
 import numpy as np
 import matthewplotlib as mp

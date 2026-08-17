@@ -1,3 +1,9 @@
+"""
+Gallery of all available continuous and discrete colormaps.
+
+By Matthew Farrugia-Roberts.
+"""
+
 import tyro
 import numpy as np
 import matthewplotlib as mp
