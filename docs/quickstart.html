@@ -47,6 +47,7 @@
 <h1 id="quickstart">Quickstart</h1>
 <p>Install:</p>
 <pre class="console"><code>pip install git+https://github.com/matomatical/matthewplotlib.git</code></pre>
+<h2 id="scatter-plots">Scatter plots</h2>
 <p>Import the library:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matthewplotlib <span class="im">as</span> mp</span></code></pre></div>
 <p>Construct a plot:</p>
@@ -72,11 +73,14 @@
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Print to terminal:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(plot)</span></code></pre></div>
+<p>Result:</p>
 <p><img src="images/quickstart-screenshot.png" /></p>
 <p>Export to PNG image:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plot.saveimg(<span class="st">&quot;images/quickstart.png&quot;</span>)</span></code></pre></div>
+<p>Result:</p>
 <p><img src="images/quickstart.png" /></p>
-<p>Animated version:</p>
+<h2 id="animated-scatter-plots">Animated scatter plots</h2>
+<p>Manual animation loop:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matthewplotlib <span class="im">as</span> mp</span>
@@ -85,57 +89,66 @@
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>prev <span class="op">=</span> <span class="va">None</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> (time.time() <span class="op">%</span> <span class="dv">3</span>) <span class="op">*</span> <span class="dv">2</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> <span class="fl">0.85</span> <span class="op">+</span> <span class="fl">0.15</span> <span class="op">*</span> np.cos(k)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> A <span class="op">*</span> np.cos(x <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>k<span class="op">/</span><span class="dv">6</span>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> mp.rainbow(<span class="dv">1</span><span class="op">-</span>k<span class="op">/</span><span class="dv">6</span>)</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    plot <span class="op">=</span> mp.axes(</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        mp.scatter(</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>            (x, y, c),</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>            width<span class="op">=</span><span class="dv">75</span>,</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>            height<span class="op">=</span><span class="dv">10</span>,</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            yrange<span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="ss">f&quot; y = </span><span class="sc">{</span>A<span class="sc">:.2f}</span><span class="ss"> cos(x + 2π*</span><span class="sc">{</span>k<span class="sc">:.2f}</span><span class="ss">/6) &quot;</span>,</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        xlabel<span class="op">=</span><span class="st">&quot;x&quot;</span>,</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        ylabel<span class="op">=</span><span class="st">&quot;y&quot;</span>,</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(plot <span class="op">-</span> prev)</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    prev <span class="op">=</span> plot</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">1</span><span class="op">/</span><span class="dv">20</span>)</span></code></pre></div>
-<p>Subtracting the previous frame repaints only the cells that changed, which is far fewer bytes than redrawing the whole plot. On the first pass <code>prev</code> is None – there is nothing on screen yet – so the whole plot is drawn.</p>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># construct the new frame&#39;s data</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> (time.time() <span class="op">%</span> <span class="dv">3</span>) <span class="op">*</span> <span class="dv">2</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> <span class="fl">0.85</span> <span class="op">+</span> <span class="fl">0.15</span> <span class="op">*</span> np.cos(k)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> A <span class="op">*</span> np.cos(x <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>k<span class="op">/</span><span class="dv">6</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> mp.rainbow(<span class="dv">1</span><span class="op">-</span>k<span class="op">/</span><span class="dv">6</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># construct the new frame&#39;s plot</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    plot <span class="op">=</span> mp.axes(</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        mp.scatter(</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>            (x, y, c),</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            width<span class="op">=</span><span class="dv">75</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>            height<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>            yrange<span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="ss">f&quot; y = </span><span class="sc">{</span>A<span class="sc">:.2f}</span><span class="ss"> cos(x + 2π*</span><span class="sc">{</span>k<span class="sc">:.2f}</span><span class="ss">/6) &quot;</span>,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        xlabel<span class="op">=</span><span class="st">&quot;x&quot;</span>,</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        ylabel<span class="op">=</span><span class="st">&quot;y&quot;</span>,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print a string that overwrites the old plot with new</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(plot <span class="op">-</span> prev)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    prev <span class="op">=</span> plot</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">1</span><span class="op">/</span><span class="dv">20</span>)</span></code></pre></div>
+<p>Result:</p>
 <p><img src="images/quickstart2.gif" /></p>
-<p>That loop is the whole mechanism, and it stays fully supported. But the parts of it that are about terminals rather than about plots can be handed over, which draws exactly the same animation:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> mp.animate(fps<span class="op">=</span><span class="dv">20</span>) <span class="im">as</span> anim:</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        ...</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        anim.update(plot)</span></code></pre></div>
-<p><code>animate</code> keeps the previous frame for you, and sleeps off whatever is left of each frame’s budget rather than a flat <code>1/fps</code> – so the time you spend computing a frame, and the time the library spends drawing it, both come out of the frame’s budget instead of being added to it.</p>
-<p>A bare <code>print</code> inside an animated loop lands in the middle of the plot. Inside the block there is somewhere to put it instead, as a method or as a file:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> mp.animate(fps<span class="op">=</span><span class="dv">20</span>) <span class="im">as</span> anim:</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> step <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1000</span>):</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        anim.update(vis(params))</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> step <span class="op">%</span> <span class="dv">100</span> <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            anim.<span class="bu">print</span>(<span class="ss">f&quot;step </span><span class="sc">{</span>step<span class="sc">}</span><span class="ss">: loss </span><span class="sc">{</span>loss<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>            <span class="co"># or: print(..., file=anim.out), or logging.StreamHandler(anim.out)</span></span></code></pre></div>
-<p>Either way the line goes above the plot, and the plot carries on below it. To route prints from code that knows nothing about any of this – somebody else’s training loop – redirect stdout into <code>anim.out</code> for the block:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> mp.animate(fps<span class="op">=</span><span class="dv">20</span>) <span class="im">as</span> anim, contextlib.redirect_stdout(anim.out):</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    ...</span></code></pre></div>
-<p>Ask it to <code>record=True</code> and it keeps every frame, as an animation you can save:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> mp.animate(fps<span class="op">=</span><span class="dv">20</span>, record<span class="op">=</span><span class="va">True</span>) <span class="im">as</span> anim:</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    ...</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>anim.frames.savegif(<span class="st">&quot;wave.gif&quot;</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;wanted 20 fps, managed&quot;</span>, anim.achieved_fps)</span></code></pre></div>
-<p>That recording is an <code>mp.tstack</code>, which is what an animation looks like as a value rather than as a loop – the third stacking operation, arranging plots in time where <code>+</code> and <code>/</code> arrange them across the screen. Build one directly, and slice it, map a furnishing over its frames, play it, or save it:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> mp.tstack(<span class="op">*</span>[frame(t) <span class="cf">for</span> t <span class="kw">in</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">60</span>)], fps<span class="op">=</span><span class="dv">30</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>a.<span class="bu">map</span>(<span class="kw">lambda</span> p: mp.border(p, title<span class="op">=</span><span class="st">&quot; diffusion &quot;</span>)).play(loop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>a[<span class="dv">30</span>:][::<span class="op">-</span><span class="dv">1</span>].savegif(<span class="st">&quot;backwards.gif&quot;</span>)</span></code></pre></div>
-<p>If your frames are already an array, <code>mp.animation</code> is <code>mp.image</code> with a time axis, and skips the loop entirely:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mp.animation(field, colormap<span class="op">=</span>mp.viridis, fps<span class="op">=</span><span class="dv">30</span>).play()   <span class="co"># float[t,h,w]</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>mp.animation(video).savegif(<span class="st">&quot;video.gif&quot;</span>)                  <span class="co"># uint8[t,h,w,rgb]</span></span></code></pre></div>
+<p>Alternatively, you can use the animation context manager:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matthewplotlib <span class="im">as</span> mp</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">2</span><span class="op">*</span>np.pi, <span class="op">+</span><span class="dv">2</span><span class="op">*</span>np.pi, <span class="dv">150</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> mp.animate(fps<span class="op">=</span><span class="dv">20</span>) <span class="im">as</span> anim: <span class="co"># &lt;- manages timing, printing</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># construct the new frame&#39;s data</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        k <span class="op">=</span> (time.time() <span class="op">%</span> <span class="dv">3</span>) <span class="op">*</span> <span class="dv">2</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        A <span class="op">=</span> <span class="fl">0.85</span> <span class="op">+</span> <span class="fl">0.15</span> <span class="op">*</span> np.cos(k)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> A <span class="op">*</span> np.cos(x <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>k<span class="op">/</span><span class="dv">6</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> mp.rainbow(<span class="dv">1</span><span class="op">-</span>k<span class="op">/</span><span class="dv">6</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># construct the new frame&#39;s plot</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        plot <span class="op">=</span> mp.axes(</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            mp.scatter(</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>                (x, y, c),</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>                width<span class="op">=</span><span class="dv">75</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>                height<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                yrange<span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>            title<span class="op">=</span><span class="ss">f&quot; y = </span><span class="sc">{</span>A<span class="sc">:.2f}</span><span class="ss"> cos(x + 2π*</span><span class="sc">{</span>k<span class="sc">:.2f}</span><span class="ss">/6) &quot;</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>            xlabel<span class="op">=</span><span class="st">&quot;x&quot;</span>,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>            ylabel<span class="op">=</span><span class="st">&quot;y&quot;</span>,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># update the animation</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>        anim.update(plot)</span></code></pre></div>
+<p>Result:</p>
+<p><img src="images/quickstart3.gif" /></p>
+<h2 id="next-steps">Next steps</h2>
+<p>See the <a href="examples.html">examples</a> or <a href="matthewplotlib.html">API reference</a>.</p>
         </div>
     </main>
     <script>
