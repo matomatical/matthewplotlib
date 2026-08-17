@@ -103,6 +103,8 @@ EXAMPLES: tuple[Example, ...] = (
     Example("boing.py",                 27, 64, saves="gif",
             args=("--num-frames", "8", "--no-loop")),
     Example("calendar_heatmap.py",      25, 64, saves="png"),
+    Example("chromatic_flow.py",        24, 80, saves="gif",
+            args=("--num-frames", "6", "--no-loop")),
     Example("colormaps.py",             64, 72, saves="png"),
     Example("dashboard.py",             15, 56, saves="gif",
             args=("--num-frames", "5")),
@@ -138,6 +140,8 @@ EXAMPLES: tuple[Example, ...] = (
     # is to set it to the terminal's width.
     Example("terminal_test.py",         33, 60,
             args=("--width", "60", "--frames", "3")),
+    Example("three_body.py",            24, 80, saves="gif",
+            args=("--num-frames", "6", "--no-loop")),
     Example("time_series_histogram.py", 40, 80, saves="png"),
     Example("vaporwave.py",             25, 80, saves="gif",
             args=("--num-frames", "5", "--no-loop")),

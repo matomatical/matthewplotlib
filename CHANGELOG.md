@@ -31,6 +31,13 @@ Examples:
 * Streamline descriptions on example page.
 * `quickstart2.py` and `quickstart3.py` amplitude fix.
 
+New examples:
+
+* `chromatic_flow.py`: a periodic incompressible velocity field whose custom
+  colormap turns vector direction into hue and speed into brightness.
+* `three_body.py`: three equal masses integrated under Newtonian gravity in a
+  shared figure-eight orbit, with fading trails.
+
 Version 0.6.1
 -------------
 

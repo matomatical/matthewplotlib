@@ -40,6 +40,22 @@ Do you have a cool, standalone matthewplotlib example? Consider sharing!
   </tr>
   <tr>
     <td align="center">
+      <img
+        src="images/chromatic_flow.gif"
+        style="width: 100%; image-rendering: pixelated; image-rendering:auto crisp-edges;"
+      >
+    </td>
+    <td>
+      <p><strong>Chromatic flow</strong></p>
+      <p>A moving incompressible velocity field, with hue showing direction
+      and brightness showing speed. Its custom colormap consumes two-component
+      vectors directly.</p>
+      <p><em>By GPT 5.6 Sol.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/chromatic_flow.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="images/colormaps.png">
     </td>
     <td>
@@ -259,6 +275,21 @@ Do you have a cool, standalone matthewplotlib example? Consider sharing!
       <p>See also <a href="compatibility.html">compatibility</a>.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/terminal_test.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img
+        src="images/three_body.gif"
+        style="width: 100%; image-rendering: pixelated; image-rendering:auto crisp-edges;"
+      >
+    </td>
+    <td>
+      <p><strong>Three bodies, one orbit</strong></p>
+      <p>Three equal masses chasing one another around a shared figure-eight
+      orbit, integrated under Newtonian gravity.</p>
+      <p><em>By GPT 5.6 Sol.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/three_body.py">Source</a></p>
     </td>
   </tr>
   <tr>
