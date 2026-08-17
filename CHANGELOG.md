@@ -1,6 +1,16 @@
 Changelog
 =========
 
+In development
+--------------
+
+Examples:
+
+* Attribute examples to their designers.
+  * Do you have a cool, standalone matthewplotlib example? Consider sharing!
+* Streamline descriptions on example page.
+* `quickstart2.py` and `quickstart3.py` amplitude fix.
+
 Version 0.6.1
 -------------
 
