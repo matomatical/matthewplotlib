@@ -15,6 +15,23 @@ Do you have a cool, standalone matthewplotlib example? Consider sharing!
   <tr>
     <td align="center">
       <img
+        src="images/boids.gif"
+        style="width: 100%; image-rendering: pixelated; image-rendering:auto crisp-edges;"
+      >
+    </td>
+    <td>
+      <p><strong>Boids</strong></p>
+      <p>
+      Boids Flocking Simulation. Simulates autonomous agents (boids) moving in
+      2D space based on simple rules.
+      </p>
+      <p><em>By Gemini 3.1 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/boids.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img
         src="images/boing.gif"
         style="width: 100%; image-rendering: pixelated; image-rendering:auto crisp-edges;"
       >
@@ -89,7 +106,10 @@ Do you have a cool, standalone matthewplotlib example? Consider sharing!
   </tr>
   <tr>
     <td align="center">
-      <img src="images/doomfire.gif">
+      <img
+        src="images/doomfire.gif"
+        style="width: 100%; image-rendering: pixelated; image-rendering:auto crisp-edges;"
+      >
     </td>
     <td>
       <p><strong>Doom Fire</strong></p>
