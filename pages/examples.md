@@ -89,6 +89,17 @@ Do you have a cool, standalone matthewplotlib example? Consider sharing!
   </tr>
   <tr>
     <td align="center">
+      <img src="images/doomfire.gif">
+    </td>
+    <td>
+      <p><strong>Doom Fire</strong></p>
+      <p>The classic 1997 PSX Doom fire effect mapped through a custom palette using <code>mp.image</code>.</p>
+      <p><em>By Gemini 3.1 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/doomfire.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="images/functions.png">
     </td>
     <td>
@@ -170,6 +181,17 @@ Do you have a cool, standalone matthewplotlib example? Consider sharing!
   </tr>
   <tr>
     <td align="center">
+      <img src="images/lorenz.gif">
+    </td>
+    <td>
+      <p><strong>Lorenz Attractor</strong></p>
+      <p>Animated 3D Lorenz attractors showing sensitive dependence on initial conditions.</p>
+      <p><em>By Gemini 3.1 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/lorenz.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img
         src="images/mandelbrot.gif"
         style="width: 100%; image-rendering: pixelated; image-rendering:auto crisp-edges;"
@@ -216,6 +238,17 @@ Do you have a cool, standalone matthewplotlib example? Consider sharing!
       which keeps the previous frame and the frame clock.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart3.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="images/sorting.gif">
+    </td>
+    <td>
+      <p><strong>Sorting Algorithms</strong></p>
+      <p>Various sorting algorithms racing in parallel, visualised with <code>mp.columns</code> and <code>mp.wrap</code>.</p>
+      <p><em>By Gemini 3.1 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/sorting.py">Source</a></p>
     </td>
   </tr>
   <tr>

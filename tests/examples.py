@@ -100,6 +100,8 @@ class Example:
 
 
 EXAMPLES: tuple[Example, ...] = (
+    Example("boids.py",                 75, 81, saves="gif",
+            args=("--num-frames", "5")),
     Example("boing.py",                 27, 64, saves="gif",
             args=("--num-frames", "8", "--no-loop")),
     Example("calendar_heatmap.py",      25, 64, saves="png"),
@@ -109,6 +111,8 @@ EXAMPLES: tuple[Example, ...] = (
     Example("dashboard.py",             15, 56, saves="gif",
             args=("--num-frames", "5")),
     Example("demo.py",                  62, 80, saves="png"),
+    Example("doomfire.py",              51, 80, saves="gif",
+            args=("--num-frames", "5")),
     Example("functions.py",             31, 74, saves="png"),
     Example("hilbert_curve.py",         33, 64, saves="png"),
     Example("image.py",                 33, 96, saves="png"),
@@ -117,6 +121,8 @@ EXAMPLES: tuple[Example, ...] = (
             args=("--num-frames", "5")),
     Example("lines.py",                 28, 72, saves="png"),
     Example("lissajous.py",             46, 75, saves="png"),
+    Example("lorenz.py",                45, 83, saves="gif",
+            args=("--num-frames", "5")),
     Example("mandelbrot.py",            43, 80, saves="gif",
             args=("--num-frames", "5")),
     Example("quickstart1.py",           14, 81, saves="png"),
@@ -125,6 +131,8 @@ EXAMPLES: tuple[Example, ...] = (
     Example("quickstart3.py",           14, 81, saves="gif",
             args=("--num-frames", "5")),
     Example("scatter.py",               24, 46, saves="png"),
+    Example("sorting.py",               39, 100, saves="gif",
+            args=("--num-frames", "5")),
     Example("starburst.py",             26, 48, saves="gif",
             args=("--num-frames", "6", "--no-loop")),
     # --log-every is turned down so that a five step run still exercises

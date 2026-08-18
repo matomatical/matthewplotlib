@@ -4,6 +4,17 @@ Changelog
 In development
 --------------
 
+New examples:
+
+* `boids.py`: 2D flocking simulation using `mp.line` to draw short directional
+  segments and `mp.rainbow` for coordinated coloring.
+* `doomfire.py`: Vectorized implementation of the classic 1997 PSX Doom fire
+  effect mapped through a 37-color palette using `mp.image`.
+* `lorenz.py`: Animated 3D Lorenz attractors racing side-by-side using
+  `mp.scatter3`, `mp.line3`, and `mp.wrap`.
+* `sorting.py`: Various sorting algorithms racing in parallel, visualised with
+  `mp.columns` and dynamic layout wrapping.
+
 Version 0.6.2
 -------------
 
