@@ -28,6 +28,8 @@ functionality it does have delightful.
   </td>
 </tr></table>
 
+[More examples...](https://matthewplotlib.far.in.net/examples.html)
+
 Key features:
 
 * Colourful unicode-based rendering of scatter plots, small images, heatmaps,
