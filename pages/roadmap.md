@@ -7,7 +7,7 @@ Roadmap to version 1
 Basic plot types:
 
 * [x] Scatter plots.
-* [x] Line plots (connect the dots). See `notes/lines.md`.
+* [x] Line plots (connect the dots).
 * [x] Image plots / matrix heatmaps.
 * [x] Function heatmap plots.
 * [x] Progress bars.
@@ -28,8 +28,7 @@ Basic plot arrangement:
 * [x] Horizontal and vertical stacking.
 * [x] Naive layering plots on top of each other.
 * [x] Automatically wrapping plots into a grid.
-* [ ] Finalise operator assignment, including an operator for temporal
-  stacking (`tstack`), which the pre-library sketch spelled `|`.
+* [ ] Finalise operator assignment.
 
 Styling plots with colors:
 
@@ -108,6 +107,11 @@ More plot types:
   * [ ] Bar/column charts with other alignments.
   * [x] Bar/column charts with individual colours.
   * [ ] Negative values in bar/column charts.
+* [ ] Tables:
+  * [ ] List of dictionaries.
+  * [ ] Dictionary of lists.
+  * [ ] 2d list with/without header.
+  * [ ] Configurable format strings.
 * [ ] Hilbert curves:
   * [x] Basic Hilbert curves.
   * [ ] Non-square Hilbert curves.
@@ -118,12 +122,19 @@ More plot types:
 * [ ] Advanced heatmaps:
   * [ ] RGB-channel 2d histograms (see `hist2d_rgb` in
     `notes/reference/myplot.py`).
-  * [ ] Integer-factor down- and upsampling for `image`.
-* [ ] Other:
-  * [ ] Calendar heatmap plots (see calendar heatmap example for now).
-  * [ ] Candlestick plots.
-  * [ ] Box plots.
-  * [ ] Vector field plots.
+* [ ] Advanced image options:
+  * [ ] Integer-factor down- and upsampling.
+  * [ ] Normalisation colormaps.
+* [ ] Candlestick plots.
+* [ ] Box plots.
+* [ ] Vector field plots (color? see chromatic flow example; or line? see boids
+  example).
+* [ ] Calendar heatmap plots (see calendar heatmap example).
+* [ ] Dashboard meters (similar to `progress`):
+  * [ ] circular
+  * [ ] vertical
+  * [ ] ticking-number
+  * [ ] Scrolling text marquees
 
 Advanced plot arrangement:
 
@@ -138,59 +149,48 @@ Advanced plot arrangement:
   * [x] Indexing, slicing and mapping over frames.
   * [x] Padding frames to a common size, so an animation cannot jitter.
   * [x] Building one straight from an array with a time axis (`animation`).
-  * [ ] An operator for temporal stacking. `|` is vstack's; `>>` reads as
-    "then". Part of "finalise operator assignment" above.
-  * [ ] Per-frame durations as the primitive instead of a single frame rate, so
-    that concatenating animations of different rates keeps each part at its own
-    speed, and a gif can be written with non-uniform frame delays throughout
-    rather than only from a recording.
+  * [ ] Operator for temporal stacking.
+  * [ ] Per-frame durations.
 * [ ] Mapping over the other composites, `hstack` and friends. See
   `notes/mapping-over-composites.md`.
 * [ ] Indexing and slicing of plots.
 * [ ] Crop plot composition primitive. See `notes/terminal-aware-printing.md`.
-  * [ ] By default, clip plots to terminal width and (almost) height, to enable
-    terminal-aware printing. A plot wider than the screen is currently
-    undefined behaviour, and silently so: see `pages/compatibility.md`.
-  * [ ] Have `animate` crop for the caller, and keep cropping correctly when
-    the terminal is resized mid-animation — the session already knows the
-    terminal's height, and a resize invalidates every cursor calculation the
-    next diff is written against.
+  * [ ] Clip plots to terminal width and (almost) height (see
+    `pages/compatibility.md`).
+  * [ ] `animate` context manager should handle this, and window resizes.
 
 Advanced furnishings:
 
 * [ ] Axis transformations (e.g. logarithmic scale).
-* [ ] Axis series that mean a segment rather than a sampling of one, and the
-  "values against an axis" form that `data` documents but does not implement.
-  See `notes/axis-series.md`.
+* [ ] Axis segments (see `notes/axis-series.md`).
 * [ ] Legend construction (API needs thought).
 * [x] Text embedded in borders.
 * [ ] More border styles: dashed and bold lines, and corner treatments
   (rounded, cut, doubled, crossed).
-* [ ] Dashboard meters: circular, vertical and ticking-number variants of
-  `progress`, and scrolling text marquees.
 
 Advanced rendering:
 
 * [x] Export animations to gifs, at the requested or the achieved frame rate.
-  * [x] Control over the palette: one for the animation or one per frame, and
-    how many colours it holds. See `notes/gif-size.md`.
+  * [x] Control over the palette sharing and size. See `notes/gif-size.md`.
+  * [x] Automatically optimise saved gifs (lossless compression). See
+    `notes/gif-size.md`.
 * [ ] Render plots to SVG (keep console aesthetic).
 * [ ] Render plots to PDF (keep console aesthetic).
 * [ ] Render plots to TikZ/pgfplots source.
+* [ ] Manim?
 
 Backend improvements:
 
 * [x] Upgrade Char backend to use arrays of codepoints and colors.
-* [x] Vectorised composition operations.
-* [x] Vectorised bitmap rendering.
+  * [x] Vectorised composition operations.
+  * [x] Vectorised bitmap rendering.
 * [x] Intelligent ANSI rendering (only include necessary control codes and
   resets, e.g., if several characters in a row use the same colours).
-* [x] Faster animated plot redraws: differential rendering with shortcut `-`.
-* [ ] Automatically optimise saved gifs (lossless compression). See
-  `notes/gif-size.md`.
-* [ ] A 3-D `CharArray` (`codes[T,H,W]`), so animations vectorise the way
-  plots do rather than being a tuple of them. See `notes/animations.md`.
-* [ ] Clean up backend code e.g. using JAX PyTrees and vectorisation.
+* [x] Differential rendering with shortcut `plot_new - plot_old`.
+* [ ] Vectorised animations (3-D `CharArray`, `codes[T,H,W]`). See
+  `notes/animations.md`.
+* [ ] Can we get better performance and/or cleaner code by switching backend to
+  JAX?
 
 More elaborate documentation:
 
@@ -200,7 +200,7 @@ More elaborate documentation:
 * [x] Documentation search.
 * [ ] Tutorials and recipes.
 * [ ] Freeze documentation with each version.
-* [x] Terminal support matrix / compatibility docs
+* [x] Terminal support matrix / compatibility docs.
 
 Advanced testing:
 
@@ -210,6 +210,7 @@ Advanced testing:
   * [x] tmux
 * [ ] More virtual terminal test backends
   * [ ] zmx (backed by ghostty-vt)
+  * [ ] pyte and friends
   * [ ] more?
 * [x] Test the set of escape sequences we emit
 * [x] Regression testing for str output and image output of examples (See
@@ -218,8 +219,7 @@ Advanced testing:
 Support non-24-bit-colour modes:
 
 * [ ] Reduced-colour modes (See `pages/compatibility.md`.)
-* [ ] Colormaps that are legible in a reduced-colour mode, since a continuous
-  map quantised to 256 colours bands badly.
+* [ ] Colormaps that are legible in a reduced-colour mode.
 
 Advanced glyphs and fonts:
 
@@ -227,19 +227,43 @@ Advanced glyphs and fonts:
 * [ ] Opt-in octants (Symbols for Legacy Computing Supplement, U+1CC00–U+1CEBF,
   new in Unicode 16.0) as an alternative to braille.
   * [ ] Instructions for installing or patching a font that has them.
+* [ ] Other font extensions, creating new density and shape possibilities?
 
-More examples:
+Advanced examples:
 
-* [x] Something to show bar/column plots and histograms.
-* [x] Game of life as a demonstration of differential rendering.
-* [x] Amiga Boing Ball as a demonstration of animations as values.
-* [x] Line charts, and what thickness does to a stroke.
-* [x] A wireframe landscape, as a demonstration of `line3`.
-* [ ] Webcam with ffmpeg
+* [ ] Sort by feature or maybe style.
+  * [ ] Simulation category (boids, game of life, lorenz, mandelbrot, three
+    bodies, ..., 2d/3d water physics simulation; floating spec with wind
+    simulation).
+  * [ ] Retro animations category (boing, doom fire, teapot, vaporwave).
+  * [ ] Series data visualisation (line charts, lissajous, quickstart, scatter,
+    starburst, teacher-student regression).
+  * [ ] Surface data visualisation (voronoi, time series histogram, functuons,
+    chromatic flow).
+  * [ ] Nonlinear visualisation (hilbert, calendar heatmap).
+  * [ ] Distribution category (joint distribution, sorting algorithms, ...,
+    TODO more?)
+  * [ ] Dashboard category (dashboard, ..., progress bars?)
+  * [ ] Basic (demo, image rendering, colormaps).
+* [ ] Systematically ensure there is at least one example per major plot type
+  or feature.
+* [ ] Advanced example categories:
+  * [ ] Real-time signal processing (music visualiser, webcam with filters?)
+  * [ ] Games / real-time input collection with animation (snake? hexagon?)
+* [ ] Specific example requests:
+  * [ ] 2d/3d water physics simulation.
+  * [ ] Playable super hexagon.
+  * [ ] Lightbike game, AI bots vs 0,1,2 players.
+  * [ ] Enhance vaporwave with procgen city skyline, motorway, light cycle;
+    plus special edition red/white/black color scheme?
+  * [ ] Blowup kinda like https://far.in.net/blowing-up
+  * [ ] 3b1b fourier analysis video plots.
 
 Future design directions.
 
+* [ ] Better tools for letting AI agents see the results?
 * [ ] Reactive plots.
+* [ ] Manim import/export? Could that make sense?
 
 Related work
 ------------

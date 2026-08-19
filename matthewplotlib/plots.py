@@ -732,10 +732,6 @@ class image(plot):
 
         A custom colormap may consume any array data but must return an RGB
         image of shape [h,w,3].
-
-    TODO:
-
-    * Offer normalisation?
     """
     def __init__(
         self,

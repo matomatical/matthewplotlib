@@ -49,7 +49,7 @@
 <p>Basic plot types:</p>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Scatter plots.</label></li>
-<li><label><input type="checkbox" checked="" />Line plots (connect the dots). See <code>notes/lines.md</code>.</label></li>
+<li><label><input type="checkbox" checked="" />Line plots (connect the dots).</label></li>
 <li><label><input type="checkbox" checked="" />Image plots / matrix heatmaps.</label></li>
 <li><label><input type="checkbox" checked="" />Function heatmap plots.</label></li>
 <li><label><input type="checkbox" checked="" />Progress bars.</label></li>
@@ -69,7 +69,7 @@
 <li><label><input type="checkbox" checked="" />Horizontal and vertical stacking.</label></li>
 <li><label><input type="checkbox" checked="" />Naive layering plots on top of each other.</label></li>
 <li><label><input type="checkbox" checked="" />Automatically wrapping plots into a grid.</label></li>
-<li><label><input type="checkbox" />Finalise operator assignment, including an operator for temporal stacking (<code>tstack</code>), which the pre-library sketch spelled <code>|</code>.</label></li>
+<li><label><input type="checkbox" />Finalise operator assignment.</label></li>
 </ul>
 <p>Styling plots with colors:</p>
 <ul class="task-list">
@@ -149,6 +149,13 @@
 <li><label><input type="checkbox" checked="" />Bar/column charts with individual colours.</label></li>
 <li><label><input type="checkbox" />Negative values in bar/column charts.</label></li>
 </ul></li>
+<li><label><input type="checkbox" />Tables:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />List of dictionaries.</label></li>
+<li><label><input type="checkbox" />Dictionary of lists.</label></li>
+<li><label><input type="checkbox" />2d list with/without header.</label></li>
+<li><label><input type="checkbox" />Configurable format strings.</label></li>
+</ul></li>
 <li><label><input type="checkbox" />Hilbert curves:</label>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Basic Hilbert curves.</label></li>
@@ -163,14 +170,22 @@
 <li><label><input type="checkbox" />Advanced heatmaps:</label>
 <ul class="task-list">
 <li><label><input type="checkbox" />RGB-channel 2d histograms (see <code>hist2d_rgb</code> in <code>notes/reference/myplot.py</code>).</label></li>
-<li><label><input type="checkbox" />Integer-factor down- and upsampling for <code>image</code>.</label></li>
 </ul></li>
-<li><label><input type="checkbox" />Other:</label>
+<li><label><input type="checkbox" />Advanced image options:</label>
 <ul class="task-list">
-<li><label><input type="checkbox" />Calendar heatmap plots (see calendar heatmap example for now).</label></li>
+<li><label><input type="checkbox" />Integer-factor down- and upsampling.</label></li>
+<li><label><input type="checkbox" />Normalisation colormaps.</label></li>
+</ul></li>
 <li><label><input type="checkbox" />Candlestick plots.</label></li>
 <li><label><input type="checkbox" />Box plots.</label></li>
-<li><label><input type="checkbox" />Vector field plots.</label></li>
+<li><label><input type="checkbox" />Vector field plots (color? see chromatic flow example; or line? see boids example).</label></li>
+<li><label><input type="checkbox" />Calendar heatmap plots (see calendar heatmap example).</label></li>
+<li><label><input type="checkbox" />Dashboard meters (similar to <code>progress</code>):</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />circular</label></li>
+<li><label><input type="checkbox" />vertical</label></li>
+<li><label><input type="checkbox" />ticking-number</label></li>
+<li><label><input type="checkbox" />Scrolling text marquees</label></li>
 </ul></li>
 </ul>
 <p>Advanced plot arrangement:</p>
@@ -186,46 +201,48 @@
 <li><label><input type="checkbox" checked="" />Indexing, slicing and mapping over frames.</label></li>
 <li><label><input type="checkbox" checked="" />Padding frames to a common size, so an animation cannot jitter.</label></li>
 <li><label><input type="checkbox" checked="" />Building one straight from an array with a time axis (<code>animation</code>).</label></li>
-<li><label><input type="checkbox" />An operator for temporal stacking. <code>|</code> is vstack’s; <code>&gt;&gt;</code> reads as “then”. Part of “finalise operator assignment” above.</label></li>
-<li><label><input type="checkbox" />Per-frame durations as the primitive instead of a single frame rate, so that concatenating animations of different rates keeps each part at its own speed, and a gif can be written with non-uniform frame delays throughout rather than only from a recording.</label></li>
+<li><label><input type="checkbox" />Operator for temporal stacking.</label></li>
+<li><label><input type="checkbox" />Per-frame durations.</label></li>
 </ul></li>
 <li><label><input type="checkbox" />Mapping over the other composites, <code>hstack</code> and friends. See <code>notes/mapping-over-composites.md</code>.</label></li>
 <li><label><input type="checkbox" />Indexing and slicing of plots.</label></li>
 <li><label><input type="checkbox" />Crop plot composition primitive. See <code>notes/terminal-aware-printing.md</code>.</label>
 <ul class="task-list">
-<li><label><input type="checkbox" />By default, clip plots to terminal width and (almost) height, to enable terminal-aware printing. A plot wider than the screen is currently undefined behaviour, and silently so: see <code>pages/compatibility.md</code>.</label></li>
-<li><label><input type="checkbox" />Have <code>animate</code> crop for the caller, and keep cropping correctly when the terminal is resized mid-animation — the session already knows the terminal’s height, and a resize invalidates every cursor calculation the next diff is written against.</label></li>
+<li><label><input type="checkbox" />Clip plots to terminal width and (almost) height (see <code>pages/compatibility.md</code>).</label></li>
+<li><label><input type="checkbox" /><code>animate</code> context manager should handle this, and window resizes.</label></li>
 </ul></li>
 </ul>
 <p>Advanced furnishings:</p>
 <ul class="task-list">
 <li><label><input type="checkbox" />Axis transformations (e.g. logarithmic scale).</label></li>
-<li><label><input type="checkbox" />Axis series that mean a segment rather than a sampling of one, and the “values against an axis” form that <code>data</code> documents but does not implement. See <code>notes/axis-series.md</code>.</label></li>
+<li><label><input type="checkbox" />Axis segments (see <code>notes/axis-series.md</code>).</label></li>
 <li><label><input type="checkbox" />Legend construction (API needs thought).</label></li>
 <li><label><input type="checkbox" checked="" />Text embedded in borders.</label></li>
 <li><label><input type="checkbox" />More border styles: dashed and bold lines, and corner treatments (rounded, cut, doubled, crossed).</label></li>
-<li><label><input type="checkbox" />Dashboard meters: circular, vertical and ticking-number variants of <code>progress</code>, and scrolling text marquees.</label></li>
 </ul>
 <p>Advanced rendering:</p>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Export animations to gifs, at the requested or the achieved frame rate.</label>
 <ul class="task-list">
-<li><label><input type="checkbox" checked="" />Control over the palette: one for the animation or one per frame, and how many colours it holds. See <code>notes/gif-size.md</code>.</label></li>
+<li><label><input type="checkbox" checked="" />Control over the palette sharing and size. See <code>notes/gif-size.md</code>.</label></li>
+<li><label><input type="checkbox" checked="" />Automatically optimise saved gifs (lossless compression). See <code>notes/gif-size.md</code>.</label></li>
 </ul></li>
 <li><label><input type="checkbox" />Render plots to SVG (keep console aesthetic).</label></li>
 <li><label><input type="checkbox" />Render plots to PDF (keep console aesthetic).</label></li>
 <li><label><input type="checkbox" />Render plots to TikZ/pgfplots source.</label></li>
+<li><label><input type="checkbox" />Manim?</label></li>
 </ul>
 <p>Backend improvements:</p>
 <ul class="task-list">
-<li><label><input type="checkbox" checked="" />Upgrade Char backend to use arrays of codepoints and colors.</label></li>
+<li><label><input type="checkbox" checked="" />Upgrade Char backend to use arrays of codepoints and colors.</label>
+<ul class="task-list">
 <li><label><input type="checkbox" checked="" />Vectorised composition operations.</label></li>
 <li><label><input type="checkbox" checked="" />Vectorised bitmap rendering.</label></li>
+</ul></li>
 <li><label><input type="checkbox" checked="" />Intelligent ANSI rendering (only include necessary control codes and resets, e.g., if several characters in a row use the same colours).</label></li>
-<li><label><input type="checkbox" checked="" />Faster animated plot redraws: differential rendering with shortcut <code>-</code>.</label></li>
-<li><label><input type="checkbox" />Automatically optimise saved gifs (lossless compression). See <code>notes/gif-size.md</code>.</label></li>
-<li><label><input type="checkbox" />A 3-D <code>CharArray</code> (<code>codes[T,H,W]</code>), so animations vectorise the way plots do rather than being a tuple of them. See <code>notes/animations.md</code>.</label></li>
-<li><label><input type="checkbox" />Clean up backend code e.g. using JAX PyTrees and vectorisation.</label></li>
+<li><label><input type="checkbox" checked="" />Differential rendering with shortcut <code>plot_new - plot_old</code>.</label></li>
+<li><label><input type="checkbox" />Vectorised animations (3-D <code>CharArray</code>, <code>codes[T,H,W]</code>). See <code>notes/animations.md</code>.</label></li>
+<li><label><input type="checkbox" />Can we get better performance and/or cleaner code by switching backend to JAX?</label></li>
 </ul>
 <p>More elaborate documentation:</p>
 <ul class="task-list">
@@ -234,7 +251,7 @@
 <li><label><input type="checkbox" checked="" />Documentation search.</label></li>
 <li><label><input type="checkbox" />Tutorials and recipes.</label></li>
 <li><label><input type="checkbox" />Freeze documentation with each version.</label></li>
-<li><label><input type="checkbox" checked="" />Terminal support matrix / compatibility docs</label></li>
+<li><label><input type="checkbox" checked="" />Terminal support matrix / compatibility docs.</label></li>
 </ul>
 <p>Advanced testing:</p>
 <ul class="task-list">
@@ -246,6 +263,7 @@
 <li><label><input type="checkbox" />More virtual terminal test backends</label>
 <ul class="task-list">
 <li><label><input type="checkbox" />zmx (backed by ghostty-vt)</label></li>
+<li><label><input type="checkbox" />pyte and friends</label></li>
 <li><label><input type="checkbox" />more?</label></li>
 </ul></li>
 <li><label><input type="checkbox" checked="" />Test the set of escape sequences we emit</label></li>
@@ -254,7 +272,7 @@
 <p>Support non-24-bit-colour modes:</p>
 <ul class="task-list">
 <li><label><input type="checkbox" />Reduced-colour modes (See <code>pages/compatibility.md</code>.)</label></li>
-<li><label><input type="checkbox" />Colormaps that are legible in a reduced-colour mode, since a continuous map quantised to 256 colours bands badly.</label></li>
+<li><label><input type="checkbox" />Colormaps that are legible in a reduced-colour mode.</label></li>
 </ul>
 <p>Advanced glyphs and fonts:</p>
 <ul class="task-list">
@@ -263,19 +281,42 @@
 <ul class="task-list">
 <li><label><input type="checkbox" />Instructions for installing or patching a font that has them.</label></li>
 </ul></li>
+<li><label><input type="checkbox" />Other font extensions, creating new density and shape possibilities?</label></li>
 </ul>
-<p>More examples:</p>
+<p>Advanced examples:</p>
 <ul class="task-list">
-<li><label><input type="checkbox" checked="" />Something to show bar/column plots and histograms.</label></li>
-<li><label><input type="checkbox" checked="" />Game of life as a demonstration of differential rendering.</label></li>
-<li><label><input type="checkbox" checked="" />Amiga Boing Ball as a demonstration of animations as values.</label></li>
-<li><label><input type="checkbox" checked="" />Line charts, and what thickness does to a stroke.</label></li>
-<li><label><input type="checkbox" checked="" />A wireframe landscape, as a demonstration of <code>line3</code>.</label></li>
-<li><label><input type="checkbox" />Webcam with ffmpeg</label></li>
+<li><label><input type="checkbox" />Sort by feature or maybe style.</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />Simulation category (boids, game of life, lorenz, mandelbrot, three bodies, …, 2d/3d water physics simulation; floating spec with wind simulation).</label></li>
+<li><label><input type="checkbox" />Retro animations category (boing, doom fire, teapot, vaporwave).</label></li>
+<li><label><input type="checkbox" />Series data visualisation (line charts, lissajous, quickstart, scatter, starburst, teacher-student regression).</label></li>
+<li><label><input type="checkbox" />Surface data visualisation (voronoi, time series histogram, functuons, chromatic flow).</label></li>
+<li><label><input type="checkbox" />Nonlinear visualisation (hilbert, calendar heatmap).</label></li>
+<li><label><input type="checkbox" />Distribution category (joint distribution, sorting algorithms, …, TODO more?)</label></li>
+<li><label><input type="checkbox" />Dashboard category (dashboard, …, progress bars?)</label></li>
+<li><label><input type="checkbox" />Basic (demo, image rendering, colormaps).</label></li>
+</ul></li>
+<li><label><input type="checkbox" />Systematically ensure there is at least one example per major plot type or feature.</label></li>
+<li><label><input type="checkbox" />Advanced example categories:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />Real-time signal processing (music visualiser, webcam with filters?)</label></li>
+<li><label><input type="checkbox" />Games / real-time input collection with animation (snake? hexagon?)</label></li>
+</ul></li>
+<li><label><input type="checkbox" />Specific example requests:</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />2d/3d water physics simulation.</label></li>
+<li><label><input type="checkbox" />Playable super hexagon.</label></li>
+<li><label><input type="checkbox" />Lightbike game, AI bots vs 0,1,2 players.</label></li>
+<li><label><input type="checkbox" />Enhance vaporwave with procgen city skyline, motorway, light cycle; plus special edition red/white/black color scheme?</label></li>
+<li><label><input type="checkbox" />Blowup kinda like https://far.in.net/blowing-up</label></li>
+<li><label><input type="checkbox" />3b1b fourier analysis video plots.</label></li>
+</ul></li>
 </ul>
 <p>Future design directions.</p>
 <ul class="task-list">
+<li><label><input type="checkbox" />Better tools for letting AI agents see the results?</label></li>
 <li><label><input type="checkbox" />Reactive plots.</label></li>
+<li><label><input type="checkbox" />Manim import/export? Could that make sense?</label></li>
 </ul>
 <h2 id="related-work">Related work</h2>
 <p>Matthewplotlib aspires to achieve a similar levels of functionality as covered by the following projects.</p>
