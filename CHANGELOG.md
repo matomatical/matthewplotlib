@@ -4,8 +4,11 @@ Changelog
 In development
 --------------
 
-Examples:
+Documentation:
 
+* Rebuilt library documentation using mkDocs and a modification of the
+    [terminal](https://ntno.github.io/mkdocs-terminal/)
+  theme.
 * Reorganise example page by topic.
 
 New examples:
