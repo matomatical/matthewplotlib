@@ -1,70 +1,29 @@
 # # # 
 # Documentation website
+#
+# The site is built with mkdocs from docs/ and published to the gh-pages
+# branch by mike, one directory per version. See CONTRIBUTING.md.
 
-PDOC_CSS := $(shell python -c "import pdoc; from pathlib import Path; print(Path(pdoc.__file__).parent / 'templates')")
-IMAGES := $(wildcard images/*)
-DOCS_IMAGES := $(IMAGES:images/%=docs/images/%)
+# The alias the site root redirects to, moved to each new release.
+DOCS_ALIAS := latest
 
-docs: docs/api docs/index.html docs/changelog.html docs/quickstart.html docs/examples.html docs/compatibility.html docs/roadmap.html docs/images docs/pdoc.css
+# Source links in the API reference are derived from the github remote, and
+# are silently omitted when it cannot be found.
+docs:
+	@git remote get-url origin 2>/dev/null | grep -q github.com \
+		|| echo "warning: no github remote, API source links will be missing"
+	mkdocs build --strict
 
-# Copies the images, then drops any left over from a deleted source image.
-# Phony, because the timestamp of a directory says nothing about whether its
-# contents are stale -- which is the trap the per-image targets exist to avoid.
-docs/images: $(DOCS_IMAGES)
-	@rm -f $(filter-out $(DOCS_IMAGES),$(wildcard docs/images/*))
+serve:
+	mkdocs serve
 
-docs/images/%: images/%
-	@mkdir -p $(@D)
-	cp $< $@
-
-docs/api: templates/custom.css templates/module.html.jinja2 $(wildcard matthewplotlib/*.py)
-	pdoc matthewplotlib/ \
-		--no-show-source \
-		-e matthewplotlib=https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/ \
-		-t templates/ \
-		-o docs/
-	@touch $@
-
-docs/pdoc.css: templates/custom.css
-	cat $(PDOC_CSS)/resources/bootstrap-reboot.min.css \
-		$(PDOC_CSS)/syntax-highlighting.css \
-		$(PDOC_CSS)/theme.css \
-		$(PDOC_CSS)/layout.css \
-		$(PDOC_CSS)/content.css \
-		templates/custom.css > $@
-
-GITHUB := https://github.com/matomatical/matthewplotlib/blob/main
-
-docs/index.html: README.md templates/page.html docs/pdoc.css docs/api
-	pandoc README.md -o $@ --template=templates/page.html --wrap none \
-		--metadata title="Home" \
-		-V source="$(GITHUB)/README.md"
-
-docs/changelog.html: CHANGELOG.md templates/page.html docs/pdoc.css
-	pandoc CHANGELOG.md -o $@ --template=templates/page.html --wrap none \
-		--metadata title="Changelog" \
-		-V source="$(GITHUB)/CHANGELOG.md"
-
-docs/quickstart.html: pages/quickstart.md templates/page.html docs/pdoc.css
-	pandoc $< -o $@ --template=templates/page.html --wrap none \
-		--metadata title="Quickstart" \
-		-V source="$(GITHUB)/pages/quickstart.md"
-
-docs/examples.html: pages/examples.md templates/page.html docs/pdoc.css
-	pandoc $< -o $@ --template=templates/page.html --wrap none \
-		--metadata title="Examples" \
-		-V source="$(GITHUB)/pages/examples.md"
-
-docs/compatibility.html: pages/compatibility.md templates/page.html docs/pdoc.css
-	pandoc $< -o $@ --template=templates/page.html --wrap none \
-		--metadata title="Compatibility" \
-		-V source="$(GITHUB)/pages/compatibility.md"
-
-docs/roadmap.html: pages/roadmap.md templates/page.html docs/pdoc.css
-	pandoc $< -o $@ --template=templates/page.html --wrap none \
-		--metadata title="Roadmap" \
-		-V source="$(GITHUB)/pages/roadmap.md"
-
+# Usage: make deploy V=<version number, e.g. "0.6.3">
+deploy:
+	@test -n "$(V)" || (echo "Usage: make deploy V=0.6.3" && exit 1)
+	mike deploy --update-aliases $(V) $(DOCS_ALIAS)
+	mike set-default $(DOCS_ALIAS)
+	@echo "deployed. to publish:"
+	@echo "git push origin gh-pages"
 
 # # # 
 # Tests
@@ -95,18 +54,18 @@ release:
 		|| (echo "Must release from main (you are on $$(git rev-parse --abbrev-ref HEAD))" && exit 1)
 	$(MAKE) mypy
 	$(MAKE) test
+	$(MAKE) docs
 	# version bump
 	sed -i 's/__version__ = ".*"/__version__ = "$(V)"/' matthewplotlib/__init__.py
 	sed -i 's/^version = ".*"/version = "$(V)"/' pyproject.toml
-	# rebuild docs
-	$(MAKE) docs
 	# commit
-	git add matthewplotlib/__init__.py pyproject.toml docs CHANGELOG.md
+	git add matthewplotlib/__init__.py pyproject.toml CHANGELOG.md
 	git commit -m "Version $(V)"
 	git tag v$(V)
 	# prepare to push
 	@echo "ready to release:"
 	@echo "git push origin main --tags"
+	@echo "make deploy V=$(V)"
 	@echo "(then make the release on github)"
 
-.PHONY: docs docs/images mypy test goldens release
+.PHONY: docs serve deploy mypy test goldens release
