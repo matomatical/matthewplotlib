@@ -10,11 +10,11 @@ Contents:
 * [Series Data Visualisation](#series-data-visualisation)
 * [Surface Data Visualisation](#surface-data-visualisation)
 * [Nonlinear Visualisation](#nonlinear-visualisation)
-* [Bars & Columns](#bars-columns)
+* [Bars and Columns](#bars-and-columns)
 * [Media](#media)
 * [Retro Animations](#retro-animations)
 * [Simulations](#simulations)
-* [Dashboards & UI](#dashboards-ui)
+* [Dashboards and UI](#dashboards-and-ui)
 * [Utilities](#utilities)
 
 See the [examples/](https://github.com/matomatical/matthewplotlib/tree/main/examples)
@@ -220,8 +220,8 @@ Nonlinear Visualisation
 </tbody>
 </table>
 
-Bars & Columns
---------------
+Bars and Columns
+----------------
 
 
 <table>
@@ -415,8 +415,8 @@ Simulations
 </tbody>
 </table>
 
-Dashboards & UI
----------------
+Dashboards and UI
+-----------------
 
 
 <table>
