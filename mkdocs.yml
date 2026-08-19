@@ -1,0 +1,59 @@
+site_name: matthewplotlib
+repo_url: https://github.com/matomatical/matthewplotlib
+
+theme:
+  name: terminal
+  custom_dir: docs/theme-overrides
+  palette: dark
+  features:
+    - navigation.side.indexes
+extra_css:
+  - css/sweetie16.css
+  - css/override.css
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Examples: examples.md
+  - API Reference: 
+    - matthewplotlib: api.md
+    - animations: api/animations.md
+    - camera: api/camera.md
+    - colormaps: api/colormaps.md
+    - colors: api/colors.md
+    - core: api/core.md
+    - data: api/data.md
+    - plots: api/plots.md
+    - unscii16: api/unscii16.md
+  - Compatibility: compatibility.md
+  - Changelog: changelog.md
+  - Roadmap: roadmap.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      custom_templates: docs/theme-overrides/mkdocstrings
+      default_handler: python
+      handlers:
+        python:
+          paths: ["."]
+          options:
+            show_source: false
+            show_signature_annotations: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_labels: true
+  - include-markdown
+
+markdown_extensions:
+  - footnotes
+  - admonition
+  - md_in_html
+  - toc:
+      permalink: "docs"
+      toc_depth: "4"
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      use_pygments: true
+      pygments_style: github-dark # TODO: Sweetie-16
+      noclasses: true
+  - pymdownx.inlinehilite

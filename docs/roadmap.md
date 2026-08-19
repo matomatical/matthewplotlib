@@ -275,7 +275,7 @@ Terminal plotting in other languages:
 * R https://github.com/cheuerde/plotcli
   * See also https://github.com/bbnkmp/txtplot/ and
     https://github.com/geotheory/r-plot
-* GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.html
+* GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.md
 
 Braille art:
 

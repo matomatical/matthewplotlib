@@ -146,4 +146,4 @@ Result:
 Next steps
 ----------
 
-See the [examples](examples.html) or [API reference](matthewplotlib.html).
+See the [examples](examples.md) or [API reference](api.md).

@@ -32,7 +32,7 @@ Series Data Visualisation
 <tbody>
   <tr>
     <td align="center">
-      <img src="images/lines.png" width="100%">
+      <img src="../images/lines.png" width="100%">
     </td>
     <td>
       <p><strong>Line charts</strong></p>
@@ -43,7 +43,7 @@ Series Data Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/lissajous.png" width="100%">
+      <img src="../images/lissajous.png" width="100%">
     </td>
     <td>
       <p><strong>Lissajous curves</strong></p>
@@ -55,7 +55,7 @@ Series Data Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/quickstart.png" width="100%">
+      <img src="../images/quickstart.png" width="100%">
     </td>
     <td>
       <p><strong>Quickstart 1</strong></p>
@@ -66,7 +66,7 @@ Series Data Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/quickstart2.gif" width="100%">
+      <img src="../images/quickstart2.gif" width="100%">
     </td>
     <td>
       <p><strong>Quickstart 2</strong></p>
@@ -78,7 +78,7 @@ Series Data Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/quickstart3.gif" width="100%">
+      <img src="../images/quickstart3.gif" width="100%">
     </td>
     <td>
       <p><strong>Quickstart 3</strong></p>
@@ -90,7 +90,7 @@ Series Data Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/scatter.png" width="100%">
+      <img src="../images/scatter.png" width="100%">
     </td>
     <td>
       <p><strong>Scatter</strong></p>
@@ -101,7 +101,7 @@ Series Data Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/starburst.gif" width="100%">
+      <img src="../images/starburst.gif" width="100%">
     </td>
     <td>
       <p><strong>Starburst</strong></p>
@@ -112,7 +112,7 @@ Series Data Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/teacher_student.gif" width="100%">
+      <img src="../images/teacher_student.gif" width="100%">
     </td>
     <td>
       <p><strong>Teacher-student regression</strong></p>
@@ -137,7 +137,7 @@ Surface Data Visualisation
 <tbody>
   <tr>
     <td align="center">
-      <img src="images/chromatic_flow.gif" width="100%">
+      <img src="../images/chromatic_flow.gif" width="100%">
     </td>
     <td>
       <p><strong>Chromatic flow</strong></p>
@@ -150,7 +150,7 @@ Surface Data Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/functions.png" width="100%">
+      <img src="../images/functions.png" width="100%">
     </td>
     <td>
       <p><strong>Functions</strong></p>
@@ -161,7 +161,7 @@ Surface Data Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/time_series_histogram.png" width="100%">
+      <img src="../images/time_series_histogram.png" width="100%">
     </td>
     <td>
       <p><strong>Time series histogram</strong></p>
@@ -173,7 +173,7 @@ Surface Data Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/voronoi.png" width="100%">
+      <img src="../images/voronoi.png" width="100%">
     </td>
     <td>
       <p><strong>Voronoi diagram</strong></p>
@@ -197,7 +197,7 @@ Nonlinear Visualisation
 <tbody>
   <tr>
     <td align="center">
-      <img src="images/calendar_heatmap.png" width="100%">
+      <img src="../images/calendar_heatmap.png" width="100%">
     </td>
     <td>
       <p><strong>Calendar heatmap</strong></p>
@@ -208,7 +208,7 @@ Nonlinear Visualisation
   </tr>
   <tr>
     <td align="center">
-      <img src="images/hilbert_curve.png" width="100%">
+      <img src="../images/hilbert_curve.png" width="100%">
     </td>
     <td>
       <p><strong>Hilbert curve</strong></p>
@@ -232,7 +232,7 @@ Bars & Columns
 <tbody>
   <tr>
     <td align="center">
-      <img src="images/jointplot.png" width="100%">
+      <img src="../images/jointplot.png" width="100%">
     </td>
     <td>
       <p><strong>Joint distribution</strong></p>
@@ -244,7 +244,7 @@ Bars & Columns
   </tr>
   <tr>
     <td align="center">
-      <img src="images/sorting.gif" width="100%">
+      <img src="../images/sorting.gif" width="100%">
     </td>
     <td>
       <p><strong>Sorting algorithms</strong></p>
@@ -268,7 +268,7 @@ Media
 <tbody>
   <tr>
     <td align="center">
-      <img src="images/image.png" width="100%">
+      <img src="../images/image.png" width="100%">
     </td>
     <td>
       <p><strong>Image rendering</strong></p>
@@ -292,7 +292,7 @@ Retro Animations
 <tbody>
   <tr>
     <td align="center">
-      <img src="images/boing.gif" width="100%">
+      <img src="../images/boing.gif" width="100%">
     </td>
     <td>
       <p><strong>Boing</strong></p>
@@ -304,7 +304,7 @@ Retro Animations
   </tr>
   <tr>
     <td align="center">
-      <img src="images/doomfire.gif" width="100%">
+      <img src="../images/doomfire.gif" width="100%">
     </td>
     <td>
       <p><strong>Doom fire</strong></p>
@@ -315,7 +315,7 @@ Retro Animations
   </tr>
   <tr>
     <td align="center">
-      <img src="images/teapot.gif" width="100%">
+      <img src="../images/teapot.gif" width="100%">
     </td>
     <td>
       <p><strong>Teapot</strong></p>
@@ -326,7 +326,7 @@ Retro Animations
   </tr>
   <tr>
     <td align="center">
-      <img src="images/vaporwave.gif" width="100%">
+      <img src="../images/vaporwave.gif" width="100%">
     </td>
     <td>
       <p><strong>Vaporwave</strong></p>
@@ -352,7 +352,7 @@ Simulations
 <tbody>
   <tr>
     <td align="center">
-      <img src="images/boids.gif" width="100%">
+      <img src="../images/boids.gif" width="100%">
     </td>
     <td>
       <p><strong>Boids</strong></p>
@@ -366,7 +366,7 @@ Simulations
   </tr>
   <tr>
     <td align="center">
-      <img src="images/life.gif" width="100%">
+      <img src="../images/life.gif" width="100%">
     </td>
     <td>
       <p><strong>Life</strong></p>
@@ -379,7 +379,7 @@ Simulations
   </tr>
   <tr>
     <td align="center">
-      <img src="images/lorenz.gif" width="100%">
+      <img src="../images/lorenz.gif" width="100%">
     </td>
     <td>
       <p><strong>Lorenz attractor</strong></p>
@@ -390,7 +390,7 @@ Simulations
   </tr>
   <tr>
     <td align="center">
-      <img src="images/mandelbrot.gif" width="100%">
+      <img src="../images/mandelbrot.gif" width="100%">
     </td>
     <td>
       <p><strong>Mandelbrot</strong></p>
@@ -402,7 +402,7 @@ Simulations
   </tr>
   <tr>
     <td align="center">
-      <img src="images/three_body.gif" width="100%">
+      <img src="../images/three_body.gif" width="100%">
     </td>
     <td>
       <p><strong>Three bodies</strong></p>
@@ -427,7 +427,7 @@ Dashboards & UI
 <tbody>
   <tr>
     <td align="center">
-      <img src="images/dashboard.gif" width="100%">
+      <img src="../images/dashboard.gif" width="100%">
     </td>
     <td>
       <p><strong>Dashboard</strong></p>
@@ -451,7 +451,7 @@ Utilities
 <tbody>
   <tr>
     <td align="center">
-      <img src="images/colormaps.png" width="100%">
+      <img src="../images/colormaps.png" width="100%">
     </td>
     <td>
       <p><strong>Colormaps</strong></p>
@@ -462,7 +462,7 @@ Utilities
   </tr>
   <tr>
     <td align="center">
-      <img src="images/demo.png" width="100%">
+      <img src="../images/demo.png" width="100%">
     </td>
     <td>
       <p><strong>Demo</strong></p>

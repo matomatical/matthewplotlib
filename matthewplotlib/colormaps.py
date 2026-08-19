@@ -9,7 +9,7 @@ A collection of pre-defined colormaps. They generally come in two flavours:
 
 For example:
 
-![](images/colormaps.png)
+![](../images/colormaps.png)
 """
 
 from typing import Callable

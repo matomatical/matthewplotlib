@@ -1106,7 +1106,7 @@ def unicode_col(
 
     ```
     >>> unicode_col(0.5, 3).to_plain_str()
-    ' \n▄\n█'
+    ' \\n▄\\n█'
     
     ```
     """

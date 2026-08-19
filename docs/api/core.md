@@ -1,0 +1,3 @@
+# core
+
+::: matthewplotlib.core

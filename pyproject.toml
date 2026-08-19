@@ -37,7 +37,13 @@ dev = [
   "pytest",
   "pytest-cov",
   # docs
-  "pdoc",
+  "mike>=2.2.0",
+  "mkdocs>=1.6.1",
+  "mkdocs-include-markdown-plugin>=7.3.0",
+  "mkdocs-terminal>=4.8.0",
+  "mkdocstrings[python]>=1.0.6",
+  "pygments>=2.12",
+  "pymdown-extensions",
   # for examples (needed for integration tests)
   "scikit-learn",
   "psutil",
@@ -64,3 +70,4 @@ packages = ["matthewplotlib"]
 [[tool.mypy.overrides]]
 module = ["hilbert"]
 follow_untyped_imports = true
+
