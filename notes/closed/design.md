@@ -1,6 +1,6 @@
 > **Closed 2026-07-26.** The aspirational README written *before* the library
 > existed, under the old name "mattplotlib". Kept as the original statement of
-> intent. Its still-unbuilt ideas were harvested into `pages/roadmap.md` and
+> intent. Its still-unbuilt ideas were harvested into `docs/roadmap.md` and
 > into `notes/animations.md`; nothing further is pending from it.
 >
 > Note the operators differ throughout: `&` for hstack, `^` for vstack, `|` for

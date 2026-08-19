@@ -12,7 +12,6 @@ System dependencies:
 
 * uv for managing virtual environment
 * make for building docs, running tests, making releases
-* pandoc for building some parts of docs
 * tmux for the tests that drive a real terminal
 
 Then, install the package and its (Python) development dependencies into your uv venv
@@ -34,8 +33,8 @@ To work on a new feature:
    * Tests pass (`pytest tests/ -v`), including the example snapshots. If a
      snapshot changed, look at the change before accepting it with
      `make goldens` -- see Testing, below.
-   * Docs up to date (`make docs`).
-   * Roadmap (`pages/roadmap.md`) is up to date.
+   * Documentation site still builds (`make docs`).
+   * Roadmap (`docs/roadmap.md`) is up to date.
    * Changelog (`CHANGELOG.md`) is up to date.
    * All new features are exported in `__init__.py`. For `plots`, `colormaps`
      and `animations` this is checked by `tests/test_exports.py`, which derives
@@ -108,6 +107,30 @@ Use `num_frames=0` to mean "loop forever" (the default for interactive use).
 Images in `images/` are used in the README as showcase material. They should
 be generated manually with full-length runs, not overwritten by test runs.
 
+Documentation
+-------------
+
+The website is built from `docs/` with mkdocs, using mkdocstrings to render
+the API reference from the docstrings. `docs/index.md`, `docs/examples.md` and
+`docs/changelog.md` include `README.md`, `examples/README.md` and
+`CHANGELOG.md`, so each of those files serves both GitHub and the site.
+Overrides for the theme's partials and for mkdocstrings' templates live in
+`templates/`, and the palette is in `docs/css/`.
+
+```
+make serve                  # preview on localhost, reloading as you edit
+make docs                   # build once into site/, failing on any bad link
+```
+
+Each version gets its own directory on the `gh-pages` branch, published by
+mike. The `latest` alias follows the newest release, and the site root
+redirects there. `make deploy V=<version>` builds the current tree as that
+version and moves the alias.
+
+The API reference links each object to its source on GitHub. Those links are
+derived from the `origin` remote, so a checkout without one silently builds a
+site with no source links.
+
 Releasing a new version
 -----------------------
 
@@ -118,10 +141,11 @@ To release a new version:
 2. Move changelog items from 'In development' to a new 'Version V' section.
 3. Bump `__version__` in `__init__.py` to V.
 4. Bump `version` in `pyproject.toml` to V.
-5. Rebuild the docs website: `make docs`.
-6. Commit: `git commit -m "Version V"`.
-7. Tag: `git tag vV`.
-8. Push: `git push origin main --tags`.
+5. Commit: `git commit -m "Version V"`.
+6. Tag: `git tag vV`.
+7. Push: `git push origin main --tags`.
+8. Publish the version's documentation: `make deploy V=V`, then
+   `git push origin gh-pages`.
 9. On GitHub, create a new release from the tag.
 
-Steps 3-7 can be automated by `make release V=<new version number>`
+Steps 3-6 can be automated by `make release V=<new version number>`

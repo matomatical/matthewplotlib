@@ -3,7 +3,7 @@
 Audited and implemented 2026-07-26 (Matthew + Claude). This is step 4 of
 `notes/terminal-test-backend.md`, which argued that "testing against N terminals
 is worth less than not depending on the sequences that vary" and left the audit
-itself for later. Step 5, the support matrix, became `pages/compatibility.md`.
+itself for later. Step 5, the support matrix, became `docs/compatibility.md`.
 
 ## What we actually emitted
 
@@ -112,7 +112,7 @@ bytes. It also insists that every escape in the string is a plain CSI, so an
 `OSC` or a two-byte escape cannot slip past a regex written for the sequences we
 know about.
 
-This is what keeps `pages/compatibility.md` honest: the page is a claim about
+This is what keeps `docs/compatibility.md` honest: the page is a claim about
 what we emit, and the test is the same claim, executable. A fourth sequence
 cannot appear without someone widening `ALLOWED_FINALS` and noticing the page.
 

@@ -3,7 +3,7 @@ Does your terminal render matthewplotlib correctly?
 
 Exercises every escape sequence the library can emit, in the situations where
 they are hardest, and says what each stage should look like so that you can
-judge it. See `pages/compatibility.md` for what is being tested and why.
+judge it. See `docs/compatibility.md` for what is being tested and why.
 
 The stages, in the order they run:
 
@@ -149,7 +149,7 @@ def main(
     stage_margin(width, frames, fps)
     print()
     print(str(mp.text(
-        "Done. See pages/compatibility.md.",
+        "Done. See docs/compatibility.md.",
         fgcolor="cyan",
     )))
 

@@ -65,7 +65,7 @@ answer:
   `unicode_image` directly. That is only a rename, but it is a signal: these are
   the names the test suite reasons in.
 
-Nothing outside the library reaches for `.chars` — checked `examples/`, `pages/`
+Nothing outside the library reaches for `.chars` — checked `examples/`, `docs/`
 and the README, no hits — so the contradiction is currently theoretical. It stops
 being theoretical the moment anyone writes a plot type outside this repository.
 

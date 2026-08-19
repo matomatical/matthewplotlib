@@ -6,7 +6,7 @@ In development
 
 Documentation:
 
-* Rebuilt library documentation using mkDocs and a modification of the
+* Rebuilt library documentation using MkDocs and a modification of the
     [terminal](https://ntno.github.io/mkdocs-terminal/)
   theme.
 * Reorganise example page by topic.

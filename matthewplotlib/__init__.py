@@ -1,5 +1,5 @@
 """
-Top-level module. Imports various documents items from other modules and makes
+Top-level module. Imports various documented items from other modules and makes
 them available under the top-level namespace.
 """
 

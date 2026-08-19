@@ -1,7 +1,7 @@
 # Design notes
 
 Reasoning behind design decisions: what was measured, what was chosen, what was
-rejected. `pages/roadmap.md` is the list of what to build; these are the notes
+rejected. `docs/roadmap.md` is the list of what to build; these are the notes
 behind individual entries, which link here.
 
 Write one when an investigation outruns its commit message — measurements worth
