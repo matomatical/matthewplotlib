@@ -118,6 +118,13 @@ h2:not(.doc-heading)::after {
     margin-left: 0;
 }
 
+/* The marker is the only part of the anchor with a size, so it is what the
+   theme's hover highlight has to paint. */
+.headerlink:hover::after {
+    background-color: var(--primary-color);
+    color: var(--invert-font-color);
+}
+
 /* Symbols read as part of the declaration, so they are not set smaller */
 code.doc-symbol {
     font-size: 1em;
