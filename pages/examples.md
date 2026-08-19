@@ -1,10 +1,22 @@
 Examples
 ========
 
+**Do you have a cool, standalone matthewplotlib example? Consider sharing!**
+
+Contents:
+
+* [Series Data Visualisation](#series-data-visualisation)
+* [Surface Data Visualisation](#surface-data-visualisation)
+* [Nonlinear Visualisation](#nonlinear-visualisation)
+* [Bars & Columns](#bars-columns)
+* [Media](#media)
+* [Retro Animations](#retro-animations)
+* [Simulations](#simulations)
+* [Dashboards & UI](#dashboards-ui)
+* [Utilities](#utilities)
+
 See the [examples/](https://github.com/matomatical/matthewplotlib/tree/main/examples)
 folder for source code.
-
-Do you have a cool, standalone matthewplotlib example? Consider sharing!
 
 Series Data Visualisation
 -------------------------
