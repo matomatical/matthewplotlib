@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="generator" content="mkdocs-1.6.1, mkdocs-terminal-4.8.0">
+     
+     
+    <link rel="icon" type="image/png" sizes="192x192" href="../img/android-chrome-192x192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="../img/android-chrome-512x512.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../img/apple-touch-icon.png" />
+<link rel="shortcut icon" type="image/png" sizes="48x48" href="../img/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32x32.png" />
+
+
+    
+ 
+<title>Examples - matthewplotlib</title>
+
+
+<link href="../css/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+<link href="../css/fontawesome/css/solid.min.css" rel="stylesheet">
+<link href="../css/normalize.css" rel="stylesheet">
+<link href="../css/terminal.css" rel="stylesheet">
+<link href="../css/theme.css" rel="stylesheet">
+<link href="../css/theme.tile_grid.css" rel="stylesheet">
+<link href="../css/theme.footer.css" rel="stylesheet">
+<!-- dark color palette -->
+<link href="../css/palettes/dark.css" rel="stylesheet">
+
+<!-- page layout -->
+<style>
+/* initially set page layout to a one column grid */
+.terminal-mkdocs-main-grid {
+    display: grid;
+    grid-column-gap: 1.4em;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+/*  
+*   when side navigation is not hidden, use a two column grid.  
+*   if the screen is too narrow, fall back to the initial one column grid layout.
+*   in this case the main content will be placed under the navigation panel. 
+*/
+@media only screen and (min-width: 70em) {
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: 4fr 9fr;
+    }
+}</style>
+
+
+
+    
+    <link href="../assets/_mkdocstrings.css" rel="stylesheet"> 
+    <link href="../css/sweetie16.css" rel="stylesheet"> 
+    <link href="../css/override.css" rel="stylesheet">  
+    
+    
+
+    
+    <!-- search css support -->
+<link href="../css/search/bootstrap-modal.css" rel="stylesheet">
+<!-- search scripts -->
+<script>
+    var base_url = "..",
+    shortcuts = "{}";
+</script>
+<script src="../js/jquery/jquery-1.10.1.min.js" defer></script>
+<script src="../js/bootstrap/bootstrap.min.js" defer></script>
+<script src="../js/mkdocs/base.js" defer></script>
+    
+    
+    
+    
+    <script src="../search/main.js"></script>
+    
+
+    
+</head>
+
+<body class="terminal"><div class="container">
+    <div class="terminal-nav">
+        <header class="terminal-logo">
+            <div id="mkdocs-terminal-site-name" class="logo terminal-prompt"><a href="/" class="no-style">matthewplotlib</a></div>
+        </header>
+        
+        <nav class="terminal-menu">
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="https://github.com/matomatical/matthewplotlib" class="menu-item" property="item" typeof="WebPage">
+                        <span property="name">GitHub</span>
+                    </a>
+                </li>
+                    
+                    
+
+
+<li property="itemListElement" typeof="ListItem">
+    <a href="#" class="menu-item" data-toggle="modal" data-target="#mkdocs_search_modal" property="item" typeof="SearchAction">
+        <i aria-hidden="true" class="fa fa-search"></i> <span property="name">Search</span>
+    </a>
+    <meta property="position" content="0">
+</li>
+                    
+            </ul>
+        </nav>
+    </div>
+</div>
+        
+    <div class="container">
+        <div class="terminal-mkdocs-main-grid"><aside id="terminal-mkdocs-side-panel"><nav>
+    <h4>Site contents</h4>
+    <ul class="terminal-mkdocs-side-nav-items">
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="..">Home</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../quickstart/">Quickstart</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        <span class="terminal-mkdocs-side-nav-item--active">Examples</span>
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+        
+        
+            
+                
+        
+        
+            
+    
+        
+        
+            
+            
+            <span class="
+        
+            
+        
+    terminal-mkdocs-side-nav-item terminal-mkdocs-side-nav-section-no-index">API Reference</span>
+        
+    
+    
+        
+        
+            <ul class="terminal-mkdocs-side-nav-li-ul">
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../api/">matthewplotlib</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../api/animations/">animations</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../api/camera/">camera</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../api/colormaps/">colormaps</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../api/colors/">colors</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../api/core/">core</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../api/data/">data</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../api/plots/">plots</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../api/unscii16/">unscii16</a>
+        
+    
+    </li>
+            
+            
+    </ul>
+        
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../compatibility/">Compatibility</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../changelog/">Changelog</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../roadmap/">Roadmap</a>
+        
+    
+    
+    
+       </li>
+        
+    </ul>
+</nav><hr>
+<h4>Page contents</h4>
+<nav>
+    <ul style="list-style-type: none; padding-left: 0; margin-left: 0;">
+        <li style="margin-left: 0em;"><a href="#examples">Examples</a></li>
+<li style="margin-left: 1em;"><a href="#series-data-visualisation">Series Data Visualisation</a></li>
+<li style="margin-left: 1em;"><a href="#surface-data-visualisation">Surface Data Visualisation</a></li>
+<li style="margin-left: 1em;"><a href="#nonlinear-visualisation">Nonlinear Visualisation</a></li>
+<li style="margin-left: 1em;"><a href="#bars-columns">Bars &amp; Columns</a></li>
+<li style="margin-left: 1em;"><a href="#media">Media</a></li>
+<li style="margin-left: 1em;"><a href="#retro-animations">Retro Animations</a></li>
+<li style="margin-left: 1em;"><a href="#simulations">Simulations</a></li>
+<li style="margin-left: 1em;"><a href="#dashboards-ui">Dashboards &amp; UI</a></li>
+<li style="margin-left: 1em;"><a href="#utilities">Utilities</a></li>
+
+    </ul>
+</nav>
+</aside>
+            <main id="terminal-mkdocs-main-content">
+<section id="mkdocs-terminal-content">
+    <h1 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">docs</a></h1>
+<blockquote>
+<p><strong>Do you have a cool, standalone matthewplotlib example?</strong></p>
+<p>I'd love to include it on this page! Consider sending me a link.</p>
+</blockquote>
+<p>Contents:</p>
+<ul>
+<li><a href="#series-data-visualisation">Series Data Visualisation</a></li>
+<li><a href="#surface-data-visualisation">Surface Data Visualisation</a></li>
+<li><a href="#nonlinear-visualisation">Nonlinear Visualisation</a></li>
+<li><a href="#bars-columns">Bars &amp; Columns</a></li>
+<li><a href="#media">Media</a></li>
+<li><a href="#retro-animations">Retro Animations</a></li>
+<li><a href="#simulations">Simulations</a></li>
+<li><a href="#dashboards-ui">Dashboards &amp; UI</a></li>
+<li><a href="#utilities">Utilities</a></li>
+</ul>
+<p>See the <a href="https://github.com/matomatical/matthewplotlib/tree/main/examples">examples/</a>
+folder for source code.</p>
+<h2 id="series-data-visualisation">Series Data Visualisation<a class="headerlink" href="#series-data-visualisation" title="Permanent link">docs</a></h2>
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/lines.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Line charts</strong></p>
+      <p>Line plot test, including series with missing values (NaN).</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/lines.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/lissajous.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Lissajous curves</strong></p>
+      <p>Brownian motion PCA visualisation with scatterplots and plot
+      arrangement.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/lissajous.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/quickstart.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Quickstart 1</strong></p>
+      <p>Coloured cosine waves with phase offsets.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart1.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/quickstart2.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Quickstart 2</strong></p>
+      <p>Animated cosine wave with shifting phase and amplitude, as a loop of
+      <code>print(plot - prev)</code>.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart2.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/quickstart3.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Quickstart 3</strong></p>
+      <p>The same animation with the loop handed to <code>mp.animate</code>,
+      which keeps the previous frame and the frame clock.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/quickstart3.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/scatter.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Scatter</strong></p>
+      <p>Spiral scatter plot with viridis colormap.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/scatter.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/starburst.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Starburst</strong></p>
+      <p>Line plot colour and thickness test.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/starburst.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/teacher_student.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Teacher-student regression</strong></p>
+      <p>Gradient descent on a simple teacher-student linear regression
+      model.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/teacher_student.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<h2 id="surface-data-visualisation">Surface Data Visualisation<a class="headerlink" href="#surface-data-visualisation" title="Permanent link">docs</a></h2>
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/chromatic_flow.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Chromatic flow</strong></p>
+      <p>A moving incompressible velocity field, with hue showing direction
+      and brightness showing speed. Its custom colormap consumes two-component
+      vectors directly.</p>
+      <p><em>By GPT 5.6 Sol.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/chromatic_flow.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/functions.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Functions</strong></p>
+      <p>Mathematical function visualisation with scatter and function2.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/functions.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/time_series_histogram.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Time series histogram</strong></p>
+      <p>Time series visualisation with stacked scatter, pooled scatter, and 2D
+      histogram.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/time_series_histogram.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/voronoi.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Voronoi diagram</strong></p>
+      <p>Voronoi diagram using function heatmaps and scipy.</p>
+      <p><em>By Gemini 2.5 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/voronoi.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<h2 id="nonlinear-visualisation">Nonlinear Visualisation<a class="headerlink" href="#nonlinear-visualisation" title="Permanent link">docs</a></h2>
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/calendar_heatmap.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Calendar heatmap</strong></p>
+      <p>Calendar heatmap of daily maximum temperatures in Oxford, 2025.</p>
+      <p><em>By Matthew Farrugia-Roberts and Claude Opus 4.6.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/calendar_heatmap.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/hilbert_curve.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Hilbert curve</strong></p>
+      <p>Hilbert curve visualisation of binomial data.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/hilbert_curve.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<h2 id="bars-columns">Bars &amp; Columns<a class="headerlink" href="#bars-columns" title="Permanent link">docs</a></h2>
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/jointplot.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Joint distribution</strong></p>
+      <p>Joint distribution with marginal histograms, demonstrating plot
+      composition with hstack and vstack.</p>
+      <p><em>By Claude Opus 4.6.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/jointplot.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/sorting.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Sorting algorithms</strong></p>
+      <p>Various sorting algorithms racing in parallel, visualised with <code>mp.columns</code> and <code>mp.wrap</code>.</p>
+      <p><em>By Gemini 3.1 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/sorting.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<h2 id="media">Media<a class="headerlink" href="#media" title="Permanent link">docs</a></h2>
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/image.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Image rendering</strong></p>
+      <p>Image rendering with various colormaps.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/image.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<h2 id="retro-animations">Retro Animations<a class="headerlink" href="#retro-animations" title="Permanent link">docs</a></h2>
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/boing.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Boing</strong></p>
+      <p>The Amiga Boing Ball, 1984, animated using a rotating colour
+      palette.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/boing.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/doomfire.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Doom fire</strong></p>
+      <p>The classic 1997 PSX Doom fire effect mapped through a custom palette using <code>mp.image</code>.</p>
+      <p><em>By Gemini 3.1 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/doomfire.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/teapot.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Teapot</strong></p>
+      <p>3D scatter plot with animated camera orbit.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/teapot.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/vaporwave.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Vaporwave</strong></p>
+      <p>A wireframe landscape scrolling under a banded sun. The backdrop of
+      sky, ground and sun is an image of half-blocks; the terrain is one
+      <code>mp.line3</code> over the top of it.</p>
+      <p><em>By Matthew Farrugia-Roberts and Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/vaporwave.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<h2 id="simulations">Simulations<a class="headerlink" href="#simulations" title="Permanent link">docs</a></h2>
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/boids.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Boids</strong></p>
+      <p>
+      Boids Flocking Simulation. Simulates autonomous agents (boids) moving in
+      2D space based on simple rules.
+      </p>
+      <p><em>By Gemini 3.1 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/boids.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/life.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Life</strong></p>
+      <p>Conway's Game of Life with extra colours for newly alive/dead cells.
+      The panels underneath track the cell counts and, on the right, number of
+      terminal bytes written using different rendering methods.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/life.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/lorenz.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Lorenz attractor</strong></p>
+      <p>Animated 3D Lorenz attractors showing sensitive dependence on initial conditions.</p>
+      <p><em>By Gemini 3.1 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/lorenz.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/mandelbrot.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Mandelbrot</strong></p>
+      <p>Animated Mandelbrot fractal zoom using function heatmaps and
+      colormaps.</p>
+      <p><em>By Gemini 2.5 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/mandelbrot.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/three_body.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Three bodies</strong></p>
+      <p>Three equal masses chasing one another around a shared figure-eight
+      orbit, integrated under Newtonian gravity.</p>
+      <p><em>By GPT 5.6 Sol.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/three_body.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<h2 id="dashboards-ui">Dashboards &amp; UI<a class="headerlink" href="#dashboards-ui" title="Permanent link">docs</a></h2>
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/dashboard.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Dashboard</strong></p>
+      <p>Live system monitoring dashboard showing CPU and memory usage.</p>
+      <p><em>By Gemini 2.5 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/dashboard.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<h2 id="utilities">Utilities<a class="headerlink" href="#utilities" title="Permanent link">docs</a></h2>
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/colormaps.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Colormaps</strong></p>
+      <p>Gallery of all available continuous and discrete colormaps.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/colormaps.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/demo.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Demo</strong></p>
+      <p>Original library example combining images, borders, and scatter plots.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/demo.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      Run <code>python examples/terminal_test.py</code>
+    </td>
+    <td>
+      <p><strong>Terminal test</strong></p>
+      <p>Does your terminal render matthewplotlib correctly? Test of escape
+      sequences for colour, redrawing in place, resizing, and a plot pushed
+      against the right margin.</p>
+      <p>See also <a href="compatibility.html">compatibility</a>.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/terminal_test.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+</section>
+
+            </main>
+        </div>
+        <hr><footer>
+    <div class="terminal-mkdocs-footer-grid">
+        <div id="terminal-mkdocs-footer-copyright-info">
+             Site built with <a href="http://www.mkdocs.org">MkDocs</a> and <a href="https://github.com/ntno/mkdocs-terminal">Terminal for MkDocs</a>.
+        </div>
+    </div>
+</footer>
+    </div>
+
+    
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="alertdialog" aria-modal="true" aria-labelledby="searchModalLabel">
+    <div class="modal-dialog modal-lg" role="search">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Search</h5>
+                <button type="button" class="close btn btn-default btn-ghost" data-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+                <p id="searchInputLabel">Type to start searching</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" aria-labelledby="searchInputLabel" placeholder="" id="mkdocs-search-query" title="Please enter search terms here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No document matches found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</body>
+
+</html>

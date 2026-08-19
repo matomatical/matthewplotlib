@@ -1,0 +1,15 @@
+{% set top_nav_ns = namespace(item_count=0) %}
+        <nav class="terminal-menu">
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="{{ config.repo_url }}" class="menu-item" property="item" typeof="WebPage">
+                        <span property="name">GitHub</span>
+                    </a>
+                </li>
+                {%- block search_button %}
+                    {% with button_idx=top_nav_ns.item_count %}
+                    {% include "partials/top-nav/search-button.html" %}
+                    {% endwith %}
+                {%- endblock search_button %}
+            </ul>
+        </nav>
