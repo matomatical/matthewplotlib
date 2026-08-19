@@ -1,9 +1,10 @@
 site_name: matthewplotlib
 repo_url: https://github.com/matomatical/matthewplotlib
+strict: true
 
 theme:
   name: terminal
-  custom_dir: docs/theme-overrides
+  custom_dir: templates/theme
   palette: dark
   features:
     - navigation.side.indexes
@@ -14,7 +15,7 @@ nav:
   - Home: index.md
   - Quickstart: quickstart.md
   - Examples: examples.md
-  - API Reference: 
+  - API Reference:
     - matthewplotlib: api.md
     - animations: api/animations.md
     - camera: api/camera.md
@@ -28,10 +29,17 @@ nav:
   - Changelog: changelog.md
   - Roadmap: roadmap.md
 
+watch:
+  - README.md
+  - CHANGELOG.md
+  - examples/README.md
+  - matthewplotlib
+  - templates
+
 plugins:
   - search
   - mkdocstrings:
-      custom_templates: docs/theme-overrides/mkdocstrings
+      custom_templates: templates/mkdocstrings
       default_handler: python
       handlers:
         python:
@@ -49,7 +57,7 @@ markdown_extensions:
   - admonition
   - md_in_html
   - toc:
-      permalink: "docs"
+      permalink: "#"
       toc_depth: "4"
   - pymdownx.superfences
   - pymdownx.highlight:

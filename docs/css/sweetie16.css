@@ -1,3 +1,5 @@
+/* The Sweetie 16 palette, mapped onto the terminal theme's variables. */
+
 :root {
     --background-color: #1a1c2c;
     --font-color: #f4f4f4;
@@ -5,6 +7,7 @@
     --primary-color: #41a6f6;
     --secondary-color: #94b0c2;
     --tertiary-color: #94b0c2;
+    --accent-color: #b13e53;
     --error-color: #b13e53;
     --progress-bar-background: #333c57;
     --progress-bar-fill: #73eff7;
@@ -12,28 +15,3 @@
     --code-font-color: #f4f4f4;
     --block-background-color: #1a1c2c;
 }
-
-.doc-heading code {
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-
-/* Fix mkdocstrings symbols which expect Material icons */
-.doc-symbol {
-    background: none !important;
-    padding: 0 !important;
-    border: none !important;
-    margin-right: 0.5em;
-    font-weight: bold;
-}
-.doc-symbol-module::after { content: "module"; color: var(--secondary-color); }
-.doc-symbol-class::after { content: "class"; color: var(--primary-color); }
-.doc-symbol-function::after { content: "def"; color: #b13e53; }
-.doc-symbol-method::after { content: "def"; color: #b13e53; }
-.doc-symbol-attribute::after { content: "attr"; color: var(--secondary-color); }
-
-/* Ensure pixel perfect rendering on images */
-img {
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-

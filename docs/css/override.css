@@ -67,8 +67,14 @@ pre code {
     display: inline-block;
     vertical-align: middle;
 }
-.doc-symbol-module::after { content: "module" !important; color: #b13e53; }
-.doc-symbol-class::after { content: "class" !important; color: #b13e53; }
-.doc-symbol-function::after { content: "def" !important; color: #b13e53; }
-.doc-symbol-method::after { content: "def" !important; color: #b13e53; }
-.doc-symbol-attribute::after { content: "attr" !important; color: #b13e53; }
+.doc-symbol-module::after { content: "module" !important; color: var(--accent-color); }
+.doc-symbol-class::after { content: "class" !important; color: var(--accent-color); }
+.doc-symbol-function::after { content: "def" !important; color: var(--accent-color); }
+.doc-symbol-method::after { content: "def" !important; color: var(--accent-color); }
+.doc-symbol-attribute::after { content: "attr" !important; color: var(--accent-color); }
+
+/* Plots are pixel art, so scale them without smoothing */
+img {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
