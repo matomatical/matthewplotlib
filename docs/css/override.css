@@ -79,13 +79,45 @@ img {
     image-rendering: crisp-edges;
 }
 
-/* The permalink is a word, not a symbol, so keep it off the heading text */
-.headerlink {
-    margin-left: 0.75em;
-}
-
 /* mkdocstrings puts whitespace between the name and the colon that closes the
    declaration. The theme is monospace, so one character cancels it exactly. */
 .doc-declaration-colon {
     margin-left: -1ch;
+}
+
+/* A rule under section headings, in the manner of the theme's own under the
+   page title. Both mirror how the markdown sources underline their headings. */
+h2 {
+    overflow: hidden;
+    padding-bottom: calc(var(--global-space) * 2);
+}
+
+h2::after {
+    content: "----------------------------------------------------------------------------------------------------";
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    display: block;
+}
+
+/* Permalinks name what they point at: documented objects are "docs", ordinary
+   headings take the markdown convention. The anchor's own text is hidden so
+   that the two can differ. */
+.headerlink {
+    font-size: 0;
+}
+
+.headerlink::after {
+    content: "#";
+    font-size: var(--global-font-size);
+    margin-left: 0.75em;
+}
+
+.doc-heading .headerlink::after {
+    content: "docs";
+}
+
+/* Symbols read as part of the declaration, so they are not set smaller */
+code.doc-symbol {
+    font-size: 1em;
 }
