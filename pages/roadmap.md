@@ -231,27 +231,16 @@ Advanced glyphs and fonts:
 
 Advanced examples:
 
-* [ ] Sort by feature or maybe style.
-  * [ ] Simulation category (boids, game of life, lorenz, mandelbrot, three
-    bodies, ..., 2d/3d water physics simulation; floating spec with wind
-    simulation).
-  * [ ] Retro animations category (boing, doom fire, teapot, vaporwave).
-  * [ ] Series data visualisation (line charts, lissajous, quickstart, scatter,
-    starburst, teacher-student regression).
-  * [ ] Surface data visualisation (voronoi, time series histogram, functuons,
-    chromatic flow).
-  * [ ] Nonlinear visualisation (hilbert, calendar heatmap).
-  * [ ] Distribution category (joint distribution, sorting algorithms, ...,
-    TODO more?)
-  * [ ] Dashboard category (dashboard, ..., progress bars?)
-  * [ ] Basic (demo, image rendering, colormaps).
+* [x] Sort by feature or maybe style.
 * [ ] Systematically ensure there is at least one example per major plot type
   or feature.
+  * [ ] Need more dashboard and progress bar demos.
 * [ ] Advanced example categories:
   * [ ] Real-time signal processing (music visualiser, webcam with filters?)
   * [ ] Games / real-time input collection with animation (snake? hexagon?)
 * [ ] Specific example requests:
   * [ ] 2d/3d water physics simulation.
+  * [ ] Curl field, floating specs, wind simulation.
   * [ ] Playable super hexagon.
   * [ ] Lightbike game, AI bots vs 0,1,2 players.
   * [ ] Enhance vaporwave with procgen city skyline, motorway, light cycle;

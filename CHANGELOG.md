@@ -4,6 +4,10 @@ Changelog
 In development
 --------------
 
+Examples:
+
+* Reorganise example page by topic.
+
 New examples:
 
 * `boids.py`: 2D flocking simulation using `mp.line` to draw short directional

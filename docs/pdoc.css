@@ -1110,6 +1110,8 @@ nav.pdoc .nav-active {
     max-width: 100%;
     height: auto;
     background: #1a1c2c; /* sweetie 0: dark navy for transparent PNGs */
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
 .page-content > h1:first-child {
     margin-top: 0;
