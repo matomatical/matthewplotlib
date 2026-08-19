@@ -1,3 +1,7 @@
+{#- The colon that closes the declaration, then whatever labels it carries,
+    then a link to the source. Reads as `class CharArray: dataclass`. -#}
+
+<span class="doc doc-declaration-colon">:</span>
 {% if config.show_labels and labels %}
   <span class="doc doc-labels">
     {% for label in labels|sort %}

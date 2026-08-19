@@ -78,3 +78,14 @@ img {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 }
+
+/* The permalink is a word, not a symbol, so keep it off the heading text */
+.headerlink {
+    margin-left: 0.75em;
+}
+
+/* mkdocstrings puts whitespace between the name and the colon that closes the
+   declaration. The theme is monospace, so one character cancels it exactly. */
+.doc-declaration-colon {
+    margin-left: -1ch;
+}
