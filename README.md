@@ -7,7 +7,7 @@ A Python plotting library that aspires to *not be painful.*
 pip install git+https://github.com/matomatical/matthewplotlib.git
 ```
 
-*Status:* Work in progress. See [roadmap](https://matthewplotlib.far.in.net/roadmap.html). Currently,
+*Status:* Work in progress. See [roadmap](https://matthewplotlib.far.in.net/latest/roadmap/). Currently,
 still generally painful, due to lack of generated documentation and lack of
 common plot types. However, for personal use, I'm already finding what limited
 functionality it does have delightful.
@@ -28,7 +28,7 @@ functionality it does have delightful.
   </td>
 </tr></table>
 
-[More examples...](https://matthewplotlib.far.in.net/examples.html)
+[More examples...](https://matthewplotlib.far.in.net/latest/examples/)
 
 Key features:
 
@@ -56,15 +56,15 @@ Rough edges:
 Documentation
 -------------
 
-* [Quickstart](https://matthewplotlib.far.in.net/quickstart.html) and
-  [examples](https://matthewplotlib.far.in.net/examples.html), with the source
+* [Quickstart](https://matthewplotlib.far.in.net/latest/quickstart/) and
+  [examples](https://matthewplotlib.far.in.net/latest/examples/), with the source
   for the latter in `examples/`.
-* [API reference](https://matthewplotlib.far.in.net/matthewplotlib.html),
+* [API reference](https://matthewplotlib.far.in.net/latest/api/),
   generated from the docstrings. Each module opens with an overview of what is
   in it; `matthewplotlib.plots` is the place to start.
-* [Roadmap](https://matthewplotlib.far.in.net/roadmap.html), which is also the
+* [Roadmap](https://matthewplotlib.far.in.net/latest/roadmap/), which is also the
   list of what to build next.
-* [Changelog](https://matthewplotlib.far.in.net/changelog.html).
+* [Changelog](https://matthewplotlib.far.in.net/latest/changelog/).
 
 Contributing
 ------------

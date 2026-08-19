@@ -7,8 +7,12 @@ In development
 Documentation:
 
 * Rebuilt library documentation using MkDocs and a modification of the
-    [terminal](https://ntno.github.io/mkdocs-terminal/)
-  theme.
+  [terminal](https://ntno.github.io/mkdocs-terminal/) theme.
+* The website is now versioned, one directory per release, published to the
+  `gh-pages` branch rather than committed to the repository. The site root
+  redirects to the newest release, and page addresses have changed to suit:
+  the API reference is now at `/latest/api/`, the quickstart at
+  `/latest/quickstart/`, and so on.
 * Reorganise example page by topic.
 
 New examples:

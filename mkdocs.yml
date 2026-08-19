@@ -1,4 +1,7 @@
 site_name: matthewplotlib
+# The canonical url of every page is its place in the latest release, so that
+# the older versions alongside it do not compete with it in search results.
+site_url: https://matthewplotlib.far.in.net/latest/
 repo_url: https://github.com/matomatical/matthewplotlib
 strict: true
 
