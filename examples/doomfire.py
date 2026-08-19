@@ -52,6 +52,7 @@ def main(
     downscale: int = 1,
 ):
     """Animate the classic Doom Fire effect."""
+    np.random.seed(42)
     # mp.image uses half-block characters (▀), so each character contains 2 vertical pixels.
     # If we want `height` lines in the terminal, we need an internal grid of `height * 2`.
     internal_height = height * 2
