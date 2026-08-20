@@ -170,3 +170,17 @@ code.doc-symbol {
 .admonition.error {
     border-left-color: var(--sweetie-red);
 }
+
+/* The version menu sits in the top nav, so it is sized to its contents
+   rather than filling the width a form would. */
+#version-menu:not([hidden]) {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5ch;
+}
+
+#version-select {
+    width: auto;
+    padding: 0 0.5ch;
+    background-color: var(--background-color);
+}
