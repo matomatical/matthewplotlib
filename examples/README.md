@@ -212,8 +212,7 @@ Nonlinear Visualisation
     </td>
     <td>
       <p><strong>Commit heatmap</strong></p>
-      <p>A year of commits to this repository as a strip of weeks, in the
-      colours GitHub draws a contribution graph in.</p>
+      <p>A year of commits to this repository as a strip of weeks.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/commit_heatmap.py">Source</a></p>
     </td>
