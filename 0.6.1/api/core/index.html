@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="generator" content="mkdocs-1.6.1, mkdocs-terminal-4.8.0">
+    
+    <meta name="description" content="A Python plotting library that aspires to not be painful."> 
+     
+    
+    <link rel="canonical" href="https://matthewplotlib.far.in.net/0.6.1/api/core/"><link rel="icon" type="image/png" sizes="192x192" href="../../img/android-chrome-192x192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="../../img/android-chrome-512x512.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png" />
+<link rel="shortcut icon" type="image/png" sizes="48x48" href="../../img/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png" />
+
+
+    
+ 
+<title>core - matthewplotlib</title>
+
+
+<link href="../../css/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+<link href="../../css/fontawesome/css/solid.min.css" rel="stylesheet">
+<link href="../../css/normalize.css" rel="stylesheet">
+<link href="../../css/terminal.css" rel="stylesheet">
+<link href="../../css/theme.css" rel="stylesheet">
+<link href="../../css/theme.tile_grid.css" rel="stylesheet">
+<link href="../../css/theme.footer.css" rel="stylesheet">
+<!-- dark color palette -->
+<link href="../../css/palettes/dark.css" rel="stylesheet">
+
+<!-- page layout -->
+<style>
+/* initially set page layout to a one column grid */
+.terminal-mkdocs-main-grid {
+    display: grid;
+    grid-column-gap: 1.4em;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+/*  
+*   when side navigation is not hidden, use a two column grid.  
+*   if the screen is too narrow, fall back to the initial one column grid layout.
+*   in this case the main content will be placed under the navigation panel. 
+*/
+@media only screen and (min-width: 70em) {
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: 4fr 9fr;
+    }
+}</style>
+
+
+
+    
+    <link href="../../assets/_mkdocstrings.css" rel="stylesheet"> 
+    <link href="../../css/sweetie16.css" rel="stylesheet"> 
+    <link href="../../css/pygments.css" rel="stylesheet"> 
+    <link href="../../css/override.css" rel="stylesheet">  
+    
+    
+
+    
+    <!-- search css support -->
+<link href="../../css/search/bootstrap-modal.css" rel="stylesheet">
+<!-- search scripts -->
+<script>
+    var base_url = "../..",
+    shortcuts = "{}";
+</script>
+<script src="../../js/jquery/jquery-1.10.1.min.js" defer></script>
+<script src="../../js/bootstrap/bootstrap.min.js" defer></script>
+<script src="../../js/mkdocs/base.js" defer></script>
+    
+    
+    
+    
+    <script src="../../search/main.js"></script>
+    
+
+    
+</head>
+
+<body class="terminal"><div class="container">
+    <div class="terminal-nav">
+        <header class="terminal-logo">
+            <div id="mkdocs-terminal-site-name" class="logo terminal-prompt"><a href="https://matthewplotlib.far.in.net/0.6.1" class="no-style">matthewplotlib</a></div>
+        </header>
+        
+        <nav class="terminal-menu">
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                <li id="version-menu" hidden>
+                    <label class="menu-item" for="version-select">version</label>
+                    <select id="version-select"></select>
+                </li>
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="https://github.com/matomatical/matthewplotlib" class="menu-item" property="item" typeof="WebPage">
+                        <span property="name">GitHub</span>
+                    </a>
+                </li>
+                    
+                    
+
+
+<li property="itemListElement" typeof="ListItem">
+    <a href="#" class="menu-item" data-toggle="modal" data-target="#mkdocs_search_modal" property="item" typeof="SearchAction">
+        <i aria-hidden="true" class="fa fa-search"></i> <span property="name">Search</span>
+    </a>
+    <meta property="position" content="0">
+</li>
+                    
+            </ul>
+        </nav>
+<script>
+// The versions mike published live one directory above this one, listed in a
+// file it writes at the root of the branch. Absent when serving locally, in
+// which case the menu stays hidden.
+(function () {
+    var root = new URL("../../", window.location.href);
+    var here = decodeURIComponent(window.location.pathname);
+    var rest = here.slice(root.pathname.length);
+    var current = root.pathname.replace(/^\/|\/$/g, "").split("/").pop();
+
+    fetch(new URL("../versions.json", root).href).then(function (response) {
+        if (!response.ok) throw new Error("no versions.json");
+        return response.json();
+    }).then(function (versions) {
+        if (!versions.length) return;
+        var select = document.getElementById("version-select");
+        versions.forEach(function (version) {
+            var names = [version.version].concat(version.aliases || []);
+            var option = document.createElement("option");
+            option.value = version.aliases && version.aliases.length
+                ? version.aliases[0]
+                : version.version;
+            option.textContent = version.title || version.version;
+            option.selected = names.indexOf(current) !== -1;
+            select.appendChild(option);
+        });
+        // A directory the list does not mention, so name it rather than
+        // leaving some other version showing as the current one.
+        if (select.selectedIndex === -1) {
+            var unlisted = document.createElement("option");
+            unlisted.value = current;
+            unlisted.textContent = current;
+            unlisted.selected = true;
+            select.insertBefore(unlisted, select.firstChild);
+        }
+        document.getElementById("version-menu").hidden = false;
+
+        // Keep the reader on the same page where the chosen version has one.
+        select.addEventListener("change", function () {
+            var version = new URL("../" + select.value + "/", root);
+            var same = new URL(rest, version);
+            fetch(same.href, {method: "HEAD"}).then(function (response) {
+                window.location.assign(response.ok ? same.href : version.href);
+            }).catch(function () {
+                window.location.assign(version.href);
+            });
+        });
+    }).catch(function () {
+        /* nothing published to switch between */
+    });
+})();
+</script>
+    </div>
+</div>
+        
+    <div class="container">
+        <div class="terminal-mkdocs-main-grid"><aside id="terminal-mkdocs-side-panel"><nav>
+    <h4>Site contents</h4>
+    <ul class="terminal-mkdocs-side-nav-items">
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../..">Home</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../quickstart/">Quickstart</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../examples/">Examples</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+        
+        
+            
+                
+        
+        
+            
+    
+        
+        <span class="
+        
+            
+        
+    terminal-mkdocs-side-nav-item--active terminal-mkdocs-side-nav-section-no-index">API Reference</span>
+    
+    
+        
+        
+            <ul class="terminal-mkdocs-side-nav-li-ul">
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../">matthewplotlib</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../plots/">plots</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../animations/">animations</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../data/">data</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../colors/">colors</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../colormaps/">colormaps</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        <span class="terminal-mkdocs-side-nav-item--active">core</span>
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../camera/">camera</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../unscii16/">unscii16</a>
+        
+    
+    </li>
+            
+            
+    </ul>
+        
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../compatibility/">Compatibility</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../changelog/">Changelog</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../roadmap/">Roadmap</a>
+        
+    
+    
+    
+       </li>
+        
+    </ul>
+</nav><hr>
+<h4>Page contents</h4>
+<nav>
+    <ul style="list-style-type: none; padding-left: 0; margin-left: 0;">
+        <li style="margin-left: 0em;"><a href="#matthewplotlib.core"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;core</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.CharArray"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CharArray</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.core.CharArray.isblank"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;isblank</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.core.CharArray.isnonblank"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;isnonblank</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.core.CharArray.to_ansi_str"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;to_ansi_str</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.core.CharArray.to_ansi_diff_str"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;to_ansi_diff_str</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.core.CharArray.to_plain_str"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;to_plain_str</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.core.CharArray.to_rgba_array"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;to_rgba_array</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.core.CharArray.to_bit_array"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;to_bit_array</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.ords"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;ords</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.unicode_braille_array"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;unicode_braille_array</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.disc_offsets"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;disc_offsets</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.rasterise_segments"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;rasterise_segments</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.rasterise_points"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;rasterise_points</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.accumulate_dots"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;accumulate_dots</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.unicode_braille_points"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;unicode_braille_points</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.unicode_braille_segments"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;unicode_braille_segments</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.unicode_bar"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;unicode_bar</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.unicode_col"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;unicode_col</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.BoxStyle"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BoxStyle</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.unicode_box"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;unicode_box</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.core.unicode_image"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;unicode_image</a></li>
+
+    </ul>
+</nav>
+</aside>
+            <main id="terminal-mkdocs-main-content">
+    
+    
+    
+    
+    
+
+<section id="mkdocs-terminal-content">
+    <div class="doc doc-object doc-module">
+
+
+
+<a id="matthewplotlib.core"></a>
+    <div class="doc doc-contents first">
+
+        <p>The character grid underneath every plot, and the glyphs that fill it.</p>
+<p>A plot is ultimately a rectangle of coloured unicode characters. This module
+provides that rectangle, along with the routines that turn numeric data into
+characters dense enough to draw with. The plot types in
+<code>matthewplotlib.plots</code> are built on top of it.</p>
+<p>The grid:</p>
+<ul>
+<li><code>CharArray</code>: A grid of unicode codepoints with optional foreground and
+  background colors. Supports composition (stacking, layering, padding),
+  rendering to ANSI strings---including differential updates that repaint only
+  the cells that changed between frames---and rendering to images and animated
+  gifs using an embedded pixel font.</li>
+</ul>
+<p>Drawing characters, each packing several data points into one character cell:</p>
+<ul>
+<li><code>unicode_braille_array</code>: Boolean matrices to braille characters, at 2 by 4
+  dots per cell.</li>
+<li><code>rasterise_points</code>, <code>rasterise_segments</code>, and the <code>unicode_braille_points</code>
+  and <code>unicode_braille_segments</code> that draw with them: points or line segments,
+  given in dots, to a grid of dots or straight to braille characters.</li>
+<li><code>unicode_bar</code> and <code>unicode_col</code>: Values to horizontal or vertical bars, using
+  partial block characters for eighth-of-a-cell resolution.</li>
+<li><code>unicode_image</code>: Images to half-block characters, at 1 by 2 pixels per cell.</li>
+<li><code>unicode_box</code> and <code>BoxStyle</code>: Box-drawing borders, optionally titled.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.core.CharArray" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>CharArray</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels">
+      <span class="doc doc-label doc-label-dataclass"><code>dataclass</code></span>
+  </span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L49-L506"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.CharArray" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>A grid of possibly-coloured characters comprising a plot. For internal use.</p>
+<p>Fields:</p>
+<ul>
+<li>codes: uint32[h,w].
+    Unicode code point for the character.</li>
+<li>fg: bool[h,w].
+    Whether to use a custom foreground color.</li>
+<li>fg_rgb: uint8[h,w,3].
+    (If fg) RGB for custom foreground color.</li>
+<li>bg: bool[h,w].
+    Whether to use a custom background color.</li>
+<li>bg_rgb: uint8[h,w,3].
+    (If bg) RGB for custom background color.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.core.CharArray.isblank" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">isblank</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">NDArray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L184-L188"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.CharArray.isblank" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>True where the character has no visible content.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.core.CharArray.isnonblank" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">isnonblank</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">NDArray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L191-L195"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.CharArray.isnonblank" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>True where the character has visible content.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.core.CharArray.to_ansi_str" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">to_ansi_str</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L198-L235"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.CharArray.to_ansi_str" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Render a CharArray as a sequence of characters and ANSI control codes
+(merging codes where possible).</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.core.CharArray.to_ansi_diff_str" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">to_ansi_diff_str</span><span class="p">(</span><span class="n">prev</span><span class="p">:</span> <span class="n">CharArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L238-L437"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.CharArray.to_ansi_diff_str" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Render the minimal ANSI sequence that updates a terminal already
+showing <code>prev</code> so that it shows <code>self</code> instead, repainting only the
+cells that differ.</p>
+<p>This is the differential counterpart to <code>to_ansi_str</code>: where redrawing
+a whole frame re-emits every cell, this jumps the cursor to just the
+changed cells. For an animation whose frames are mostly stable, that is
+dramatically fewer bytes down the wire.</p>
+<p>Cursor contract (the sequence is shaped for a plain <code>print</code>):</p>
+<ul>
+<li>On entry, the cursor is assumed to be at column 0 on the line
+  immediately below where <code>prev</code> was rendered -- exactly where it sits
+  after <code>print</code>ing <code>prev</code>.</li>
+<li>On exit, the cursor is left at column 0 on the <em>last row of the plot</em>,
+  so the newline <code>print</code> appends carries it to the line below, ready for
+  the next frame to diff against this one in the same way.</li>
+</ul>
+<p>In other words the sequence is incomplete on its own: it expects a
+trailing newline, just as <code>to_ansi_str</code> does. Write it with
+<code>print(...)</code>, not <code>print(..., end="")</code>.</p>
+<p>Assumes <code>prev</code> was rendered starting at column 0 and that all glyphs are
+single-width (the standard animated-plot layout).</p>
+<p>The two need not be the same size, and only the difference is sent in
+that case too. Cells outside the region <code>prev</code> covered are always
+painted, since nothing is on screen there to keep. Rows and columns
+<code>prev</code> covered but <code>self</code> does not are erased. Growing taller overwrites
+the rows immediately below the plot: they have to be written into, and a
+string cannot push them out of the way without knowing where it sits on
+the screen. Growing shorter leaves those rows blank rather than closing
+the gap, for the same reason.</p>
+<p>Note that an unchanged frame does not return "": it returns a bare
+cursor-up, so that the newline <code>print</code> appends still lands the cursor
+where the contract promises rather than a row lower.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.core.CharArray.to_plain_str" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">to_plain_str</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L440-L448"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.CharArray.to_plain_str" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Render a CharArray as a sequence of characters without colour.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.core.CharArray.to_rgba_array" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">to_rgba_array</span><span class="p">(</span><span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L451-L491"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.CharArray.to_rgba_array" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert a CharArray to an RGBA image array</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.core.CharArray.to_bit_array" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">to_bit_array</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L494-L506"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.CharArray.to_bit_array" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert a CharArray to an bitmap image array</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.ords" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">ords</span><span class="p">(</span><span class="n">chrs</span><span class="p">)</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L509-L513"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.ords" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert a string or list of characters to a list of unicode code points.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.unicode_braille_array" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">unicode_braille_array</span><span class="p">(</span><span class="n">dots</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">dotc</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dotw</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CharArray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L528-L668"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.unicode_braille_array" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Turns a H by W array of dots into a h=ceil(H/4) by w=ceil(W/2) array of
+braille Unicode characters.</p>
+<p>Inputs:</p>
+<ul>
+<li>dots: bool[H, W].
+    Array of booleans or counts. Dots are placed where this array contains
+    nonzero.</li>
+<li>dotc: optional uint8[H, W, RGB].
+    Array of colours to use for the fg of each dot. Where multiple dots
+    are coloured within one one character, mixes the colours according to
+    dotw.</li>
+<li>dotw: optional float[H, W].
+    Weights for combining colors when multiple dots occur in one cell. If
+    not provided, combine uniformly. If dotc is not provided, this is not
+    used.</li>
+<li>fgcolor: optional ColorLike.
+    Foreground color used for all braille characters. Overrides dotc if
+    both are provided.</li>
+<li>bgcolor: optional ColorLike.
+    Background color used for all characters.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>chars: CharArray.
+    An array of Braille characters with h rows and w columns.</li>
+</ul>
+<p>An illustrated example, not including colour combination, is as follows:
+<div class="highlight"><pre><span></span><code>Start with an array. Assume height is divisible by 4 and width divisible by
+2, otherwise pad with 0s until that is the case.
+    ____
+   [1  0] 0  1  0  1  1  1  1  0  1  0  0  0  0  1  0  0  0  0  0  1  1  0
+   [1  0] 0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ .-[1  0] 0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ | [1__0] 0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ |  1  1  1  1  0  1  1  1  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ |  1  0  0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ |  1  0  0  1  0  1  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1  0  0  1
+ |  1  0  0  1  0  1  1  1  1  0  1  1  1  1  0  1  1  1  1  0  0  1  1  0
+ |
+ | take each 4x2 subarray and ...
+ |                                                               braille
+ | identify the 4x2 bits with the                                unicode
+ | eight numbered braille dots:                                  start pt
+ |                                                               |
+ |  (dot 1) 1 0 (dot 4)     convert to                           v
+ `&gt; (dot 2) 1 0 (dot 5) -----------------&gt; 0 b 0 1 0 0 0 1 1 1 + 0x2800 -.
+    (dot 3) 1 0 (dot 6)    braille code        | | | | | | | |           |
+    (dot 7) 1 0 (dot 8)                    dot 8 7 6 5 4 3 2 1           |
+                                                                         |
+  convert the braille code to a unicode character and collate into array |
+ .-----------------------------------------------------------------------&#39;
+ |  &#39;&#39;&#39;
+ `-&gt;⡇⢸⢸⠉⠁⡇⠀⢸⠀⠀⡎⢱  (Note: this function returns a CharArray, use
+    ⡏⢹⢸⣉⡁⣇⣀⢸⣀⡀⢇⡸  .to_plain_str() to get a string.)
+    &#39;&#39;&#39;
+</code></pre></div></p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.disc_offsets" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">disc_offsets</span><span class="p">(</span><span class="n">thickness</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L675-L701"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.disc_offsets" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The dots covered by a disc of the given thickness centred on a dot, as
+offsets from that dot.</p>
+<p>A dot is included when its centre lies within <code>thickness / 2</code> of the
+centre of the disc, so a thickness of 1 covers one dot, 2 covers a plus of
+five, 3 covers a three-by-three square, and so on.</p>
+<p>Inputs:</p>
+<ul>
+<li>thickness: float.
+    Diameter of the disc, measured in dots.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>offsets: int[k, 2].
+    One <code>(row, col)</code> offset per covered dot, always including <code>(0, 0)</code>.</li>
+</ul>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.rasterise_segments" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">rasterise_segments</span><span class="p">(</span><span class="n">starts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">ends</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L704-L856"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.rasterise_segments" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Draw straight line segments onto a grid of dots.</p>
+<p>Coordinates are in dots, with rows increasing downwards, so that dot
+<code>(i, j)</code> covers the unit square from <code>(i, j)</code> up to but not including
+<code>(i+1, j+1)</code>, and the centre of that dot is at <code>(i+0.5, j+0.5)</code>. Whatever
+falls outside the grid is clipped away.</p>
+<p>Inputs:</p>
+<ul>
+<li>starts: float[n, 2].
+    One <code>(row, col)</code> coordinate per segment, where each segment begins.</li>
+<li>ends: float[n, 2].
+    Where each segment ends.</li>
+<li>height: int.
+    Number of rows of dots in the grid.</li>
+<li>width: int.
+    Number of columns of dots in the grid.</li>
+<li>start_colors: optional uint8[n, 3].
+    Color at the start of each segment. If omitted, no colors are
+    computed and the color outputs are None.</li>
+<li>end_colors: optional uint8[n, 3].
+    Color at the end of each segment, interpolated along it. If omitted
+    while <code>start_colors</code> is given, segments are a single flat color.</li>
+<li>thickness: float (default 1.0).
+    Width of the stroke, in dots. See <code>disc_offsets</code>.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>dots: int[height, width].
+    How many times each dot was covered. Zero where the dot is not part of
+    any segment.</li>
+<li>dotc: optional uint8[height, width, 3].
+    The average of the colors covering each dot, or None if no colors were
+    given.</li>
+<li>dotw: optional float[height, width].
+    The coverage counts again, as the weights that mix these colors
+    together within a character cell, or None if no colors were given.</li>
+</ul>
+<p>The three outputs are exactly the <code>dots</code>, <code>dotc</code> and <code>dotw</code> inputs of
+<code>unicode_braille_array</code>.</p>
+<p>Segments with a non-finite endpoint are skipped, which is how a gap in a
+sequence of points becomes a gap in the line drawn through them.</p>
+<p>Notes:</p>
+<ul>
+<li>Segments are clipped to the grid before they are drawn, so a segment may
+  run arbitrarily far outside it without costing anything to skip.</li>
+<li>A stroke is the segment thickened by a disc, which is to say the union of
+  discs centred along it. Round caps and correctly filled joins between
+  consecutive segments both follow from that, without either being a case
+  to handle.</li>
+</ul>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.rasterise_points" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">rasterise_points</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L859-L882"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.rasterise_points" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Mark the dots that a set of points falls in.</p>
+<p>Coordinates are in dots and mean what they mean for <code>rasterise_segments</code>,
+which also describes the three arrays this returns. Points that are not
+fully specified are skipped, as is anything outside the grid.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.accumulate_dots" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">accumulate_dots</span><span class="p">(</span><span class="n">dot</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L885-L922"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.accumulate_dots" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Count how many times each dot of a grid is covered, and average the colors
+covering it.</p>
+<p>Whatever falls outside the grid is dropped. The counts double as the weights
+that mix the colors of one character cell together, so they come back a
+second time as those weights, which is what <code>unicode_braille_array</code> takes.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.unicode_braille_points" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">unicode_braille_points</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CharArray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L925-L942"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.unicode_braille_points" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Draw a set of points as a grid of braille characters.</p>
+<p>Coordinates are in dots, as for <code>rasterise_points</code>, which this draws with.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.unicode_braille_segments" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">unicode_braille_segments</span><span class="p">(</span><span class="n">starts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">ends</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_colors</span><span class="p">:</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CharArray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L945-L969"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.unicode_braille_segments" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Draw line segments as a grid of braille characters.</p>
+<p>Coordinates are in dots, as for <code>rasterise_segments</code>, which this draws with
+and which documents what the arguments mean.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.unicode_bar" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">unicode_bar</span><span class="p">(</span><span class="n">proportion</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CharArray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L979-L1038"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.unicode_bar" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Generates a Unicode progress bar as a list of characters.</p>
+<p>This function creates a fixed-width left-to-right bar using Unicode block
+elements to represent the proportion rounded down to nearest 1/8th of a
+block.</p>
+<p>Inputs:</p>
+<ul>
+<li>proportion: float.
+    The fraction of the bar to fill. Should be between 0.0 and 1.0
+    inclusive.</li>
+<li>width: int (positive).
+    The width of the full bar in characters.</li>
+<li>height: int (positive, default 1).
+    The number of rows that the bar takes up.</li>
+<li>fgcolor: optional ColorLike.
+    Foreground color used for the progress bar characters.</li>
+<li>bgcolor: optional ColorLike.
+    Background color used for the progress bar remainder.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>chars: CharArray
+    A character array representing the bar.</li>
+</ul>
+<p>Examples:</p>
+<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; unicode_bar(0.5, 10).to_plain_str()
+&#39;█████     &#39;
+&gt;&gt;&gt; unicode_bar(0.625, 10).to_plain_str()
+&#39;██████▎   &#39;
+</code></pre></div>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.unicode_col" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">unicode_col</span><span class="p">(</span><span class="n">proportion</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CharArray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L1044-L1104"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.unicode_col" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <div class="highlight"><pre><span></span><code>Generates a Unicode progress column as a list of characters.
+
+This function creates a fixed-height column using Unicode block elements to
+represent a proportion rounded down to nearest 1/8th of a block. The list
+goes from the top of the bar to the bottom, but the bar grows from the
+bottom towards the top.
+
+Inputs:
+
+* proportion: float.
+    The fraction of the column to fill. Should be between 0.0 and 1.0
+    inclusive.
+* height: int (positive).
+    The height of the full bar in characters.
+* width: int (positive, default 1).
+    The number of columns that the bar takes up.
+* fgcolor: optional ColorLike.
+    Foreground color used for the progress bar characters.
+* bgcolor: optional ColorLike.
+    Background color used for the progress bar remainder.
+
+Returns:
+
+* chars: CharArray
+    A char array representing the column.
+
+Examples:
+
+```
+&gt;&gt;&gt; unicode_col(0.5, 3).to_plain_str()
+&#39;
+</code></pre></div>
+<p>▄
+█'</p>
+<div class="highlight"><pre><span></span><code>```
+</code></pre></div>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.core.BoxStyle" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>BoxStyle</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L1111-L1208"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.BoxStyle" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="str">str</span></code>, <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+        <p>A string enum defining preset styles for the <code>border</code> plot.</p>
+<p>Each style is a string of eight characters representing the border
+elements.</p>
+<p>Available Styles:</p>
+<ul>
+<li><code>LIGHT</code>:  A standard, single-line border.</li>
+<li><code>HEAVY</code>:  A thicker, bold border.</li>
+<li><code>DOUBLE</code>: A double-line border.</li>
+<li><code>DASHED</code>: A dashed single-line border.</li>
+<li><code>BLANK</code>:  An invisible border (easily add 1-width padding).</li>
+<li><code>ROUND</code>:  A single-line border with rounded corners.</li>
+<li><code>BUMPER</code>: A single-line border with corners made of blocks.</li>
+<li><code>BLOCK1</code>: A blocky border with half-width left and right walls.</li>
+<li><code>BLOCK2</code>: A uniform blocky border.</li>
+<li><code>TIGER1</code>: A stripy block border.</li>
+<li><code>TIGER2</code>: An alternative stripy block border.</li>
+<li><code>LIGHTX</code>: A light border with axis ticks.</li>
+<li><code>HEAVYX</code>: A heavy border with axis ticks.</li>
+<li><code>LOWERX</code>: A partial border with axis ticks.</li>
+</ul>
+<p>Demo:</p>
+<div class="highlight"><pre><span></span><code>┌──────┐ ┏━━━━━━┓ ╔══════╗ ┌╌╌╌╌╌╌┐ ⡤⠤⠤⠤⠤⠤⠤⢤ ╭──────╮
+│LIGHT │ ┃HEAVY ┃ ║DOUBLE║ ┊DASHED┊ ⡇DOTTED⢸ │ROUND │
+└──────┘ ┗━━━━━━┛ ╚══════╝ └╌╌╌╌╌╌┘ ⠓⠒⠒⠒⠒⠒⠒⠚ ╰──────╯
+         ▛──────▜ ▛▀▀▀▀▀▀▜ █▀▀▀▀▀▀█ ▞▝▝▝▝▝▝▝ ▘▘▘▘▘▘▘▚
+ BLANK   │BUMPER│ ▌BLOCK1▐ █BLOCK2█ ▖TIGER1▝ ▘TIGER2▗
+         ▙──────▟ ▙▄▄▄▄▄▄▟ █▄▄▄▄▄▄█ ▖▖▖▖▖▖▖▞ ▚▗▗▗▗▗▗▗
+┬──────┐ ┲━━━━━━┓ ╷        
+│LIGHTX│ ┃HEAVYX┃ │LOWERX  
+┼──────┤ ╄━━━━━━┩ ┼──────╴ 
+</code></pre></div>
+<p>TODO:</p>
+<ul>
+<li>It might make sense to consider borders with two characters on the left
+  and right sides of the contents. Would open up new design possibilities.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.unicode_box" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">unicode_box</span><span class="p">(</span><span class="n">chars</span><span class="p">:</span> <span class="n">CharArray</span><span class="p">,</span> <span class="n">style</span><span class="p">:</span> <span class="n">BoxStyle</span><span class="p">,</span> <span class="n">fgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CharArray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L1211-L1266"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.unicode_box" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Wrap a character array in an outline of box drawing characters.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.core.unicode_image" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">unicode_image</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CharArray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/core.py#L1273-L1319"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.core.unicode_image" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert an RGB image into an array of coloured Unicode half-block
+characters representing the pixels of the image.</p>
+<p>Inputs:</p>
+<ul>
+<li>image: u8[h, w, rgb].
+    The pixels of the image.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>chars: CharArray[ceil(h/2), w].
+    The array of coloured half-block characters. If the image has odd
+    height, the bottom half of the final row is set to the default
+    background colour.</li>
+</ul>
+
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+</section>
+
+<section id="mkdocs-terminal-after-content">
+    
+</section>
+<section id="mkdocs-terminal-revision">
+<br>
+<aside>
+    <p>
+        <small>
+            <i>Built from
+            <a href="https://github.com/matomatical/matthewplotlib/blob/v0.6.1/matthewplotlib/core.py">matthewplotlib/core.py</a>.
+            </i>
+        </small>
+    </p>
+</aside>
+</section>
+            </main>
+        </div>
+        <hr><footer>
+    <div class="terminal-mkdocs-footer-grid">
+        <div id="terminal-mkdocs-footer-copyright-info">
+            
+            <p class="text-center text-muted">Copyright © 2024–2026 Matthew Farrugia-Roberts, GPLv3.</p>
+             Site built with <a href="http://www.mkdocs.org">MkDocs</a> and a theme based on <a href="https://github.com/ntno/mkdocs-terminal">Terminal for MkDocs</a>.
+        </div>
+    </div>
+</footer>
+    </div>
+
+    
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="alertdialog" aria-modal="true" aria-labelledby="searchModalLabel">
+    <div class="modal-dialog modal-lg" role="search">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Search</h5>
+                <button type="button" class="close btn btn-default btn-ghost" data-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+                <p id="searchInputLabel">Type to start searching</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" aria-labelledby="searchInputLabel" placeholder="" id="mkdocs-search-query" title="Please enter search terms here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No document matches found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</body>
+
+</html>

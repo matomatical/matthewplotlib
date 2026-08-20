@@ -1,0 +1,3086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="generator" content="mkdocs-1.6.1, mkdocs-terminal-4.8.0">
+    
+    <meta name="description" content="A Python plotting library that aspires to not be painful."> 
+     
+    
+    <link rel="canonical" href="https://matthewplotlib.far.in.net/0.6.1/api/plots/"><link rel="icon" type="image/png" sizes="192x192" href="../../img/android-chrome-192x192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="../../img/android-chrome-512x512.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png" />
+<link rel="shortcut icon" type="image/png" sizes="48x48" href="../../img/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png" />
+
+
+    
+ 
+<title>plots - matthewplotlib</title>
+
+
+<link href="../../css/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+<link href="../../css/fontawesome/css/solid.min.css" rel="stylesheet">
+<link href="../../css/normalize.css" rel="stylesheet">
+<link href="../../css/terminal.css" rel="stylesheet">
+<link href="../../css/theme.css" rel="stylesheet">
+<link href="../../css/theme.tile_grid.css" rel="stylesheet">
+<link href="../../css/theme.footer.css" rel="stylesheet">
+<!-- dark color palette -->
+<link href="../../css/palettes/dark.css" rel="stylesheet">
+
+<!-- page layout -->
+<style>
+/* initially set page layout to a one column grid */
+.terminal-mkdocs-main-grid {
+    display: grid;
+    grid-column-gap: 1.4em;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+/*  
+*   when side navigation is not hidden, use a two column grid.  
+*   if the screen is too narrow, fall back to the initial one column grid layout.
+*   in this case the main content will be placed under the navigation panel. 
+*/
+@media only screen and (min-width: 70em) {
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: 4fr 9fr;
+    }
+}</style>
+
+
+
+    
+    <link href="../../assets/_mkdocstrings.css" rel="stylesheet"> 
+    <link href="../../css/sweetie16.css" rel="stylesheet"> 
+    <link href="../../css/pygments.css" rel="stylesheet"> 
+    <link href="../../css/override.css" rel="stylesheet">  
+    
+    
+
+    
+    <!-- search css support -->
+<link href="../../css/search/bootstrap-modal.css" rel="stylesheet">
+<!-- search scripts -->
+<script>
+    var base_url = "../..",
+    shortcuts = "{}";
+</script>
+<script src="../../js/jquery/jquery-1.10.1.min.js" defer></script>
+<script src="../../js/bootstrap/bootstrap.min.js" defer></script>
+<script src="../../js/mkdocs/base.js" defer></script>
+    
+    
+    
+    
+    <script src="../../search/main.js"></script>
+    
+
+    
+</head>
+
+<body class="terminal"><div class="container">
+    <div class="terminal-nav">
+        <header class="terminal-logo">
+            <div id="mkdocs-terminal-site-name" class="logo terminal-prompt"><a href="https://matthewplotlib.far.in.net/0.6.1" class="no-style">matthewplotlib</a></div>
+        </header>
+        
+        <nav class="terminal-menu">
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                <li id="version-menu" hidden>
+                    <label class="menu-item" for="version-select">version</label>
+                    <select id="version-select"></select>
+                </li>
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="https://github.com/matomatical/matthewplotlib" class="menu-item" property="item" typeof="WebPage">
+                        <span property="name">GitHub</span>
+                    </a>
+                </li>
+                    
+                    
+
+
+<li property="itemListElement" typeof="ListItem">
+    <a href="#" class="menu-item" data-toggle="modal" data-target="#mkdocs_search_modal" property="item" typeof="SearchAction">
+        <i aria-hidden="true" class="fa fa-search"></i> <span property="name">Search</span>
+    </a>
+    <meta property="position" content="0">
+</li>
+                    
+            </ul>
+        </nav>
+<script>
+// The versions mike published live one directory above this one, listed in a
+// file it writes at the root of the branch. Absent when serving locally, in
+// which case the menu stays hidden.
+(function () {
+    var root = new URL("../../", window.location.href);
+    var here = decodeURIComponent(window.location.pathname);
+    var rest = here.slice(root.pathname.length);
+    var current = root.pathname.replace(/^\/|\/$/g, "").split("/").pop();
+
+    fetch(new URL("../versions.json", root).href).then(function (response) {
+        if (!response.ok) throw new Error("no versions.json");
+        return response.json();
+    }).then(function (versions) {
+        if (!versions.length) return;
+        var select = document.getElementById("version-select");
+        versions.forEach(function (version) {
+            var names = [version.version].concat(version.aliases || []);
+            var option = document.createElement("option");
+            option.value = version.aliases && version.aliases.length
+                ? version.aliases[0]
+                : version.version;
+            option.textContent = version.title || version.version;
+            option.selected = names.indexOf(current) !== -1;
+            select.appendChild(option);
+        });
+        // A directory the list does not mention, so name it rather than
+        // leaving some other version showing as the current one.
+        if (select.selectedIndex === -1) {
+            var unlisted = document.createElement("option");
+            unlisted.value = current;
+            unlisted.textContent = current;
+            unlisted.selected = true;
+            select.insertBefore(unlisted, select.firstChild);
+        }
+        document.getElementById("version-menu").hidden = false;
+
+        // Keep the reader on the same page where the chosen version has one.
+        select.addEventListener("change", function () {
+            var version = new URL("../" + select.value + "/", root);
+            var same = new URL(rest, version);
+            fetch(same.href, {method: "HEAD"}).then(function (response) {
+                window.location.assign(response.ok ? same.href : version.href);
+            }).catch(function () {
+                window.location.assign(version.href);
+            });
+        });
+    }).catch(function () {
+        /* nothing published to switch between */
+    });
+})();
+</script>
+    </div>
+</div>
+        
+    <div class="container">
+        <div class="terminal-mkdocs-main-grid"><aside id="terminal-mkdocs-side-panel"><nav>
+    <h4>Site contents</h4>
+    <ul class="terminal-mkdocs-side-nav-items">
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../..">Home</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../quickstart/">Quickstart</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../examples/">Examples</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+        
+        
+            
+                
+        
+        
+            
+    
+        
+        <span class="
+        
+            
+        
+    terminal-mkdocs-side-nav-item--active terminal-mkdocs-side-nav-section-no-index">API Reference</span>
+    
+    
+        
+        
+            <ul class="terminal-mkdocs-side-nav-li-ul">
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../">matthewplotlib</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        <span class="terminal-mkdocs-side-nav-item--active">plots</span>
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../animations/">animations</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../data/">data</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../colors/">colors</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../colormaps/">colormaps</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../core/">core</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../camera/">camera</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../unscii16/">unscii16</a>
+        
+    
+    </li>
+            
+            
+    </ul>
+        
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../compatibility/">Compatibility</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../changelog/">Changelog</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../roadmap/">Roadmap</a>
+        
+    
+    
+    
+       </li>
+        
+    </ul>
+</nav><hr>
+<h4>Page contents</h4>
+<nav>
+    <ul style="list-style-type: none; padding-left: 0; margin-left: 0;">
+        <li style="margin-left: 0em;"><a href="#matthewplotlib.plots"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;plots</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.plot"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;plot</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.height"><code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;height</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.width"><code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;width</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.renderstr"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;renderstr</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.clearstr"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;clearstr</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.renderimg"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;renderimg</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.saveimg"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;saveimg</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.__str__"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__str__</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.__neg__"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__neg__</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.updatestr"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;updatestr</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.__sub__"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__sub__</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.__add__"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__add__</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.__truediv__"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__truediv__</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.__or__"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__or__</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.plots.plot.__matmul__"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__matmul__</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.scatter"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;scatter</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.scatter3"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;scatter3</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.line"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;line</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.line3"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;line3</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.image"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;image</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.function2"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;function2</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.histogram2"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;histogram2</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.progress"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;progress</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.bars"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;bars</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.histogram"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;histogram</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.columns"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;columns</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.vistogram"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;vistogram</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.hilbert"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;hilbert</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.text"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;text</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.border"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;border</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.axes"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;axes</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.blank"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;blank</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.hstack"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;hstack</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.vstack"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;vstack</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.dstack"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;dstack</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.dstack2"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;dstack2</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.wrap"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;wrap</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.plots.center"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;center</a></li>
+
+    </ul>
+</nav>
+</aside>
+            <main id="terminal-mkdocs-main-content">
+    
+    
+    
+    
+    
+
+<section id="mkdocs-terminal-content">
+    <div class="doc doc-object doc-module">
+
+
+
+<a id="matthewplotlib.plots"></a>
+    <div class="doc doc-contents first">
+
+        <p>A collection of building blots for plotting. There are lots of options---take a
+look through this module. They are roughly grouped as follows.</p>
+<p>Base class:</p>
+<ul>
+<li><code>plot</code>: Every plot object inherits from this one. See this class for methods,
+  properties, and shortcut operators available with every plot object.</li>
+</ul>
+<p>Data plots:</p>
+<ul>
+<li><code>scatter</code></li>
+<li><code>function</code></li>
+<li><code>scatter3</code></li>
+<li><code>line</code></li>
+<li><code>line3</code></li>
+<li><code>image</code></li>
+<li><code>function2</code></li>
+<li><code>histogram2</code></li>
+<li><code>progress</code></li>
+<li><code>bars</code></li>
+<li><code>histogram</code></li>
+<li><code>columns</code></li>
+<li><code>vistogram</code></li>
+<li><code>hilbert</code></li>
+</ul>
+<p>Furnishing plots:</p>
+<ul>
+<li><code>text</code></li>
+<li><code>border</code></li>
+<li><code>axes</code></li>
+</ul>
+<p>Arrangement plots:</p>
+<ul>
+<li><code>blank</code></li>
+<li><code>hstack</code></li>
+<li><code>vstack</code></li>
+<li><code>dstack</code></li>
+<li><code>wrap</code></li>
+<li><code>center</code></li>
+</ul>
+<p>The third stacking operation, <code>tstack</code>, arranges plots in time rather than
+across the screen, and lives with the rest of the animation machinery in
+<code>matthewplotlib.animations</code>.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.plot" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>plot</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L96-L356"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Abstract base class for all plot objects.</p>
+<p>A plot is essentially a 2D grid of coloured characters. This class provides
+the core functionality for rendering and composing plots. It is not
+typically instantiated directly, but it's useful to know its properties and
+methods.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="matthewplotlib.plots.plot.height" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">height</span><span class="p">:</span> <span class="nb">int</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels">
+      <span class="doc doc-label doc-label-property"><code>property</code></span>
+  </span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L110-L114"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.height" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Number of character rows in the plot.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="matthewplotlib.plots.plot.width" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">width</span><span class="p">:</span> <span class="nb">int</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels">
+      <span class="doc doc-label doc-label-property"><code>property</code></span>
+  </span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L118-L122"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.width" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Number of character columns in the plot.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.renderstr" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">renderstr</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L125-L131"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.renderstr" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert the plot into a string for printing to the terminal.</p>
+<p>Note: plot.renderstr() is equivalent to str(plot).</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.clearstr" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">clearstr</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L134-L164"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.clearstr" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert the plot into a string that, if printed immediately after
+plot.renderstr(), will clear that plot from the terminal.</p>
+<p>Like every string in this library, the result is shaped for a plain
+<code>print</code>: it erases the plot and then steps one row above it, so the
+newline <code>print</code> appends leaves the cursor where the plot began, ready
+to be overdrawn. Printing it with <code>end=""</code> instead leaves the cursor a
+row high, and in an animation loop the plot then climbs the screen one
+row per frame.</p>
+<p>Requires a spare row above the plot. If the plot begins on the
+terminal's first row there is nowhere to step, and the redraw lands one
+row lower.</p>
+<p>Erases the plot's own rows and nothing else, so anything on the screen
+below the plot survives. That costs a few bytes per row rather than a
+single erase-to-end-of-screen, which is nothing beside the redraw that
+follows.</p>
+<p>Rows, though, and not columns: each row is erased margin to margin, so
+anything sitting to the right of the plot goes with it. A differential
+redraw (<code>plot - prev</code>) is careful about that boundary where this is not.
+See <code>notes/erase-granularity.md</code>.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.renderimg" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">renderimg</span><span class="p">(</span><span class="n">upscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">downscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L167-L189"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.renderimg" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert the plot into an RGBA array for rendering with Pillow.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.saveimg" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">saveimg</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">upscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">downscale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bgcolor</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L192-L209"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.saveimg" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Render the plot as an RGBA image and save it as a PNG file at the path
+<code>filename</code>.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.__str__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__str__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L212-L216"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.__str__" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Shortcut for the string for printing the plot.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.__neg__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__neg__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L219-L223"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.__neg__" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Shortcut for the string for clearing the plot.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.updatestr" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">updatestr</span><span class="p">(</span><span class="n">prev</span><span class="p">:</span> <span class="n">plot</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L226-L253"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.updatestr" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert the plot into a string that, if printed when the cursor is just
+below <code>prev</code> (i.e. immediately after printing <code>prev</code>), updates the
+terminal to show this plot instead -- repainting only the cells that
+differ from <code>prev</code>, and leaving the cursor just below this plot.</p>
+<p>This is the fast path for animation: redrawing a whole frame re-emits
+every cell, while this re-emits only what changed, which can be far
+fewer bytes over a slow connection.</p>
+<p>Inputs:</p>
+<ul>
+<li>prev : plot | None.
+  The plot currently on screen. Pass None for the first frame of an
+  animation, when the screen is still empty, and the whole plot is
+  rendered. A plot of a different size is fine: the overlapping region is
+  still diffed, while the rows and columns only one of them covers are
+  painted or erased as needed.</li>
+</ul>
+<p>As everywhere in this library the result is shaped for a plain <code>print</code>.
+See <code>CharArray.to_ansi_diff_str</code> for the precise cursor contract.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.__sub__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">plot</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L256-L273"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.__sub__" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Operator shortcut for a differential redraw: the string that updates the
+terminal from <code>other</code> to <code>self</code> in place.</p>
+<p>Subtracting None means there is nothing on screen yet, so the whole plot
+is drawn. That makes every frame of an animation the same statement:</p>
+<div class="highlight"><pre><span></span><code>prev = None
+for frame in frames:
+    print(frame - prev)
+    prev = frame
+</code></pre></div>
+<p>Compare <code>-plot</code> (clear) and <code>str(plot)</code> (full redraw). See <code>updatestr</code>.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.__add__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__add__</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">plot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">hstack</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L276-L298"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.__add__" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Operator shortcut for horizontal stack.</p>
+<div class="highlight"><pre><span></span><code>plot1 + plot2 ==&gt; hstack(plot1, plot2) ==&gt; plot1 plot2
+</code></pre></div>
+<p>When combining with vertical stacking, note that <code>/</code> binds before <code>+</code>,
+but <code>|</code> binds after:
+<div class="highlight"><pre><span></span><code>plot1 / plot2 + plot3 / plot4
+==&gt; hstack(vstack(plot1, plot2), vstack(plot3, plot4))
+==&gt; plot1 plot3
+    plot2 plot4
+
+plot1 + plot2 | plot3 + plot4
+==&gt; vstack(hstack(plot1, plot2), hstack(plot3, plot4))
+==&gt; plot1 plot3
+    plot2 plot4
+</code></pre></div></p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.__truediv__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__truediv__</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">plot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">vstack</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L301-L320"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.__truediv__" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>High-precedence operator shortcut for vertical stack.</p>
+<div class="highlight"><pre><span></span><code>plot1 / plot2 ==&gt; vstack(plot1, plot2) ==&gt; plot1
+                                           plot2
+</code></pre></div>
+<p>When combining with horizontal stacking, note that <code>/</code> binds before
+<code>+</code>:
+<div class="highlight"><pre><span></span><code>plot1 / plot2 + plot3 / plot4
+==&gt; plot1 plot3
+    plot2 plot4
+</code></pre></div></p>
+<p>For a version that binds after <code>+</code>, see <code>|</code>.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.__or__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__or__</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">plot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">vstack</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L323-L341"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.__or__" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Low-precedence operator shortcut for vertical stack.</p>
+<div class="highlight"><pre><span></span><code>plot1 | plot2 ==&gt; vstack(plot1, plot2) ==&gt; plot1
+                                           plot2
+</code></pre></div>
+<p>When combining with horizontal stacking, note that <code>|</code> binds after <code>+</code>:
+<div class="highlight"><pre><span></span><code>plot1 + plot2 | plot3 + plot4
+==&gt; plot1 plot3
+    plot2 plot4
+</code></pre></div></p>
+<p>For a version that binds before <code>+</code>, see <code>/</code>.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.plots.plot.__matmul__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__matmul__</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">plot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dstack</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L344-L356"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.plot.__matmul__" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Operator shortcut for depth stack.</p>
+<div class="highlight"><pre><span></span><code>plot1_ @ plot_2 ==&gt; dstack(plot1_, plot2_) =&gt; plot12
+(where _ is a blank character)
+</code></pre></div>
+<p>Note that the precedence of <code>@</code> competes with <code>/</code>, so use parentheses
+or pair with <code>|</code>.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.scatter" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>scatter</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L383-L443"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.scatter" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Render a scatterplot using a grid of braille unicode characters.</p>
+<p>Each character cell in the plot corresponds to a 2x4 grid of sub-pixels,
+represented by braille dots.</p>
+<p>Inputs:</p>
+<ul>
+<li>series : Series.
+     X Y data, for example a tuple (xs, ys) or triple (xs, ys, cs) where
+     cs is a ColorLike or a list of RGB triples. See documentation for more
+     examples.</li>
+<li>*etc.
+    Further series.</li>
+<li>xrange : optional (number, number).
+    The x-axis limits <code>(xmin, xmax)</code>. If not provided, the limits are
+    inferred from the min and max x-values in the data.</li>
+<li>yrange : optional (number, number).
+    The y-axis limits <code>(ymin, ymax)</code>. If not provided, the limits are
+    inferred from the min and max y-values in the data.</li>
+<li>width : int (default: 30).
+    The width of the plot in characters. The effective pixel width will be
+    2 * width.</li>
+<li>height : int (default: 10).
+    The height of the plot in rows. The effective pixel height will be 4 *
+    height.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.scatter3" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>scatter3</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L446-L526"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.scatter3" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Scatter plot representing a 3d point cloud.</p>
+<ul>
+<li>series : Series3.
+     X Y Z data, for example a triple (xs, ys, zs) or quad (xs, ys, zs, cs)
+     where cs is a ColorLike or a list of RGB triples. See documentation
+     for more examples.</li>
+<li>*etc.: Series3
+    Further series.</li>
+<li>camera_position: float[3] (default: [0. 0. 2.]).
+    The position at which the camera is placed.</li>
+<li>camera_target: float[3] (default: [0. 0. 0.]).
+    The position towards which the camera is facing. Should be distinct
+    from camera position. The default is that the camera is facing towards
+    the origin.</li>
+<li>scene_up: float[3] (default: [0. 1. 0.]).
+    The unit vector designating the 'up' direction for the scene. The
+    default is the positive Y direction. Should not have the same direction
+    as camera_target - camera_position.</li>
+<li>vertical_fov_degrees: float (default 90).
+    Vertical field of view. Points within a vertical cone of this angle are
+    projected into the viewing area. The horizontal field of view is then
+    determined based on the aspect ratio.</li>
+<li>aspect_ratio: optional float.
+    Aspect ratio for the set of points, as a fraction (W:H represented as
+    W/H). If not provided, uses W=width, H=2*height, which is uniform given
+    the resolution of the plot.</li>
+<li>width : int.
+    The number of character columns in the plot.</li>
+<li>height : int.
+    The number of character rows in the plot.</li>
+</ul>
+<p>Projected coordinates are not the data's own, so this is not a <code>scatter</code>
+and <code>axes</code> does not take it: there is nothing meaningful to label an axis
+with.</p>
+<p>TODO:</p>
+<ul>
+<li>Maybe allow configurable xyz ranges with clipping prior to projection?</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.line" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>line</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L529-L606"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.line" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Render a line plot by connecting a sequence of points, using a grid of
+braille unicode characters.</p>
+<p>Each character cell in the plot corresponds to a 2x4 grid of sub-pixels,
+represented by braille dots.</p>
+<p>Inputs:</p>
+<ul>
+<li>series : Series.
+     X Y data, for example a tuple (xs, ys) or triple (xs, ys, cs) where
+     cs is a ColorLike or a list of RGB triples. See documentation for more
+     examples.</li>
+<li>*etc.
+    Further series. Each is a separate line: the end of one is not joined
+    to the start of the next.</li>
+<li>xrange : optional (number, number).
+    The x-axis limits <code>(xmin, xmax)</code>. If not provided, the limits are
+    inferred from the min and max x-values in the data.</li>
+<li>yrange : optional (number, number).
+    The y-axis limits <code>(ymin, ymax)</code>. If not provided, the limits are
+    inferred from the min and max y-values in the data.</li>
+<li>width : int (default: 30).
+    The width of the plot in characters. The effective pixel width will be
+    2 * width.</li>
+<li>height : int (default: 10).
+    The height of the plot in rows. The effective pixel height will be 4 *
+    height.</li>
+<li>thickness : float (default: 1.0).
+    How wide to draw the line, in dots. Corners between segments are
+    filled and the ends are rounded.</li>
+</ul>
+<p>A point with a non-finite coordinate breaks the line, so that one series
+can be drawn as several disconnected strokes. Colors are interpolated
+along each segment, so a series with a color per point comes out as a
+gradient.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.line3" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>line3</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L609-L698"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.line3" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Render a wireframe by connecting a sequence of 3d points, seen from a
+camera.</p>
+<p>Inputs:</p>
+<ul>
+<li>series : Series3.
+     X Y Z data, for example a triple (xs, ys, zs) or quad (xs, ys, zs, cs)
+     where cs is a ColorLike or a list of RGB triples. See documentation
+     for more examples.</li>
+<li>*etc.: Series3
+    Further series. Each is a separate line: the end of one is not joined
+    to the start of the next.</li>
+<li>camera_position: float[3] (default: [0. 0. 2.]).
+    The position at which the camera is placed.</li>
+<li>camera_target: float[3] (default: [0. 0. 0.]).
+    The position towards which the camera is facing. Should be distinct
+    from camera position. The default is that the camera is facing towards
+    the origin.</li>
+<li>scene_up: float[3] (default: [0. 1. 0.]).
+    The unit vector designating the 'up' direction for the scene. The
+    default is the positive Y direction. Should not have the same direction
+    as camera_target - camera_position.</li>
+<li>vertical_fov_degrees: float (default 90).
+    Vertical field of view. Points within a vertical cone of this angle are
+    projected into the viewing area. The horizontal field of view is then
+    determined based on the aspect ratio.</li>
+<li>aspect_ratio: optional float.
+    Aspect ratio for the scene, as a fraction (W:H represented as W/H). If
+    not provided, uses W=width, H=2*height, which is uniform given the
+    resolution of the plot.</li>
+<li>width : int.
+    The number of character columns in the plot.</li>
+<li>height : int.
+    The number of character rows in the plot.</li>
+<li>thickness : float (default: 1.0).
+    How wide to draw the line, in dots. Corners between segments are
+    filled and the ends are rounded.</li>
+</ul>
+<p>A point with a non-finite coordinate breaks the line, which is how a mesh
+of several separate wires is drawn in one call. A segment reaching behind
+the camera is cut off in front of it, and one entirely behind the camera is
+not drawn.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.image" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>image</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L701-L765"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.image" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Render a small image or 2d array using a grid of unicode half-block
+characters.</p>
+<p>Represents an image by mapping pairs of vertically adjacent pixels to the
+foreground and background colors of a single character cell (this
+effectively doubles the vertical resolution in the terminal).</p>
+<p>Inputs:</p>
+<ul>
+<li>
+<p>im : float[h,w,3] | int[h,w,3] | float[h,w] | int[h,w].
+    The image data. An array-like matching any of the following formats:</p>
+<ul>
+<li><code>float[h,w,3]</code>: A 2D array of RGB triples of floats in range [0,1].</li>
+<li><code>int[h,w,3]</code>: A 2D array of RGB triples of ints in range [0,255].</li>
+<li><code>float[h,w]</code>: A 2D array of scalars in the range [0,1]. If no
+  colormap is provided, values are treated as greyscale (uniform
+  colorisation). If a continuous colormap is provided, values are
+  mapped to RGB values.</li>
+<li><code>int[h,w]</code>: A 2D array of ints. If no colormap is provided, values
+  should be in the range [0,255], they are treated as greyscale
+  (uniform colorisation). If a discrete colormap is provided, values
+  should be in range as indices for the colormap, they will be mapped
+  to RGB triples as such.</li>
+</ul>
+</li>
+<li>
+<p>colormap : optional ColorMap.
+    Function mapping (batches of) scalars to (batches of) RGB triples.
+    Examples are provided by this library, such as:</p>
+<ul>
+<li>continuous colormaps like <code>viridis : float[...] -&gt; uint8[...,3]</code>, and</li>
+<li>discrete colormaps like <code>pico8 : int[...] -&gt; uint8[...,3]</code>.
+If <code>im</code> has no RGB dimension, it is transformed to a grid of RGB
+triples using one of these colormaps.</li>
+</ul>
+</li>
+</ul>
+<p>TODO:</p>
+<ul>
+<li>Offer normalisation?</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.function2" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>function2</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L768-L851"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.function2" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            image
+
+:
+  
+    source
+   (matthewplotlib.plots.image)" href="#matthewplotlib.plots.image">image</a></code></p>
+
+
+
+        <p>Heatmap representing the image of a 2d function over a square.</p>
+<p>Inputs:</p>
+<ul>
+<li>F : float[batch, 2] -&gt; number[batch].
+    The (vectorised) function to plot. The input should be a batch of
+    (x, y) vectors. The output should be a batch of scalars f(x, y).</li>
+<li>xrange : (float, float).
+    Lower and upper bounds on the x values to pass into the function.</li>
+<li>yrange : (float, float).
+    Lower and upper bounds on the y values to pass into the function.</li>
+<li>width : int.
+    The number of character columns in the plot. This will also become the
+    number of grid squares along the x axis.</li>
+<li>height : int.
+    The number of character rows in the plot. This will also be half of the
+    number of grid squares, since the result is an image plot with two
+    half-character-pixels per row.</li>
+<li>zrange : optional (float, float).
+    Expected lower and upper bounds on the f(x, y) values. Used for
+    determining the bounds of the colour scale. By default, the minimum and
+    maximum output over the grid are used.</li>
+<li>colormap : optional colormap (e.g. mp.viridis).
+    By default, the output will be in greyscale, with black corresponding
+    to zrange[0] and white corresponding to zrange[1]. You can choose a
+    different colormap (e.g. mp.reds, mp.viridis, etc.) here.</li>
+<li>
+<p>endpoints : bool (default: False).
+    If true, endpoints are included from the linspaced inputs, and so the
+    grid elements in each corner will represent the different combinations
+    of xrange/yrange.</p>
+<p>If false (default), the endpoints are excluded, so the lower bounds are
+met but the upper bounds are not, meaning each grid square color shows
+the value of the function precisely at its lower left corner.</p>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.histogram2" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>histogram2</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L854-L954"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.histogram2" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            image
+
+:
+  
+    source
+   (matthewplotlib.plots.image)" href="#matthewplotlib.plots.image">image</a></code></p>
+
+
+
+        <p>Heatmap representing the density of a collection of 2d points.</p>
+<p>Inputs:</p>
+<ul>
+<li>x : number[n].
+    X coordinates of 2d points to bin and count.</li>
+<li>y : number[n].
+    Y coordinates of 2d points to bin and count.</li>
+<li>width : int (default 24).
+    Specifies the width of the plot in characters. This is also the number
+    of bins in the x direction.</li>
+<li>height : int (default 12).
+    Specifies the height of the plot in characters. This is also half the
+    number of bins in the y direction.</li>
+<li>xrange : optional (number, number).
+    The x-axis limits <code>(xmin, xmax)</code>. If not provided, the limits are
+    inferred from the min and max x-values in the data.</li>
+<li>yrange : optional (number, number).
+    The y-axis limits <code>(ymin, ymax)</code>. If not provided, the limits are
+    inferred from the min and max y-values in the data.</li>
+<li>weights : optional number[n].
+    If provided, each 2d point in data contributes this amount to the count
+    for its bin (rather than the default 1). See np.histogram2d's weights
+    argument for details.</li>
+<li>density : bool (default False).
+    If true, normalise bin counts so that they sum to 1,0. See
+    np.histogram2d's density argument for details.</li>
+<li>max_count : optional number.
+    If provided, cell colours are scaled so that only bars matching or
+    exceeding this count max out the colour. Otherwise, the colours are
+    scaled so that the bin with the highest count has the colour maxed out.</li>
+<li>colormap : optional colormap (e.g. mp.viridis).
+    By default, the output will be in greyscale, with black corresponding
+    to zero density and white corresponding to max_count. You can choose a
+    different colormap (e.g. mp.reds, mp.viridis, etc.) here.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.progress" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>progress</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L957-L1014"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.progress" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>A single-line progress bar.</p>
+<p>Construct a progress bar with a percentage label. The bar is rendered using
+Unicode block element characters to show fractional progress with finer
+granularity.</p>
+<p>Inputs:</p>
+<ul>
+<li>progress : float.
+    The progress to display, as a float between 0.0 and 1.0. Values outside
+    this range will be clipped.</li>
+<li>width : int (default: 40).
+    The total width of the progress bar plot in character columns,
+    including the label and brackets.</li>
+<li>height: int (default: 1).
+    The height of the progress bar in character rows.</li>
+<li>color : optional ColorLike.
+    The color of the filled portion of the progress bar. Defaults to the
+    terminal's default foreground color.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.bars" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>bars</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1017-L1114"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.bars" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>A multi-line bar chart.</p>
+<p>Transform a list of values into horizontal bars with width indicating the
+values. The bars are rendered using Unicode block element characters for
+finer granularity.</p>
+<p>Inputs:</p>
+<ul>
+<li>values : float[n].
+    An array of non-negative values to display.</li>
+<li>width : int (default: 30).
+    The total width of full bars.</li>
+<li>bar_height: int (default: 1).
+    The number of rows comprising each bar.</li>
+<li>bar_spacing: int (default: 0).
+    The number of rows between each bar.</li>
+<li>vrange : None | float | (float, float).
+    Determine the scaling of the bars.<ul>
+<li>If omitted, the bars are scaled such that the bar(s) with the largest
+  value occupy the whole width.</li>
+<li>If a single number, then the bars are scaled so that bars with that
+  value (or greater) would occupy the whole width.</li>
+<li>If a pair of numbers, the bars are scaled so that bars with the first
+  value (or less) would have zero width and bars with the second value
+  (or greater) would occupy the whole width.</li>
+</ul>
+</li>
+<li>color : optional ColorLike.
+    The color of the filled portion of the bars. Defaults to the terminal's
+    default foreground color.</li>
+<li>colors : optional ColorLike[n].
+    The colours of the filled portion of each bar. Should be an array or
+    list of the same length as <code>values</code>.</li>
+</ul>
+<p>TODO:</p>
+<ul>
+<li>Make it possible to draw bars to the left for values below 0.</li>
+<li>Make it possible to align all bars to the right rather than left.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.histogram" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>histogram</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1117-L1194"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.histogram" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            bars
+
+:
+  
+    source
+   (matthewplotlib.plots.bars)" href="#matthewplotlib.plots.bars">bars</a></code></p>
+
+
+
+        <p>A histogram bar chart.</p>
+<p>Transform a sequence of values into horizontal bars representing the
+density in different bins. The bars are rendered using Unicode block
+element characters for finer granularity.</p>
+<p>Inputs:</p>
+<ul>
+<li>data : number[n].
+    An array of values to count.</li>
+<li>xrange : optional (float, float).
+    If provided, bins range over this interval, and values outside the
+    range are discarded. Same as np.histogram's range argument.</li>
+<li>bins : int (default: 10).
+    Used to determine number of bins. Bins are evenly spaced as if this
+    number if provided to np.histogram's bins argument.</li>
+<li>weights : optional number[n].
+    If provided, each element in data contributes this amount to the count
+    for its bin (rather than the default 1). See np.histogram's weights
+    argument for details.</li>
+<li>density : bool (default False).
+    If true, normalise bin counts so that they sum to 1,0. See
+    np.histogram's density argument for details.</li>
+<li>max_count : optional number.
+    If provided, the bars are scaled so that only bars matching or
+    exceeding this count are full. Otherwise, the bars are scaled so that
+    the bin with the highest count has a full bar.</li>
+<li>width : int (default: 22).
+    The total width of full bars.</li>
+<li>color : optional ColorLike.
+    The color of the filled portion of the bars. Defaults to the terminal's
+    default foreground color.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.columns" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>columns</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1197-L1292"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.columns" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>A column chart.</p>
+<p>Transform a list of values into vertical columns with height indicating the
+values. The columns are rendered using Unicode block element characters for
+finer granularity.</p>
+<p>Inputs:</p>
+<ul>
+<li>values : number[n].
+    An array of non-negative values to display.</li>
+<li>height : int (default: 10).
+    The total width of full columns.</li>
+<li>column_width: int (default 1).</li>
+<li>column_spacing: int (default 0).</li>
+<li>vrange : None | number | (number, number).
+    Determine the scaling of the columns.<ul>
+<li>If omitted, the columns are scaled such that the columns(s) with the
+  largest value occupy the whole width.</li>
+<li>If a single number, then the columns are scaled so that columns with
+  that value (or greater) would occupy the whole width.</li>
+<li>If a pair of numbers, the columns are scaled so that columns with the
+  first value (or less) would have zero width and columns with the
+  second value (or greater) would occupy the whole width.</li>
+</ul>
+</li>
+<li>color : optional ColorLike.
+    The color of the filled portion of the columns. Defaults to the
+    terminal's default foreground color.</li>
+<li>colors : optional ColorLike[n].
+    The colours of the filled portion of each column. Should be an array or
+    list of the same length as <code>values</code>.</li>
+</ul>
+<p>TODO:</p>
+<ul>
+<li>Make it possible to draw columns downward for values below 0.</li>
+<li>Make it possible to align all columns to the top rather than bottom.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.vistogram" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>vistogram</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1295-L1373"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.vistogram" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            columns
+
+:
+  
+    source
+   (matthewplotlib.plots.columns)" href="#matthewplotlib.plots.columns">columns</a></code></p>
+
+
+
+        <p>A histogram column chart ("vertical histogram", referring to the direction
+of the bars rather than the bins).</p>
+<p>Transform a sequence of values into columns representing the density in
+different bins. The columns are rendered using Unicode block element
+characters for finer granularity.</p>
+<p>Inputs:</p>
+<ul>
+<li>data : number[n].
+    An array of values to count.</li>
+<li>xrange : optional (float, float).
+    If provided, bins range over this interval, and values outside the
+    range are discarded. Same as np.histogram's range argument.</li>
+<li>bins : int (default: 10).
+    Used to determine number of bins. Bins are evenly spaced as if this
+    number if provided to np.histogram's bins argument.</li>
+<li>weights : optional number[n].
+    If provided, each element in data contributes this amount to the count
+    for its bin (rather than the default 1). See np.histogram's weights
+    argument for details.</li>
+<li>density : bool (default False).
+    If true, normalise bin counts so that they sum to 1,0. See
+    np.histogram's density argument for details.</li>
+<li>max_count : optional number.
+    If provided, the bars are scaled so that only bars matching or
+    exceeding this count are full. Otherwise, the bars are scaled so that
+    the bin with the highest count has a full bar.</li>
+<li>height : int (default: 22).
+    The total height of full bars.</li>
+<li>color : optional ColorLike.
+    The color of the filled portion of the bars. Defaults to the terminal's
+    default foreground color.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.hilbert" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>hilbert</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1376-L1434"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.hilbert" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Visualize a 1D boolean array along a 2D Hilbert curve.</p>
+<p>Maps a 1D sequence of data points to a 2D grid using a space-filling
+Hilbert curve, which helps preserve locality. The curve is rendered using
+braille unicode characters for increased resolution.</p>
+<p>Inputs:</p>
+<ul>
+<li>data : bool[N].
+    A 1D array of booleans. The length <code>N</code> determines the order of the
+    Hilbert curve required to fit all points. True values are rendered as
+    dots, and False values are rendered as blank spaces.</li>
+<li>color : optional ColorLike.
+    The foreground color used for dots (points along the curve where <code>data</code>
+    is <code>True</code>). Defaults to the terminal's default foreground color.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.text" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>text</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1441-L1499"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.text" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>A plot object containing one or more lines of text.</p>
+<p>This class wraps a string in the plot interface, allowing it to be
+composed with other plot objects. It handles multi-line strings by
+splitting them at newline characters.</p>
+<p>Inputs:</p>
+<ul>
+<li>text : str.
+    The text to be displayed. Newline characters will create separate lines
+    in the plot.</li>
+<li>color : optional ColorLike.
+    The foreground color of the text. Defaults to the terminal's default
+    foreground color.</li>
+<li>bgcolor : optional ColorLike.
+    The background color for the text. Defaults to a transparent
+    background.</li>
+</ul>
+<p>TODO:</p>
+<ul>
+<li>Allow alignment and resizing.</li>
+<li>Account for non-printable and wide characters.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.border" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>border</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1502-L1539"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.border" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="matthewplotlib.plots.border.plot">plot</span></code></p>
+
+
+
+        <p>Add a border around a plot using box-drawing characters.</p>
+<p>Inputs:</p>
+<ul>
+<li>plot : plot.
+    The plot object to be enclosed by the border.</li>
+<li>title: str.
+    An optional title for the box. Placed centrally along the top row of
+    the box. Truncated to fit.</li>
+<li>style : BoxStyle (default: BoxStyle.ROUND).
+    The style of the border. Predefined styles are available in <code>BoxStyle</code>.</li>
+<li>color : optional ColorLike.
+    The color of the border characters. Defaults to the terminal's
+    default foreground color.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.axes" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>axes</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1542-L1629"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.axes" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="matthewplotlib.plots.axes.plot">plot</span></code></p>
+
+
+
+        <p>Add an annotated border around a 2d plot using box-drawing characters.</p>
+<p>Inputs:</p>
+<ul>
+<li>plot : scatter | line | function2 | histogram2 | dstack2.
+    The plot object to be enclosed by the axes. Must have an xrange and a
+    yrange.</li>
+<li>title: optional str.
+    An optional title for the axes. Placed centrally along the top row of
+    the axes. Truncated to fit.</li>
+<li>xlabel: optional str.
+    String to be used as label under the x axis. Truncated to fit between
+    min and max labels.</li>
+<li>ylabel: optional str.
+    String to be used as label next to the y axis. Written vertically, and
+    truncated to fit between min and max labels.</li>
+<li>xfmt: str (default "{x:.2f}").
+    Format string for x labels. Should have one keyword argument with the
+    key 'x'.</li>
+<li>yfmt: str (default "{y:.2f}").
+    Format string for y labels. Should have one keyword argument with the
+    key 'y'.</li>
+<li>ypad: int (default 1).
+    How many columns between the y axis and the vertical y axis label.</li>
+<li>style : BoxStyle (default: BoxStyle.ROUND).
+    The style of the border. Predefined styles are available in <code>BoxStyle</code>.</li>
+<li>color : optional ColorLike.
+    The color of the border characters and labels. Defaults to 50% gray.
+    Set to <code>None</code> to use foreground color.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.blank" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>blank</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1636-L1658"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.blank" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Creates a rectangular plot composed entirely of blank space.</p>
+<p>Useful for adding padding or aligning items in a complex layout.</p>
+<p>Inputs:</p>
+<ul>
+<li>height : optional int.
+  The height of the blank area in character rows. Default 1.</li>
+<li>width : optional int.
+  The width of the blank area in character columns. Default 1.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.hstack" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>hstack</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1661-L1690"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.hstack" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Horizontally arrange one or more plots side-by-side.</p>
+<p>If the plots have different heights, the shorter plots will be padded with
+blank space at the bottom to match the height of the tallest plot.</p>
+<p>Inputs:</p>
+<ul>
+<li>*plots : plot.
+    A sequence of plot objects to be horizontally stacked.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.vstack" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>vstack</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1693-L1722"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.vstack" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Vertically arrange one or more plots, one above the other.</p>
+<p>If the plots have different widths, the narrower plots will be padded with
+blank space on the right to match the width of the widest plot.</p>
+<p>Inputs:</p>
+<ul>
+<li>*plots : plot.
+    A sequence of plot objects to be vertically stacked.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.dstack" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>dstack</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1725-L1767"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.dstack" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Overlay one or more plots on top of each other.</p>
+<p>The plots are layered in the order they are given, with later plots in the
+sequence drawn on top of earlier ones. The final size of the plot is
+determined by the maximum width and height among all input plots. Non-blank
+characters from upper layers will obscure characters from lower layers.</p>
+<p>Inputs:</p>
+<ul>
+<li>*plots : plot.
+    A sequence of plot objects to be overlaid.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.dstack2" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>dstack2</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1770-L1812"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.dstack2" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            dstack
+
+:
+  
+    source
+   (matthewplotlib.plots.dstack)" href="#matthewplotlib.plots.dstack">dstack</a></code></p>
+
+
+
+        <p>Overlay one or more plots on top of each other.</p>
+<p>The plots are layered in the order they are given, with later plots in the
+sequence drawn on top of earlier ones. The final size of the plot is
+determined by the maximum width and height among all input plots. Non-blank
+characters from upper layers will obscure characters from lower layers.</p>
+<p>Unlike dstack, the plots must have xrange and range attributes, and these
+must all match. The allowable types are scatter, line, function2,
+histogram2, and dstack2.</p>
+<p>Inputs:</p>
+<ul>
+<li>*plots : scatter | line | function2 | histogram2 | dstack2.
+    A sequence of plot objects to be overlaid. Must have matching xrange
+    and yrange.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.wrap" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>wrap</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1815-L1888"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.wrap" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            plot
+
+:
+  
+    source
+   (matthewplotlib.plots.plot)" href="#matthewplotlib.plots.plot">plot</a></code></p>
+
+
+
+        <p>Arrange a sequence of plots into a grid.</p>
+<p>The plots are arranged from left to right, wrapping to a new line when
+the specified number of columns is reached. All cells in the grid are
+padded to the size of the largest plot in the sequence.</p>
+<p>Inputs:</p>
+<ul>
+<li>*plots : plot.
+    A sequence of plot objects to be arranged in a grid.</li>
+<li>cols : optional int.
+    The number of columns in the grid. If not provided, it is automatically
+    determined based on the terminal width and the width of the largest
+    plot.</li>
+<li>transpose: optional bool (default False).
+    If False (default), the plots are arranged in reading order, from left
+    to right and then from top to bottom. If True, the plots are arranged
+    in column order, from top to bottom and then from left to right.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.plots.center" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>center</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/5321cf81e2baffaae0320207c5264f4e980a3067/matthewplotlib/plots.py#L1891-L1947"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.plots.center" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="matthewplotlib.plots.center.plot">plot</span></code></p>
+
+
+
+        <p>Pad a plot with blank space to center it within a larger area.</p>
+<p>If the specified <code>height</code> or <code>width</code> is smaller than the plot's dimensions,
+the larger dimension is used, effectively preventing the plot from being
+cropped.</p>
+<p>Inputs:</p>
+<ul>
+<li>plot : plot.
+    The plot object to be centered.</li>
+<li>height : optional int.
+    The target height of the new padded plot. If not provided, it defaults
+    to the original plot's height (no vertical padding).</li>
+<li>width : optional int.
+    The target width of the new padded plot. If not provided, it defaults
+    to the original plot's width (no horizontal padding).</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+</section>
+
+<section id="mkdocs-terminal-after-content">
+    
+</section>
+<section id="mkdocs-terminal-revision">
+<br>
+<aside>
+    <p>
+        <small>
+            <i>Built from
+            <a href="https://github.com/matomatical/matthewplotlib/blob/v0.6.1/matthewplotlib/plots.py">matthewplotlib/plots.py</a>.
+            </i>
+        </small>
+    </p>
+</aside>
+</section>
+            </main>
+        </div>
+        <hr><footer>
+    <div class="terminal-mkdocs-footer-grid">
+        <div id="terminal-mkdocs-footer-copyright-info">
+            
+            <p class="text-center text-muted">Copyright © 2024–2026 Matthew Farrugia-Roberts, GPLv3.</p>
+             Site built with <a href="http://www.mkdocs.org">MkDocs</a> and a theme based on <a href="https://github.com/ntno/mkdocs-terminal">Terminal for MkDocs</a>.
+        </div>
+    </div>
+</footer>
+    </div>
+
+    
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="alertdialog" aria-modal="true" aria-labelledby="searchModalLabel">
+    <div class="modal-dialog modal-lg" role="search">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Search</h5>
+                <button type="button" class="close btn btn-default btn-ghost" data-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+                <p id="searchInputLabel">Type to start searching</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" aria-labelledby="searchInputLabel" placeholder="" id="mkdocs-search-query" title="Please enter search terms here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No document matches found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</body>
+
+</html>
