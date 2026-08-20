@@ -48,6 +48,9 @@ New examples:
 * `commit_heatmap.py`: a year of commits to this repository as a strip of
   weeks.
 * `tables.py`: a hyperparameter sweep reported in tables.
+* `globe.py`: a spinning Earth, drawn by inverting a map projection at every
+  pixel instead of projecting a sphere onto them, which is what lets the far
+  side of the planet go uncomputed rather than culled. See `notes/world-maps.md`.
 
 Changed:
 

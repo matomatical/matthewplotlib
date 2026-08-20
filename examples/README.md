@@ -10,6 +10,7 @@ Contents:
 * [Series Data Visualisation](#series-data-visualisation)
 * [Surface Data Visualisation](#surface-data-visualisation)
 * [Nonlinear Visualisation](#nonlinear-visualisation)
+* [Maps](#maps)
 * [Bars and Columns](#bars-and-columns)
 * [Media](#media)
 * [Retro Animations](#retro-animations)
@@ -226,6 +227,34 @@ Nonlinear Visualisation
       <p>Hilbert curve visualisation of binomial data.</p>
       <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/hilbert_curve.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+Maps
+----
+
+
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/globe.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Globe</strong></p>
+      <p>A spinning Earth, drawn by inverting the map projection at every pixel
+      rather than projecting the sphere onto it, so that the far side of the
+      planet is never computed and needs no culling. Terrain, clouds, city
+      lights and the day-night terminator all follow from what that inversion
+      hands back.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/globe.py">Source</a></p>
     </td>
   </tr>
 </tbody>
