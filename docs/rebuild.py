@@ -88,14 +88,49 @@ def modules_of(tree):
     return ordered + sorted(found - set(ordered))
 
 
+def fix_links(body, source, pages, tag, repo_url):
+    """Repoint the links a file at the root of the repository was written with.
+
+    A link to something the site has a page for becomes a link to that page.
+    Anything else is a file in the repository, which the reader can only be
+    shown where it is: on the forge, at this version.
+    """
+    home = pathlib.PurePosixPath(source).parent
+
+    def repoint(match):
+        text, target = match.group(1), match.group(2)
+        if re.match(r"[a-z]+:|#", target):
+            return match.group(0)
+        path, _, anchor = target.partition("#")
+        anchor = f"#{anchor}" if anchor else ""
+        resolved = os.path.normpath(home / path) if path else ""
+        if resolved in pages:
+            return f"[{text}]({pages[resolved]}{anchor})"
+        return f"[{text}]({repo_url}/blob/{tag}/{resolved}{anchor})"
+
+    # images are left alone, resolving through the symlink beside the page
+    return re.sub(r"(?<!!)\[([^\]]*)\]\(([^)]+)\)", repoint, body)
+
+
 def write_page(path, source, body):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(f"---\nsource: {source}\n---\n\n{body}")
 
 
 def generate(tree, tag):
-    """Write a documentation tree for the checkout, and return its config."""
+    """Write a documentation tree for the checkout, and return its config.
+
+    A version recent enough to carry its own is built from that instead, told
+    only which version it is being built as.
+    """
     docs = tree / "docs"
+    own = docs / "mkdocs.yml"
+    if own.exists():
+        config = yaml.safe_load(own.read_text())
+        config.setdefault("extra", {})["source_ref"] = tag
+        own.write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=True))
+        return own
+
     src = docs / "src"
     src.mkdir(parents=True)
 
@@ -106,6 +141,17 @@ def generate(tree, tag):
     # images are referenced from the root of the repository, which is where
     # every page's content was written to sit
     os.symlink("../../images", src / "images")
+
+    # which of the version's files become which page
+    pages = {}
+    for _, page, candidates in PAGES:
+        if page is None:
+            continue
+        source = next((c for c in candidates if (tree / c).exists()), None)
+        if source is not None:
+            pages[source] = page
+
+    repo_url = yaml.safe_load((REPO / "docs" / "mkdocs.yml").read_text())["repo_url"]
 
     nav = []
     for title, page, candidates in PAGES:
@@ -123,7 +169,7 @@ def generate(tree, tag):
         source = next((c for c in candidates if (tree / c).exists()), None)
         if source is None:
             continue
-        body = (tree / source).read_text()
+        body = fix_links((tree / source).read_text(), source, pages, tag, repo_url)
         # raw html is not rewritten for the page it lands on, and every page
         # but the home page is served one directory deep
         if page != "index.md":
@@ -168,14 +214,16 @@ def rebuild(tags, alias):
                 config = generate(tree, tag)
                 command = [
                     "mike", "deploy",
-                    "--config-file", str(config),
+                    "--config-file", str(config.relative_to(tree)),
                     "--update-aliases",
                     "--alias-type=copy",
                     version,
                 ]
                 if last and alias:
                     command.append(alias)
-                subprocess.run(command, cwd=REPO, check=True)
+                # from inside the worktree, so that a version carrying its
+                # own documentation can still read its history for the dates
+                subprocess.run(command, cwd=tree, check=True)
                 print(f"  {version}: {len(modules_of(tree))} modules"
                       + (f", aliased {alias}" if last and alias else ""))
             finally:
