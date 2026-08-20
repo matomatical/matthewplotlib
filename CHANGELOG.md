@@ -30,6 +30,23 @@ New:
   * Cells take colours one at a time, so a table shaded by its own values reads
     as a heatmap whose numbers can still be read off exactly. See
     `notes/tables.md`.
+* Vector colormaps and the plots that use them:
+  * `chroma`: a colormap over the plane, turning a vector's direction into hue
+    and its magnitude into brightness. Vectors may be spelled as complex
+    numbers or as pairs.
+  * `domain`: a colormap for domain colouring, turning a complex number's
+    phase into hue and its modulus into lightness. A zero is black and a pole
+    is white, and a dark contour ring falls at every doubling of the modulus,
+    so the rings count the order of a zero or a pole. Its scale is absolute
+    rather than normalised, since the modulus is part of what it is showing.
+  * `vfunction2`: a colour field over a rectangle, sampling a vector-valued
+    function of the plane. `vrange` scales the magnitudes into the unit disc,
+    from zero to the largest by default, leaving the directions alone.
+  * `cfunction2`: a domain colouring over a rectangle of the complex plane,
+    sampling a complex-valued function of one complex variable.
+  * `image` already accepted array data through a colormap, so an array of
+    vectors or complex numbers can be drawn directly, and `animation` can give
+    one a time axis.
 * `window`: the interval of data a plot covers on each axis, and the rectangle
   of character cells it covers them with. Every 2d plot carries one, and it
   provides the conversions from data coordinates to the grids of dots and
@@ -47,6 +64,9 @@ New examples:
   data.
 * `commit_heatmap.py`: a year of commits to this repository as a strip of
   weeks.
+* `domain_coloring.py`: six complex functions, painted onto their own input
+  plane.
+* `phase_portrait.py`: six planar vector fields, as colour fields.
 * `tables.py`: a hyperparameter sweep reported in tables.
 
 Changed:

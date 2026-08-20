@@ -97,7 +97,8 @@ More exotic plot types:
   * [x] 2d list with/without header.
   * [x] Configurable format strings.
 * [ ] Vector field plots:
-  * [ ] color (see chromatic flow example).
+  * [x] color (`vfunction2`), including domain colouring of complex functions
+    (`cfunction2`).
   * [ ] line (see boids example).
 * [ ] Hilbert curves:
   * [x] Basic Hilbert curves.
