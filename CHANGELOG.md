@@ -4,6 +4,9 @@ Changelog
 In development
 --------------
 
+Version 0.6.3
+-------------
+
 Documentation:
 
 * Rebuilt library documentation using MkDocs and a modification of the
@@ -25,6 +28,17 @@ New examples:
   `mp.scatter3`, `mp.line3`, and `mp.wrap`.
 * `sorting.py`: Various sorting algorithms racing in parallel, visualised with
   `mp.columns` and dynamic layout wrapping.
+
+Documented:
+
+* The type aliases the modules introduce and then left out of the reference:
+  `Series` and `Series3`, `ColorLike`, and the colormap types.
+* The `xaxis`, `yaxis` and `zaxis` series, and `unscii16.bitmaps`.
+
+Fixed:
+
+* `doomfire.py` seeds its randomness, so the example draws the same fire on
+  every run, as the other stochastic examples do.
 
 Version 0.6.2
 -------------
