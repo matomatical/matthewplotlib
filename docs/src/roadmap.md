@@ -13,8 +13,9 @@ Basic plot types:
 * [x] Progress bars.
 * [x] Basic bar charts and column charts.
 * [x] Histograms.
-* [ ] Box plots.
-* [ ] Candlestick plots.
+* [ ] Box plots, filled or outlined, lying either way, with `candles`
+  becoming one setting of them. Designed in `notes/box-plots.md`.
+* [x] Candlestick plots. See `notes/candlesticks.md`.
 
 Basic plot furnishings:
 
@@ -22,8 +23,11 @@ Basic plot furnishings:
 * [x] Borders.
 * [x] Axis ticks and tick labels for scatter plots.
 * [x] Axis labels and titles.
-* [ ] Labels and ticks for bar/column charts, histograms, box plots.
-  See `bars` and `hist` in `notes/reference/myplot.py`.
+* [ ] Labels and ticks for bar/column charts, histograms, candlesticks, box
+  plots. These lay marks out side by side, so the axis along them is a list of
+  names rather than an interval of numbers, and there is no way to describe one
+  yet. See `notes/categorical-axes.md`, and `bars` and `hist` in
+  `notes/reference/myplot.py`.
 
 Basic plot arrangement:
 
@@ -97,8 +101,10 @@ More exotic plot types:
   * [x] 2d list with/without header.
   * [x] Configurable format strings.
 * [ ] Vector field plots:
-  * [ ] color (see chromatic flow example).
-  * [ ] line (see boids example).
+  * [x] color (`vfunction2`), including domain colouring of complex functions
+    (`cfunction2`).
+  * [ ] line (see boids example). Parked on legibility rather than
+    machinery; see `notes/quiver-plots.md`.
 * [ ] Hilbert curves:
   * [x] Basic Hilbert curves.
   * [ ] Non-square Hilbert curves.

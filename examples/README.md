@@ -33,6 +33,19 @@ Series Data Visualisation
 <tbody>
   <tr>
     <td align="center">
+      <img src="../images/candlesticks.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Candlesticks</strong></p>
+      <p>A simulated price series as candles, one column to a period. A
+      candlestick chart paints its own background, which is what lets a body
+      land on an eighth of a character cell.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/candlesticks.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="../images/lines.png" width="100%">
     </td>
     <td>
@@ -151,6 +164,19 @@ Surface Data Visualisation
   </tr>
   <tr>
     <td align="center">
+      <img src="../images/domain_coloring.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Domain colouring</strong></p>
+      <p>Six complex functions painted onto their own input plane, with hue
+      for the phase and lightness for the modulus. Zeros come out black and
+      poles white, and a dark ring marks every doubling.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/domain_coloring.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="../images/functions.png" width="100%">
     </td>
     <td>
@@ -158,6 +184,19 @@ Surface Data Visualisation
       <p>Mathematical function visualisation with scatter and function2.</p>
       <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/functions.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/phase_portrait.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Phase portraits</strong></p>
+      <p>Six planar vector fields as colour fields, with hue for the direction
+      and brightness for the magnitude. A vector in every cell, so saddles,
+      spirals and vortices survive at terminal resolution.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/phase_portrait.py">Source</a></p>
     </td>
   </tr>
   <tr>

@@ -7,6 +7,7 @@ from matthewplotlib.colormaps import (
     cyber, rainbow,
     magma, inferno, plasma, viridis,
     sweetie16, pico8, tableau, nouveau,
+    chroma, domain,
 )
 
 
@@ -19,6 +20,10 @@ ALL_CONTINUOUS = [
 
 ALL_DISCRETE = [
     sweetie16, pico8, tableau, nouveau,
+]
+
+ALL_VECTOR = [
+    chroma, domain,
 ]
 
 
@@ -371,3 +376,102 @@ class TestDiscreteColormaps:
         r_base = cmap(np.array([0]))
         r_wrap = cmap(np.array([n]))
         assert np.array_equal(r_base, r_wrap)
+
+
+# # #
+# Vector colormaps
+
+
+class TestVectorColormaps:
+    @pytest.mark.parametrize("cmap", ALL_VECTOR)
+    def test_scalar_output_shape(self, cmap):
+        assert cmap(1 + 1j).shape == (3,)
+
+    @pytest.mark.parametrize("cmap", ALL_VECTOR)
+    def test_2d_output_shape(self, cmap):
+        assert cmap(np.ones((4, 5), dtype=complex)).shape == (4, 5, 3)
+
+    @pytest.mark.parametrize("cmap", ALL_VECTOR)
+    def test_output_dtype(self, cmap):
+        assert cmap(np.ones(3, dtype=complex)).dtype == np.uint8
+
+    @pytest.mark.parametrize("cmap", ALL_VECTOR)
+    def test_pairs_mean_the_same_as_complex_numbers(self, cmap):
+        pairs = np.array([[1.0, 0.0], [0.0, 2.0], [-1.5, 0.5]])
+        numbers = np.array([1 + 0j, 2j, -1.5 + 0.5j])
+        assert np.array_equal(cmap(pairs), cmap(numbers))
+
+    @pytest.mark.parametrize("cmap", ALL_VECTOR)
+    def test_pairs_consume_the_last_axis(self, cmap):
+        assert cmap(np.ones((4, 5, 2))).shape == (4, 5, 3)
+
+    @pytest.mark.parametrize("cmap", ALL_VECTOR)
+    def test_real_input_that_is_not_pairs_is_rejected(self, cmap):
+        with pytest.raises(ValueError, match="expected complex numbers"):
+            cmap(np.ones((4, 3)))
+
+    @pytest.mark.parametrize("cmap", ALL_VECTOR)
+    def test_finite_output_for_non_finite_input(self, cmap):
+        """A pole or a hole in the data must still produce a colour."""
+        weird = np.array([np.nan, np.inf, -np.inf, np.nan * 1j], dtype=complex)
+        result = cmap(weird)
+        assert result.shape == (4, 3)
+
+    @pytest.mark.parametrize("cmap", ALL_VECTOR)
+    def test_no_warnings_at_the_singular_values(self, cmap):
+        """Zero and infinity go through the logarithm and the division."""
+        with np.errstate(all="raise"):
+            cmap(np.array([0j, np.inf + 0j, 1e-300 + 0j]))
+
+
+class TestChroma:
+    def test_zero_is_black(self):
+        assert np.array_equal(chroma(0j), [0, 0, 0])
+
+    def test_positive_real_is_red(self):
+        assert np.array_equal(chroma(1 + 0j), [255, 0, 0])
+
+    def test_the_wheel_turns_anticlockwise(self):
+        """A third of a turn from red is green, and two thirds is blue."""
+        third = np.exp(2j * np.pi / 3)
+        assert np.array_equal(chroma(third), [0, 255, 0])
+        assert np.array_equal(chroma(third ** 2), [0, 0, 255])
+
+    def test_magnitude_becomes_brightness(self):
+        dim, bright = chroma(0.25 + 0j), chroma(0.75 + 0j)
+        assert dim[0] < bright[0]
+
+    def test_magnitude_above_one_saturates(self):
+        assert np.array_equal(chroma(1 + 0j), chroma(1000 + 0j))
+
+    def test_direction_alone_decides_hue(self):
+        """Two vectors the same way along differ only in brightness."""
+        short, long = chroma(0.5 + 0.5j), chroma(1 + 1j)
+        assert np.argmax(short) == np.argmax(long)
+
+
+class TestDomain:
+    def test_a_zero_is_black(self):
+        assert np.array_equal(domain(0j), [0, 0, 0])
+
+    def test_a_pole_is_white(self):
+        assert np.array_equal(domain(np.inf + 0j), [255, 255, 255])
+
+    def test_lightness_rises_with_modulus(self):
+        moduli = np.array([2.0 ** k for k in range(-8, 9)]) + 0j
+        # compare at the same point of each octave, so the contour rings do
+        # not confound the underlying ramp
+        lightness = domain(moduli).astype(int).sum(axis=-1)
+        assert np.all(np.diff(lightness) > 0)
+
+    def test_phase_decides_hue_at_a_fixed_modulus(self):
+        assert not np.array_equal(domain(1 + 0j), domain(1j))
+
+    def test_scale_is_absolute_not_relative(self):
+        """Unlike a continuous colormap, the input is not normalised."""
+        assert not np.array_equal(domain(1 + 0j), domain(100 + 0j))
+
+    def test_a_ring_darkens_just_above_each_power_of_two(self):
+        below = domain(np.array([2.0 - 1e-9]) + 0j).astype(int).sum()
+        above = domain(np.array([2.0 + 1e-9]) + 0j).astype(int).sum()
+        assert above < below

@@ -12,7 +12,9 @@ from matthewplotlib.plots import (
     axes,
     border,
     calendar,
+    candles,
     weeks,
+    cfunction2,
     dstack2,
     function2,
     histogram2,
@@ -22,8 +24,20 @@ from matthewplotlib.plots import (
     scatter,
     table,
     text,
+    vfunction2,
     wrap,
 )
+
+
+class RecordingVectorColormap:
+    """A vector colormap that retains the field it received."""
+
+    def __init__(self):
+        self.input = None
+
+    def __call__(self, values):
+        self.input = np.array(values, copy=True)
+        return np.zeros((*np.shape(values)[:2], 3), dtype=np.uint8)
 
 
 class RecordingColormap:
@@ -422,6 +436,124 @@ class TestFunction2:
 
         assert np.allclose(np.unique(sampled[0][:, 0]), [0.0, 1 / 3, 2 / 3, 1.0])
         assert np.allclose(np.unique(sampled[0][:, 1]), [0.0, 2.0])
+
+
+class TestVFunction2:
+    def test_the_field_is_scaled_into_the_unit_disc(self):
+        colormap = RecordingVectorColormap()
+
+        vfunction2(
+            lambda xy: np.stack([xy[:, 0], np.zeros(len(xy))], axis=-1),
+            xrange=(0.0, 4.0),
+            yrange=(0.0, 1.0),
+            width=2,
+            height=1,
+            colormap=colormap,
+        )
+
+        # x is sampled at 1 and 3, and the largest magnitude becomes one
+        assert np.allclose(colormap.input[..., 0], [[1 / 3, 1.0], [1 / 3, 1.0]])
+
+    def test_magnitudes_outside_vrange_saturate(self):
+        colormap = RecordingVectorColormap()
+
+        vfunction2(
+            lambda xy: np.stack([xy[:, 0], np.zeros(len(xy))], axis=-1),
+            xrange=(0.0, 4.0),
+            yrange=(0.0, 1.0),
+            width=2,
+            height=1,
+            vrange=(0.0, 2.0),
+            colormap=colormap,
+        )
+
+        assert np.allclose(colormap.input[..., 0], [[0.5, 1.0], [0.5, 1.0]])
+
+    def test_scaling_keeps_the_direction(self):
+        colormap = RecordingVectorColormap()
+
+        vfunction2(
+            lambda xy: np.full((len(xy), 2), [3.0, 4.0]),
+            xrange=(0.0, 1.0),
+            yrange=(0.0, 1.0),
+            width=1,
+            height=1,
+            vrange=(0.0, 10.0),
+            colormap=colormap,
+        )
+
+        # magnitude five out of ten, along the same 3:4 diagonal
+        assert np.allclose(colormap.input, [[[0.3, 0.4]], [[0.3, 0.4]]])
+
+    def test_a_field_of_zeroes_does_not_divide_by_zero(self):
+        with np.errstate(all="raise"):
+            plot = vfunction2(
+                lambda xy: np.zeros_like(xy),
+                xrange=(0.0, 1.0),
+                yrange=(0.0, 1.0),
+                width=2,
+                height=1,
+            )
+        assert plot.width == 2
+
+    def test_a_field_that_returns_the_wrong_shape_is_rejected(self):
+        with pytest.raises(ValueError, match="one .u, v. vector per point"):
+            vfunction2(
+                lambda xy: xy[:, 0],
+                xrange=(0.0, 1.0),
+                yrange=(0.0, 1.0),
+                width=2,
+                height=1,
+            )
+
+
+class TestCFunction2:
+    def test_the_values_reach_the_colormap_unnormalised(self):
+        """A domain colouring reads the modulus on an absolute scale."""
+        seen = []
+
+        def colormap(values):
+            seen.append(np.array(values, copy=True))
+            return np.zeros((*np.shape(values), 3), dtype=np.uint8)
+
+        cfunction2(
+            lambda z: 10 * z,
+            xrange=(0.0, 2.0),
+            yrange=(0.0, 1.0),
+            width=2,
+            height=1,
+            colormap=colormap,
+        )
+
+        assert np.allclose(seen[0].real, [[5.0, 15.0], [5.0, 15.0]])
+
+    def test_the_function_is_given_complex_numbers(self):
+        sampled = []
+
+        def record(z):
+            sampled.append(np.array(z, copy=True))
+            return z
+
+        cfunction2(record, (0.0, 2.0), (0.0, 2.0), width=2, height=1)
+
+        assert np.iscomplexobj(sampled[0])
+        assert np.allclose(np.unique(sampled[0].real), [0.5, 1.5])
+        assert np.allclose(np.unique(sampled[0].imag), [0.5, 1.5])
+
+    def test_a_function_that_returns_the_wrong_shape_is_rejected(self):
+        with pytest.raises(ValueError, match="one value per point"):
+            cfunction2(
+                lambda z: np.stack([z.real, z.imag], axis=-1),
+                xrange=(0.0, 1.0),
+                yrange=(0.0, 1.0),
+                width=2,
+                height=1,
+            )
+
+    def test_a_pole_at_the_origin_is_not_sampled_on(self):
+        """Centre sampling never lands on a round number."""
+        with np.errstate(all="raise"):
+            cfunction2(lambda z: 1 / z, (-1.0, 1.0), (-1.0, 1.0), 4, 2)
 
 
 class TestHistogram2:
@@ -1060,6 +1192,165 @@ class TestWeeks:
         plot = weeks(a_year(), width=4)
         assert plot.width == 4
         assert plot.height == 53 * 9 + 52
+
+
+# # #
+# candles
+
+
+class TestCandles:
+    """A candlestick chart draws one candle per period, coloured by whether the
+    period closed above or below where it opened. It carries its value range as
+    a vertical coordinate and no horizontal one, since its candles are a
+    sequence of periods rather than a measured axis."""
+
+    OPENS = np.array([10.0, 11.0, 12.0, 11.5])
+    HIGHS = np.array([11.5, 12.5, 12.5, 13.0])
+    LOWS = np.array([9.5, 10.5, 11.0, 11.0])
+    CLOSES = np.array([11.0, 12.0, 11.5, 12.5])
+
+    def chart(self, **kwargs):
+        return candles(
+            opens=self.OPENS,
+            highs=self.HIGHS,
+            lows=self.LOWS,
+            closes=self.CLOSES,
+            **kwargs,
+        )
+
+    def test_the_value_range_covers_every_candle(self):
+        plot = self.chart()
+        assert plot.window.yrange == (9.5, 13.0)
+
+    def test_there_is_no_horizontal_coordinate(self):
+        assert self.chart().window.xrange is None
+
+    def test_axes_labels_the_value_axis_and_leaves_the_rest_alone(self):
+        lines = axes(self.chart(height=4)).chars.to_plain_str().splitlines()
+        # a gutter of labels down the left, one rule beside it, and no row of
+        # labels underneath
+        assert len(lines) == 4
+        assert [line[:5] for line in lines] == ["13.0┐", "    │", "    │", " 9.5┘"]
+
+    def test_the_rectangle_is_one_column_per_candle_by_default(self):
+        plot = self.chart(height=5)
+        assert (plot.height, plot.width) == (5, 4)
+
+    def test_bodies_and_spacing_widen_the_rectangle(self):
+        plot = self.chart(height=5, body_width=3, spacing=1)
+        assert plot.width == 4 * 4 - 1
+
+    def test_a_rising_candle_takes_the_rising_colour(self):
+        plot = self.chart(height=4, rising=(1.0, 0.0, 0.0))
+        column = plot.chars.fg_rgb[:, 0]
+        drawn = column[plot.chars.fg[:, 0]]
+        assert (drawn == np.array([255, 0, 0])).all(axis=-1).any()
+
+    def test_a_falling_candle_takes_the_falling_colour(self):
+        # the third period opened at 12.0 and closed at 11.5
+        plot = self.chart(height=4, falling=(0.0, 0.0, 255))
+        column = plot.chars.fg_rgb[:, 2]
+        drawn = column[plot.chars.fg[:, 2]]
+        assert (drawn == np.array([0, 0, 255])).all(axis=-1).any()
+
+    def test_a_candle_that_closed_where_it_opened_counts_as_rising(self):
+        plot = candles(
+            opens=np.array([1.0]),
+            highs=np.array([2.0]),
+            lows=np.array([0.0]),
+            closes=np.array([1.0]),
+            height=4,
+            rising=(1.0, 0.0, 0.0),
+            falling=(0.0, 0.0, 1.0),
+        )
+        drawn = plot.chars.fg_rgb[plot.chars.fg]
+        assert (drawn == np.array([255, 0, 0])).all(axis=-1).any()
+        assert not (drawn == np.array([0, 0, 255])).all(axis=-1).any()
+
+    def test_a_wick_takes_its_body_colour_by_default(self):
+        plot = self.chart(height=6, rising=(1.0, 0.0, 0.0))
+        # the first candle rose, so its wick is drawn in the rising colour
+        wicks = np.isin(plot.chars.codes[:, 0], [ord("│"), ord("╵"), ord("╷")])
+        assert wicks.any()
+        assert (plot.chars.fg_rgb[wicks, 0] == np.array([255, 0, 0])).all()
+
+    def test_a_wick_colour_applies_to_every_wick(self):
+        plot = self.chart(height=6, wick=(1.0, 1.0, 1.0))
+        wicks = np.isin(plot.chars.codes, [ord("│"), ord("╵"), ord("╷")])
+        assert wicks.any()
+        assert (plot.chars.fg_rgb[wicks] == 255).all()
+
+    def test_the_background_is_painted_behind_the_whole_rectangle(self):
+        plot = self.chart(height=5, background=(0.0, 0.0, 0.0))
+        assert plot.chars.bg.all()
+        assert (plot.chars.bg_rgb[~plot.chars.fg] == 0).all()
+
+    def test_a_narrower_vrange_clips_the_candles_into_it(self):
+        plot = self.chart(height=4, vrange=(12.0, 13.0))
+        assert plot.window.yrange == (12.0, 13.0)
+        # the first candle traded entirely below the range, so all four of its
+        # values clip to the bottom and it is drawn in the bottom row alone
+        assert not plot.chars.fg[:-1, 0].any()
+        assert plot.chars.fg[-1, 0]
+
+    def test_the_four_series_must_be_the_same_length(self):
+        with pytest.raises(ValueError, match="same length"):
+            candles(
+                opens=np.zeros(3),
+                highs=np.ones(3),
+                lows=np.zeros(3),
+                closes=np.ones(2),
+            )
+
+    def test_each_series_must_be_one_dimensional(self):
+        with pytest.raises(ValueError, match="sequence of numbers"):
+            candles(
+                opens=np.zeros((2, 2)),
+                highs=np.ones((2, 2)),
+                lows=np.zeros((2, 2)),
+                closes=np.ones((2, 2)),
+            )
+
+    def test_a_high_inside_the_body_is_refused(self):
+        with pytest.raises(ValueError, match="opens, highs, lows, closes"):
+            candles(
+                opens=np.array([1.0]),
+                highs=np.array([1.5]),
+                lows=np.array([0.5]),
+                closes=np.array([2.0]),
+            )
+
+    def test_a_low_inside_the_body_is_refused(self):
+        with pytest.raises(ValueError, match="opens, highs, lows, closes"):
+            candles(
+                opens=np.array([1.0]),
+                highs=np.array([2.0]),
+                lows=np.array([1.5]),
+                closes=np.array([1.2]),
+            )
+
+    def test_candles_all_at_one_value_have_no_range_to_plot_in(self):
+        with pytest.raises(ValueError, match="same value"):
+            candles(
+                opens=np.array([1.0]),
+                highs=np.array([1.0]),
+                lows=np.array([1.0]),
+                closes=np.array([1.0]),
+            )
+
+    def test_no_candles_and_no_range_to_infer_one_from(self):
+        with pytest.raises(ValueError, match="no candles"):
+            candles(
+                opens=np.zeros(0),
+                highs=np.zeros(0),
+                lows=np.zeros(0),
+                closes=np.zeros(0),
+            )
+
+    def test_a_repr_names_the_candles_and_their_range(self):
+        assert repr(self.chart(height=4)) == (
+            "candles(height=4, width=4, values=<4 candles on [9.50,13.00]>)"
+        )
 
 # # #
 # table

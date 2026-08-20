@@ -16,12 +16,15 @@ Data plots:
 * `line3`
 * `image`
 * `function2`
+* `vfunction2`
+* `cfunction2`
 * `histogram2`
 * `progress`
 * `bars`
 * `histogram`
 * `columns`
 * `vistogram`
+* `candles`
 * `hilbert`
 * `calendar`
 * `weeks`
@@ -61,7 +64,7 @@ from PIL import Image
 from typing import Any, Callable, Literal, NamedTuple, Self, cast
 from collections.abc import Mapping, Sequence
 from numpy.typing import ArrayLike, NDArray
-from matthewplotlib.colormaps import ColorMap
+from matthewplotlib.colormaps import ColorMap, chroma, domain
 from matthewplotlib.colors import ColorLike, parse_color, parse_colors
 from numbers import Number
 
@@ -95,6 +98,7 @@ from matthewplotlib.core import (
     unicode_braille_array,
     unicode_bar,
     unicode_col,
+    unicode_candles,
     unicode_image,
     unicode_braille_points,
     unicode_braille_segments,
@@ -791,6 +795,34 @@ class image(plot):
         return f"image({self.window!r})"
 
 
+def _sample_points(
+    w: window,
+    endpoints: bool,
+) -> NDArray: # float[2 * height * width, 2]
+    """
+    The (x, y) coordinate that each pixel of a window stands for.
+
+    Pixels are listed top row first, so that reshaping the result to
+    `[2 * height, width]` puts them back where they came from.
+
+    By default the pixels tile the window's ranges exactly and each one is
+    represented by its own centre. If `endpoints` is true, the coordinates are
+    instead spread from one end of each range to the other, so that the four
+    corner pixels stand for the four corner combinations of the ranges and the
+    pixels reach half a pixel beyond them.
+    """
+    if w.xrange is None or w.yrange is None:
+        raise ValueError(f"{w!r} has no coordinates to sample")
+    if endpoints:
+        X, Y = np.meshgrid(
+            np.linspace(*w.xrange, num=w.width),
+            np.linspace(*w.yrange, num=2*w.height)[::-1],
+        ) # float[h, w] (x2)
+    else:
+        X, Y = w.pixel_centres()
+    return einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')
+
+
 class function2(image):
     """
     Heatmap representing the image of a 2d function over a square.
@@ -843,14 +875,7 @@ class function2(image):
     ):
         # the coordinates each grid square stands for, top row first
         w = window(xrange=xrange, yrange=yrange, width=width, height=height)
-        if endpoints:
-            X, Y = np.meshgrid(
-                np.linspace(*xrange, num=width),
-                np.linspace(*yrange, num=2*height)[::-1],
-            ) # float[h, w] (x2)
-        else:
-            X, Y = w.pixel_centres()
-        XY = einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')
+        XY = _sample_points(w, endpoints=endpoints)
 
         # sample the function
         Z = F(XY)
@@ -877,6 +902,194 @@ class function2(image):
         
     def __repr__(self):
         return f"function2(f={self.name}, {self.window!r})"
+
+
+class vfunction2(image):
+    """
+    Colour field representing a 2d vector field over a rectangle.
+
+    Every pixel is coloured by the vector the function returns there: the
+    direction becomes the hue and the magnitude becomes the brightness. Unlike
+    a field of arrows this shows a vector at every pixel, so the structure of
+    the field---its sources, sinks, saddles and the channels between them---is
+    visible at whatever resolution the terminal allows.
+
+    Inputs:
+
+    * F : float[batch, 2] -> float[batch, 2].
+        The (vectorised) field to plot. The input is a batch of (x, y)
+        positions. The output should be the batch of (u, v) vectors at those
+        positions.
+    * xrange : (float, float).
+        Lower and upper bounds on the x values to pass into the function.
+    * yrange : (float, float).
+        Lower and upper bounds on the y values to pass into the function.
+    * width : int.
+        The number of character columns in the plot. This will also become the
+        number of grid squares along the x axis.
+    * height : int.
+        The number of character rows in the plot. This will also be half of the
+        number of grid squares, since the result is an image plot with two
+        half-character-pixels per row.
+    * vrange : optional (float, float).
+        Expected lower and upper bounds on the *magnitude* of the vectors, used
+        to scale them into the unit disc for the colormap. By default the lower
+        bound is zero and the upper bound is the largest magnitude over the
+        grid, so that the fastest part of the field is at full brightness.
+        Magnitudes outside these bounds saturate at the nearest end.
+
+        The lower bound is zero by default rather than the smallest magnitude,
+        because a vector field's zeros are where its structure is, and they
+        should come out black.
+    * colormap : optional vector colormap (e.g. mp.chroma).
+        Applied to the scaled field. Defaults to `mp.chroma`. A custom colormap
+        receives the scaled `float[h, w, 2]` field and must return an RGB image
+        of shape `[h, w, 3]`.
+    * endpoints : bool (default: False).
+        By default, the grid squares tile the ranges exactly and each one shows
+        the value of the field at its own centre.
+
+        If true, the field is instead sampled at points spread from one end of
+        each range to the other, so that the four corner squares show the four
+        corner combinations of xrange and yrange. The squares then reach half a
+        square beyond the ranges, which the axes still report as the limits.
+    """
+    def __init__(
+        self,
+        F: Callable[[np.ndarray], np.ndarray],
+        xrange: tuple[float, float],
+        yrange: tuple[float, float],
+        width: int,
+        height: int,
+        vrange: tuple[float, float] | None = None,
+        colormap: ColorMap | None = None,
+        endpoints: bool = False,
+    ):
+        # the coordinates each grid square stands for, top row first
+        w = window(xrange=xrange, yrange=yrange, width=width, height=height)
+        XY = _sample_points(w, endpoints=endpoints)
+
+        # sample the field
+        UV = np.asarray(F(XY), dtype=float)
+        if UV.shape != XY.shape:
+            raise ValueError(
+                f"expected the field to return one (u, v) vector per point, "
+                f"an array of shape {XY.shape}, not {UV.shape}"
+            )
+        vgrid = einops.rearrange(
+            UV,
+            '(h w) uv -> h w uv',
+            h=2*height,
+            w=width,
+        )
+
+        # scale the magnitudes into [0, 1], leaving the directions alone
+        magnitude = np.hypot(vgrid[..., 0], vgrid[..., 1])
+        if vrange is None:
+            finite = magnitude[np.isfinite(magnitude)]
+            vrange = (0., float(finite.max()) if finite.size else 0.)
+        if vrange[0] == vrange[1]:
+            scaled = np.zeros_like(magnitude)
+        else:
+            scaled = (magnitude - vrange[0]) / (vrange[1] - vrange[0])
+            scaled = np.clip(scaled, 0., 1.)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            direction = vgrid / magnitude[..., np.newaxis]
+        direction = np.where(np.isfinite(direction), direction, 0.)
+
+        # create the image plot itself
+        super().__init__(
+            im=direction * scaled[..., np.newaxis],
+            colormap=chroma if colormap is None else colormap,
+            xrange=xrange,
+            yrange=yrange,
+        )
+        self.name = getattr(F, '__name__', '?')
+        self.vrange = vrange
+
+    def __repr__(self):
+        return f"vfunction2(f={self.name}, {self.window!r})"
+
+
+class cfunction2(image):
+    """
+    Domain colouring of a complex function over a rectangle of the plane.
+
+    Every pixel is coloured by the value the function takes there: the phase
+    becomes the hue and the modulus becomes the lightness, so a zero of the
+    function shows up as a black point, a pole as a white one, and the order of
+    either can be counted off the number of times the colour wheel turns around
+    it.
+
+    Inputs:
+
+    * F : complex[batch] -> complex[batch].
+        The (vectorised) function to plot. The input is a batch of points of
+        the complex plane. The output should be the batch of values there.
+    * xrange : (float, float).
+        Lower and upper bounds on the real part of the input.
+    * yrange : (float, float).
+        Lower and upper bounds on the imaginary part of the input.
+    * width : int.
+        The number of character columns in the plot. This will also become the
+        number of grid squares along the real axis.
+    * height : int.
+        The number of character rows in the plot. This will also be half of the
+        number of grid squares, since the result is an image plot with two
+        half-character-pixels per row.
+    * colormap : optional vector colormap (e.g. mp.domain).
+        Applied to the values. Defaults to `mp.domain`. There is no range to
+        configure, because a domain colouring puts the modulus on an absolute
+        scale---the colormap owns it. A custom colormap receives the
+        `complex[h, w]` values and must return an RGB image of shape
+        `[h, w, 3]`.
+    * endpoints : bool (default: False).
+        By default, the grid squares tile the ranges exactly and each one shows
+        the value of the function at its own centre.
+
+        If true, the function is instead sampled at points spread from one end
+        of each range to the other, so that the four corner squares show the
+        four corner combinations of xrange and yrange. The squares then reach
+        half a square beyond the ranges, which the axes still report as the
+        limits.
+
+    Sampling the function at the centre of each square is the default here for
+    a further reason: a function with a pole at a round number, such as `1/z`
+    at the origin, is then never evaluated exactly on it.
+    """
+    def __init__(
+        self,
+        F: Callable[[np.ndarray], np.ndarray],
+        xrange: tuple[float, float],
+        yrange: tuple[float, float],
+        width: int,
+        height: int,
+        colormap: ColorMap | None = None,
+        endpoints: bool = False,
+    ):
+        # the coordinates each grid square stands for, top row first
+        w = window(xrange=xrange, yrange=yrange, width=width, height=height)
+        XY = _sample_points(w, endpoints=endpoints)
+
+        # sample the function over the plane
+        Z = np.asarray(F(XY[:, 0] + 1j * XY[:, 1]))
+        if Z.shape != XY.shape[:1]:
+            raise ValueError(
+                f"expected the function to return one value per point, an "
+                f"array of shape {XY.shape[:1]}, not {Z.shape}"
+            )
+
+        # create the image plot itself
+        super().__init__(
+            im=einops.rearrange(Z, '(h w) -> h w', h=2*height, w=width),
+            colormap=domain if colormap is None else colormap,
+            xrange=xrange,
+            yrange=yrange,
+        )
+        self.name = getattr(F, '__name__', '?')
+
+    def __repr__(self):
+        return f"cfunction2(f={self.name}, {self.window!r})"
 
 
 class histogram2(image):
@@ -1423,6 +1636,163 @@ class vistogram(columns):
             f"[{self.bins[0]:.2f},{self.bins[-1]:.2f}]>)"
         )
 
+
+class candles(plot):
+    """
+    A candlestick chart.
+
+    Draw one candle per period, each a filled body spanning the opening and
+    closing values with a thin wick reaching out of it to the high and the low.
+    The body is colored by whether the period closed above or below where it
+    opened.
+
+    Inputs:
+
+    * opens, highs, lows, closes : number[n].
+        The four values of each period. Each high must be at least as large as
+        the opening and closing values of its period, and each low at most as
+        small, as the wick reaches out of the body rather than into it.
+    * height : int (default: 12).
+        The number of character rows the candles are drawn in.
+    * body_width : int (default 1).
+        The number of columns each body takes up. The wick runs up the middle
+        one, so an even width leaves it off centre.
+    * spacing : int (default 0).
+        The number of blank columns between one candle and the next.
+    * vrange : optional (number, number).
+        The values at the bottom and the top of the plot. By default, the
+        lowest low and the highest high, so that every candle fits. Given a
+        narrower interval, the candles outside it are clipped to it.
+    * rising : ColorLike (default: a green).
+        The color of a candle that closed at or above its opening value.
+    * falling : ColorLike (default: a red).
+        The color of a candle that closed below its opening value.
+    * wick : optional ColorLike.
+        The color of the wicks. By default each wick takes the color of the
+        body it belongs to.
+    * background : ColorLike (default: a near-black).
+        The color behind the candles. Unlike most plots, a candlestick chart
+        paints its whole rectangle rather than leaving the terminal's
+        background showing: a body is positioned to an eighth of a character
+        cell, and reaching every eighth means drawing some bodies as a
+        background-colored block over a body-colored cell, which needs the
+        background named.
+    * style : LineStyle (default: LineStyle.LIGHT).
+        The weight of the wicks.
+
+    The plot carries its value range as a vertical coordinate and no horizontal
+    one, since the candles are a sequence of periods rather than a measured
+    axis. So `axes` labels its value axis and leaves the other three sides
+    alone.
+
+    A body is positioned to the nearest eighth of a character cell and a wick
+    to the nearest half. A body always keeps its true length, and a candle that
+    opened and closed at the same value still shows a hairline.
+    """
+    def __init__(
+        self,
+        opens: ArrayLike,   # number[n]
+        highs: ArrayLike,   # number[n]
+        lows: ArrayLike,    # number[n]
+        closes: ArrayLike,  # number[n]
+        height: int = 12,
+        body_width: int = 1,
+        spacing: int = 0,
+        vrange: tuple[number, number] | None = None,
+        rising: ColorLike = (0.30, 0.78, 0.45),
+        falling: ColorLike = (0.90, 0.32, 0.36),
+        wick: ColorLike | None = None,
+        background: ColorLike = (0.08, 0.09, 0.11),
+        style: LineStyle = LineStyle.LIGHT,
+    ):
+        # standardise inputs
+        values = [np.asarray(v, dtype=float) for v in (opens, highs, lows, closes)]
+        for name, value in zip(("opens", "highs", "lows", "closes"), values):
+            if value.ndim != 1:
+                raise ValueError(
+                    f"{name} should be a sequence of numbers, but it has "
+                    f"shape {value.shape}"
+                )
+        opens_, highs_, lows_, closes_ = values
+        lengths = {v.shape[0] for v in values}
+        if len(lengths) > 1:
+            raise ValueError(
+                "opens, highs, lows and closes should all be the same length, "
+                f"but they are {', '.join(str(v.shape[0]) for v in values)}"
+            )
+        num_candles = opens_.shape[0]
+
+        # a high below the body, or a low above it, would leave the wick inside
+        # the body; usually it means the four series arrived out of order
+        too_low = np.flatnonzero(highs_ < np.maximum(opens_, closes_))
+        too_high = np.flatnonzero(lows_ > np.minimum(opens_, closes_))
+        for name, wrong in (("high", too_low), ("low", too_high)):
+            if len(wrong):
+                i = wrong[0]
+                value = highs_[i] if name == "high" else lows_[i]
+                raise ValueError(
+                    f"candle {i} has a {name} of {value}, inside its opening "
+                    f"value {opens_[i]} and closing value {closes_[i]}; the "
+                    "arguments are opens, highs, lows, closes"
+                )
+
+        # determine the value range, and where each value sits within it
+        if vrange is None:
+            if num_candles == 0:
+                raise ValueError("cannot infer a value range with no candles")
+            vmin, vmax = float(lows_.min()), float(highs_.max())
+        else:
+            vmin, vmax = float(vrange[0]), float(vrange[1])
+        if vmin == vmax:
+            raise ValueError(
+                f"the candles all sit at the same value, {vmin}; give a vrange "
+                "spanning an interval to plot them in"
+            )
+        proportions = [(v - vmin) / (vmax - vmin) for v in values]
+
+        # determine the colours
+        rose = closes_ >= opens_
+        body_colors = np.where(
+            rose[:, None],
+            parse_colors(rising, n=1),
+            parse_colors(falling, n=1),
+        ).astype(np.uint8)
+        if wick is None:
+            wick_colors = body_colors
+        else:
+            wick_colors = parse_colors(wick, n=num_candles)
+
+        # construct the candles
+        chars = unicode_candles(
+            opens=proportions[0],
+            highs=proportions[1],
+            lows=proportions[2],
+            closes=proportions[3],
+            height=height,
+            background=background,
+            body_colors=body_colors,
+            wick_colors=wick_colors,
+            body_width=body_width,
+            spacing=spacing,
+            style=style,
+        )
+
+        # form a plot object
+        super().__init__(chars)
+        self.window = window(
+            xrange=None,
+            yrange=(vmin, vmax),
+            width=chars.width,
+            height=chars.height,
+        )
+        self.num_candles = num_candles
+
+    def __repr__(self):
+        return (
+            f"candles(height={self.height}, width={self.width}, "
+            f"values=<{self.num_candles} candles on "
+            f"[{self.window.yrange[0]:.2f},{self.window.yrange[1]:.2f}]>)"
+        )
 
 class hilbert(plot):
     """
