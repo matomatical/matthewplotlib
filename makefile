@@ -17,6 +17,10 @@ docs:
 serve:
 	mkdocs serve
 
+# `make docs` leaves the site it built behind, for looking over.
+clean:
+	rm -rf site
+
 # Usage: make deploy V=<version number, e.g. "0.6.3">
 # The alias is a copy rather than mike's default symlink, which github pages
 # serves as a 404 instead of following.
@@ -70,4 +74,4 @@ release:
 	@echo "make deploy V=$(V)"
 	@echo "(then make the release on github)"
 
-.PHONY: docs serve deploy mypy test goldens release
+.PHONY: docs serve deploy clean mypy test goldens release

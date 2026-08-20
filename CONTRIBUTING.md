@@ -120,6 +120,7 @@ Overrides for the theme's partials and for mkdocstrings' templates live in
 ```console
 make serve                  # preview on localhost, reloading as you edit
 make docs                   # build once into site/, failing on any bad link
+make clean                  # throw the built site away
 ```
 
 `docs/styletest.md` exercises the site's own appearance -- every kind of
