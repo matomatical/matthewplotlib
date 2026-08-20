@@ -69,6 +69,7 @@ plugins:
             members_order: source
             group_by_category: false
   - include-markdown
+  - gh-admonitions
 
 markdown_extensions:
   - footnotes

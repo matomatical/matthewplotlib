@@ -202,6 +202,9 @@ More elaborate documentation:
 * [x] Documentation search.
 * [ ] Tutorials and recipes.
 * [ ] Freeze documentation with each version.
+* [ ] A logo, used as the website's favicon.
+* [ ] Link previews when the website is shared (Open Graph tags), showing off
+  a plot.
 * [x] Terminal support matrix / compatibility docs.
 
 Advanced testing:

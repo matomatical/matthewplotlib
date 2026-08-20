@@ -1,6 +1,7 @@
 Examples
 ========
 
+> [!NOTE]
 > **Do you have a cool, standalone matthewplotlib example?**
 > 
 > I'd love to include it on this page! Consider sending me a link.
