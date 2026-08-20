@@ -1155,9 +1155,6 @@ class BoxStyle(str, enum.Enum):
     * `BLOCK2`: A uniform blocky border.
     * `TIGER1`: A stripy block border.
     * `TIGER2`: An alternative stripy block border.
-    * `LIGHTX`: A light border with axis ticks.
-    * `HEAVYX`: A heavy border with axis ticks.
-    * `LOWERX`: A partial border with axis ticks.
 
     Demo:
 
@@ -1168,9 +1165,6 @@ class BoxStyle(str, enum.Enum):
              ▛──────▜ ▛▀▀▀▀▀▀▜ █▀▀▀▀▀▀█ ▞▝▝▝▝▝▝▝ ▘▘▘▘▘▘▘▚
      BLANK   │BUMPER│ ▌BLOCK1▐ █BLOCK2█ ▖TIGER1▝ ▘TIGER2▗
              ▙──────▟ ▙▄▄▄▄▄▄▟ █▄▄▄▄▄▄█ ▖▖▖▖▖▖▖▞ ▚▗▗▗▗▗▗▗
-    ┬──────┐ ┲━━━━━━┓ ╷        
-    │LIGHTX│ ┃HEAVYX┃ │LOWERX  
-    ┼──────┤ ╄━━━━━━┩ ┼──────╴ 
     ```
 
     TODO:
@@ -1190,9 +1184,6 @@ class BoxStyle(str, enum.Enum):
     BLOCK2 = "█▀████▄█"
     TIGER1 = "▞▝▝▝▖▖▖▞"
     TIGER2 = "▘▘▚▘▘▚▗▗"
-    LIGHTX = "┬─┐││┼─┤"
-    HEAVYX = "┲━┓┃┃╄━┩"
-    LOWERX = "╷   │┼─╴"
 
     @property
     def _nw(self) -> int:

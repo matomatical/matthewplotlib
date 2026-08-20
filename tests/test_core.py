@@ -439,22 +439,25 @@ NONE = (False, False, False, False)
 
 
 class TestUnicodeFrame:
-    def test_a_full_frame_ticked_below_and_left_is_the_old_ticked_box(self):
-        """The characters are derived from which arms meet, so a frame ruled
-        all round and ticked on its west and south sides must come out as the
-        style that used to be written down for exactly that case."""
-        inner = CharArray.from_size(3, 5)
+    def test_a_full_frame_ticked_below_and_left_turns_and_ticks(self):
+        """Every character is derived from which arms meet it: the ticked
+        corners grow the arms that point at their labels, and the others
+        simply turn."""
         framed = unicode_frame(
-            inner,
+            CharArray.from_size(3, 5),
             LineStyle.LIGHT,
             cells=ALL,
             rules=ALL,
             ticks=(False, False, True, True),
         )
 
-        assert framed.to_plain_str() == unicode_box(
-            inner, BoxStyle.LIGHTX
-        ).to_plain_str()
+        assert framed.to_plain_str() == (
+            "┬─────┐\n"
+            "│     │\n"
+            "│     │\n"
+            "│     │\n"
+            "┼─────┤"
+        )
 
     def test_a_lone_ticked_rule_turns_at_its_ends(self):
         inner = CharArray.from_size(1, 6)
