@@ -82,7 +82,7 @@ def main(save: str | None = None):
         np.clip(mean_y - yrange[0], 0, None),
         height=margin_size,
         column_width=1,
-        vrange=yrange[1] - yrange[0],
+        vrange=(0, yrange[1] - yrange[0]),
         color="white",
     )
 
@@ -96,7 +96,7 @@ def main(save: str | None = None):
     left = mp.bars(
         np.clip(mean_x - xrange[0], 0, None)[::-1],
         width=margin_size,
-        vrange=xrange[1] - xrange[0],
+        vrange=(0, xrange[1] - xrange[0]),
         color="white",
     )
 

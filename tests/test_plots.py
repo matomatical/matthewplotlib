@@ -12,9 +12,11 @@ from matthewplotlib.plots import (
     axes,
     border,
     calendar,
+    colorbar,
     weeks,
     dstack2,
     function2,
+    heatmap,
     histogram2,
     image,
     line,
@@ -372,8 +374,74 @@ class TestImage:
         assert (plot.height, plot.width) == (2, 5)
 
 
+class TestHeatmap:
+    def test_the_scale_spans_the_data_by_default(self):
+        colormap = RecordingColormap()
+
+        plot = heatmap([[0.0, 5.0], [10.0, 20.0]], colormap=colormap)
+
+        assert plot.vrange == (0.0, 20.0)
+        assert np.array_equal(colormap.input, [[0.0, 0.25], [0.5, 1.0]])
+
+    def test_values_outside_a_given_interval_saturate(self):
+        colormap = RecordingColormap()
+
+        plot = heatmap(
+            [[-1.0, 0.5], [1.0, 2.0]],
+            colormap=colormap,
+            vrange=(0.0, 1.0),
+        )
+
+        assert plot.vrange == (0.0, 1.0)
+        assert np.array_equal(colormap.input, [[0.0, 0.5], [1.0, 1.0]])
+
+    def test_a_descending_interval_turns_the_scale_around(self):
+        colormap = RecordingColormap()
+
+        heatmap([[0.0, 1.0]], colormap=colormap, vrange=(1.0, 0.0))
+
+        assert np.array_equal(colormap.input, [[1.0, 0.0]])
+
+    def test_a_constant_grid_comes_out_at_the_bottom(self):
+        """There is no interval for the colours to span, so rather than
+        dividing by nothing every value sits at the bottom of the colormap."""
+        colormap = RecordingColormap()
+
+        plot = heatmap([[7.0, 7.0]], colormap=colormap)
+
+        assert plot.vrange == (7.0, 7.0)
+        assert np.array_equal(colormap.input, [[0.0, 0.0]])
+
+    def test_a_value_that_is_not_a_number_comes_out_at_the_bottom(self):
+        colormap = RecordingColormap()
+
+        plot = heatmap([[1.0, float("nan"), 3.0]], colormap=colormap)
+
+        assert plot.vrange == (1.0, 3.0)
+        assert np.array_equal(colormap.input, [[0.0, 0.0, 1.0]])
+
+    def test_an_interval_covering_nothing_is_refused(self):
+        with pytest.raises(ValueError, match="covers no interval"):
+            heatmap([[0.0, 1.0]], vrange=(5.0, 5.0))
+
+    def test_it_needs_a_grid_of_values(self):
+        with pytest.raises(ValueError, match="2d grid"):
+            heatmap(np.zeros((2, 3, 3)))
+
+    def test_it_carries_the_colour_scale_it_was_given(self):
+        plot = heatmap([[0.0, 1.0]], colormap=mp.viridis, vrange=(0.0, 4.0))
+
+        assert plot.vrange == (0.0, 4.0)
+        assert plot.colormap is mp.viridis
+
+    def test_an_image_carries_no_colour_scale(self):
+        """Its data is already colours, or already scaled, so there is no
+        interval to report and nothing for a colorbar to label."""
+        assert image([[0.0, 1.0]]).vrange is None
+
+
 class TestFunction2:
-    def test_values_outside_zrange_saturate_before_colormapping(self):
+    def test_values_outside_vrange_saturate_before_colormapping(self):
         colormap = RecordingColormap()
 
         function2(
@@ -382,7 +450,7 @@ class TestFunction2:
             yrange=(0.0, 1.0),
             width=2,
             height=1,
-            zrange=(0.0, 1.0),
+            vrange=(0.0, 1.0),
             colormap=colormap,
             endpoints=True,
         )
@@ -468,6 +536,104 @@ class TestHistogram2:
                 yrange=(-1.0, 1.0),
                 max_count=max_count,
             )
+
+
+# # #
+# colorbar
+
+
+class TestColorbar:
+    def test_it_takes_both_halves_of_the_scale_from_a_plot(self):
+        heat = heatmap([[0.0, 20.0]], colormap=mp.viridis)
+
+        bar = colorbar(heat)
+
+        assert bar.vrange == (0.0, 20.0)
+        assert bar.colormap is mp.viridis
+        assert bar.window.yrange == (0.0, 20.0)
+
+    def test_an_interval_needs_no_plot(self):
+        bar = colorbar((-2.0, 2.0), colormap=mp.viridis)
+
+        assert bar.vrange == (-2.0, 2.0)
+        assert bar.colormap is mp.viridis
+
+    def test_the_colormap_can_be_overridden(self):
+        heat = heatmap([[0.0, 1.0]], colormap=mp.viridis)
+
+        assert colorbar(heat, colormap=mp.magma).colormap is mp.magma
+
+    @pytest.mark.parametrize(
+        "direction, xrange, yrange, first, last",
+        [
+            ("up", None, (0.0, 10.0), 1.0, 0.0),
+            ("down", None, (10.0, 0.0), 0.0, 1.0),
+            ("right", (0.0, 10.0), None, 0.0, 1.0),
+            ("left", (10.0, 0.0), None, 1.0, 0.0),
+        ],
+    )
+    def test_each_direction_places_the_interval_its_own_way(
+        self, direction, xrange, yrange, first, last,
+    ):
+        """The coordinate runs from the low end of the screen axis to the high
+        end, and the ramp is built in screen order to match it: the first row
+        or the leftmost column first."""
+        colormap = RecordingColormap()
+
+        bar = colorbar(
+            (0.0, 10.0),
+            colormap=colormap,
+            direction=direction,
+            length=3,
+        )
+
+        assert (bar.window.xrange, bar.window.yrange) == (xrange, yrange)
+        ramp = colormap.input.reshape(-1) if xrange is None \
+          else colormap.input[0]
+        assert (ramp[0], ramp[-1]) == (first, last)
+
+    @pytest.mark.parametrize(
+        "direction, height, width",
+        [
+            ("up", 4, 2), ("down", 4, 2), ("left", 2, 4), ("right", 2, 4),
+        ],
+    )
+    def test_length_runs_along_the_scale_and_thickness_across_it(
+        self, direction, height, width,
+    ):
+        bar = colorbar((0.0, 1.0), direction=direction, length=4, thickness=2)
+
+        assert (bar.height, bar.width) == (height, width)
+
+    def test_a_vertical_bar_has_twice_the_gradient_resolution(self):
+        """A character cell holds two half-block pixels vertically and one
+        horizontally, so the same length buys twice the steps."""
+        vertical, horizontal = RecordingColormap(), RecordingColormap()
+
+        colorbar((0.0, 1.0), colormap=vertical, direction="up", length=6)
+        colorbar((0.0, 1.0), colormap=horizontal, direction="right", length=6)
+
+        assert vertical.input.shape[0] == 2 * horizontal.input.shape[1]
+
+    def test_a_plot_with_no_colour_scale_is_refused(self):
+        with pytest.raises(ValueError, match="no colour scale"):
+            colorbar(image([[0.0, 1.0]]))
+
+    def test_a_scale_that_is_not_a_colour_scale_is_refused(self):
+        """Bars measure their values as lengths, so the interval they keep
+        says nothing about what any colour means."""
+        with pytest.raises(ValueError, match="no colour scale"):
+            colorbar(mp.bars([1.0, 2.0]))
+
+    def test_an_unknown_direction_is_refused(self):
+        with pytest.raises(ValueError, match="up, down, left or right"):
+            colorbar((0.0, 1.0), direction="north")
+
+    def test_it_is_labelled_along_the_one_side_that_means_anything(self):
+        assert axes(colorbar((0.0, 1.0))).sides \
+            == ("crop", "crop", "crop", "label")
+        assert axes(colorbar((0.0, 1.0), direction="right")).sides \
+            == ("crop", "crop", "label", "crop")
 
 
 # # #
@@ -817,16 +983,16 @@ class TestCalendar:
 
     def test_the_value_scale_spans_the_data_by_default(self):
         plot = calendar({"2025-01-01": 3.0, "2025-01-02": 9.0}, cols=1)
-        assert (plot.vmin, plot.vmax) == (3.0, 9.0)
+        assert plot.vrange == (3.0, 9.0)
 
-    def test_a_single_number_scales_up_from_zero(self):
-        plot = calendar({"2025-01-01": 3.0}, vrange=10.0, cols=1)
-        assert (plot.vmin, plot.vmax) == (0.0, 10.0)
+    def test_a_given_value_scale_is_kept_as_it_stands(self):
+        plot = calendar({"2025-01-01": 3.0}, vrange=(0.0, 10.0), cols=1)
+        assert plot.vrange == (0.0, 10.0)
 
     def test_the_value_scale_ignores_the_days_with_no_value(self):
         days = {"2025-01-01": 3.0, "2025-01-02": float("nan")}
         plot = calendar(days, cols=1)
-        assert (plot.vmin, plot.vmax) == (3.0, 3.0)
+        assert plot.vrange == (3.0, 3.0)
 
     def test_the_first_weekday_shifts_the_columns(self):
         """The 1st of January 2025 is a Wednesday, so it lands in the third
@@ -1023,7 +1189,7 @@ class TestWeeks:
 
     def test_the_value_scale_spans_the_data_by_default(self):
         plot = weeks({"2025-01-01": 3.0, "2025-01-02": 9.0})
-        assert (plot.vmin, plot.vmax) == (3.0, 9.0)
+        assert plot.vrange == (3.0, 9.0)
 
     def test_it_draws_the_same_days_as_a_calendar_would(self):
         """The two share the front end that decides which days get a colour."""
@@ -1033,7 +1199,7 @@ class TestWeeks:
         strip = weeks(days, daterange=("2025-02-01", "2025-11-30"))
         grid = calendar(days, daterange=("2025-02-01", "2025-11-30"))
         assert strip.num_days == grid.num_days
-        assert (strip.vmin, strip.vmax) == (grid.vmin, grid.vmax)
+        assert strip.vrange == grid.vrange
 
     def test_it_needs_something_to_draw(self):
         with pytest.raises(ValueError, match="at least one"):
