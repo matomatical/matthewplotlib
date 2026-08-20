@@ -61,6 +61,7 @@ from matthewplotlib.plots import (
     hilbert,
     calendar,
     weeks,
+    table,
     text,
     border,
     axes,
