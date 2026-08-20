@@ -13,7 +13,8 @@ Basic plot types:
 * [x] Progress bars.
 * [x] Basic bar charts and column charts.
 * [x] Histograms.
-* [ ] Box plots.
+* [ ] Box plots, filled or outlined, lying either way, with `candles`
+  becoming one setting of them. Designed in `notes/box-plots.md`.
 * [x] Candlestick plots. See `notes/candlesticks.md`.
 
 Basic plot furnishings:
