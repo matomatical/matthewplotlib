@@ -18,9 +18,11 @@ serve:
 	mkdocs serve
 
 # Usage: make deploy V=<version number, e.g. "0.6.3">
+# The alias is a copy rather than mike's default symlink, which github pages
+# serves as a 404 instead of following.
 deploy:
 	@test -n "$(V)" || (echo "Usage: make deploy V=0.6.3" && exit 1)
-	mike deploy --update-aliases $(V) $(DOCS_ALIAS)
+	mike deploy --update-aliases --alias-type=copy $(V) $(DOCS_ALIAS)
 	mike set-default $(DOCS_ALIAS)
 	@echo "deployed. to publish:"
 	@echo "git push origin gh-pages"

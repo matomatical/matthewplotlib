@@ -1,9 +1,9 @@
 site_name: matthewplotlib
 site_description: A Python plotting library that aspires to not be painful.
 copyright: Copyright © 2024–2026 Matthew Farrugia-Roberts, GPLv3.
-# The canonical url of every page is its place in the latest release, so that
-# the older versions alongside it do not compete with it in search results.
-site_url: https://matthewplotlib.far.in.net/latest/
+# mike appends the version being deployed to this, so each version's pages
+# give their own address as canonical.
+site_url: https://matthewplotlib.far.in.net/
 repo_url: https://github.com/matomatical/matthewplotlib
 edit_uri: edit/main/docs/
 strict: true
