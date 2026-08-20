@@ -8,7 +8,6 @@ By Matthew Farrugia-Roberts and Claude Opus 4.6.
 
 import tyro
 import matthewplotlib as mp
-import calendar
 import datetime
 
 
@@ -206,40 +205,15 @@ DATA = {
 TMIN = 0    # °C, colormap lower bound
 TMAX = 32   # °C, colormap upper bound
 
-WARM_DAY = "▟█"
-COOL_DAY = "▟█"
-NOT_A_DAY = "  "
-
 
 def main(save: str | None = None):
     """Calendar heatmap of daily max temperatures, Oxford 2025."""
-    month_plots = []
-    for month in range(1, 13):
-        year = 2025
-        title = mp.text(f"{calendar.month_name[month]:<9s} {year:4d}")
-        daynames = mp.text("M T W t F S s ")
-        week_plots = []
-        for week in calendar.monthcalendar(year, month):
-            day_plots = []
-            for day in week:
-                if day == 0:
-                    day_plots.append(mp.text(NOT_A_DAY))
-                    continue
-                date = datetime.date(year, month, day)
-                t = DATA[date]
-                frac = max(0.0, min(1.0, (t - TMIN) / (TMAX - TMIN)))
-                day_plots.append(mp.text(
-                    WARM_DAY,
-                    fgcolor=mp.inferno(frac),
-                    bgcolor=(0, 0, 0),
-                ))
-            week_plots.append(mp.hstack(*day_plots))
-        month_plots.append(
-            mp.vstack(title, daynames, *week_plots)
-            + mp.blank(2, 2),
-        )
-
-    plot = mp.wrap(*month_plots, cols=4)
+    plot = mp.calendar(
+        DATA,
+        vrange=(TMIN, TMAX),
+        colormap=mp.inferno,
+        bgcolor=(0, 0, 0),
+    )
 
     print(plot)
     if save:

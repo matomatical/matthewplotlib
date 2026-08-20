@@ -1,5 +1,6 @@
 """Unit tests for plot construction and arrangement."""
 
+import datetime
 import os
 
 import numpy as np
@@ -10,6 +11,7 @@ import matthewplotlib as mp
 from matthewplotlib.plots import (
     axes,
     border,
+    calendar,
     dstack2,
     function2,
     histogram2,
@@ -634,3 +636,170 @@ class TestLine3:
             "line3(height=2, width=8, thickness=1.0, "
             "data=<1 segments drawn>)"
         )
+
+
+# # #
+# calendar
+
+
+def a_month(month=1, year=2025, value=1.0):
+    """Every day of one month, all with the same value."""
+    day = datetime.date(year, month, 1)
+    days = {}
+    while day.month == month:
+        days[day] = value
+        day += datetime.timedelta(days=1)
+    return days
+
+
+class TestCalendar:
+    def test_a_month_is_a_caption_a_header_and_its_weeks(self):
+        plot = calendar(a_month(), cols=1, month_spacing=0)
+        # January 2025 runs Wednesday to Friday, over five Monday-start weeks.
+        assert plot.height == 1 + 1 + 5
+        assert plot.width == 7 * 2
+
+    def test_day_width_scales_the_block(self):
+        plot = calendar(a_month(), cols=1, month_spacing=0, day_width=3)
+        assert plot.width == 7 * 3
+
+    def test_months_are_wrapped_into_a_grid(self):
+        days = a_month(1) | a_month(2) | a_month(3) | a_month(4)
+        plot = calendar(days, cols=2, month_spacing=0)
+        assert plot.width == 2 * 7 * 2
+
+    def test_the_spacing_is_not_left_on_the_far_edges(self):
+        """A gap between the months should not become a margin around them."""
+        days = a_month(1) | a_month(2)
+        snug = calendar(days, cols=2, month_spacing=0)
+        spaced = calendar(days, cols=2, month_spacing=1)
+        # One gap between the two months, and none past the second.
+        assert snug.width == 2 * 7 * 2
+        assert spaced.width == 2 * 7 * 2 + 1 * 2
+        # February 2025 ends on a Friday, so its last column has days in it.
+        assert drawn_cells(spaced)[:, -1].any()
+
+    def test_a_grid_is_no_wider_than_the_months_in_it(self):
+        """Asking for four columns and giving it one month should not leave
+        three columns of blank beside it."""
+        for cols in (4, None):
+            plot = calendar(a_month(), cols=cols, month_spacing=0)
+            assert plot.width == 7 * 2
+
+    def test_a_day_with_no_value_is_blank(self):
+        days = a_month()
+        del days[datetime.date(2025, 1, 15)]
+        plot = calendar(days, cols=1, month_spacing=0)
+        # The 15th is a Wednesday, in the third full week of the month.
+        row, column = 2 + 2, 2 * 2
+        assert not drawn_cells(plot)[row, column]
+
+    def test_a_day_whose_value_is_not_finite_is_blank(self):
+        days = a_month()
+        days[datetime.date(2025, 1, 15)] = float("nan")
+        plot = calendar(days, cols=1, month_spacing=0)
+        assert not drawn_cells(plot)[2 + 2, 2 * 2]
+        assert plot.num_days == len(days) - 1
+
+    def test_a_day_whose_value_is_zero_is_drawn(self):
+        """Distinctly from a day with no value at all."""
+        days = a_month(value=0.0)
+        plot = calendar(days, vrange=(0.0, 1.0), cols=1, month_spacing=0)
+        assert drawn_cells(plot)[2 + 2, 2 * 2]
+        assert plot.num_days == len(days)
+
+    def test_days_outside_the_daterange_are_left_out(self):
+        days = a_month(1) | a_month(2)
+        plot = calendar(
+            days,
+            daterange=("2025-01-01", "2025-01-31"),
+            cols=1,
+            month_spacing=0,
+        )
+        assert plot.num_days == 31
+
+    def test_the_daterange_can_reach_past_the_data(self):
+        plot = calendar(
+            a_month(1),
+            daterange=("2025-01-01", "2025-02-28"),
+            cols=2,
+            month_spacing=0,
+        )
+        assert plot.width == 2 * 7 * 2
+
+    def test_the_value_scale_spans_the_data_by_default(self):
+        plot = calendar({"2025-01-01": 3.0, "2025-01-02": 9.0}, cols=1)
+        assert (plot.vmin, plot.vmax) == (3.0, 9.0)
+
+    def test_a_single_number_scales_up_from_zero(self):
+        plot = calendar({"2025-01-01": 3.0}, vrange=10.0, cols=1)
+        assert (plot.vmin, plot.vmax) == (0.0, 10.0)
+
+    def test_the_value_scale_ignores_the_days_with_no_value(self):
+        days = {"2025-01-01": 3.0, "2025-01-02": float("nan")}
+        plot = calendar(days, cols=1)
+        assert (plot.vmin, plot.vmax) == (3.0, 3.0)
+
+    def test_the_first_weekday_shifts_the_columns(self):
+        """The 1st of January 2025 is a Wednesday, so it lands in the third
+        column of a Monday-start week and the fourth of a Sunday-start one."""
+        days = a_month()
+        monday = calendar(days, cols=1, month_spacing=0)
+        sunday = calendar(days, cols=1, month_spacing=0, first_weekday=6)
+        week = 2
+        assert drawn_cells(monday)[week, 2 * 2]
+        assert not drawn_cells(monday)[week, 1 * 2]
+        assert drawn_cells(sunday)[week, 3 * 2]
+        assert not drawn_cells(sunday)[week, 2 * 2]
+
+    def test_the_labels_can_be_left_off(self):
+        plot = calendar(
+            a_month(),
+            cols=1,
+            month_spacing=0,
+            month_labels=False,
+            weekday_labels=False,
+        )
+        assert plot.height == 5
+
+    def test_a_narrow_month_is_captioned_in_a_shorter_spelling(self):
+        plot = calendar(a_month(), cols=1, month_spacing=0, day_width=1)
+        caption = "".join(chr(c) for c in plot.chars.codes[0])
+        assert caption == "Jan  25"
+
+    def test_a_wide_month_is_captioned_in_full(self):
+        plot = calendar(a_month(), cols=1, month_spacing=0)
+        caption = "".join(chr(c) for c in plot.chars.codes[0])
+        assert caption == "January   2025"
+
+    def test_the_years_line_up_across_the_months(self):
+        """Whichever months are drawn, and however long their names are."""
+        days = a_month(5) | a_month(9)
+        plot = calendar(days, cols=1, month_spacing=0)
+        rows = ["".join(chr(c) for c in row) for row in plot.chars.codes]
+        captions = [row for row in rows if "2025" in row]
+        # May through September, since the months between them are filled in.
+        assert len(captions) == 5
+        assert captions[0] == "May       2025"
+        assert captions[-1] == "September 2025"
+        assert len({len(caption) for caption in captions}) == 1
+
+    def test_it_needs_something_to_draw(self):
+        with pytest.raises(ValueError, match="at least one"):
+            calendar({})
+
+    def test_the_daterange_has_to_run_forwards(self):
+        with pytest.raises(ValueError, match="ends"):
+            calendar(a_month(), daterange=("2025-02-01", "2025-01-01"))
+
+    def test_a_day_has_to_have_a_width(self):
+        with pytest.raises(ValueError, match="day_width"):
+            calendar(a_month(), day_width=0)
+
+    def test_the_spacing_cannot_be_negative(self):
+        with pytest.raises(ValueError, match="month_spacing"):
+            calendar(a_month(), month_spacing=-1)
+
+    def test_the_week_has_to_start_on_a_weekday(self):
+        with pytest.raises(ValueError, match="first_weekday"):
+            calendar(a_month(), first_weekday=7)

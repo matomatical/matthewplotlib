@@ -59,6 +59,7 @@ from matthewplotlib.plots import (
     columns,
     vistogram,
     hilbert,
+    calendar,
     text,
     border,
     axes,
@@ -99,6 +100,8 @@ from matthewplotlib.window import (
 from matthewplotlib.data import (
     Series,
     Series3,
+    DateLike,
+    DateSeries,
     xaxis,
     yaxis,
     zaxis,

@@ -6,6 +6,12 @@ In development
 
 New:
 
+* `calendar`: a heatmap of values observed on dates, drawing a block per month
+  with a cell per day and wrapping the months into a grid.
+* `DateSeries`: the forms dated data arrives in, accepted by `calendar`. A
+  mapping from dates to values, separate sequences of dates and values, or one
+  date standing in for the consecutive days from there. Dates may be spelled as
+  `datetime` dates or datetimes, NumPy `datetime64`s, or ISO 8601 strings.
 * `window`: the interval of data a plot covers on each axis, and the rectangle
   of character cells it covers them with. Every 2d plot carries one, and it
   provides the conversions from data coordinates to the grids of dots and

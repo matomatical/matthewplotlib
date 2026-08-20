@@ -1,7 +1,11 @@
+import datetime
+
 import numpy as np
 import pytest
 
 from matthewplotlib.data import (
+    parse_date,
+    parse_date_series,
     parse_range,
     parse_series,
     parse_multiple_series,
@@ -191,3 +195,86 @@ class TestParseMultipleSeries3:
         xs, ys, zs, cs = parse_multiple_series3(s1, s2)
         assert len(xs) == 2
         assert np.array_equal(xs, [1.0, 4.0])
+
+
+# # #
+# parse_date and parse_date_series
+
+
+class TestParseDate:
+    def test_a_date_is_itself(self):
+        assert parse_date(datetime.date(2025, 3, 4)) == datetime.date(2025, 3, 4)
+
+    def test_a_datetime_loses_its_time_of_day(self):
+        stamp = datetime.datetime(2025, 3, 4, 11, 30)
+        assert parse_date(stamp) == datetime.date(2025, 3, 4)
+
+    def test_a_numpy_datetime_loses_its_time_of_day(self):
+        stamp = np.datetime64("2025-03-04T11:30")
+        assert parse_date(stamp) == datetime.date(2025, 3, 4)
+
+    def test_an_iso_string(self):
+        assert parse_date("2025-03-04") == datetime.date(2025, 3, 4)
+
+    def test_something_that_is_not_a_date(self):
+        with pytest.raises(TypeError, match="Invalid date"):
+            parse_date(20250304)
+
+
+class TestParseDateSeries:
+    def test_a_mapping_is_sorted_by_date(self):
+        dates, values = parse_date_series({
+            datetime.date(2025, 1, 3): 3.0,
+            datetime.date(2025, 1, 1): 1.0,
+        })
+        assert dates == [datetime.date(2025, 1, 1), datetime.date(2025, 1, 3)]
+        assert np.array_equal(values, [1.0, 3.0])
+
+    def test_separate_sequences_of_dates_and_values(self):
+        dates, values = parse_date_series((
+            ["2025-01-01", "2025-01-03"],
+            [1.0, 3.0],
+        ))
+        assert dates == [datetime.date(2025, 1, 1), datetime.date(2025, 1, 3)]
+        assert np.array_equal(values, [1.0, 3.0])
+
+    def test_one_date_stands_in_for_consecutive_days(self):
+        dates, values = parse_date_series(("2025-01-30", [1.0, 2.0, 3.0]))
+        assert dates == [
+            datetime.date(2025, 1, 30),
+            datetime.date(2025, 1, 31),
+            datetime.date(2025, 2, 1),
+        ]
+        assert np.array_equal(values, [1.0, 2.0, 3.0])
+
+    def test_values_follow_their_own_dates_when_sorted(self):
+        """The pairing has to survive the reordering, not just the dates."""
+        dates, values = parse_date_series((
+            ["2025-01-03", "2025-01-01", "2025-01-02"],
+            [30.0, 10.0, 20.0],
+        ))
+        assert np.array_equal(values, [10.0, 20.0, 30.0])
+
+    def test_a_numpy_array_of_dates(self):
+        dates, values = parse_date_series((
+            np.array(["2025-01-02", "2025-01-01"], dtype="datetime64[D]"),
+            [2.0, 1.0],
+        ))
+        assert dates == [datetime.date(2025, 1, 1), datetime.date(2025, 1, 2)]
+        assert np.array_equal(values, [1.0, 2.0])
+
+    def test_more_values_than_dates(self):
+        with pytest.raises(ValueError, match="as many values as dates"):
+            parse_date_series((["2025-01-01"], [1.0, 2.0]))
+
+    def test_a_repeated_date(self):
+        with pytest.raises(ValueError, match="more than once"):
+            parse_date_series((["2025-01-01", "2025-01-01"], [1.0, 2.0]))
+
+    def test_values_with_more_than_one_axis(self):
+        with pytest.raises(ValueError, match="one axis of values"):
+            parse_date_series(("2025-01-01", [[1.0], [2.0]]))
+
+    def test_something_that_is_not_a_series(self):
+        with pytest.raises(TypeError, match="Invalid DateSeries"):
+            parse_date_series(42)

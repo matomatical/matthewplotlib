@@ -23,6 +23,7 @@ Data plots:
 * `columns`
 * `vistogram`
 * `hilbert`
+* `calendar`
 
 Furnishing plots:
 
@@ -45,6 +46,8 @@ across the screen, and lives with the rest of the animation machinery in
 """
 from __future__ import annotations
 
+import calendar as _calendar
+import datetime
 import enum
 import shutil
 import numpy as np
@@ -56,13 +59,17 @@ from PIL import Image
 from typing import Callable, Literal, Self, cast
 from numpy.typing import ArrayLike, NDArray
 from matthewplotlib.colormaps import ColorMap
-from matthewplotlib.colors import ColorLike, parse_colors
+from matthewplotlib.colors import ColorLike, parse_color, parse_colors
 from numbers import Number
 
 from matthewplotlib.data import (
     number,
     Series,
     Series3,
+    DateLike,
+    DateSeries,
+    parse_date,
+    parse_date_series,
     parse_range,
     parse_segments,
     parse_segments3,
@@ -1454,6 +1461,251 @@ class hilbert(plot):
             f"hilbert(height={self.height}, width={self.width}, "
             f"data=<{self.num_points} points out of {self.all_points} "
             f"on a {2**self.n} x {2**self.n} grid>"
+        )
+
+
+_WEEKDAY_INITIALS = "MTWtFSs"
+"""
+The initials of the weekdays from Monday, distinguished by case where two of
+them claim the same letter: `t` for Thursday and `s` for Sunday.
+"""
+
+# The glyphs a day is drawn with. The first cell of each day is notched in its
+# top-left corner, which is what separates a day from the ones above and to the
+# left of it, since adjacent days would otherwise merge into one block of
+# colour.
+_DAY_BODY = ord("█")
+_DAY_CORNER = ord("▟")
+
+
+def _month_caption(month: int, year: int, width: int) -> str:
+    """
+    Name a month and its year within a block `width` characters wide.
+
+    The name goes on the left and the year on the right of the widest spelling
+    that fits, abbreviating the month and then the year as the width runs out,
+    and giving up on the year entirely before the month. Empty if not even the
+    abbreviated month fits.
+    """
+    spellings = [
+        (_calendar.month_name[month], f"{year:4d}"),
+        (_calendar.month_abbr[month], f"{year:4d}"),
+        (_calendar.month_abbr[month], f"{year % 100:02d}"),
+        (_calendar.month_abbr[month], ""),
+    ]
+    # Wider months are captioned in the width the longest month name needs, so
+    # that the years line up down a column of them however wide the days are.
+    longest = max(len(name) for name in _calendar.month_name[1:])
+    limit = min(width, longest + len(" 2025"))
+    for name, year_ in spellings:
+        if len(name) + len(year_) + bool(year_) <= limit:
+            gap = limit - len(name) - len(year_)
+            return name + " " * gap + year_
+    return ""
+
+
+class calendar(plot):
+    """
+    Calendar heatmap of values observed on dates.
+
+    Draws a block per month, a row per week and a column per weekday, colouring
+    each day by its value, and wraps the months into a grid. A year of daily
+    data becomes a wall calendar.
+
+    Inputs:
+
+    * data : DateSeries.
+        The dated values to colour: a mapping from dates to values, a pair of
+        sequences of dates and values, or one date and the values on the days
+        running from it. See `DateSeries` for the full list of forms.
+    * vrange : None | number | (number, number).
+        Determine the mapping of values onto the colormap.
+        * If omitted, the colours are scaled so that the lowest value among
+          the days drawn is at the bottom of the colormap and the highest is
+          at the top.
+        * If a single number, values from zero up to that number span the
+          colormap.
+        * If a pair of numbers, values from the first up to the second span the
+          colormap.
+    * colormap : optional ColorMap.
+        Maps each day's value, normalised to the range 0.0 to 1.0, onto its
+        colour. By default the days are shades of grey, black for the bottom of
+        the range and white for the top.
+    * daterange : optional (date, date).
+        The first and last day to draw, each spelled any way a `DateLike` can
+        be. Days outside the range are left blank even where the data has
+        values for them. If omitted, the range spans the dates in the data.
+    * cols : optional int (default 4).
+        The number of months in each row of the grid. If None, as many as fit
+        the width of the terminal.
+    * first_weekday : int (default 0).
+        The weekday to start each week on, from 0 for Monday to 6 for Sunday,
+        numbered as in Python's `calendar` module.
+    * day_width : int (default 2).
+        The number of character cells each day is drawn in. Two is close to
+        square in a terminal.
+    * month_spacing : int (default 1).
+        The gap to leave between month blocks, counted in days so that it stays
+        square whatever `day_width` is.
+    * month_labels : bool (default True).
+        Whether to caption each month with its name and year, abbreviating the
+        caption to fit if the days are narrow.
+    * weekday_labels : bool (default True).
+        Whether to head each month's columns with the initials of the weekdays.
+    * bgcolor : optional ColorLike.
+        The color to show through the notch in the corner of each day. Defaults
+        to a transparent background, showing the terminal's own.
+
+    A date the data says nothing about, or gives a value that is not finite, is
+    left blank, so that a day with no value stays distinct from a day whose
+    value is zero.
+    """
+    def __init__(
+        self,
+        data: DateSeries,
+        vrange: None | number | tuple[number, number] = None,
+        colormap: ColorMap | None = None,
+        daterange: tuple[DateLike, DateLike] | None = None,
+        cols: int | None = 4,
+        first_weekday: int = 0,
+        day_width: int = 2,
+        month_spacing: int = 1,
+        month_labels: bool = True,
+        weekday_labels: bool = True,
+        bgcolor: ColorLike | None = None,
+    ):
+        # standardise inputs
+        dates, values = parse_date_series(data)
+        if not dates:
+            raise ValueError("calendar needs at least one dated value")
+        if day_width < 1:
+            raise ValueError(f"day_width must be positive, not {day_width}")
+        if month_spacing < 0:
+            raise ValueError(
+                f"month_spacing must not be negative, not {month_spacing}"
+            )
+        if not 0 <= first_weekday <= 6:
+            raise ValueError(
+                f"first_weekday must be a weekday from 0 to 6, not "
+                f"{first_weekday}"
+            )
+
+        # determine the range of days to draw
+        if daterange is None:
+            first, last = dates[0], dates[-1]
+        else:
+            first = parse_date(daterange[0])
+            last = parse_date(daterange[1])
+        if last < first:
+            raise ValueError(
+                f"daterange ends ({last}) before it starts ({first})"
+            )
+
+        # keep the days that get a colour: the ones in range with a value
+        drawn = [
+            (date, value)
+            for date, value in zip(dates, values)
+            if first <= date <= last and np.isfinite(value)
+        ]
+
+        # determine the value scale over those days
+        levels = np.array([value for _, value in drawn], dtype=float)
+        vmin: number
+        vmax: number
+        if vrange is None:
+            vmin, vmax = (
+                (levels.min(), levels.max()) if levels.size else (0.0, 1.0)
+            )
+        elif isinstance(vrange, tuple):
+            vmin, vmax = vrange
+        else:
+            vmin, vmax = 0.0, vrange
+
+        # color those days
+        levels = np.clip((levels - vmin) / (vmax - vmin + 1e-15), 0.0, 1.0)
+        rgb = parse_colors(levels, n=len(levels), colormap=colormap)
+        colors = {date: color for (date, _), color in zip(drawn, rgb)}
+        bg = parse_color(bgcolor)
+
+        # determine the months to draw
+        months = []
+        year, month = first.year, first.month
+        while (year, month) <= (last.year, last.month):
+            months.append((year, month))
+            year, month = (year, month + 1) if month < 12 else (year + 1, 1)
+
+        # draw each month
+        weeks_of = _calendar.Calendar(first_weekday).monthdayscalendar
+        width = 7 * day_width
+        month_plots = []
+        for year, month in months:
+            weeks = weeks_of(year, month)
+            captions = []
+            if month_labels:
+                captions.append(_month_caption(month, year, width))
+            if weekday_labels:
+                captions.append("".join(
+                    _WEEKDAY_INITIALS[(first_weekday + i) % 7].ljust(day_width)
+                    for i in range(7)
+                ))
+            chars = CharArray.from_size(
+                height=len(captions) + len(weeks),
+                width=width,
+            )
+            for row, caption in enumerate(captions):
+                chars.codes[row, :len(caption)] = ords(caption)
+            for week, days in enumerate(weeks):
+                for weekday, day in enumerate(days):
+                    if day == 0:
+                        continue
+                    date = datetime.date(year, month, day)
+                    if date not in colors:
+                        continue
+                    row = len(captions) + week
+                    cells = slice(
+                        weekday * day_width,
+                        (weekday + 1) * day_width,
+                    )
+                    chars.codes[row, cells] = _DAY_BODY
+                    chars.codes[row, cells.start] = _DAY_CORNER
+                    chars.fg[row, cells] = True
+                    chars.fg_rgb[row, cells] = colors[date]
+                    if bg is not None:
+                        chars.bg[row, cells] = True
+                        chars.bg_rgb[row, cells] = bg
+            month_plots.append(plot(chars.pad(
+                below=month_spacing,
+                right=month_spacing * day_width,
+            )))
+
+        # arrange the months into a grid, less the spacing off its far edges
+        grid = wrap(*month_plots, cols=cols).chars
+        # A grid is as many columns wide as it was asked for, whether or not
+        # there are months to fill them, so the empty ones come back off. How
+        # many there were is read back from the grid rather than worked out
+        # again, since with no `cols` it was the terminal's width that decided.
+        cell_width = width + month_spacing * day_width
+        filled = min(grid.width // cell_width, len(months))
+        rows = grid.height - month_spacing
+        columns = filled * cell_width - month_spacing * day_width
+        super().__init__(CharArray(
+            codes=grid.codes[:rows, :columns],
+            fg=grid.fg[:rows, :columns],
+            fg_rgb=grid.fg_rgb[:rows, :columns],
+            bg=grid.bg[:rows, :columns],
+            bg_rgb=grid.bg_rgb[:rows, :columns],
+        ))
+        self.vmin = vmin
+        self.vmax = vmax
+        self.daterange = (first, last)
+        self.num_days = len(colors)
+
+    def __repr__(self):
+        first, last = self.daterange
+        return (
+            f"calendar(height={self.height}, width={self.width}, "
+            f"data=<{self.num_days} days from {first} to {last} on "
+            f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
         )
 
 

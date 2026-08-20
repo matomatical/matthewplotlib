@@ -88,8 +88,8 @@ Advanced features
 
 More exotic plot types:
 
-* [ ] Calendar heatmap plots.
-  * [ ] Month-chunked calendar (see calendar heatmap example).
+* [ ] Calendar heatmap plots:
+  * [x] Month-chunked calendar (`calendar`).
   * [ ] Github contributions-style continuous calendar.
 * [ ] Tables:
   * [ ] List of dictionaries.

@@ -11,6 +11,7 @@ Types:
 * `number`: A scalar, Python or NumPy.
 * `Series` and `Series3`: The accepted shapes for 2d and 3d point data. See
   these aliases for the full list of forms.
+* `DateSeries`: The accepted shapes for values observed on dates.
 
 Special series:
 
@@ -22,6 +23,8 @@ Parsers:
 
 * `parse_series`, `parse_series3`, and their `parse_multiple_*` variants: Turn
   any accepted form into arrays of points and colors.
+* `parse_date` and `parse_date_series`: Turn any accepted form of dated data
+  into a list of dates and an array of values.
 * `parse_range`: Fill in missing axis limits from the data.
 
 For turning 3d data into positions on a camera's film, see
@@ -31,6 +34,8 @@ For turning 3d data into positions on a camera's film, see
 from __future__ import annotations
 
 import dataclasses
+import datetime
+from collections.abc import Mapping
 from typing import Sequence, cast
 
 import numpy as np
@@ -94,6 +99,37 @@ As `Series`, with a third coordinate:
 """
 
 
+type DateLike = datetime.date | datetime.datetime | np.datetime64 | str
+"""
+The accepted spellings of a single date.
+
+A `datetime.date`, a `datetime.datetime` or a NumPy `datetime64` (in each of
+the latter two cases the time of day is discarded), or a string in ISO 8601
+format such as `"2025-01-01"`.
+"""
+
+
+type DateSeries = (
+    Mapping[DateLike, number]                   # {date: value}
+    | tuple[Sequence[DateLike], ArrayLike]      # date[n], number[n]
+    | tuple[DateLike, ArrayLike]                # first date, number[n]
+)
+"""
+The accepted shapes for values observed on dates.
+
+Any of the following, for n dated values:
+
+* `{date: value}`: A mapping from dates to values.
+* `(date[n], number[n])`: The dates and the values as separate sequences.
+* `(date, number[n])`: One date, standing in for the n consecutive days
+  starting there, and the values on those days.
+
+The dates need not be sorted or contiguous, but no date may appear twice. Each
+of them is any `DateLike`. A value that is not finite marks a date whose value
+is unknown, as distinct from one whose value is zero.
+"""
+
+
 # # # 
 # Parsers
 
@@ -122,6 +158,81 @@ def parse_range(
     if lo == hi:
         lo, hi = lo - 0.5, hi + 0.5
     return lo, hi
+
+
+def parse_date(
+    date: DateLike,
+) -> datetime.date:
+    """
+    Reduce any accepted spelling of a date to a `datetime.date`.
+    """
+    match date:
+        # datetime is a subclass of date, so it has to be matched first.
+        case datetime.datetime():
+            return date.date()
+        case datetime.date():
+            return date
+        case np.datetime64():
+            return date.astype("datetime64[D]").astype(datetime.date)
+        case str():
+            return datetime.date.fromisoformat(date)
+        case _:
+            raise TypeError(f"Invalid date {date!r}")
+
+
+def parse_date_series(
+    series: DateSeries, # DateSeries<n>
+) -> tuple[
+    list[datetime.date],    # date[n]
+    NDArray,                # float[n]
+]:
+    """
+    Turn any accepted form of dated data into a list of dates and an array of
+    values, ordered by date.
+    """
+    match series:
+        case Mapping():
+            dates = [parse_date(date) for date in series]
+            values = np.asarray(list(series.values()), dtype=float)
+        case (first, values_):
+            values = np.asarray(values_, dtype=float)
+            if values.ndim != 1:
+                raise ValueError(
+                    f"expected one axis of values, not {values.ndim}"
+                )
+            # One date stands in for the consecutive days from there, whereas a
+            # sequence of them names each day itself.
+            if _is_date(first):
+                start = parse_date(cast(DateLike, first))
+                dates = [
+                    start + datetime.timedelta(days=i)
+                    for i in range(len(values))
+                ]
+            else:
+                dates = [
+                    parse_date(date)
+                    for date in cast(Sequence[DateLike], first)
+                ]
+        case _:
+            raise TypeError(f"Invalid DateSeries {series!r}")
+
+    if len(dates) != len(values):
+        raise ValueError(
+            f"expected as many values as dates, not {len(values)} and "
+            f"{len(dates)}"
+        )
+    order = sorted(range(len(dates)), key=dates.__getitem__)
+    dates = [dates[i] for i in order]
+    values = values[order]
+    for earlier, later in zip(dates, dates[1:]):
+        if earlier == later:
+            raise ValueError(f"date {earlier} appears more than once")
+    return dates, values
+
+
+def _is_date(spec: object) -> bool:
+    """Whether a single date is spelled here, rather than a sequence of them."""
+    return isinstance(spec, (datetime.date, np.datetime64, str))
 
 
 def parse_series(
