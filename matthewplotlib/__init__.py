@@ -60,6 +60,7 @@ from matthewplotlib.plots import (
     vistogram,
     hilbert,
     calendar,
+    weeks,
     text,
     border,
     axes,

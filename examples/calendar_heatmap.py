@@ -207,13 +207,15 @@ TMAX = 32   # °C, colormap upper bound
 
 
 def main(save: str | None = None):
-    """Calendar heatmap of daily max temperatures, Oxford 2025."""
-    plot = mp.calendar(
-        DATA,
-        vrange=(TMIN, TMAX),
-        colormap=mp.inferno,
-        bgcolor=(0, 0, 0),
-    )
+    """Calendar heatmap of daily max temperatures, Oxford 2025.
+
+    The same year twice: as a wall calendar, and as an unbroken strip of
+    weeks wrapped to the same width.
+    """
+    style = dict(vrange=(TMIN, TMAX), colormap=mp.inferno, bgcolor=(0, 0, 0))
+    grid = mp.calendar(DATA, **style)
+    strip = mp.weeks(DATA, width=grid.width, **style)
+    plot = grid / mp.blank(height=1) / strip
 
     print(plot)
     if save:

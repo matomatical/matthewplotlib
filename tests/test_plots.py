@@ -12,6 +12,7 @@ from matthewplotlib.plots import (
     axes,
     border,
     calendar,
+    weeks,
     dstack2,
     function2,
     histogram2,
@@ -890,3 +891,171 @@ class TestCalendar:
     def test_the_week_has_to_start_on_a_weekday(self):
         with pytest.raises(ValueError, match="first_weekday"):
             calendar(a_month(), first_weekday=7)
+
+# # #
+# weeks
+
+
+def a_year(year=2025, value=1.0):
+    """Every day of one year, all with the same value."""
+    day = datetime.date(year, 1, 1)
+    days = {}
+    while day.year == year:
+        days[day] = value
+        day += datetime.timedelta(days=1)
+    return days
+
+
+def rows_of(plot):
+    """Each row of a plot as a string, for reading its captions back."""
+    return ["".join(chr(code) for code in row) for row in plot.chars.codes]
+
+
+class TestWeeks:
+    def test_a_strip_is_two_captions_and_the_seven_weekdays(self):
+        plot = weeks(a_year())
+        # 2025 starts on a Wednesday, so its 365 days touch 53 Monday-weeks.
+        assert plot.height == 2 + 7
+        assert plot.width == 2 + 53 * 2
+        assert plot.num_weeks == 53
+
+    def test_day_width_scales_the_strip(self):
+        plot = weeks(a_year(), day_width=3)
+        assert plot.width == 2 + 53 * 3
+
+    def test_the_strip_starts_at_the_top_of_its_first_week(self):
+        """So that a weekday keeps to one row. The 1st of January 2025 is a
+        Wednesday, so the Monday and Tuesday above it are blank."""
+        plot = weeks(a_year())
+        assert not drawn_cells(plot)[2 + 0, 2]
+        assert not drawn_cells(plot)[2 + 1, 2]
+        assert drawn_cells(plot)[2 + 2, 2]
+
+    def test_the_weekdays_are_named_down_the_gutter(self):
+        plot = weeks(a_year())
+        assert [chr(plot.chars.codes[2 + i, 0]) for i in range(7)] == list(
+            "MTWtFSs"
+        )
+
+    def test_the_first_weekday_rotates_the_rows(self):
+        plot = weeks(a_year(), first_weekday=6)
+        assert [chr(plot.chars.codes[2 + i, 0]) for i in range(7)] == list(
+            "sMTWtFS"
+        )
+
+    def test_the_months_are_captioned(self):
+        captions = " ".join(rows_of(weeks(a_year()))[:2])
+        for month in ("Jan", "Feb", "Jun", "Dec"):
+            assert month in captions
+
+    def test_the_year_is_captioned_once(self):
+        assert rows_of(weeks(a_year()))[0].count("2025") == 1
+
+    def test_a_wide_strip_wraps_into_bands(self):
+        plot = weeks(a_year(), width=80)
+        assert plot.width == 80
+        # Two bands of nine rows, with a blank row between them.
+        assert plot.height == 9 + 1 + 9
+        assert not drawn_cells(plot)[9, :].any()
+
+    def test_every_band_names_its_year(self):
+        """A band should be readable without looking back at the one above."""
+        rows = rows_of(weeks(a_year(), width=80))
+        assert "2025" in rows[0]
+        assert "2025" in rows[10]
+
+    def test_a_span_of_two_years_names_both(self):
+        days = a_year(2024) | a_year(2025)
+        captions = rows_of(weeks(days))[0]
+        assert "2024" in captions
+        assert "2025" in captions
+
+    def test_a_caption_that_will_not_fit_is_dropped_not_truncated(self):
+        months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+        ]
+        plot = weeks(a_year(), width=20)
+        # Only the caption rows, so that the weekday initials in the gutter of
+        # each day row are not mistaken for clipped month names.
+        drawn = []
+        for row, codes in zip(rows_of(plot), plot.chars.codes):
+            if (codes == ord("\u2588")).any():
+                continue
+            drawn.extend(run for run in row.split() if run.isalpha())
+        # Narrow bands leave some months no room, but never half a name.
+        assert drawn
+        assert all(run in months for run in drawn)
+        assert len(drawn) < 12
+
+    def test_the_captions_can_be_left_off(self):
+        assert weeks(a_year(), year_labels=False).height == 1 + 7
+        assert weeks(a_year(), month_labels=False).height == 1 + 7
+        assert weeks(
+            a_year(), year_labels=False, month_labels=False
+        ).height == 7
+
+    def test_the_gutter_can_be_left_off(self):
+        assert weeks(a_year(), weekday_labels=False).width == 53 * 2
+
+    def test_a_day_with_no_value_is_blank(self):
+        days = a_year()
+        del days[datetime.date(2025, 1, 8)]
+        plot = weeks(days)
+        # The 8th is the Wednesday of the second week.
+        assert not drawn_cells(plot)[2 + 2, 2 + 2]
+
+    def test_a_day_whose_value_is_not_finite_is_blank(self):
+        days = a_year()
+        days[datetime.date(2025, 1, 8)] = float("nan")
+        plot = weeks(days)
+        assert not drawn_cells(plot)[2 + 2, 2 + 2]
+        assert plot.num_days == 364
+
+    def test_a_day_whose_value_is_zero_is_drawn(self):
+        plot = weeks(a_year(value=0.0), vrange=(0.0, 1.0))
+        assert drawn_cells(plot)[2 + 2, 2]
+        assert plot.num_days == 365
+
+    def test_days_outside_the_daterange_are_left_out(self):
+        plot = weeks(a_year(), daterange=("2025-01-01", "2025-01-31"))
+        assert plot.num_days == 31
+
+    def test_the_value_scale_spans_the_data_by_default(self):
+        plot = weeks({"2025-01-01": 3.0, "2025-01-02": 9.0})
+        assert (plot.vmin, plot.vmax) == (3.0, 9.0)
+
+    def test_it_draws_the_same_days_as_a_calendar_would(self):
+        """The two share the front end that decides which days get a colour."""
+        days = a_year()
+        days[datetime.date(2025, 5, 5)] = float("nan")
+        del days[datetime.date(2025, 6, 6)]
+        strip = weeks(days, daterange=("2025-02-01", "2025-11-30"))
+        grid = calendar(days, daterange=("2025-02-01", "2025-11-30"))
+        assert strip.num_days == grid.num_days
+        assert (strip.vmin, strip.vmax) == (grid.vmin, grid.vmax)
+
+    def test_it_needs_something_to_draw(self):
+        with pytest.raises(ValueError, match="at least one"):
+            weeks({})
+
+    def test_the_daterange_has_to_run_forwards(self):
+        with pytest.raises(ValueError, match="ends"):
+            weeks(a_year(), daterange=("2025-02-01", "2025-01-01"))
+
+    def test_a_day_has_to_have_a_width(self):
+        with pytest.raises(ValueError, match="day_width"):
+            weeks(a_year(), day_width=0)
+
+    def test_the_week_has_to_start_on_a_weekday(self):
+        with pytest.raises(ValueError, match="first_weekday"):
+            weeks(a_year(), first_weekday=7)
+
+    def test_the_width_has_to_fit_the_gutter_and_a_week(self):
+        with pytest.raises(ValueError, match="width must leave room"):
+            weeks(a_year(), width=3)
+
+    def test_the_narrowest_width_is_one_week_per_band(self):
+        plot = weeks(a_year(), width=4)
+        assert plot.width == 4
+        assert plot.height == 53 * 9 + 52

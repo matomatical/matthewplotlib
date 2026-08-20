@@ -8,6 +8,9 @@ New:
 
 * `calendar`: a heatmap of values observed on dates, drawing a block per month
   with a cell per day and wrapping the months into a grid.
+* `weeks`: the same days as one unbroken strip, a column per week and a row per
+  weekday, captioned with the months and years along the top. A `width` wraps a
+  strip too long for the terminal onto further bands, each captioned again.
 * `DateSeries`: the forms dated data arrives in, accepted by `calendar`. A
   mapping from dates to values, separate sequences of dates and values, or one
   date standing in for the consecutive days from there. Dates may be spelled as

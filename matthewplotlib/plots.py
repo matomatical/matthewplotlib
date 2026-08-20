@@ -24,6 +24,7 @@ Data plots:
 * `vistogram`
 * `hilbert`
 * `calendar`
+* `weeks`
 
 Furnishing plots:
 
@@ -56,7 +57,7 @@ import hilbert as _hilbert
 
 from PIL import Image
 
-from typing import Callable, Literal, Self, cast
+from typing import Callable, Literal, NamedTuple, Self, cast
 from numpy.typing import ArrayLike, NDArray
 from matthewplotlib.colormaps import ColorMap
 from matthewplotlib.colors import ColorLike, parse_color, parse_colors
@@ -1495,6 +1496,122 @@ _DAY_BODY = ord("█")
 _DAY_CORNER = ord("▟")
 
 
+class _ColoredDays(NamedTuple):
+    """The days a dated plot draws, and the scale their colours came from."""
+    colors: dict[datetime.date, NDArray]    # uint8[3] per day
+    first: datetime.date
+    last: datetime.date
+    vmin: number
+    vmax: number
+
+
+def _color_days(
+    data: DateSeries,
+    vrange: None | number | tuple[number, number],
+    colormap: ColorMap | None,
+    daterange: tuple[DateLike, DateLike] | None,
+    what: str,
+) -> _ColoredDays:
+    """
+    Work out which days a plot of dated values draws, and in what colour.
+
+    A day is drawn when the data gives it a finite value and it falls inside
+    the range of days asked for. `what` names the caller in the errors, which
+    it raises for data with no days in it at all and for a range that ends
+    before it starts.
+    """
+    dates, values = parse_date_series(data)
+    if not dates:
+        raise ValueError(f"{what} needs at least one dated value")
+
+    # determine the range of days to draw
+    if daterange is None:
+        first, last = dates[0], dates[-1]
+    else:
+        first = parse_date(daterange[0])
+        last = parse_date(daterange[1])
+    if last < first:
+        raise ValueError(f"daterange ends ({last}) before it starts ({first})")
+
+    # keep the days that get a colour: the ones in range with a value
+    drawn = [
+        (date, value)
+        for date, value in zip(dates, values)
+        if first <= date <= last and np.isfinite(value)
+    ]
+
+    # determine the value scale over those days
+    levels = np.array([value for _, value in drawn], dtype=float)
+    vmin: number
+    vmax: number
+    if vrange is None:
+        vmin, vmax = (levels.min(), levels.max()) if levels.size else (0.0, 1.0)
+    elif isinstance(vrange, tuple):
+        vmin, vmax = vrange
+    else:
+        vmin, vmax = 0.0, vrange
+
+    # color those days
+    levels = np.clip((levels - vmin) / (vmax - vmin + 1e-15), 0.0, 1.0)
+    rgb = parse_colors(levels, n=len(levels), colormap=colormap)
+    return _ColoredDays(
+        colors={date: color for (date, _), color in zip(drawn, rgb)},
+        first=first,
+        last=last,
+        vmin=vmin,
+        vmax=vmax,
+    )
+
+
+def _paint_day(
+    chars: CharArray,
+    row: int,
+    column: int,
+    day_width: int,
+    color: NDArray,       # uint8[3]
+    bgcolor: NDArray | None,
+) -> None:
+    """
+    Fill one day's cells, notching the first so that it reads as its own day
+    rather than merging into its neighbours.
+    """
+    cells = slice(column, column + day_width)
+    chars.codes[row, cells] = _DAY_BODY
+    chars.codes[row, column] = _DAY_CORNER
+    chars.fg[row, cells] = True
+    chars.fg_rgb[row, cells] = color
+    if bgcolor is not None:
+        chars.bg[row, cells] = True
+        chars.bg_rgb[row, cells] = bgcolor
+
+
+_WEEKDAY_GUTTER = 2
+"""
+The width of the gutter a strip of weeks heads its rows in: the weekday's
+initial, and a blank column separating it from the days.
+"""
+
+
+def _write_caption(
+    chars: CharArray,
+    row: int,
+    column: int,
+    caption: str,
+    width: int,
+) -> None:
+    """
+    Write a caption at a column of a row, unless it would run off the end of
+    the row or into the caption already there, which needs a blank column
+    between them.
+    """
+    if column + len(caption) > width:
+        return
+    occupied = chars.codes[row, max(0, column - 1):column + len(caption)]
+    if (occupied != ord(" ")).any():
+        return
+    chars.codes[row, column:column + len(caption)] = ords(caption)
+
+
 def _month_caption(month: int, year: int, width: int) -> str:
     """
     Name a month and its year within a block `width` characters wide.
@@ -1592,9 +1709,6 @@ class calendar(plot):
         bgcolor: ColorLike | None = None,
     ):
         # standardise inputs
-        dates, values = parse_date_series(data)
-        if not dates:
-            raise ValueError("calendar needs at least one dated value")
         if day_width < 1:
             raise ValueError(f"day_width must be positive, not {day_width}")
         if month_spacing < 0:
@@ -1606,42 +1720,15 @@ class calendar(plot):
                 f"first_weekday must be a weekday from 0 to 6, not "
                 f"{first_weekday}"
             )
-
-        # determine the range of days to draw
-        if daterange is None:
-            first, last = dates[0], dates[-1]
-        else:
-            first = parse_date(daterange[0])
-            last = parse_date(daterange[1])
-        if last < first:
-            raise ValueError(
-                f"daterange ends ({last}) before it starts ({first})"
-            )
-
-        # keep the days that get a colour: the ones in range with a value
-        drawn = [
-            (date, value)
-            for date, value in zip(dates, values)
-            if first <= date <= last and np.isfinite(value)
-        ]
-
-        # determine the value scale over those days
-        levels = np.array([value for _, value in drawn], dtype=float)
-        vmin: number
-        vmax: number
-        if vrange is None:
-            vmin, vmax = (
-                (levels.min(), levels.max()) if levels.size else (0.0, 1.0)
-            )
-        elif isinstance(vrange, tuple):
-            vmin, vmax = vrange
-        else:
-            vmin, vmax = 0.0, vrange
-
-        # color those days
-        levels = np.clip((levels - vmin) / (vmax - vmin + 1e-15), 0.0, 1.0)
-        rgb = parse_colors(levels, n=len(levels), colormap=colormap)
-        colors = {date: color for (date, _), color in zip(drawn, rgb)}
+        dated = _color_days(
+            data=data,
+            vrange=vrange,
+            colormap=colormap,
+            daterange=daterange,
+            what="calendar",
+        )
+        colors = dated.colors
+        first, last = dated.first, dated.last
         bg = parse_color(bgcolor)
 
         # determine the months to draw
@@ -1678,18 +1765,14 @@ class calendar(plot):
                     date = datetime.date(year, month, day)
                     if date not in colors:
                         continue
-                    row = len(captions) + week
-                    cells = slice(
-                        weekday * day_width,
-                        (weekday + 1) * day_width,
+                    _paint_day(
+                        chars=chars,
+                        row=len(captions) + week,
+                        column=weekday * day_width,
+                        day_width=day_width,
+                        color=colors[date],
+                        bgcolor=bg,
                     )
-                    chars.codes[row, cells] = _DAY_BODY
-                    chars.codes[row, cells.start] = _DAY_CORNER
-                    chars.fg[row, cells] = True
-                    chars.fg_rgb[row, cells] = colors[date]
-                    if bg is not None:
-                        chars.bg[row, cells] = True
-                        chars.bg_rgb[row, cells] = bg
             month_plots.append(plot(chars.pad(
                 below=month_spacing,
                 right=month_spacing * day_width,
@@ -1712,8 +1795,8 @@ class calendar(plot):
             bg=grid.bg[:rows, :columns],
             bg_rgb=grid.bg_rgb[:rows, :columns],
         ))
-        self.vmin = vmin
-        self.vmax = vmax
+        self.vmin = dated.vmin
+        self.vmax = dated.vmax
         self.daterange = (first, last)
         self.num_days = len(colors)
 
@@ -1723,6 +1806,204 @@ class calendar(plot):
             f"calendar(height={self.height}, width={self.width}, "
             f"data=<{self.num_days} days from {first} to {last} on "
             f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
+        )
+
+
+class weeks(plot):
+    """
+    Calendar heatmap of values observed on dates, as an unbroken strip.
+
+    Draws a column per week and a row per weekday, colouring each day by its
+    value, running without a break from the first day drawn to the last. A
+    year of daily data becomes a band seven rows deep, captioned with the
+    months along the top.
+
+    Inputs:
+
+    * data : DateSeries.
+        The dated values to colour: a mapping from dates to values, a pair of
+        sequences of dates and values, or one date and the values on the days
+        running from it. See `DateSeries` for the full list of forms.
+    * vrange : None | number | (number, number).
+        Determine the mapping of values onto the colormap.
+        * If omitted, the colours are scaled so that the lowest value among
+          the days drawn is at the bottom of the colormap and the highest is
+          at the top.
+        * If a single number, values from zero up to that number span the
+          colormap.
+        * If a pair of numbers, values from the first up to the second span the
+          colormap.
+    * colormap : optional ColorMap.
+        Maps each day's value, normalised to the range 0.0 to 1.0, onto its
+        colour. By default the days are shades of grey, black for the bottom of
+        the range and white for the top.
+    * daterange : optional (date, date).
+        The first and last day to draw, each spelled any way a `DateLike` can
+        be. Days outside the range are left blank even where the data has
+        values for them. If omitted, the range spans the dates in the data.
+    * width : optional int.
+        The most characters the strip may occupy. A strip with more weeks than
+        fit continues on further bands below, each captioned again, with a
+        blank row between them. If omitted the strip runs its whole length on
+        one band, however wide that is.
+    * first_weekday : int (default 0).
+        The weekday to put in the top row, from 0 for Monday to 6 for Sunday,
+        numbered as in Python's `calendar` module.
+    * day_width : int (default 2).
+        The number of character cells each day is drawn in. Two is close to
+        square in a terminal.
+    * year_labels : bool (default True).
+        Whether to caption the first month drawn of each year with the year,
+        in a row above the months.
+    * month_labels : bool (default True).
+        Whether to caption the week each month begins in with the month's
+        abbreviated name. A caption that would collide with the one before it
+        is dropped, so narrow days give fewer of them.
+    * weekday_labels : bool (default True).
+        Whether to head each row with the initial of its weekday, in a gutter
+        two characters wide to the left of the strip.
+    * bgcolor : optional ColorLike.
+        The color to show through the notch in the corner of each day. Defaults
+        to a transparent background, showing the terminal's own.
+
+    A date the data says nothing about, or gives a value that is not finite, is
+    left blank, so that a day with no value stays distinct from a day whose
+    value is zero.
+    """
+    def __init__(
+        self,
+        data: DateSeries,
+        vrange: None | number | tuple[number, number] = None,
+        colormap: ColorMap | None = None,
+        daterange: tuple[DateLike, DateLike] | None = None,
+        width: int | None = None,
+        first_weekday: int = 0,
+        day_width: int = 2,
+        year_labels: bool = True,
+        month_labels: bool = True,
+        weekday_labels: bool = True,
+        bgcolor: ColorLike | None = None,
+    ):
+        # standardise inputs
+        if day_width < 1:
+            raise ValueError(f"day_width must be positive, not {day_width}")
+        if not 0 <= first_weekday <= 6:
+            raise ValueError(
+                f"first_weekday must be a weekday from 0 to 6, not "
+                f"{first_weekday}"
+            )
+        gutter = _WEEKDAY_GUTTER if weekday_labels else 0
+        if width is not None and width < gutter + day_width:
+            raise ValueError(
+                f"width must leave room for the gutter and a week, "
+                f"{gutter + day_width} characters, not {width}"
+            )
+        dated = _color_days(
+            data=data,
+            vrange=vrange,
+            colormap=colormap,
+            daterange=daterange,
+            what="weeks",
+        )
+        colors = dated.colors
+        first, last = dated.first, dated.last
+        bg = parse_color(bgcolor)
+
+        # the strip starts at the top of the week the first day falls in, so
+        # that a weekday always keeps to its own row
+        start = first - datetime.timedelta(
+            days=(first.weekday() - first_weekday) % 7
+        )
+        num_weeks = (last - start).days // 7 + 1
+
+        # break the weeks into bands narrow enough to fit
+        if width is None:
+            band_weeks = num_weeks
+        else:
+            band_weeks = (width - gutter) // day_width
+        bands = [
+            (week, min(week + band_weeks, num_weeks))
+            for week in range(0, num_weeks, band_weeks)
+        ]
+
+        # caption the week each month begins in
+        captions = []
+        year, month = first.year, first.month
+        while (year, month) <= (last.year, last.month):
+            begins = max(datetime.date(year, month, 1), first)
+            week = (begins - start).days // 7
+            captions.append((week, _calendar.month_abbr[month], year))
+            year, month = (year, month + 1) if month < 12 else (year + 1, 1)
+
+        # draw each band
+        band_width = gutter + band_weeks * day_width
+        header = int(year_labels) + int(month_labels)
+        band_chars = []
+        for band, (from_week, to_week) in enumerate(bands):
+            chars = CharArray.from_size(height=header + 7, width=band_width)
+
+            # the weekday initials, down the gutter
+            if weekday_labels:
+                for row in range(7):
+                    initial = _WEEKDAY_INITIALS[(first_weekday + row) % 7]
+                    chars.codes[header + row, 0] = ord(initial)
+
+            # the captions, each in the band its week landed in. A band names
+            # a year over the first of its months in it, so that a band can be
+            # read on its own rather than by looking back at the one above.
+            named = set()
+            for week, month_caption, year in captions:
+                if not from_week <= week < to_week:
+                    continue
+                column = gutter + (week - from_week) * day_width
+                if year_labels and year not in named:
+                    named.add(year)
+                    _write_caption(
+                        chars, 0, column, f"{year:4d}", band_width,
+                    )
+                if month_labels:
+                    _write_caption(
+                        chars,
+                        int(year_labels),
+                        column,
+                        month_caption,
+                        band_width,
+                    )
+
+            # the days
+            for week in range(from_week, to_week):
+                for weekday in range(7):
+                    date = start + datetime.timedelta(days=7 * week + weekday)
+                    if date not in colors:
+                        continue
+                    _paint_day(
+                        chars=chars,
+                        row=header + weekday,
+                        column=gutter + (week - from_week) * day_width,
+                        day_width=day_width,
+                        color=colors[date],
+                        bgcolor=bg,
+                    )
+
+            # a blank row between the bands, but not after the last
+            band_chars.append(chars.pad(below=band != len(bands) - 1))
+
+        super().__init__(CharArray.map(
+            lambda arrays: np.concatenate(arrays, axis=0),
+            band_chars,
+        ))
+        self.vmin = dated.vmin
+        self.vmax = dated.vmax
+        self.daterange = (first, last)
+        self.num_days = len(colors)
+        self.num_weeks = num_weeks
+
+    def __repr__(self):
+        first, last = self.daterange
+        return (
+            f"weeks(height={self.height}, width={self.width}, "
+            f"data=<{self.num_days} days over {self.num_weeks} weeks from "
+            f"{first} to {last} on [{self.vmin:.2f},{self.vmax:.2f}]>)"
         )
 
 
