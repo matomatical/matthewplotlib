@@ -17,7 +17,7 @@
             Page last updated {{ page.meta.revision_date }}.
             {% endif -%}
             Built from
-            <a href="{{ config.repo_url }}/blob/main/{{ source }}">{{ source }}</a>.
+            <a href="{{ config.repo_url }}/blob/{{ config.extra.source_ref | default('main') }}/{{ source }}">{{ source }}</a>.
             </i>
         </small>
     </p>

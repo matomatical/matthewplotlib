@@ -133,6 +133,13 @@ heading, code block, admonition and permalink on one page. It is a draft, so
 `make serve` shows it at `/styletest/` and no build publishes it. Extend it
 when styling something new.
 
+`docs/rebuild.py` builds the site for every released tag and publishes the
+lot, which is how the older versions came to be there: each tag predates the
+site, so the script generates a documentation tree for the version -- the
+pages it has, the modules it defines -- and hands that to mike. Those
+versions carry today's theme and templates, being the old documentation as
+this site renders it rather than a reproduction of what it looked like then.
+
 Each version gets its own directory on the `gh-pages` branch, published by
 mike. The `latest` alias follows the newest release, and the site root
 redirects there. `make deploy V=<version>` builds the current tree as that
