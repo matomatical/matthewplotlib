@@ -103,6 +103,93 @@ def _interior_rows(plot):
     return plot.chars.to_plain_str().splitlines()[1:-2]
 
 
+def _channels_within(one, other, tolerance):
+    """Whether two arrays of colour channels agree to within a few bytes."""
+    difference = one.astype(int) - other.astype(int)
+    return int(np.abs(difference).max()) <= tolerance
+
+
+class TestDescendingRanges:
+    """A range runs from the value at the low end of the screen axis to the
+    value at the high end, so giving one descending inverts that axis. That
+    mirrors the picture and changes nothing else: the same data still lands in
+    the same bins, and the labels still name the ends they are written at."""
+
+    def test_a_point_at_the_low_end_moves_to_the_right(self):
+        point = np.array([[0.0, 0.5]])
+        forward = scatter(point, width=4, height=1, xrange=(0.0, 1.0))
+        reverse = scatter(point, width=4, height=1, xrange=(1.0, 0.0))
+
+        assert drawn_cells(forward)[:, 0].any()
+        assert not drawn_cells(forward)[:, -1].any()
+        assert drawn_cells(reverse)[:, -1].any()
+        assert not drawn_cells(reverse)[:, 0].any()
+
+    def test_a_line_follows_its_range_around(self):
+        series = (np.array([0.0, 1.0]), np.array([0.0, 0.0]))
+        forward = line(series, width=6, height=1, xrange=(0.0, 1.0))
+        reverse = line(series, width=6, height=1, xrange=(1.0, 0.0))
+
+        assert np.array_equal(
+            drawn_cells(reverse), drawn_cells(forward)[:, ::-1]
+        )
+
+    def test_a_grid_plot_is_mirrored_across_its_columns(self):
+        """Within a byte: the sample coordinates mirror exactly, but the
+        midpoints of a descending linspace are not bit for bit the reverse of
+        an ascending one, and a last bit of difference can round a colour
+        channel the other way."""
+        def ramp(xy):
+            return xy[:, 0]
+
+        forward = function2(ramp, xrange=(0.0, 1.0), yrange=(0.0, 1.0),
+                            width=6, height=2)
+        reverse = function2(ramp, xrange=(1.0, 0.0), yrange=(0.0, 1.0),
+                            width=6, height=2)
+
+        assert _channels_within(
+            reverse.chars.fg_rgb, forward.chars.fg_rgb[:, ::-1], 1
+        )
+
+    def test_a_grid_plot_is_mirrored_across_its_rows(self):
+        """A cell holds two pixels, an upper in its foreground and a lower in
+        its background, so turning the picture over swaps them as well as
+        reversing the rows."""
+        def ramp(xy):
+            return xy[:, 1]
+
+        forward = function2(ramp, xrange=(0.0, 1.0), yrange=(0.0, 1.0),
+                            width=6, height=2)
+        reverse = function2(ramp, xrange=(0.0, 1.0), yrange=(1.0, 0.0),
+                            width=6, height=2)
+
+        assert _channels_within(reverse.chars.fg_rgb, forward.chars.bg_rgb[::-1], 1)
+        assert _channels_within(reverse.chars.bg_rgb, forward.chars.fg_rgb[::-1], 1)
+
+    def test_a_histogram_bins_the_same_data_either_way_round(self):
+        """numpy needs its bin edges ascending, so the counts are turned back
+        around afterwards rather than the data being binned differently."""
+        rng = np.random.default_rng(0)
+        x, y = rng.random(200), rng.random(200)
+        counts = {"x": x, "y": y, "width": 8, "height": 2}
+
+        forward = histogram2(**counts, xrange=(0.0, 1.0), yrange=(0.0, 1.0))
+        across = histogram2(**counts, xrange=(1.0, 0.0), yrange=(0.0, 1.0))
+        over = histogram2(**counts, xrange=(0.0, 1.0), yrange=(1.0, 0.0))
+
+        assert np.array_equal(across.chars.fg_rgb, forward.chars.fg_rgb[:, ::-1])
+        assert np.array_equal(over.chars.fg_rgb, forward.chars.bg_rgb[::-1])
+        assert np.array_equal(over.chars.bg_rgb, forward.chars.fg_rgb[::-1])
+
+    def test_axes_label_the_ends_the_range_names(self):
+        data = np.array([[0.0, 0.0], [1.0, 1.0]])
+        plot = axes(scatter(data, width=10, height=2, yrange=(1.0, 0.0)))
+        rows = plot.chars.to_plain_str().splitlines()
+
+        assert rows[0].startswith("0.0")
+        assert rows[-2].startswith("1.0")
+
+
 class TestAxesSides:
     def test_a_plot_with_both_coordinates_is_framed(self):
         plot = axes(_narrow_ticks_scatter())

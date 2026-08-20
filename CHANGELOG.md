@@ -22,6 +22,13 @@ New examples:
 * `axes_gallery.py`: every way of drawing an axis, around one two-slit
   interference pattern.
 
+* A range given descending inverts its axis: `xrange=(1, 0)` mirrors a plot
+  left to right and a descending `yrange` turns it over. The plots that place
+  points and sample functions did this already, by arithmetic rather than by
+  design; `histogram2` now does it too, binning with its edges ascending and
+  turning the counts around afterwards, so that the same data always lands in
+  the same bin.
+
 Changed:
 
 * `axes` draws each of its four sides independently. Every side takes a `Side`:

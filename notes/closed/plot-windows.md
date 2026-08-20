@@ -77,3 +77,20 @@ on plots that retain enough source data to do it deliberately.
 * **Leaving it.** The asymmetry was explicable, but "the grammar happens to
   reach one of the two cases" is a thin reason for two shapes of code, and it
   left the `scatter3` TODO standing.
+
+## What was built
+
+All of it, on 2026-08-20. `matthewplotlib.window` holds the type, every 2d plot
+carries one, and `axes` and `dstack2` take anything that has one. Two things
+came out differently from the sketch above:
+
+* Either range may be `None`, for an axis that carries no coordinate, so that a
+  plain image has a window too and a gradient can be labelled along the one
+  side that means anything. The sketch assumed both.
+* The window owns the grid as well as the dot mapping. `pixel_edges` and
+  `pixel_centres` define the tiling that `function2` samples and `histogram2`
+  bins, which used to be the same arithmetic written out twice.
+
+`dstack2` compares whole windows, ranges and rendered dimensions alike, and
+raises `ValueError` rather than asserting. Nothing in the tests or the examples
+had been relying on the looser check.

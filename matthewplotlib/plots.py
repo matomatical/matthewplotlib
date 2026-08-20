@@ -944,12 +944,25 @@ class histogram2(image):
         else:
             ymin, ymax = yrange
         
-        # bin data
+        # bin data. the squares tile the window, and numpy needs their edges
+        # ascending, so bin in that order and turn the counts back around
+        # afterwards wherever the range runs the other way
+        w = window(
+            xrange=xrange,
+            yrange=yrange,
+            width=width,
+            height=height,
+        )
+        xedges, yedges = w.pixel_edges()
+        xflip = xedges[0] > xedges[-1]
+        yflip = yedges[0] > yedges[-1]
         hist, xbins, ybins = np.histogram2d(
             x=x,
             y=y,
-            bins=(width, 2*height),
-            range=(xrange, yrange),
+            bins=(
+                xedges[::-1] if xflip else xedges,
+                yedges[::-1] if yflip else yedges,
+            ),
             weights=weights,
             density=density,
         )
@@ -967,7 +980,11 @@ class histogram2(image):
                     f"max_count must be positive, not {max_count!r}"
                 )
             hist = np.clip(hist / max_count, 0., 1.)
-        hist = hist.T[::-1]
+        hist = hist.T[::-1]     # row zero is the top of the window
+        if yflip:
+            hist = hist[::-1]
+        if xflip:
+            hist = hist[:, ::-1]
 
         # construct the image
         super().__init__(
@@ -976,8 +993,8 @@ class histogram2(image):
             xrange=xrange,
             yrange=yrange,
         )
-        self.xbins = xbins
-        self.ybins = ybins
+        self.xbins = xedges
+        self.ybins = yedges
         self.num_points = len(x)
         
     def __repr__(self):
