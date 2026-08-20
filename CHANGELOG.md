@@ -43,7 +43,7 @@ New examples:
 * `axes_gallery.py`: every way of drawing an axis, around one two-slit
   interference pattern.
 * `candlesticks.py`: a simulated price series as candles, one column to a
-  period and then three, on a dark background and then a pale one.
+  period.
 * `commit_heatmap.py`: a year of commits to this repository as a strip of
   weeks, in the colours GitHub draws a contribution graph in.
 
