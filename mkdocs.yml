@@ -1,8 +1,11 @@
 site_name: matthewplotlib
+site_description: A Python plotting library that aspires to not be painful.
+copyright: Copyright © 2024–2026 Matthew Farrugia-Roberts, GPLv3.
 # The canonical url of every page is its place in the latest release, so that
 # the older versions alongside it do not compete with it in search results.
 site_url: https://matthewplotlib.far.in.net/latest/
 repo_url: https://github.com/matomatical/matthewplotlib
+edit_uri: edit/main/docs/
 strict: true
 
 theme:
@@ -11,6 +14,8 @@ theme:
   palette: dark
   features:
     - navigation.side.indexes
+    - revision.date
+    - revision.history
 extra_css:
   - css/sweetie16.css
   - css/pygments.css
@@ -47,6 +52,7 @@ watch:
 
 plugins:
   - search
+  - git-revision-date
   - mkdocstrings:
       custom_templates: templates/mkdocstrings
       default_handler: python

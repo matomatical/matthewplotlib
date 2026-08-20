@@ -68,7 +68,9 @@ Documentation:
 
 * [x] Minimal docstrings for everything user-facing.
 * [x] Quick start guide.
-* [x] Complete docstrings for modules, constants, etc.
+* [ ] Complete docstrings for modules, constants, etc.
+  * [x] Everything exported from the package.
+  * [ ] The parsers and constants the modules keep to themselves.
 * [x] Simple generated markdown documentation on GitHub.
 * [x] Simple generated HTML/CSS documentation, hosted on web.
 
