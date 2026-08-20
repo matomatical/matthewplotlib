@@ -51,6 +51,9 @@ New examples:
 * `globe.py`: a spinning Earth, drawn by inverting a map projection at every
   pixel instead of projecting a sphere onto them, which is what lets the far
   side of the planet go uncomputed rather than culled. See `notes/world-maps.md`.
+* `world_map.py`: great-circle flight routes over a hand-listed coastline, in
+  any of five projections, each route drawn both as flown and as the map draws
+  it straight.
 
 Changed:
 

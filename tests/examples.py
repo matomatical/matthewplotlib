@@ -159,6 +159,7 @@ EXAMPLES: tuple[Example, ...] = (
     Example("vaporwave.py",             25, 80, saves="gif",
             args=("--num-frames", "5", "--no-loop")),
     Example("voronoi.py",               21, 70, saves="png"),
+    Example("world_map.py",             34, 78, saves="png"),
 )
 
 

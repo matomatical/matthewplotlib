@@ -5,9 +5,12 @@ building any of it, prompted by the roadmap's world maps entry. The shape of the
 public surface is MFR's decision; the measurements are Claude's, and each one
 below names the formula or dataset it came from so it can be rechecked.
 
-Two examples are being built against this design first, both carrying their own
-coarse outline data, so that the library can gain world maps without the
-library gaining a dataset. Nothing else here is built.
+Two examples were built against this design first, both carrying their own
+coarse outline data, so that the library could gain world maps without the
+library gaining a dataset. `examples/globe.py` inverts a projection at every
+pixel; `examples/world_map.py` runs five of them forwards over a list of
+coordinates, and prototypes the `projection` value type proposed below. Nothing
+in the library itself is built.
 
 ## The terminal's scale is world scale
 
@@ -138,6 +141,29 @@ of machine epsilon in `f` is an error of its cube root, about 5e-6, in `u`. The
 pole's own coordinate is therefore only knowable to about 1/2000th of a dot,
 which is 2000 times better than the picture needs.
 
+## A path has to be broken where the map is
+
+Every projection here cuts the sphere somewhere --- along the antimeridian, for
+all five --- and any path crossing that cut arrives at one edge of the map and
+leaves from the other. Joined up, it draws a line straight back across the
+whole picture. A flight from Los Angeles to Sydney does this, and so does
+Antarctica, whose ring runs through 180 degrees on its way round the pole.
+
+The rule that fixes it, from `split_at_seam` in `examples/world_map.py`: insert
+a gap wherever consecutive projected points jump more than half the map's
+width, since `line` already treats a non-finite coordinate as a break in the
+stroke. Half the width is chosen for margin, not for principle. Densely sampled
+paths never approach it --- an arc of 96 samples steps under four degrees at a
+time --- and the widest step any of the coarse coastlines takes is a sixth of
+the map, in Antarctica.
+
+It is not exact, and the exception is worth writing down before it is found the
+hard way. Under an interrupted projection the map's width is not the same at
+every latitude: sinusoidal is `x = lon cos(lat)`, so a wrap at sixty degrees
+jumps `2 pi cos(60) = pi`, which is exactly the threshold. A library doing this
+properly should ask the projection where its cut is and split against that,
+rather than guessing from the size of the jump.
+
 ## A projection is a value
 
     mp.worldmap(projection=mp.mollweide, width=80)
@@ -198,6 +224,8 @@ leaves the question to be answered on its merits rather than by default.
   seen from infinitely far away, or a separate plot that puts the sphere in
   front of a `camera` and gains perspective and a free viewpoint. The examples
   should say which is worth having.
+* Whether a projection carries its own seam, so that paths can be split
+  against it exactly rather than by the size of the jump they take.
 * How data in longitude and latitude reaches a map that is already drawn.
   `dstack2` demands one shared window, which is available --- the projection
   and the width fix it --- but nothing yet makes it convenient.

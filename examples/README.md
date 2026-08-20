@@ -257,6 +257,20 @@ Maps
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/globe.py">Source</a></p>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/world_map.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Great-circle routes</strong></p>
+      <p>Ten long-haul flight routes on a world map of 236 hand-listed
+      vertices, each drawn twice: as the great circle a plane would fly, and as
+      the straight line the map makes it look like. Five projections to choose
+      between, and a graticule so you can see which of them bent the path.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/world_map.py">Source</a></p>
+    </td>
+  </tr>
 </tbody>
 </table>
 

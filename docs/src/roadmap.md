@@ -103,7 +103,9 @@ More exotic plot types:
   * [x] Basic Hilbert curves.
   * [ ] Non-square Hilbert curves.
   * [ ] 3d Hilbert curves.
-* [ ] World maps (see `notes/world-maps.md`):
+* [ ] World maps (see `notes/world-maps.md`; `examples/world_map.py` and
+  `examples/globe.py` prototype the design, carrying their own coarse
+  coastlines):
   * [ ] Some 2d projections.
   * [ ] 3d globe projection.
   * [ ] Whether to bundle coastline vectors, and at what resolution.
