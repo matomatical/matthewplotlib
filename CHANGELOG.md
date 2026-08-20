@@ -23,6 +23,10 @@ Changed:
   it half-fills its last character row.
 * Plots report their window in their reprs, rather than separately spelling out
   their dimensions and their ranges.
+* `function2` shows the value of the function at the centre of each grid
+  square, rather than at its lower left corner, so that the picture is no
+  longer biased half a square towards the low end of each range. With
+  `endpoints=True` it still samples the ends of both ranges exactly.
 
 Version 0.6.3
 -------------

@@ -1,12 +1,12 @@
 example: voronoi.py
 args: (none)
 terminal: 21x70
-image: 1 frames, 320x560, sha256:49dc3c0ae7e4fed5
+image: 1 frames, 320x560, sha256:11b37817dfee5657
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.
 
-frame 0: 5891 bytes, 20x70, cursor 20,0, scrolled 0
+frame 0: 5876 bytes, 20x70, cursor 20,0, scrolled 0
 palette:
   0 #007f00 #007f00
   1 #ffffff #007f00
@@ -15,55 +15,57 @@ palette:
   4 #7f0000 #7f0000
   5 #7f0000 #66007f
   6 #66007f #66007f
-  7 #327f00 #327f00
-  8 #7f3300 #7f3300
-  9 #ffffff #7f0000
-  a #ffffff #657f00
-  b #66007f #327f00
-  c #657f00 #7f0065
-  d #7f0065 #7f0065
-  e #7f0000 #00657f
-  f #ffffff #66007f
-  g #00657f #00657f
-  h #66007f #00657f
-  i #ffffff #327f00
-  j #00657f #7f0065
-  k #ffffff #7f3300
-  l #7f3300 #007f33
-  m #ffffff #7f0065
-  n #ffffff #00657f
-  o #00657f #00337f
-  p #66007f #00337f
-  q #327f00 #00337f
+  7 #66007f #327f00
+  8 #327f00 #327f00
+  9 #327f00 #7f3300
+  a #7f3300 #7f3300
+  b #7f0000 #657f00
+  c #ffffff #7f0000
+  d #ffffff #657f00
+  e #657f00 #7f0065
+  f #7f0065 #7f0065
+  g #7f0000 #7f0065
+  h #7f0000 #00657f
+  i #ffffff #66007f
+  j #00657f #00657f
+  k #ffffff #327f00
+  l #66007f #00657f
+  m #ffffff #7f3300
+  n #7f3300 #007f33
+  o #ffffff #7f0065
+  p #ffffff #00657f
+  q #66007f #00337f
   r #007f33 #007f33
-  s #00337f #00337f
-  t #7f0065 #32007f
-  u #32007f #32007f
-  v #00657f #32007f
-  w #00337f #7f0000
-  x #7f3300 #7f0000
-  y #7f6600 #7f6600
-  z #7f0065 #7f6600
-  A #7f0065 #007f65
+  s #00657f #00337f
+  t #00337f #00337f
+  u #327f00 #00337f
+  v #7f0065 #32007f
+  w #32007f #32007f
+  x #00657f #32007f
+  y #327f00 #7f0000
+  z #7f3300 #7f0000
+  A #7f0065 #7f6600
   B #ffffff #32007f
-  C #007f65 #007f65
-  D #32007f #007f65
-  E #007f65 #7f6600
-  F #ffffff #00337f
-  G #ffffff #007f33
-  H #ffffff #7f6600
-  I #ffffff #007f65
-  J #32007f #00337f
-  K #7f0000 #00007f
-  L #00007f #00007f
-  M #007f33 #00007f
-  N #00337f #7f0033
-  O #7f0033 #7f0033
+  C #32007f #00337f
+  D #00337f #7f0000
+  E #7f6600 #7f6600
+  F #007f65 #7f6600
+  G #007f65 #007f65
+  H #7f0065 #007f65
+  I #32007f #007f65
+  J #ffffff #00337f
+  K #007f33 #7f0000
+  L #ffffff #007f33
+  M #ffffff #007f65
+  N #7f0000 #00007f
+  O #00337f #7f0033
   P #7f0000 #7f0033
-  Q #ffffff #00007f
-  R #ffffff #7f0033
-  S #00007f #7f0033
-  T #00337f #007f65
+  Q #00007f #00007f
+  R #ffffff #00007f
+  S #00337f #007f65
+  T #7f0033 #7f0033
+  U #ffffff #7f0033
+  V #00007f #7f0033
 text:
   ▀⠠▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⠁▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
@@ -86,23 +88,23 @@ text:
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⡀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 colour:
-  0100002333333334444444444444444445566666777777777777788888888888888888
-  0022333333333334444444444494444566666667777777777777888888888888888888
-  2333a333333333344444444444444566666666b7777777777778888888888888888888
-  3333333333333333444444444455666666666677777777777788888888888888888888
-  3333333333333ccddeee44445666666f66666777777777777888888888888888888888
-  3333333333ccdddddggggggh666666666666677777i777778888888888888888888888
-  3333333ccddddddddggggggggh66666666667777777777788888888888888888888888
-  33333cdddddddddddggggggggggh6666666b7777777777888888888888888888888888
-  33cddddddddddddddjgggggggggggh666667777777777888888k88888888888888888l
-  ddddddddddddddmdddgggnggggggggopppq77777777788888888888888888888llrrrr
-  ddddddddddddddddddggggggggggossssssssq7777788888888888888888llrrrrrrrr
-  ddddddddddddddddtuuuuuuvvvossssssssssssw444xx8888888888lllrrrrrrrrrrrr
-  yyyzzzzAddddddtuuuuuBuuuuussssssssssssw44444444xx88llrrrrrrrrrrrrrrrrr
-  yyyyyyyyCCCCCCDuuuuuuuuuusssssssssssss444444444444rrrrrrrrrrrrrrrrrrrr
-  yyyyyyyyyECCCCCCDuuuuuuuusssssFssssss4444444444444rrrrrrrrrrrrrrrrrrrr
-  yyyyyyyyyyECCCCCCCDuuuuussssssssssss44444444444444rrrrrrrrGrrrrrrrrrrr
-  yyyyyyyyyyyHICCCCCCCDuuJsssssssssssw44444494KKKKLLMrrrrrrrrrrrrrrrrrrr
-  yyyyyyyyyyyyyCCCCCCCCCDsssssssssssNOOPPPLLQLLLLLLLLrrrrrrrrrrrrrrrrrrr
-  yyyyyyyyyyyyyyCCCCCCCCCsssssssssNOOOOOOOOROSSLLLLLLrrrrrrrrrrrrrrrrrrr
-  yyyyyyyyyyyyyyyECCCCCCCTssssssNOOOOOOOOOOOOOOOOOSSSLrrrrrrrrrrrrrrrrrr
+  01000023333333444444444444444444445666678888888888889aaaaaaaaaaaaaaaaa
+  00023333333333b44444444444c4444566666668888888888889aaaaaaaaaaaaaaaaaa
+  2333d3333333333444444444444445666666668888888888889aaaaaaaaaaaaaaaaaaa
+  33333333333333344444444444456666666667888888888889aaaaaaaaaaaaaaaaaaaa
+  3333333333333eefgh4444445666666i66666888888888889aaaaaaaaaaaaaaaaaaaaa
+  3333333333eefffffjjjjjh6666666666666788888k88888aaaaaaaaaaaaaaaaaaaaaa
+  33333333effffffffjjjjjjjl6666666666688888888888aaaaaaaaaaaaaaaaaaaaaaa
+  33333efffffffffffjjjjjjjjjl6666666688888888888aaaaaaaaaaaaaaaaaaaaaaaa
+  33effffffffffffffjjjjjjjjjjjl6666678888888888aaaaaamaaaaaaaaaaaaaaaaan
+  efffffffffffffoffjjjjpjjjjjjjjqqqq8888888888aaaaaaaaaaaaaaaaaaaaannrrr
+  fffffffffffffffffjjjjjjjjjjjstttttttu888888aaaaaaaaaaaaaaaaannnrrrrrrr
+  ffffffffffffffffvwwxxxxxxxstttttttttttuyyyzaaaaaaaaaaaaannrrrrrrrrrrrr
+  AAAAffffffffffvwwwwwBwwwwCttttttttttttD444444zzaaaaannrrrrrrrrrrrrrrrr
+  EEEEEEEFGGGGHIwwwwwwwwwwwttttttttttttD44444444444rrrrrrrrrrrrrrrrrrrrr
+  EEEEEEEEFGGGGGGIwwwwwwwwttttttJtttttt444444444444Krrrrrrrrrrrrrrrrrrrr
+  EEEEEEEEEFGGGGGGGIwwwwwwtttttttttttt44444444444444rrrrrrrrLrrrrrrrrrrr
+  EEEEEEEEEEEMMGGGGGGIwwwtttttttttttt4444444c44NNNNNrrrrrrrrrrrrrrrrrrrr
+  EEEEEEEEEEEEGGGGGGGGGICtttttttttttOPPPNNNQRQQQQQQQrrrrrrrrrrrrrrrrrrrr
+  EEEEEEEEEEEEEFGGGGGGGGStttttttttOTTTTTTTTUVVQQQQQQQrrrrrrrrrrrrrrrrrrr
+  EEEEEEEEEEEEEEFGGGGGGGGtttttttOTTTTTTTTTTTTTTTVVVQQrrrrrrrrrrrrrrrrrrr

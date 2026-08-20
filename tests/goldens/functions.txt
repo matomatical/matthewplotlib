@@ -1,7 +1,7 @@
 example: functions.py
 args: (none)
 terminal: 31x74
-image: 1 frames, 480x592, sha256:d0e4198e3afbe0e5
+image: 1 frames, 480x592, sha256:515bc47267d37199
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.
@@ -64,42 +64,42 @@ palette:
   0Q #b2cbff default
   0R #8e70ff default
   0S #a955ff default
-  0T #6995ff #53abff
-  0U #7f7fff #6995ff
-  0V #9569ff #7f7fff
-  0W #ab53ff #9569ff
-  0X #bf3fff #ab53ff
-  0Y #d12dff #bf3fff
-  0Z #e11dff #d12dff
-  10 #ed11ff #e11dff
-  11 #f707ff #ed11ff
-  12 #fd01ff #f707ff
-  13 #ff00ff #fd01ff
-  14 #fd01ff #ff00ff
-  15 #f707ff #fd01ff
-  16 #ed11ff #f707ff
-  17 #e11dff #ed11ff
-  18 #d12dff #e11dff
-  19 #bf3fff #d12dff
-  1a #ab53ff #bf3fff
-  1b #9569ff #ab53ff
-  1c #7f7fff #9569ff
-  1d #6995ff #7f7fff
-  1e #53abff #6995ff
-  1f #3fbfff #53abff
-  1g #2dd1ff #3fbfff
-  1h #1de1ff #2dd1ff
-  1i #11edff #1de1ff
-  1j #07f7ff #11edff
-  1k #01fdff #07f7ff
-  1l #00ffff #01fdff
-  1m #01fdff #00ffff
-  1n #07f7ff #01fdff
-  1o #11edff #07f7ff
-  1p #1de1ff #11edff
-  1q #2dd1ff #1de1ff
-  1r #3fbfff #2dd1ff
-  1s #53abff #3fbfff
+  0T #7f7fff #6995ff
+  0U #9569ff #7f7fff
+  0V #ab53ff #9569ff
+  0W #bf3fff #ab53ff
+  0X #d12dff #bf3fff
+  0Y #e11dff #d12dff
+  0Z #ed11ff #e11dff
+  10 #f707ff #ed11ff
+  11 #fd01ff #f707ff
+  12 #ff00ff #fd01ff
+  13 #fd01ff #ff00ff
+  14 #f707ff #fd01ff
+  15 #ed11ff #f707ff
+  16 #e11dff #ed11ff
+  17 #d12dff #e11dff
+  18 #bf3fff #d12dff
+  19 #ab53ff #bf3fff
+  1a #9569ff #ab53ff
+  1b #7f7fff #9569ff
+  1c #6995ff #7f7fff
+  1d #53abff #6995ff
+  1e #3fbfff #53abff
+  1f #2dd1ff #3fbfff
+  1g #1de1ff #2dd1ff
+  1h #11edff #1de1ff
+  1i #07f7ff #11edff
+  1j #01fdff #07f7ff
+  1k #00ffff #01fdff
+  1l #01fdff #00ffff
+  1m #07f7ff #01fdff
+  1n #11edff #07f7ff
+  1o #1de1ff #11edff
+  1p #2dd1ff #1de1ff
+  1q #3fbfff #2dd1ff
+  1r #53abff #3fbfff
+  1s #6995ff #53abff
 text:
   ╭────────────────────────────────────────────────────────────────────────╮
   │⢀⣀⣀⡀                ⢀⡠⠤⠤⠤⢄⡀         ⣇⣀⣀⡀                ⣀⠤⠤⠤⠤⣄          │

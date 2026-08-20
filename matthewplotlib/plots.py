@@ -808,13 +808,14 @@ class function2(image):
         to zrange[0] and white corresponding to zrange[1]. You can choose a
         different colormap (e.g. mp.reds, mp.viridis, etc.) here.
     * endpoints : bool (default: False).
-        If true, endpoints are included from the linspaced inputs, and so the
-        grid elements in each corner will represent the different combinations
-        of xrange/yrange.
-        
-        If false (default), the endpoints are excluded, so the lower bounds are
-        met but the upper bounds are not, meaning each grid square color shows
-        the value of the function precisely at its lower left corner.
+        By default, the grid squares tile the ranges exactly and each one shows
+        the value of the function at its own centre.
+
+        If true, the function is instead sampled at points spread from one end
+        of each range to the other, so that the four corner squares show the
+        four corner combinations of xrange and yrange. The squares then reach
+        half a square beyond the ranges, which the axes still report as the
+        limits.
     """
     def __init__(
         self,
@@ -827,12 +828,15 @@ class function2(image):
         colormap: ColorMap | None = None,
         endpoints: bool = False,
     ):
-        # create a meshgrid with the required format and shape
-        X, Y = np.meshgrid(
-            np.linspace(*xrange, num=width, endpoint=endpoints),
-            np.linspace(*yrange, num=2*height, endpoint=endpoints),
-        ) # float[h, w] (x2)
-        Y = Y[::-1] # correct Y direction for image plotting
+        # the coordinates each grid square stands for, top row first
+        w = window(xrange=xrange, yrange=yrange, width=width, height=height)
+        if endpoints:
+            X, Y = np.meshgrid(
+                np.linspace(*xrange, num=width),
+                np.linspace(*yrange, num=2*height)[::-1],
+            ) # float[h, w] (x2)
+        else:
+            X, Y = w.pixel_centres()
         XY = einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')
 
         # sample the function

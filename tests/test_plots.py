@@ -198,6 +198,39 @@ class TestFunction2:
 
         assert np.array_equal(colormap.input, [[0.0, 1.0], [0.0, 1.0]])
 
+    def test_squares_are_sampled_at_their_centres(self):
+        """The squares tile the ranges, and each shows the value of the
+        function at the centre of the square it stands for."""
+        sampled = []
+
+        def record(xy):
+            sampled.append(xy)
+            return xy[:, 0]
+
+        function2(record, xrange=(0.0, 1.0), yrange=(0.0, 2.0), width=4, height=1)
+
+        assert np.allclose(np.unique(sampled[0][:, 0]), [0.125, 0.375, 0.625, 0.875])
+        assert np.allclose(np.unique(sampled[0][:, 1]), [0.5, 1.5])
+
+    def test_endpoints_reaches_the_ends_of_both_ranges(self):
+        sampled = []
+
+        def record(xy):
+            sampled.append(xy)
+            return xy[:, 0]
+
+        function2(
+            record,
+            xrange=(0.0, 1.0),
+            yrange=(0.0, 2.0),
+            width=4,
+            height=1,
+            endpoints=True,
+        )
+
+        assert np.allclose(np.unique(sampled[0][:, 0]), [0.0, 1 / 3, 2 / 3, 1.0])
+        assert np.allclose(np.unique(sampled[0][:, 1]), [0.0, 2.0])
+
 
 class TestHistogram2:
     def test_counts_above_max_count_saturate_before_colormapping(self):
