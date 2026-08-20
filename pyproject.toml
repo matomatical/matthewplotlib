@@ -38,6 +38,7 @@ dev = [
   "pytest-cov",
   # docs
   "mike>=2.2.0",
+  "mkdocs-git-revision-date-plugin>=0.3.2",
   "mkdocs>=1.6.1",
   "mkdocs-include-markdown-plugin>=7.3.0",
   "mkdocs-terminal>=4.8.0",

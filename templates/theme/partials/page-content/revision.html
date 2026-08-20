@@ -1,0 +1,26 @@
+{#- Where the page came from, and when it last changed.
+
+    A page whose content is included or generated from elsewhere names that
+    file as its source, and does not report a date: the date git holds is the
+    date of the stub, not of what the reader is looking at.
+-#}
+{%- set source = page.meta.source if page and page.meta and page.meta.source
+                 else ("docs/" + page.file.src_uri if page and page.file else none) -%}
+{%- if source -%}
+<section id="mkdocs-terminal-revision">
+<br>
+<aside>
+    <p>
+        <small>
+            <i>
+            {%- if not (page.meta and page.meta.source) and page.meta and page.meta.revision_date -%}
+            Page last updated {{ page.meta.revision_date }}.
+            {% endif -%}
+            Built from
+            <a href="{{ config.repo_url }}/blob/main/{{ source }}">{{ source }}</a>.
+            </i>
+        </small>
+    </p>
+</aside>
+</section>
+{%- endif -%}
