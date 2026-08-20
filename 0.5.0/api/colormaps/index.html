@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="generator" content="mkdocs-1.6.1, mkdocs-terminal-4.8.0">
+    
+    <meta name="description" content="A Python plotting library that aspires to not be painful."> 
+     
+    
+    <link rel="canonical" href="https://matthewplotlib.far.in.net/0.5.0/api/colormaps/"><link rel="icon" type="image/png" sizes="192x192" href="../../img/android-chrome-192x192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="../../img/android-chrome-512x512.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png" />
+<link rel="shortcut icon" type="image/png" sizes="48x48" href="../../img/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png" />
+
+
+    
+ 
+<title>colormaps - matthewplotlib</title>
+
+
+<link href="../../css/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+<link href="../../css/fontawesome/css/solid.min.css" rel="stylesheet">
+<link href="../../css/normalize.css" rel="stylesheet">
+<link href="../../css/terminal.css" rel="stylesheet">
+<link href="../../css/theme.css" rel="stylesheet">
+<link href="../../css/theme.tile_grid.css" rel="stylesheet">
+<link href="../../css/theme.footer.css" rel="stylesheet">
+<!-- dark color palette -->
+<link href="../../css/palettes/dark.css" rel="stylesheet">
+
+<!-- page layout -->
+<style>
+/* initially set page layout to a one column grid */
+.terminal-mkdocs-main-grid {
+    display: grid;
+    grid-column-gap: 1.4em;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+/*  
+*   when side navigation is not hidden, use a two column grid.  
+*   if the screen is too narrow, fall back to the initial one column grid layout.
+*   in this case the main content will be placed under the navigation panel. 
+*/
+@media only screen and (min-width: 70em) {
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: 4fr 9fr;
+    }
+}</style>
+
+
+
+    
+    <link href="../../assets/_mkdocstrings.css" rel="stylesheet"> 
+    <link href="../../css/sweetie16.css" rel="stylesheet"> 
+    <link href="../../css/pygments.css" rel="stylesheet"> 
+    <link href="../../css/override.css" rel="stylesheet">  
+    
+    
+
+    
+    <!-- search css support -->
+<link href="../../css/search/bootstrap-modal.css" rel="stylesheet">
+<!-- search scripts -->
+<script>
+    var base_url = "../..",
+    shortcuts = "{}";
+</script>
+<script src="../../js/jquery/jquery-1.10.1.min.js" defer></script>
+<script src="../../js/bootstrap/bootstrap.min.js" defer></script>
+<script src="../../js/mkdocs/base.js" defer></script>
+    
+    
+    
+    
+    <script src="../../search/main.js"></script>
+    
+
+    
+</head>
+
+<body class="terminal"><div class="container">
+    <div class="terminal-nav">
+        <header class="terminal-logo">
+            <div id="mkdocs-terminal-site-name" class="logo terminal-prompt"><a href="https://matthewplotlib.far.in.net/0.5.0" class="no-style">matthewplotlib</a></div>
+        </header>
+        
+        <nav class="terminal-menu">
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                <li id="version-menu" hidden>
+                    <label class="menu-item" for="version-select">version</label>
+                    <select id="version-select"></select>
+                </li>
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="https://github.com/matomatical/matthewplotlib" class="menu-item" property="item" typeof="WebPage">
+                        <span property="name">GitHub</span>
+                    </a>
+                </li>
+                    
+                    
+
+
+<li property="itemListElement" typeof="ListItem">
+    <a href="#" class="menu-item" data-toggle="modal" data-target="#mkdocs_search_modal" property="item" typeof="SearchAction">
+        <i aria-hidden="true" class="fa fa-search"></i> <span property="name">Search</span>
+    </a>
+    <meta property="position" content="0">
+</li>
+                    
+            </ul>
+        </nav>
+<script>
+// The versions mike published live one directory above this one, listed in a
+// file it writes at the root of the branch. Absent when serving locally, in
+// which case the menu stays hidden.
+(function () {
+    var root = new URL("../../", window.location.href);
+    var here = decodeURIComponent(window.location.pathname);
+    var rest = here.slice(root.pathname.length);
+    var current = root.pathname.replace(/^\/|\/$/g, "").split("/").pop();
+
+    fetch(new URL("../versions.json", root).href).then(function (response) {
+        if (!response.ok) throw new Error("no versions.json");
+        return response.json();
+    }).then(function (versions) {
+        if (!versions.length) return;
+        var select = document.getElementById("version-select");
+        versions.forEach(function (version) {
+            var names = [version.version].concat(version.aliases || []);
+            var option = document.createElement("option");
+            option.value = version.aliases && version.aliases.length
+                ? version.aliases[0]
+                : version.version;
+            option.textContent = version.title || version.version;
+            option.selected = names.indexOf(current) !== -1;
+            select.appendChild(option);
+        });
+        // A directory the list does not mention, so name it rather than
+        // leaving some other version showing as the current one.
+        if (select.selectedIndex === -1) {
+            var unlisted = document.createElement("option");
+            unlisted.value = current;
+            unlisted.textContent = current;
+            unlisted.selected = true;
+            select.insertBefore(unlisted, select.firstChild);
+        }
+        document.getElementById("version-menu").hidden = false;
+
+        // Keep the reader on the same page where the chosen version has one.
+        select.addEventListener("change", function () {
+            var version = new URL("../" + select.value + "/", root);
+            var same = new URL(rest, version);
+            fetch(same.href, {method: "HEAD"}).then(function (response) {
+                window.location.assign(response.ok ? same.href : version.href);
+            }).catch(function () {
+                window.location.assign(version.href);
+            });
+        });
+    }).catch(function () {
+        /* nothing published to switch between */
+    });
+})();
+</script>
+    </div>
+</div>
+        
+    <div class="container">
+        <div class="terminal-mkdocs-main-grid"><aside id="terminal-mkdocs-side-panel"><nav>
+    <h4>Site contents</h4>
+    <ul class="terminal-mkdocs-side-nav-items">
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../..">Home</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../quickstart/">Quickstart</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../examples/">Examples</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+        
+        
+            
+                
+        
+        
+            
+    
+        
+        <span class="
+        
+            
+        
+    terminal-mkdocs-side-nav-item--active terminal-mkdocs-side-nav-section-no-index">API Reference</span>
+    
+    
+        
+        
+            <ul class="terminal-mkdocs-side-nav-li-ul">
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../">matthewplotlib</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../plots/">plots</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../animations/">animations</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../data/">data</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../colors/">colors</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        <span class="terminal-mkdocs-side-nav-item--active">colormaps</span>
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../core/">core</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../unscii16/">unscii16</a>
+        
+    
+    </li>
+            
+            
+    </ul>
+        
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../compatibility/">Compatibility</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../changelog/">Changelog</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../roadmap/">Roadmap</a>
+        
+    
+    
+    
+       </li>
+        
+    </ul>
+</nav><hr>
+<h4>Page contents</h4>
+<nav>
+    <ul style="list-style-type: none; padding-left: 0; margin-left: 0;">
+        <li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;colormaps</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.reds"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;reds</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.greens"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;greens</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.blues"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;blues</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.yellows"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;yellows</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.magentas"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;magentas</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.cyans"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;cyans</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.divreds"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;divreds</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.divgreens"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;divgreens</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.divblues"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;divblues</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.cyber"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;cyber</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.rainbow"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;rainbow</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.magma"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;magma</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.inferno"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;inferno</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.plasma"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;plasma</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.viridis"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;viridis</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.sweetie16"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;sweetie16</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.pico8"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;pico8</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.tableau"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;tableau</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colormaps.nouveau"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;nouveau</a></li>
+
+    </ul>
+</nav>
+</aside>
+            <main id="terminal-mkdocs-main-content">
+    
+    
+    
+    
+    
+
+<section id="mkdocs-terminal-content">
+    <div class="doc doc-object doc-module">
+
+
+
+<a id="matthewplotlib.colormaps"></a>
+    <div class="doc doc-contents first">
+
+        <p>A collection of pre-defined colormaps. They generally come in two flavours:</p>
+<ul>
+<li>Continuous colormaps: Functions of type <code>float[...] -&gt; uint8[..., 3]</code>. They
+  turn a batch of floats in the range [0.0, 1.0] into a batch of RGB triples.</li>
+<li>Discrete colormaps: Functions of type <code>int[...] -&gt; uint8[..., 3]</code>. They turn
+  a batch of integer indices into a batch of RGB triples by indexing into the
+  color palette.</li>
+</ul>
+<p>For example:</p>
+<p><img alt="" src="../images/colormaps.png" /></p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.reds" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">reds</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L44-L53"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.reds" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Red colormap. Simply embeds greyscale value into red channel.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.greens" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">greens</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L56-L65"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.greens" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Green colormap. Simply embeds greyscale value into green channel.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.blues" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">blues</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L68-L77"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.blues" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Blue colormap. Simply embeds greyscale value into blue channel.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.yellows" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">yellows</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L80-L90"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.yellows" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Yellow colormap. Simply embeds greyscale value into red and green channels.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.magentas" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">magentas</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L93-L104"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.magentas" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Magenta colormap. Simply embeds greyscale value into red and blue
+channels.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.cyans" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">cyans</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L107-L118"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.cyans" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Cyan colormap. Simply embeds greyscale value into green and blue
+channels.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.divreds" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">divreds</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L125-L137"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.divreds" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Diverging red/cyan colormap. Uses greyscale value to interpolate between
+cyan (0.0) and white (0.5) and red (1.0).</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.divgreens" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">divgreens</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L140-L152"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.divgreens" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Diverging green/magenta colormap. Uses greyscale value to interpolate
+between magenta (0.0) and white (0.5) and green (1.0).</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.divblues" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">divblues</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L155-L167"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.divblues" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Diverging blue/yellow colormap. Uses greyscale value to interpolate between
+yellow (0.0) and white (0.5) and blue (1.0).</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.cyber" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">cyber</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L174-L186"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.cyber" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Cyberpunk colormap. Uses greyscale value to interpolate between magenta
+(0.) and cyan (1.).</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.rainbow" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">rainbow</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L189-L230"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.rainbow" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Rainbow colormap. Effectively embeds greyscale values as hue in HSV color
+space.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.magma" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">magma</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L305-L314"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.magma" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Magma colormap by Nathaniel J. Smith and Stefan van der Walt (see
+https://bids.github.io/colormap/).</p>
+<p>Discretised to 256 8-bit colours.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.inferno" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">inferno</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L385-L394"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.inferno" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Inferno colormap by Nathaniel J. Smith and Stefan van der Walt (see
+https://bids.github.io/colormap/).</p>
+<p>Discretised to 256 8-bit colours.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.plasma" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">plasma</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L465-L474"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.plasma" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Plasma colormap by Nathaniel J. Smith and Stefan van der Walt (see
+https://bids.github.io/colormap/).</p>
+<p>Discretised to 256 8-bit colours.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.viridis" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">viridis</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L545-L554"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.viridis" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Viridis colormap by Nathaniel J. Smith, Stefan van der Walt, and Eric
+Firing (see https://bids.github.io/colormap/).</p>
+<p>Discretised to 256 8-bit colours.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.sweetie16" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">sweetie16</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L561-L577"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.sweetie16" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Sweetie-16 colour palette by GrafxKid (see
+https://lospec.com/palette-list/sweetie-16).</p>
+<p>Input should be an array of indices in the range [0,15] (or else it will
+cycle).</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.pico8" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">pico8</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L580-L595"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.pico8" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>PICO-8 colour palette (see https://pico-8.fandom.com/wiki/Palette).</p>
+<p>Input should be an array of indices in the range [0,15] (or else it will
+cycle).</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.tableau" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">tableau</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L598-L612"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.tableau" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Matplotlib Tableau colourmap.</p>
+<p>Input should be an array of indices in the range [0,9] (or else it will
+cycle).</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="matthewplotlib.colormaps.nouveau" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">nouveau</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/d3392f53955f068a2bf4fbf6d0e591a8930bec07/matthewplotlib/colormaps.py#L615-L629"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colormaps.nouveau" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Updated Tableau colourmap (more accessible).</p>
+<p>Input should be an array of indices in the range [0,9] (or else it will
+cycle).</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+</section>
+
+<section id="mkdocs-terminal-after-content">
+    
+</section>
+<section id="mkdocs-terminal-revision">
+<br>
+<aside>
+    <p>
+        <small>
+            <i>Built from
+            <a href="https://github.com/matomatical/matthewplotlib/blob/v0.5.0/matthewplotlib/colormaps.py">matthewplotlib/colormaps.py</a>.
+            </i>
+        </small>
+    </p>
+</aside>
+</section>
+            </main>
+        </div>
+        <hr><footer>
+    <div class="terminal-mkdocs-footer-grid">
+        <div id="terminal-mkdocs-footer-copyright-info">
+            
+            <p class="text-center text-muted">Copyright © 2024–2026 Matthew Farrugia-Roberts, GPLv3.</p>
+             Site built with <a href="http://www.mkdocs.org">MkDocs</a> and a theme based on <a href="https://github.com/ntno/mkdocs-terminal">Terminal for MkDocs</a>.
+        </div>
+    </div>
+</footer>
+    </div>
+
+    
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="alertdialog" aria-modal="true" aria-labelledby="searchModalLabel">
+    <div class="modal-dialog modal-lg" role="search">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Search</h5>
+                <button type="button" class="close btn btn-default btn-ghost" data-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+                <p id="searchInputLabel">Type to start searching</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" aria-labelledby="searchInputLabel" placeholder="" id="mkdocs-search-query" title="Please enter search terms here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No document matches found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</body>
+
+</html>
