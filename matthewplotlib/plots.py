@@ -1,5 +1,5 @@
 """
-A collection of building blots for plotting. There are lots of options---take a
+A collection of building blocks for plotting. There are lots of options---take a
 look through this module. They are roughly grouped as follows.
 
 Base class:

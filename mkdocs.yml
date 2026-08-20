@@ -21,13 +21,13 @@ nav:
   - Examples: examples.md
   - API Reference:
     - matthewplotlib: api.md
-    - animations: api/animations.md
-    - camera: api/camera.md
-    - colormaps: api/colormaps.md
-    - colors: api/colors.md
-    - core: api/core.md
-    - data: api/data.md
     - plots: api/plots.md
+    - animations: api/animations.md
+    - data: api/data.md
+    - colors: api/colors.md
+    - colormaps: api/colormaps.md
+    - core: api/core.md
+    - camera: api/camera.md
     - unscii16: api/unscii16.md
   - Compatibility: compatibility.md
   - Changelog: changelog.md
@@ -59,6 +59,9 @@ plugins:
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             show_labels: true
+            # the modules order their contents by hand, by topic
+            members_order: source
+            group_by_category: false
   - include-markdown
 
 markdown_extensions:

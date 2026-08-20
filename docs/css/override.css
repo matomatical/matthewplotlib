@@ -140,7 +140,7 @@ code.doc-symbol {
 .admonition {
     background-color: var(--sweetie-navy);
     border-left: 1ch solid var(--primary-color);
-    padding: 0 1ch;
+    padding: var(--global-line-height) 1ch;
     margin: var(--global-line-height) 0;
 }
 
