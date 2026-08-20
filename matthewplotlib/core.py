@@ -25,6 +25,9 @@ Drawing characters, each packing several data points into one character cell:
   partial block characters for eighth-of-a-cell resolution.
 * `unicode_image`: Images to half-block characters, at 1 by 2 pixels per cell.
 * `unicode_box` and `BoxStyle`: Box-drawing borders, optionally titled.
+* `unicode_frame` and `unicode_grid`, with `LineStyle`: Rules along the sides
+  of a plot, or between the cells of a grid, with the corners and junctions
+  where they meet derived from which of them are drawn.
 """
 
 from __future__ import annotations
@@ -1502,9 +1505,9 @@ def unicode_grid(
     """
     Lay a rectangular grid of character arrays out with rules between them.
 
-    A grid of `nrows` by `ncols` cells has `nrows + 1` horizontal rules, one
-    above each row of cells and one below the last, and `ncols + 1` vertical
-    rules, one to the left of each column and one to the right of the last.
+    A grid of cells has one more horizontal rule than it has rows, one above
+    each row and one below the last, and one more vertical rule than it has
+    columns, one to the left of each column and one to the right of the last.
     Each rule is described by two things: whether it takes a row or column of
     cells at all, and which weight of line, if any, is drawn in it. A rule
     that takes no cells does not appear in the output at all; one that takes
@@ -1522,7 +1525,7 @@ def unicode_grid(
 
     Inputs:
 
-    * cells : CharArray[nrows][ncols].
+    * cells : CharArray[nrows, ncols].
         The contents of the grid. Every array in a row must be the same
         height, and every array in a column the same width.
     * hcells : bool[nrows+1].
