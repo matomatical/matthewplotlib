@@ -36,6 +36,7 @@ nav:
     - colors: api/colors.md
     - colormaps: api/colormaps.md
     - core: api/core.md
+    - window: api/window.md
     - camera: api/camera.md
     - unscii16: api/unscii16.md
   - Compatibility: compatibility.md

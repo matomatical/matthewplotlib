@@ -32,6 +32,8 @@ What draws them:
 
 * [`core`][matthewplotlib.core]: The grid of coloured characters every plot is
   ultimately drawn on, and the glyphs dense enough to draw with.
+* [`window`][matthewplotlib.window]: The interval of data a plot covers on
+  each axis, and how that lands on the grid it is drawn in.
 * [`camera`][matthewplotlib.camera]: Projecting points and lines in space onto
   a viewing plane, for the plot types that take three dimensions.
 * [`unscii16`][matthewplotlib.unscii16]: The bitmap font that renders a plot
@@ -84,6 +86,11 @@ from matthewplotlib.colors import (
 
 from matthewplotlib.core import (
     BoxStyle,
+)
+
+
+from matthewplotlib.window import (
+    window,
 )
 
 

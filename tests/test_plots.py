@@ -263,8 +263,8 @@ class TestLine:
 
     def test_range_from_the_data(self):
         plot = line((np.array([1.0, 3.0]), np.array([-2.0, 6.0])))
-        assert plot.xrange == (1.0, 3.0)
-        assert plot.yrange == (-2.0, 6.0)
+        assert plot.window.xrange == (1.0, 3.0)
+        assert plot.window.yrange == (-2.0, 6.0)
 
     def test_explicit_range_is_kept(self):
         plot = line(
@@ -272,14 +272,14 @@ class TestLine:
             xrange=(0.0, 10.0),
             yrange=(-5.0, 5.0),
         )
-        assert plot.xrange == (0.0, 10.0)
-        assert plot.yrange == (-5.0, 5.0)
+        assert plot.window.xrange == (0.0, 10.0)
+        assert plot.window.yrange == (-5.0, 5.0)
 
     def test_a_range_is_found_for_a_constant_series(self):
         """A constant series reaches no distance, so it is given room around
         itself rather than dividing by a zero-width range."""
         plot = line((np.arange(10), np.ones(10)), width=10, height=3)
-        assert plot.yrange == (0.5, 1.5)
+        assert plot.window.yrange == (0.5, 1.5)
         assert drawn_cells(plot).any()
 
     def test_the_ends_of_the_data_reach_the_ends_of_the_plot(self):
@@ -323,8 +323,8 @@ class TestLine:
             (np.array([0.0, 1.0]), np.array([0.0, 1.0])),
             (np.array([2.0, 3.0]), np.array([2.0, 3.0])),
         )
-        assert plot.xrange == (0.0, 3.0)
-        assert plot.yrange == (0.0, 3.0)
+        assert plot.window.xrange == (0.0, 3.0)
+        assert plot.window.yrange == (0.0, 3.0)
         assert plot.num_strokes == 2
 
     def test_thickness_widens_the_line(self):
@@ -372,8 +372,8 @@ class TestLine:
     def test_repr_reports_the_data(self):
         plot = line((np.arange(5), np.arange(5)), width=8, height=2)
         assert repr(plot) == (
-            "line(height=2, width=8, thickness=1.0, "
-            "data=<4 segments, 1 strokes on [0.00,4.00]x[0.00,4.00]>)"
+            "line(<4 segments, 1 strokes>, thickness=1.0, "
+            "window(x=[0.00,4.00], y=[0.00,4.00], 8x2 cells))"
         )
 
     def test_fits_inside_axes(self):
@@ -397,7 +397,7 @@ class TestLine:
             scatter(data, width=10, height=3),
             line(data, width=10, height=3),
         )
-        assert plot.xrange == (0, 4)
+        assert plot.window.xrange == (0, 4)
         assert drawn_cells(plot).any()
 
 

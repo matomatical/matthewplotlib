@@ -4,6 +4,26 @@ Changelog
 In development
 --------------
 
+New:
+
+* `window`: the interval of data a plot covers on each axis, and the rectangle
+  of character cells it covers them with. Every 2d plot carries one, and it
+  provides the conversions from data coordinates to the grids of dots and
+  pixels the plots are drawn in.
+
+Changed:
+
+* `plot.xrange` and `plot.yrange` have moved onto the window, as
+  `plot.window.xrange` and `plot.window.yrange`.
+* `axes` and `dstack2` accept any plot carrying a window, rather than a listed
+  union of plot types.
+* `image` accepts an `xrange` and a `yrange`, so that an image can be given
+  axes or overlaid on another plot. Without them it carries no coordinates, as
+  before. An image with an odd number of pixel rows cannot be given them, since
+  it half-fills its last character row.
+* Plots report their window in their reprs, rather than separately spelling out
+  their dimensions and their ranges.
+
 Version 0.6.3
 -------------
 

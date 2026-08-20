@@ -6,7 +6,7 @@ image: 1 frames, 720x384, sha256:8ee7a2aca686da95
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.
 
-frame 0: 1234 bytes, 16x80, cursor 16,0, scrolled 0
+frame 0: 1232 bytes, 16x80, cursor 16,0, scrolled 0
 palette:
   . default default
 text:
@@ -14,18 +14,18 @@ text:
   ght=15, width=48, plots=(border(style='╗', plot=center(height=3, width=46, plot=
   text(height=1, width=20, text="G'day..."))), hstack(height=10, width=48, plots=(
   hstack(height=10, width=32, plots=(border(style='┐', plot=vstack(height=8, width
-  =14, plots=(text(height=1, width=8, text='uniform:'), image(height=7, width=14))
+  =14, plots=(text(height=1, width=8, text='uniform:'), image(window(14x7 cells)))
   )), border(style='┓', plot=vstack(height=8, width=14, plots=(text(height=1, widt
-  h=9, text='ident...'), image(height=7, width=14)))))), border(style='╗', plot=vs
+  h=9, text='ident...'), image(window(14x7 cells))))))), border(style='╗', plot=vs
   tack(height=8, width=14, plots=(text(height=1, width=9, text='gauss...'), image(
-  height=7, width=14)))))))), hstack(height=10, width=48, plots=(hstack(height=10,
+  window(14x7 cells))))))))), hstack(height=10, width=48, plots=(hstack(height=10,
    width=32, plots=(border(style='╮', plot=vstack(height=8, width=14, plots=(text(
-  height=1, width=8, text='uniform:'), image(height=7, width=14)))), border(style=
+  height=1, width=8, text='uniform:'), image(window(14x7 cells))))), border(style=
   ' ', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text='ident.
-  ..'), image(height=7, width=14)))))), border(style='▜', plot=vstack(height=8, wi
-  dth=14, plots=(text(height=1, width=9, text='gauss...'), image(height=7, width=1
-  4)))))))), border(style='╮', plot=scatter(height=18, width=46, data=<300 points
-  on [-5.00,5.00]x[-4.00,4.00]>))))
+  ..'), image(window(14x7 cells))))))), border(style='▜', plot=vstack(height=8, wi
+  dth=14, plots=(text(height=1, width=9, text='gauss...'), image(window(14x7 cells
+  ))))))))), border(style='╮', plot=scatter(<300 points>, window(x=[-5.00,5.00], y
+  =[-4.00,4.00], 46x18 cells)))))
 colour:
   ................................................................................
   ................................................................................
@@ -451,18 +451,18 @@ text:
   ght=15, width=48, plots=(border(style='╗', plot=center(height=3, width=46, plot=
   text(height=1, width=20, text="G'day..."))), hstack(height=10, width=48, plots=(
   hstack(height=10, width=32, plots=(border(style='┐', plot=vstack(height=8, width
-  =14, plots=(text(height=1, width=8, text='uniform:'), image(height=7, width=14))
+  =14, plots=(text(height=1, width=8, text='uniform:'), image(window(14x7 cells)))
   )), border(style='┓', plot=vstack(height=8, width=14, plots=(text(height=1, widt
-  h=9, text='ident...'), image(height=7, width=14)))))), border(style='╗', plot=vs
+  h=9, text='ident...'), image(window(14x7 cells))))))), border(style='╗', plot=vs
   tack(height=8, width=14, plots=(text(height=1, width=9, text='gauss...'), image(
-  height=7, width=14)))))))), hstack(height=10, width=48, plots=(hstack(height=10,
+  window(14x7 cells))))))))), hstack(height=10, width=48, plots=(hstack(height=10,
    width=32, plots=(border(style='╮', plot=vstack(height=8, width=14, plots=(text(
-  height=1, width=8, text='uniform:'), image(height=7, width=14)))), border(style=
+  height=1, width=8, text='uniform:'), image(window(14x7 cells))))), border(style=
   ' ', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text='ident.
-  ..'), image(height=7, width=14)))))), border(style='▜', plot=vstack(height=8, wi
-  dth=14, plots=(text(height=1, width=9, text='gauss...'), image(height=7, width=1
-  4)))))))), border(style='╮', plot=scatter(height=18, width=46, data=<300 points
-  on [-5.00,5.00]x[-4.00,4.00]>))))
+  ..'), image(window(14x7 cells))))))), border(style='▜', plot=vstack(height=8, wi
+  dth=14, plots=(text(height=1, width=9, text='gauss...'), image(window(14x7 cells
+  ))))))))), border(style='╮', plot=scatter(<300 points>, window(x=[-5.00,5.00], y
+  =[-4.00,4.00], 46x18 cells)))))
   ╔══════════════════════════════════════════════╗
   ║                                              ║
   ║             G'day matthewplotlib             ║

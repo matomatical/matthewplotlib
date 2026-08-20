@@ -73,6 +73,7 @@ from matthewplotlib.camera import (
     project3,
     project3_segments,
 )
+from matthewplotlib.window import window
 from matthewplotlib.core import (
     CharArray,
     ords,
@@ -103,6 +104,13 @@ class plot:
     typically instantiated directly, but it's useful to know its properties and
     methods.
     """
+
+    window: window | None = None
+    """
+    The interval of data the plot covers on each axis, and the rectangle of
+    character cells it covers them with. None for a plot with no coordinates.
+    """
+
     def __init__(self, chars: CharArray):
         self.chars = chars
 
@@ -361,26 +369,6 @@ class plot:
 # DATA PLOTTING CLASSES
 
 
-def _to_dots(
-    points: NDArray,                    # float[n, 2]
-    xrange: tuple[number, number],
-    yrange: tuple[number, number],
-    width: int,
-    height: int,
-) -> NDArray: # float[n, 2]
-    """
-    Points in the data's coordinates, as coordinates in the plot's dots.
-
-    The limits of the data land on the centres of the outermost dots, so that a
-    line between the extremes of its data runs corner to corner of the plot
-    rather than half a dot beyond it.
-    """
-    (xmin, xmax), (ymin, ymax) = xrange, yrange
-    cols = (points[:, 0] - xmin) / (xmax - xmin) * (2 * width - 1)
-    rows = (ymax - points[:, 1]) / (ymax - ymin) * (4 * height - 1)
-    return np.stack([rows + 0.5, cols + 0.5], axis=1)
-
-
 class scatter(plot):
     """
     Render a scatterplot using a grid of braille unicode characters.
@@ -421,27 +409,25 @@ class scatter(plot):
         # parse inputs into standard format
         xs, ys, cs = parse_multiple_series(series, *etc)
         n, = xs.shape
-        xrange_ = parse_range(xs, xrange)
-        yrange_ = parse_range(ys, yrange)
+        w = window(
+            xrange=parse_range(xs, xrange),
+            yrange=parse_range(ys, yrange),
+            width=width,
+            height=height,
+        )
 
         points = np.stack([xs, ys], axis=1)
         super().__init__(unicode_braille_points(
-            points=_to_dots(points, xrange_, yrange_, width, height),
+            points=w.dots(points),
             height=4 * height,
             width=2 * width,
             colors=cs,
         ))
-        self.xrange = xrange_
-        self.yrange = yrange_
+        self.window = w
         self.num_points = n
 
     def __repr__(self):
-        return (
-            f"scatter(height={self.height}, width={self.width}, "
-            f"data=<{self.num_points} points on "
-            f"[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]x"
-            f"[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]>)"
-        )
+        return f"scatter(<{self.num_points} points>, {self.window!r})"
 
 
 class scatter3(plot):
@@ -509,11 +495,17 @@ class scatter3(plot):
         )
         if aspect_ratio is None:
             aspect_ratio = width / (2*height)
-        xrange = (-aspect_ratio, aspect_ratio)
-        yrange = (-1., 1.)
+        # the film's coordinates, which are not the data's, so they are not
+        # kept: a projected point cloud has no axes to be labelled with
+        film = window(
+            xrange=(-aspect_ratio, aspect_ratio),
+            yrange=(-1., 1.),
+            width=width,
+            height=height,
+        )
 
         super().__init__(unicode_braille_points(
-            points=_to_dots(xy[valid], xrange, yrange, width, height),
+            points=film.dots(xy[valid]),
             height=4 * height,
             width=2 * width,
             colors=cs[valid],
@@ -578,32 +570,31 @@ class line(plot):
         # the segments joining each series' own points, pooled after pairing
         starts, ends, start_colors, end_colors = parse_segments(series, *etc)
         points = np.concatenate([starts, ends])
-        xrange_ = parse_range(points[:, 0], xrange)
-        yrange_ = parse_range(points[:, 1], yrange)
+        w = window(
+            xrange=parse_range(points[:, 0], xrange),
+            yrange=parse_range(points[:, 1], yrange),
+            width=width,
+            height=height,
+        )
 
         super().__init__(unicode_braille_segments(
-            starts=_to_dots(starts, xrange_, yrange_, width, height),
-            ends=_to_dots(ends, xrange_, yrange_, width, height),
+            starts=w.dots(starts),
+            ends=w.dots(ends),
             height=4 * height,
             width=2 * width,
             start_colors=start_colors,
             end_colors=end_colors,
             thickness=thickness,
         ))
-        self.xrange = xrange_
-        self.yrange = yrange_
+        self.window = w
         self.num_segments = len(starts)
         self.num_strokes = 1 + len(etc)
         self.thickness = thickness
 
     def __repr__(self):
         return (
-            f"line(height={self.height}, width={self.width}, "
-            f"thickness={self.thickness}, "
-            f"data=<{self.num_segments} segments, {self.num_strokes} "
-            f"strokes on "
-            f"[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]x"
-            f"[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]>)"
+            f"line(<{self.num_segments} segments, {self.num_strokes} "
+            f"strokes>, thickness={self.thickness}, {self.window!r})"
         )
 
 
@@ -677,11 +668,17 @@ class line3(plot):
         if aspect_ratio is None:
             aspect_ratio = width / (2*height)
 
-        xrange = (-aspect_ratio, aspect_ratio)
-        yrange = (-1., 1.)
+        # the film's coordinates, which are not the data's, so they are not
+        # kept: projected segments have no axes to be labelled with
+        film = window(
+            xrange=(-aspect_ratio, aspect_ratio),
+            yrange=(-1., 1.),
+            width=width,
+            height=height,
+        )
         super().__init__(unicode_braille_segments(
-            starts=_to_dots(xy_starts, xrange, yrange, width, height),
-            ends=_to_dots(xy_ends, xrange, yrange, width, height),
+            starts=film.dots(xy_starts),
+            ends=film.dots(xy_ends),
             height=4 * height,
             width=2 * width,
             start_colors=start_colors[drawn],
@@ -732,11 +729,26 @@ class image(plot):
 
         A custom colormap may consume any array data but must return an RGB
         image of shape [h,w,3].
+
+    * xrange : optional (number, number).
+        The data coordinates at the left and the right edges of the image. By
+        default the image carries no horizontal coordinate, and so cannot be
+        given an axis or overlaid on another plot.
+    * yrange : optional (number, number).
+        The data coordinates at the bottom and the top edges of the image. By
+        default the image carries no vertical coordinate.
+
+    Since each character cell holds two pixels, an image with an odd number of
+    pixel rows leaves the bottom half of its last row blank. Such an image
+    cannot be given coordinates, since its rectangle would claim half a cell
+    more than the picture covers.
     """
     def __init__(
         self,
         im: ArrayLike, # float[h,w] | float[h,w,rgb] | int[h,w] | int[h,w,rgb]
         colormap: ColorMap | None = None,
+        xrange: tuple[number, number] | None = None,
+        yrange: tuple[number, number] | None = None,
     ):
         # preprocessing: all inputs become uint8[h, w, rgb]
         arr = parse_colors(
@@ -744,15 +756,26 @@ class image(plot):
             shape=("h", "w"),
             colormap=colormap,
         )
+        if arr.shape[0] % 2 and (xrange is not None or yrange is not None):
+            raise ValueError(
+                f"an image of {arr.shape[0]} pixel rows cannot be given "
+                "coordinates, since it half-fills its last character row"
+            )
 
         # construct the plot
         chars = unicode_image(arr)
 
         # form a plot object
         super().__init__(chars)
+        self.window = window(
+            xrange=xrange,
+            yrange=yrange,
+            width=chars.width,
+            height=chars.height,
+        )
 
     def __repr__(self):
-        return f"image(height={self.height}, width={self.width})"
+        return f"image({self.window!r})"
 
 
 class function2(image):
@@ -829,18 +852,14 @@ class function2(image):
         super().__init__(
             im=zgrid_norm,
             colormap=colormap,
+            xrange=xrange,
+            yrange=yrange,
         )
         self.name = getattr(F, '__name__', '?')
-        self.xrange = xrange
-        self.yrange = yrange
         self.zrange = zrange
         
     def __repr__(self):
-        return ("function2("
-                f"f={self.name}, "
-                f"input=[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]"
-                f"x[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]"
-        ")")
+        return f"function2(f={self.name}, {self.window!r})"
 
 
 class histogram2(image):
@@ -941,20 +960,15 @@ class histogram2(image):
         super().__init__(
             im=hist,
             colormap=colormap,
+            xrange=xrange,
+            yrange=yrange,
         )
-        self.xrange = xrange
-        self.yrange = yrange
         self.xbins = xbins
         self.ybins = ybins
         self.num_points = len(x)
         
     def __repr__(self):
-        return ("histogram2("
-            f"height={self.height}, width={self.width}, "
-            f"data=<{self.num_points} points on "
-            f"[{self.xrange[0]:.2f},{self.xrange[1]:.2f}]x"
-            f"[{self.yrange[0]:.2f},{self.yrange[1]:.2f}]>)"
-        ")")
+        return f"histogram2(<{self.num_points} points>, {self.window!r})"
 
 
 class progress(plot):
@@ -1554,9 +1568,9 @@ class axes(plot):
 
     Inputs:
 
-    * plot : scatter | line | function2 | histogram2 | dstack2.
-        The plot object to be enclosed by the axes. Must have an xrange and a
-        yrange.
+    * plot : plot.
+        The plot object to be enclosed by the axes. Must carry a coordinate on
+        each axis.
     * title: optional str.
         An optional title for the axes. Placed centrally along the top row of
         the axes. Truncated to fit.
@@ -1582,7 +1596,7 @@ class axes(plot):
     """
     def __init__(
         self,
-        plot: scatter | line | function2 | histogram2 | dstack2,
+        plot: plot,
         title: str = "",
         xlabel: str = "",
         ylabel: str = "",
@@ -1592,11 +1606,17 @@ class axes(plot):
         style: BoxStyle = BoxStyle.LIGHTX,
         color: ColorLike | None = (0.5, 0.5, 0.5),
     ):
+        w = plot.window
+        if w is None or w.xrange is None or w.yrange is None:
+            raise ValueError(
+                f"a {type(plot).__name__} plot has no coordinates to label"
+            )
+
         # construct tick labels
-        ymin_label = yfmt.format(y=plot.yrange[0])
-        ymax_label = yfmt.format(y=plot.yrange[1])
-        xmin_label = xfmt.format(x=plot.xrange[0])
-        xmax_label = xfmt.format(x=plot.xrange[1])
+        ymin_label = yfmt.format(y=w.yrange[0])
+        ymax_label = yfmt.format(y=w.yrange[1])
+        xmin_label = xfmt.format(x=w.xrange[0])
+        xmax_label = xfmt.format(x=w.xrange[1])
 
         # size of left gutter to fit tick labels and y label
         has_ylabel = bool(ylabel)
@@ -1785,40 +1805,43 @@ class dstack2(dstack):
     determined by the maximum width and height among all input plots. Non-blank
     characters from upper layers will obscure characters from lower layers.
 
-    Unlike dstack, the plots must have xrange and range attributes, and these
-    must all match. The allowable types are scatter, line, function2,
-    histogram2, and dstack2.
+    Unlike dstack, the plots must each carry a coordinate on both axes, and
+    the coordinates must match.
 
     Inputs:
 
-    * *plots : scatter | line | function2 | histogram2 | dstack2.
-        A sequence of plot objects to be overlaid. Must have matching xrange
-        and yrange.
+    * *plots : plot.
+        A sequence of plot objects to be overlaid. Must have matching
+        coordinates.
     """
     def __init__(
         self,
-        *plots: scatter | line | function2 | histogram2 | Self,
+        *plots: plot,
     ):
-        # check the shared xrange, yrange
+        # check the shared coordinates
         xrange: tuple[number, number] | None = None
         yrange: tuple[number, number] | None = None
-        for plot in plots:
-            assert xrange is None or plot.xrange == xrange, "xrange mismatch"
-            assert yrange is None or plot.yrange == yrange, "yrange mismatch"
-            yrange = plot.yrange
-            xrange = plot.xrange
-        assert yrange is not None
+        for p in plots:
+            w = p.window
+            assert w is not None, "plot has no coordinates"
+            assert w.xrange is not None and w.yrange is not None
+            assert xrange is None or w.xrange == xrange, "xrange mismatch"
+            assert yrange is None or w.yrange == yrange, "yrange mismatch"
+            xrange = w.xrange
+            yrange = w.yrange
         assert xrange is not None
-        self.xrange: tuple[number, number] = xrange
-        self.yrange: tuple[number, number] = yrange
+        assert yrange is not None
 
         super().__init__(*plots)
+        self.window = window(
+            xrange=xrange,
+            yrange=yrange,
+            width=self.width,
+            height=self.height,
+        )
 
     def __repr__(self):
-        return (
-            f"dstack2(height={self.height}, width={self.width}, "
-            f"plots={self.plots!r})"
-        )
+        return f"dstack2({self.window!r}, plots={self.plots!r})"
 
 
 class wrap(plot):
