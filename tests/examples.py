@@ -138,6 +138,7 @@ EXAMPLES: tuple[Example, ...] = (
             args=("--num-frames", "5")),
     Example("starburst.py",             26, 48, saves="gif",
             args=("--num-frames", "6", "--no-loop")),
+    Example("tables.py",                34, 79, saves="png"),
     # --log-every is turned down so that a five step run still exercises
     # `anim.print`. The pane is three rows taller than the 23 the plot needs:
     # one for each logged line, and one for the row `clearstr` cannot step onto

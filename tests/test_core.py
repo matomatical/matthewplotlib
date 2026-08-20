@@ -12,6 +12,7 @@ from matthewplotlib.core import (
     LineStyle,
     ords,
     unicode_frame,
+    unicode_grid,
     unicode_bar,
     unicode_col,
     unicode_box,
@@ -530,6 +531,167 @@ class TestUnicodeFrame:
                 CharArray.from_size(1, 4), LineStyle.LIGHT,
                 cells=(False, True, True, True), rules=NONE, ticks=NONE,
                 title="hi",
+            )
+
+
+# # #
+# unicode_grid
+
+
+def _grid_cells(rows, height=1, width=1):
+    """A grid of cells of a fixed size, each holding one character."""
+    cells = []
+    for row in rows:
+        row_cells = []
+        for character in row:
+            cell = CharArray.from_size(height, width)
+            cell.codes[0, 0] = ord(character)
+            row_cells.append(cell)
+        cells.append(row_cells)
+    return cells
+
+
+# a LineStyle is itself a string, so the two rules that draw no line need
+# markers of their own to be told apart from one that does
+SKIP = object()
+BLANK = object()
+
+LIGHT, DOUBLE = LineStyle.LIGHT, LineStyle.DOUBLE
+
+
+def _rule_flags(rules):
+    """Whether each rule takes cells, and what line it draws in them."""
+    return (
+        [rule is not SKIP for rule in rules],
+        [None if rule is SKIP or rule is BLANK else rule for rule in rules],
+    )
+
+
+def _ruled(grid, hrules, vrules):
+    """One character per cell, with the rules given for every boundary."""
+    hcells, hstyles = _rule_flags(hrules)
+    vcells, vstyles = _rule_flags(vrules)
+    return unicode_grid(
+        _grid_cells(grid),
+        hcells=hcells,
+        hrules=hstyles,
+        vcells=vcells,
+        vrules=vstyles,
+    ).to_plain_str()
+
+
+class TestUnicodeGrid:
+    def test_rules_that_take_no_cells_take_no_space(self):
+        grid = _ruled(["ab", "cd"], [SKIP] * 3, [SKIP] * 3)
+
+        assert grid == "ab\ncd"
+
+    def test_a_full_grid_turns_crosses_and_finishes(self):
+        grid = _ruled(["ab", "cd"], [LIGHT] * 3, [LIGHT] * 3)
+
+        assert grid == "\n".join([
+            "┌─┬─┐",
+            "│a│b│",
+            "├─┼─┤",
+            "│c│d│",
+            "└─┴─┘",
+        ])
+
+    def test_a_rule_ending_at_the_edge_fills_its_last_cell(self):
+        """Half a line at each end of a rule leaves a visible gap, so a rule
+        that ends rather than turning runs to the edge of its final cell."""
+        grid = _ruled(["ab"], [LIGHT, LIGHT], [SKIP] * 3)
+
+        assert grid == "──\nab\n──"
+
+    def test_a_rule_of_one_weight_crossing_another_joins_them(self):
+        """Neither weight has the character where they meet."""
+        grid = _ruled(["ab", "cd"], [SKIP, DOUBLE, SKIP], [LIGHT] * 3)
+
+        assert grid == "\n".join([
+            "│a│b│",
+            "╞═╪═╡",
+            "│c│d│",
+        ])
+
+    def test_a_double_frame_takes_light_columns_without_complaint(self):
+        grid = _ruled(["ab"], [DOUBLE, DOUBLE], [DOUBLE, LIGHT, DOUBLE])
+
+        assert grid == "\n".join([
+            "╔═╤═╗",
+            "║a│b║",
+            "╚═╧═╝",
+        ])
+
+    def test_a_blank_rule_holds_a_row_that_others_run_through(self):
+        grid = _ruled(["ab", "cd"], [SKIP] * 3, [LIGHT, SKIP, LIGHT])
+        blank = _ruled(["ab", "cd"], [SKIP, BLANK, SKIP], [LIGHT, SKIP, LIGHT])
+
+        assert grid == "│ab│\n│cd│"
+        # the same, with a blank row between the two that the rules cross
+        assert blank == "│ab│\n│  │\n│cd│"
+
+    def test_a_cell_taller_than_one_row_carries_its_rules_down(self):
+        cells = _grid_cells(["ab"], height=3, width=2)
+        grid = unicode_grid(
+            cells,
+            hcells=[True, True],
+            hrules=[LIGHT, LIGHT],
+            vcells=[True, True, True],
+            vrules=[LIGHT, LIGHT, LIGHT],
+        ).to_plain_str()
+
+        assert grid == "\n".join([
+            "┌──┬──┐",
+            "│a │b │",
+            "│  │  │",
+            "│  │  │",
+            "└──┴──┘",
+        ])
+
+    def test_the_cells_keep_their_own_colors(self):
+        cells = _grid_cells(["ab"])
+        cells[0][0] = CharArray.from_size(1, 1, fgcolor="red")
+        grid = unicode_grid(
+            cells,
+            hcells=[True, True],
+            hrules=[LIGHT, LIGHT],
+            vcells=[False, False, False],
+            vrules=[None, None, None],
+            fgcolor="blue",
+        )
+
+        assert tuple(grid.fg_rgb[1, 0]) == (255, 0, 0)
+        assert tuple(grid.fg_rgb[0, 0]) == (0, 0, 255)
+
+    def test_a_rule_that_draws_a_line_must_take_cells(self):
+        with pytest.raises(ValueError, match="takes no cells"):
+            unicode_grid(
+                _grid_cells(["ab"]),
+                hcells=[True, True],
+                hrules=[LIGHT, LIGHT],
+                vcells=[False, False, False],
+                vrules=[LIGHT, None, None],
+            )
+
+    def test_only_light_and_double_rules_can_be_drawn(self):
+        with pytest.raises(ValueError, match="LIGHT or DOUBLE"):
+            _ruled(["ab"], [LineStyle.HEAVY, LIGHT], [SKIP] * 3)
+
+    def test_a_grid_needs_a_rule_for_every_boundary(self):
+        with pytest.raises(ValueError, match="has 3 hrules"):
+            _ruled(["ab", "cd"], [LIGHT, LIGHT], [SKIP] * 3)
+
+    def test_cells_must_fill_their_row_and_column(self):
+        cells = _grid_cells(["ab"])
+        cells[0][1] = CharArray.from_size(2, 1)
+        with pytest.raises(ValueError, match="cell 0,1"):
+            unicode_grid(
+                cells,
+                hcells=[False, False],
+                hrules=[None, None],
+                vcells=[False, False, False],
+                vrules=[None, None, None],
             )
 
 

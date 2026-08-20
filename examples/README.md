@@ -460,6 +460,20 @@ Dashboards and UI
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/dashboard.py">Source</a></p>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/tables.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Sweep report</strong></p>
+      <p>A hyperparameter sweep reported in tables: runs ruled the way a
+      paper rules a table, the sweep itself shaded by the losses it is
+      showing, and a legend whose rows are coloured to match the curves
+      beside them.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/tables.py">Source</a></p>
+    </td>
+  </tr>
 </tbody>
 </table>
 

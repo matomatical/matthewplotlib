@@ -94,11 +94,11 @@ More exotic plot types:
 * [x] Calendar heatmap plots:
   * [x] Month-chunked calendar (`calendar`).
   * [x] Github contributions-style continuous calendar (`weeks`).
-* [ ] Tables:
-  * [ ] List of dictionaries.
-  * [ ] Dictionary of lists.
-  * [ ] 2d list with/without header.
-  * [ ] Configurable format strings.
+* [x] Tables (see `notes/tables.md`):
+  * [x] List of dictionaries.
+  * [x] Dictionary of lists.
+  * [x] 2d list with/without header.
+  * [x] Configurable format strings.
 * [ ] Vector field plots:
   * [ ] color (see chromatic flow example).
   * [ ] line (see boids example).

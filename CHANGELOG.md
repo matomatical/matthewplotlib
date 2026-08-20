@@ -17,7 +17,6 @@ New:
     mapping from dates to values, separate sequences of dates and values, or one
     date standing in for the consecutive days from there. Dates may be spelled as
     `datetime` dates or datetimes, NumPy `datetime64`s, or ISO 8601 strings.
-* 
 * `candles`: a candlestick chart, one candle per period, its body spanning the
   opening and closing values and its wick reaching out of the body to the high
   and the low. Bodies are coloured by whether the period closed above or below
@@ -27,6 +26,19 @@ New:
   the terminal's showing, which is what reaching every eighth costs: half of
   them are drawn as a background-coloured block over a body-coloured cell. See
   `notes/candlesticks.md`.
+* `table`: a grid of values, formatted into aligned columns and ruled. Takes
+  a list of dicts, a dict of lists, or a 2d array, and sizes each column to
+  what is in it.
+  * A float shows four significant figures and a column of numbers aligns
+    right so its digits line up, until a format or an alignment says otherwise,
+    given for the whole table, per column, or per column name.
+  * Each of its eight rules---`toprule`, `midrule`, `rowrule` and `bottomrule`
+    across, `leftrule`, `indexrule`, `colrule` and `rightrule` down---takes
+    `"skip"`, `"blank"`, `"single"` or `"double"` of its own, defaulting to a
+    line above, a double line under the header and a line below.
+  * Cells take colours one at a time, so a table shaded by its own values reads
+    as a heatmap whose numbers can still be read off exactly. See
+    `notes/tables.md`.
 * `window`: the interval of data a plot covers on each axis, and the rectangle
   of character cells it covers them with. Every 2d plot carries one, and it
   provides the conversions from data coordinates to the grids of dots and
@@ -40,12 +52,13 @@ New:
 
 New examples:
 
-* `axes_gallery.py`: every way of drawing an axis, around one two-slit
-  interference pattern.
+* `axes_gallery.py`: demonstrating different ways of attaching axes to some
+  data.
 * `candlesticks.py`: a simulated price series as candles, one column to a
   period.
 * `commit_heatmap.py`: a year of commits to this repository as a strip of
-  weeks, in the colours GitHub draws a contribution graph in.
+  weeks.
+* `tables.py`: a hyperparameter sweep reported in tables.
 
 Changed:
 

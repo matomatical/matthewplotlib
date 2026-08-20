@@ -27,6 +27,9 @@ Drawing characters, each packing several data points into one character cell:
 * `unicode_candles`: Four values a period to candlesticks, bodies from partial
   blocks and wicks from vertical lines.
 * `unicode_box` and `BoxStyle`: Box-drawing borders, optionally titled.
+* `unicode_frame` and `unicode_grid`, with `LineStyle`: Rules along the sides
+  of a plot, or between the cells of a grid, with the corners and junctions
+  where they meet derived from which of them are drawn.
 """
 
 from __future__ import annotations
@@ -1446,7 +1449,227 @@ def unicode_frame(
     return framed
 
 
-# # # 
+# # #
+# UNICODE GRIDS
+
+
+# where a rule of one weight crosses a rule of another, the character that
+# joins them belongs to neither weight. Each entry here is indexed exactly
+# like a LineStyle---sixteen characters, one per combination of directions---
+# and is keyed by the weight of the vertical rule and then the horizontal one.
+_JOINTS: dict[tuple[LineStyle, LineStyle], str] = {
+    (LineStyle.LIGHT,  LineStyle.LIGHT):  LineStyle.LIGHT.value,
+    (LineStyle.LIGHT,  LineStyle.DOUBLE): " ╵╷│═╛╕╡═╘╒╞═╧╤╪",
+    (LineStyle.DOUBLE, LineStyle.LIGHT):  " ║║║╴╜╖╢╶╙╓╟─╨╥╫",
+    (LineStyle.DOUBLE, LineStyle.DOUBLE): LineStyle.DOUBLE.value,
+}
+
+
+# the weights a grid rule may take, in the order the glyph table indexes them
+_GRID_WEIGHTS: tuple[LineStyle | None, ...] = (
+    None,
+    LineStyle.LIGHT,
+    LineStyle.DOUBLE,
+)
+
+
+def _grid_glyphs() -> NDArray: # uint32[3,3,16]
+    """
+    Every character a grid can need, indexed by the weight of the vertical
+    rule through a cell, the weight of the horizontal one, and the arms.
+    """
+    glyphs = np.full((3, 3, 16), ord(" "), dtype=np.uint32)
+    for v, vertical in enumerate(_GRID_WEIGHTS):
+        for h, horizontal in enumerate(_GRID_WEIGHTS):
+            # a cell with a rule running only one way through it takes its
+            # characters from that rule's own weight, there being nothing to
+            # cross
+            crossing = vertical if vertical is not None else horizontal
+            crossed = horizontal if horizontal is not None else vertical
+            if crossing is None or crossed is None:
+                continue
+            glyphs[v, h] = ords(_JOINTS[(crossing, crossed)])
+    return glyphs
+
+
+_GRID_GLYPHS = _grid_glyphs()
+
+
+def unicode_grid(
+    cells: Sequence[Sequence[CharArray]],
+    hcells: Sequence[bool],
+    hrules: Sequence[LineStyle | None],
+    vcells: Sequence[bool],
+    vrules: Sequence[LineStyle | None],
+    fgcolor: ColorLike | None = None,
+    bgcolor: ColorLike | None = None,
+) -> CharArray:
+    """
+    Lay a rectangular grid of character arrays out with rules between them.
+
+    A grid of cells has one more horizontal rule than it has rows, one above
+    each row and one below the last, and one more vertical rule than it has
+    columns, one to the left of each column and one to the right of the last.
+    Each rule is described by two things: whether it takes a row or column of
+    cells at all, and which weight of line, if any, is drawn in it. A rule
+    that takes no cells does not appear in the output at all; one that takes
+    cells but draws no line is a row or column of blank space, which any rule
+    crossing it still runs through.
+
+    Every character is derived rather than chosen. A rule runs the whole
+    length of the grid, so each of its cells reaches out along it, and reaches
+    across wherever a rule of the other orientation is drawn. The resulting
+    set of directions selects the character. So the corner where two rules
+    meet turns, the junction where they cross joins, and a rule that ends at
+    the edge of the grid fills its last cell rather than stopping halfway.
+    Where a rule of one weight crosses one of another, the character joining
+    them belongs to neither weight, and that too is derived.
+
+    Inputs:
+
+    * cells : CharArray[nrows, ncols].
+        The contents of the grid. Every array in a row must be the same
+        height, and every array in a column the same width.
+    * hcells : bool[nrows+1].
+        Whether each horizontal rule takes a row of cells.
+    * hrules : (LineStyle | None)[nrows+1].
+        The weight of line drawn in each horizontal rule, or None to leave its
+        row blank. A rule that draws a line must take a row.
+    * vcells : bool[ncols+1].
+        Whether each vertical rule takes a column of cells.
+    * vrules : (LineStyle | None)[ncols+1].
+        The weight of line drawn in each vertical rule, or None to leave its
+        column blank. A rule that draws a line must take a column.
+    * fgcolor : optional ColorLike.
+        The colour of the rules. Defaults to the terminal's foreground colour.
+    * bgcolor : optional ColorLike.
+        The colour behind the rules, and behind any blank row or column
+        between the cells. The cells bring their own. Defaults to a
+        transparent background.
+
+    Returns:
+
+    * grid : CharArray.
+        The cells, laid out with whichever rules took cells between them.
+
+    Only `LineStyle.LIGHT` and `LineStyle.DOUBLE` may be drawn. Those are the
+    two weights Unicode provides a complete set of crossings for.
+    """
+    nrows = len(cells)
+    if nrows == 0 or len(cells[0]) == 0:
+        raise ValueError("a grid needs at least one cell")
+    ncols = len(cells[0])
+    for i, row in enumerate(cells):
+        if len(row) != ncols:
+            raise ValueError(
+                f"row {i} has {len(row)} cells, but row 0 has {ncols}"
+            )
+    for name, rule_cells, rule_styles, expected in (
+        ("h", hcells, hrules, nrows + 1),
+        ("v", vcells, vrules, ncols + 1),
+    ):
+        if len(rule_cells) != expected or len(rule_styles) != expected:
+            raise ValueError(
+                f"a grid {nrows} by {ncols} has {expected} {name}rules, but "
+                f"{len(rule_cells)} cell flags and {len(rule_styles)} styles "
+                "were given"
+            )
+        for i, (takes_cells, style) in enumerate(zip(rule_cells, rule_styles)):
+            if style is None:
+                continue
+            if not takes_cells:
+                raise ValueError(
+                    f"{name}rule {i} draws a line but takes no cells"
+                )
+            if style not in _GRID_WEIGHTS:
+                raise ValueError(
+                    f"{name}rule {i} is {style.name}, but a grid can only be "
+                    "ruled LIGHT or DOUBLE"
+                )
+
+    # every array in a row is as tall as the row, every array in a column as
+    # wide as the column
+    row_heights = [row[0].height for row in cells]
+    col_widths = [cell.width for cell in cells[0]]
+    for i, row in enumerate(cells):
+        for j, cell in enumerate(row):
+            if cell.height != row_heights[i] or cell.width != col_widths[j]:
+                raise ValueError(
+                    f"cell {i},{j} is {cell.height} by {cell.width}, but its "
+                    f"row and column are {row_heights[i]} by {col_widths[j]}"
+                )
+
+    # walk the grid, noting where each band of cells begins and marking the
+    # weight of the rule running the length of each row and column
+    height = sum(row_heights) + sum(hcells)
+    width = sum(col_widths) + sum(vcells)
+    hweight = np.zeros(height, dtype=int)
+    vweight = np.zeros(width, dtype=int)
+    tops = []
+    lefts = []
+    y = 0
+    for i in range(nrows + 1):
+        if hcells[i]:
+            hweight[y] = _GRID_WEIGHTS.index(hrules[i])
+            y += 1
+        if i < nrows:
+            tops.append(y)
+            y += row_heights[i]
+    x = 0
+    for j in range(ncols + 1):
+        if vcells[j]:
+            vweight[x] = _GRID_WEIGHTS.index(vrules[j])
+            x += 1
+        if j < ncols:
+            lefts.append(x)
+            x += col_widths[j]
+
+    # a drawn rule occupies its whole row or column, cells and all
+    horizontal = hweight > 0
+    vertical = vweight > 0
+    ruled = horizontal[:, None] | vertical[None, :]
+
+    # each cell of a rule reaches out along it, except at the edge of the
+    # grid, where a rule meeting another turns into it instead of overshooting
+    arms = np.zeros((height, width), dtype=int)
+    arms[horizontal, :] |= _LEFT | _RIGHT
+    arms[:, vertical] |= _UP | _DOWN
+    if width and vertical[0]:
+        arms[:, 0] &= ~_LEFT
+    if width and vertical[-1]:
+        arms[:, -1] &= ~_RIGHT
+    if height and horizontal[0]:
+        arms[0, :] &= ~_UP
+    if height and horizontal[-1]:
+        arms[-1, :] &= ~_DOWN
+
+    # paint the rules, and then the cells over the top of them
+    grid = CharArray.from_size(
+        height=height,
+        width=width,
+        fgcolor=fgcolor,
+        bgcolor=bgcolor,
+    )
+    rows, columns = np.nonzero(ruled)
+    grid.codes[rows, columns] = _GRID_GLYPHS[
+        vweight[columns],
+        hweight[rows],
+        arms[rows, columns],
+    ]
+    for i, row in enumerate(cells):
+        for j, cell in enumerate(row):
+            ys = slice(tops[i], tops[i] + cell.height)
+            xs = slice(lefts[j], lefts[j] + cell.width)
+            grid.codes[ys, xs] = cell.codes
+            grid.fg[ys, xs] = cell.fg
+            grid.fg_rgb[ys, xs] = cell.fg_rgb
+            grid.bg[ys, xs] = cell.bg
+            grid.bg_rgb[ys, xs] = cell.bg_rgb
+
+    return grid
+
+
+# # #
 # UNICODE HALF-BLOCK IMAGE
 
 
