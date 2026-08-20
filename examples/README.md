@@ -451,6 +451,19 @@ Utilities
 <tbody>
   <tr>
     <td align="center">
+      <img src="../images/axes_gallery.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Axes gallery</strong></p>
+      <p>Every way of drawing an axis, around one two-slit interference
+      pattern: what each side can be, which sides carry the scale, the weight
+      of the rules, and how a quantity with a single coordinate is labelled.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/axes_gallery.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="../images/colormaps.png" width="100%">
     </td>
     <td>

@@ -1726,7 +1726,7 @@ class text(plot):
     * text : str.
         The text to be displayed. Newline characters will create separate lines
         in the plot.
-    * color : optional ColorLike.
+    * fgcolor : optional ColorLike.
         The foreground color of the text. Defaults to the terminal's default
         foreground color.
     * bgcolor : optional ColorLike.

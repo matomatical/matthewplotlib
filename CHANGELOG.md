@@ -17,6 +17,11 @@ New:
   provides the conversions from data coordinates to the grids of dots and
   pixels the plots are drawn in.
 
+New examples:
+
+* `axes_gallery.py`: every way of drawing an axis, around one two-slit
+  interference pattern.
+
 Changed:
 
 * `axes` draws each of its four sides independently. Every side takes a `Side`:
@@ -41,6 +46,13 @@ Changed:
   and gives it a row of its own otherwise.
 * `axes` refuses a plot carrying no coordinates at all, rather than silently
   framing it. `border` is for that.
+* `BoxStyle` no longer offers `LIGHTX`, `HEAVYX` or `LOWERX`. They existed so
+  that a border could carry the ticks an `axes` needed, and an `axes` derives
+  its own now.
+
+Fixed:
+
+* `text` documented its foreground colour argument under the wrong name.
 * `plot.xrange` and `plot.yrange` have moved onto the window, as
   `plot.window.xrange` and `plot.window.yrange`.
 * `axes` and `dstack2` accept any plot carrying a window, rather than a listed
