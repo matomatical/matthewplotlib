@@ -44,7 +44,7 @@ Specifying colors:
 
 * [ ] Consistent API for color specification.
 * [ ] Configurable colour scales and normalisation.
-* [ ] Color bars, vertical or horizontal.
+* [ ] Color bars, in any of the four directions. See `notes/colorbars.md`.
 
 Rendering:
 
