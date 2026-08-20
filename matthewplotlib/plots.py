@@ -262,7 +262,7 @@ class plot:
         Subtracting None means there is nothing on screen yet, so the whole plot
         is drawn. That makes every frame of an animation the same statement:
 
-        ```
+        ```python
         prev = None
         for frame in frames:
             print(frame - prev)

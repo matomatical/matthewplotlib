@@ -17,7 +17,7 @@ System dependencies:
 Then, install the package and its (Python) development dependencies into your uv venv
 with:
 
-```
+```console
 uv pip install -e ".[dev]"
 ```
 
@@ -80,7 +80,7 @@ and the reasoning, including which layer catches what, is in
 When one of these fails, the assertion names the cells that moved. To look at
 the two screens in colour, and to accept the new output once you have:
 
-```
+```console
 python -m tests.examples --diff <example>   # golden against a fresh run
 python -m tests.examples --show <example>   # the golden, as the terminal drew it
 make goldens                                # accept, reporting what changed
@@ -93,7 +93,7 @@ snapshot in, which is part of the test rather than a convenience: a pane wider
 than the plot never exercises the deferred wrap at the final column, which is
 where the cursor arithmetic is hardest. Get the size from
 
-```
+```console
 python -m tests.examples --sizes [example ...]
 ```
 
@@ -117,7 +117,7 @@ the API reference from the docstrings. `docs/index.md`, `docs/examples.md` and
 Overrides for the theme's partials and for mkdocstrings' templates live in
 `templates/`, and the palette is in `docs/css/`.
 
-```
+```console
 make serve                  # preview on localhost, reloading as you edit
 make docs                   # build once into site/, failing on any bad link
 ```

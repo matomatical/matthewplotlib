@@ -85,8 +85,13 @@ img {
     margin-left: -1ch;
 }
 
-/* A rule under section headings, in the manner of the theme's own under the
-   page title. Both mirror how the markdown sources underline their headings. */
+/* The theme draws a rule under the page title, but every palette it ships
+   turns it off. Section headings get one too, so that both echo the way the
+   markdown sources underline their headings. */
+:root {
+    --display-h1-decoration: block;
+}
+
 h2:not(.doc-heading) {
     overflow: hidden;
     padding-bottom: calc(var(--global-space) * 2);

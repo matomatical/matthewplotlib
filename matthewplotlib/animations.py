@@ -17,7 +17,7 @@ There are two things in this module and they are two halves of one loop.
 
 Each produces the other, so there is one code path rather than two:
 
-```
+```python
 # push a live animation into the terminal, keeping the frames
 with mp.animate(fps=20, record=True) as anim:
     while running:
@@ -264,7 +264,7 @@ class tstack:
 
     Examples:
 
-    ```
+    ```python
     # build one frame at a time
     a = mp.tstack(*[
         mp.image(field(t)) for t in np.linspace(0, 1, 60)
@@ -386,7 +386,7 @@ class tstack:
         through here, which is usually how a static furnishing gets wrapped
         around a moving interior.
 
-        ```
+        ```python
         a.map(lambda p: mp.border(p, title=" gen 0 "))   # a border on each
         a.map(lambda p: p + legend)                      # a panel beside each
         ```
@@ -631,7 +631,7 @@ class animation(tstack):
 
     Examples:
 
-    ```
+    ```python
     # a diffusing blob, straight from the array
     mp.animation(field, colormap=mp.viridis, fps=30).play()
 
@@ -726,7 +726,7 @@ class animate:
 
     Inside the block, each call to `update` writes one frame:
 
-    ```
+    ```python
     with mp.animate(fps=20) as anim:
         while running:
             anim.update(mp.axes(...))
@@ -773,7 +773,7 @@ class animate:
         `anim.print` as a file, for the things that want somewhere to write
         rather than something to call:
 
-        ```
+        ```python
         print("step", step, file=anim.out)
         logging.basicConfig(stream=anim.out)
         ```
@@ -782,7 +782,7 @@ class animate:
         Redirecting `sys.stdout` to it for the whole block routes every print in
         the program, including ones inside libraries you did not write:
 
-        ```
+        ```python
         with mp.animate(fps=20) as anim, contextlib.redirect_stdout(anim.out):
             ...
         ```
@@ -927,7 +927,7 @@ class animate:
         erased, the message takes the row the plot's first row was on, and the
         plot is redrawn one row lower.
 
-        ```
+        ```python
         with mp.animate(fps=20) as anim:
             for step in range(1000):
                 anim.update(vis(params))

@@ -47,7 +47,11 @@
     color: var(--code-font-color);
 }
 
-/* errors, and the prompt in a console transcript */
-.highlight .err, .highlight .gp {
+/* a transcript's prompt recedes like punctuation; only errors are loud */
+.highlight .gp {
+    color: var(--sweetie-silver);
+}
+
+.highlight .err {
     color: var(--sweetie-red);
 }

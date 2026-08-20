@@ -1,4 +1,4 @@
-/* The Sweetie 16 palette, and the terminal theme's variables in terms of it. */
+/* Sweetie 16 palette: https://lospec.com/palette-list/sweetie-16 */
 
 :root {
     --sweetie-black:  #1a1c2c;
@@ -31,5 +31,4 @@
     --code-bg-color: var(--sweetie-navy);
     --code-font-color: var(--sweetie-white);
     --block-background-color: var(--sweetie-black);
-    --display-h1-decoration: block;
 }

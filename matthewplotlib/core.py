@@ -1038,7 +1038,7 @@ def unicode_bar(
 
     Examples:
 
-    ```
+    ```pycon
     >>> unicode_bar(0.5, 10).to_plain_str()
     '█████     '
     >>> unicode_bar(0.625, 10).to_plain_str()
@@ -1104,7 +1104,7 @@ def unicode_col(
 
     Examples:
 
-    ```
+    ```pycon
     >>> unicode_col(0.5, 3).to_plain_str()
     ' \\n▄\\n█'
     
