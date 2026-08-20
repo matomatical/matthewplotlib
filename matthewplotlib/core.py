@@ -24,6 +24,8 @@ Drawing characters, each packing several data points into one character cell:
 * `unicode_bar` and `unicode_col`: Values to horizontal or vertical bars, using
   partial block characters for eighth-of-a-cell resolution.
 * `unicode_image`: Images to half-block characters, at 1 by 2 pixels per cell.
+* `unicode_candles`: Four values a period to candlesticks, bodies from partial
+  blocks and wicks from vertical lines.
 * `unicode_box` and `BoxStyle`: Box-drawing borders, optionally titled.
 """
 
@@ -39,7 +41,7 @@ from typing import Self, Callable, Sequence
 from numpy.typing import NDArray
 
 from matthewplotlib.unscii16 import bitmaps
-from matthewplotlib.colors import ColorLike, parse_color
+from matthewplotlib.colors import Color, ColorLike, parse_color
 
 
 # # # 
@@ -1496,3 +1498,238 @@ def unicode_image(
 
     return chars
 
+
+# # #
+# UNICODE CANDLESTICKS
+
+
+def unicode_candles(
+    opens: NDArray,         # float[n]
+    highs: NDArray,         # float[n]
+    lows: NDArray,          # float[n]
+    closes: NDArray,        # float[n]
+    height: int,
+    background: ColorLike,
+    body_colors: NDArray,   # uint8[n, rgb]
+    wick_colors: NDArray | None = None, # uint8[n, rgb]
+    body_width: int = 1,
+    spacing: int = 0,
+    style: LineStyle = LineStyle.LIGHT,
+) -> CharArray: # Char[height, n * (body_width + spacing) - spacing]
+    """
+    Draw a row of candlesticks, one per set of four values.
+
+    Each candle is a filled body spanning its opening and closing values, with
+    a thin wick reaching out of the body to the high and the low. Bodies are
+    drawn with partial block characters and wicks with the half-length vertical
+    lines of a line style, so that a body reads as a solid bar and a wick as a
+    hairline out of it.
+
+    Inputs:
+
+    * opens, highs, lows, closes: float[n].
+        The four values of each candle, each as a proportion of the way up the
+        column: 0.0 at the bottom edge of the bottom character row, 1.0 at the
+        top edge of the top one. Values outside that range are clipped into it.
+    * height: int (positive).
+        The number of character rows to draw the candles in.
+    * background: ColorLike.
+        The color behind the candles, and the color a body is drawn against.
+    * body_colors: uint8[n, rgb].
+        The color of each body.
+    * wick_colors: optional uint8[n, rgb].
+        The color of each wick. Defaults to the terminal's foreground color.
+    * body_width: int (positive, default 1).
+        The number of columns each body takes up. The wick runs up the middle
+        one.
+    * spacing: int (default 0).
+        The number of blank columns between one candle and the next.
+    * style: LineStyle (default LineStyle.LIGHT).
+        The weight of the wicks.
+
+    Returns:
+
+    * chars: CharArray.
+        A character array `height` rows tall holding the candles side by side.
+
+    A body is placed to the nearest eighth of a character cell and a wick to
+    the nearest half. Reaching every eighth takes both a block growing up from
+    a cell's bottom edge and one hanging from its top, and Unicode provides
+    only the former, so the latter is drawn as a negative: the block is painted
+    in the background color over a cell whose background is the body color.
+    That is why a background color is required rather than left to the
+    terminal.
+
+    Two consequences of drawing a body one cell at a time. A body shorter than
+    a cell that falls strictly inside one keeps its length and shifts to
+    whichever edge of that cell is nearer, since a cell can show a block
+    growing from one of its edges but not one floating between them. And no
+    body is drawn shorter than an eighth, so a candle that opened and closed at
+    the same value reads as a hairline rather than vanishing.
+    """
+    if height < 1:
+        raise ValueError(f"height must be positive, not {height}")
+    if body_width < 1:
+        raise ValueError(f"body_width must be positive, not {body_width}")
+    if spacing < 0:
+        raise ValueError(f"spacing must be non-negative, not {spacing}")
+
+    num_candles = len(opens)
+    stride = body_width + spacing
+    width = max(num_candles * stride - spacing, 1)
+    chars = CharArray.from_size(height=height, width=width, bgcolor=background)
+    if num_candles == 0:
+        return chars
+    ground = parse_color(background)
+    starts = np.arange(num_candles) * stride
+
+    # the wicks, drawn first, up the middle column of each candle
+    wick_codes, wick_mask = _wick_glyphs(
+        lows=lows,
+        highs=highs,
+        height=height,
+        style=style,
+    )
+    _place(
+        chars=chars,
+        columns=starts + body_width // 2,
+        codes=wick_codes,
+        mask=wick_mask,
+        colors=wick_colors,
+        background=ground,
+    )
+
+    # the bodies, drawn over them, across the full width of each candle
+    body_codes, body_mask, body_inverted = _body_glyphs(
+        opens=opens,
+        closes=closes,
+        height=height,
+    )
+    _place(
+        chars=chars,
+        columns=(starts[:, None] + np.arange(body_width)).reshape(-1),
+        codes=np.repeat(body_codes, body_width, axis=1),
+        mask=np.repeat(body_mask, body_width, axis=1),
+        colors=np.repeat(body_colors, body_width, axis=0),
+        background=ground,
+        inverted=np.repeat(body_inverted, body_width, axis=1),
+    )
+    return chars
+
+
+def _sub_cell_rows(
+    lo: NDArray,    # float[n]
+    hi: NDArray,    # float[n]
+    height: int,
+    per_cell: int,
+) -> tuple[NDArray, NDArray]: # int[1, n], int[1, n]
+    """
+    Turn a pair of proportions into the sub-cell rows a mark covers.
+
+    The proportions run from 0.0 at the bottom of the column to 1.0 at the top.
+    The rows come back counted the other way, from 0 at the top, as a half-open
+    interval, so a mark covering rows 3 and 4 comes back as (3, 5). The
+    interval is never empty, so a mark whose two ends round to the same row
+    still covers one.
+    """
+    rows = height * per_cell
+    top = np.rint((1 - np.clip(hi, 0, 1)) * rows).astype(int)
+    bottom = np.rint((1 - np.clip(lo, 0, 1)) * rows).astype(int)
+    top = np.clip(top, 0, rows - 1)
+    bottom = np.clip(bottom, top + 1, rows)
+    return top[None, :], bottom[None, :]
+
+
+def _wick_glyphs(
+    lows: NDArray,      # float[n]
+    highs: NDArray,     # float[n]
+    height: int,
+    style: LineStyle,
+) -> tuple[NDArray, NDArray]: # uint32[height, n], bool[height, n]
+    """
+    Choose a vertical line for each cell of each wick.
+
+    A wick is placed to the nearest half cell, so each cell it passes through
+    holds a line spanning that cell's upper half, its lower half, or both.
+    """
+    top, bottom = _sub_cell_rows(lo=lows, hi=highs, height=height, per_cell=2)
+    rows = np.arange(height)[:, None]
+    upper, lower = 2 * rows, 2 * rows + 1
+    arms = (
+        np.where((top <= upper) & (bottom > upper), _UP, 0)
+        | np.where((top <= lower) & (bottom > lower), _DOWN, 0)
+    )
+    glyphs = np.array([ord(c) for c in style], dtype=np.uint32)
+    return glyphs[arms], arms > 0
+
+
+def _body_glyphs(
+    opens: NDArray,     # float[n]
+    closes: NDArray,    # float[n]
+    height: int,
+) -> tuple[NDArray, NDArray, NDArray]: # uint32, bool, bool [height, n]
+    """
+    Choose a partial block for each cell of each body, and say which of them
+    are to be drawn as negatives.
+
+    A body is placed to the nearest eighth of a cell. In each cell it passes
+    through it covers some number of eighths, leaving some above and some
+    below; how many, and which of the cell's edges the body reaches, picks the
+    block. A body reaching the cell's bottom edge is the block itself, one
+    reaching the top edge is the block that fills what the body leaves empty,
+    drawn as a negative. One reaching neither edge shifts to the nearer one.
+    """
+    top, bottom = _sub_cell_rows(
+        lo=np.minimum(opens, closes),
+        hi=np.maximum(opens, closes),
+        height=height,
+        per_cell=8,
+    )
+    rows = np.arange(height)[:, None]
+    cell_top, cell_bottom = 8 * rows, 8 * rows + 8
+    covered = np.minimum(bottom, cell_bottom) - np.maximum(top, cell_top)
+    above = np.maximum(top, cell_top) - cell_top
+    below = cell_bottom - np.minimum(bottom, cell_bottom)
+    mask = covered > 0
+    # a body that leaves the cell's bottom edge empty is drawn as a negative,
+    # whether it reaches the top edge or merely shifts to it as the nearer one
+    inverted = mask & (below > 0) & (above <= below)
+    eighths = np.where(inverted, 8 - covered, covered)
+    blocks = np.array(PARTIAL_BLOCKS_COL, dtype=np.uint32)
+    return blocks[np.clip(eighths, 0, 8)], mask, inverted
+
+
+def _place(
+    chars: CharArray,
+    columns: NDArray,   # int[m]
+    codes: NDArray,     # uint32[height, m]
+    mask: NDArray,      # bool[height, m]
+    colors: NDArray | None, # uint8[m, rgb]
+    background: Color | None,
+    inverted: NDArray | None = None, # bool[height, m]
+) -> None:
+    """
+    Write a grid of marks into the columns of a character array.
+
+    The marks are indexed by character row and by mark, and `columns` says
+    which column of `chars` each mark occupies. A mark is written only where
+    `mask` holds. Where `inverted` holds, the mark's color goes to the cell's
+    background and the array's background color to its foreground, so that the
+    mark is what the glyph leaves unfilled.
+    """
+    rows = np.broadcast_to(np.arange(chars.height)[:, None], mask.shape)
+    row, column = rows[mask], np.broadcast_to(columns, mask.shape)[mask]
+    chars.codes[row, column] = codes[mask]
+    if colors is None:
+        return
+    marks = np.broadcast_to(colors, (chars.height, *colors.shape))[mask]
+    if inverted is None:
+        chars.fg[row, column] = True
+        chars.fg_rgb[row, column] = marks
+        return
+    flip = inverted[mask][:, None]
+    ground = np.zeros(3, dtype=np.uint8) if background is None else background
+    chars.fg[row, column] = True
+    chars.fg_rgb[row, column] = np.where(flip, ground, marks)
+    chars.bg[row, column] = True
+    chars.bg_rgb[row, column] = np.where(flip, marks, ground)

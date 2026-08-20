@@ -14,7 +14,7 @@ Basic plot types:
 * [x] Basic bar charts and column charts.
 * [x] Histograms.
 * [ ] Box plots.
-* [ ] Candlestick plots.
+* [x] Candlestick plots. See `notes/candlesticks.md`.
 
 Basic plot furnishings:
 
