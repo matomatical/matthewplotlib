@@ -1,63 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/api/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/api/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/changelog/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/changelog/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/compatibility/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/compatibility/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/examples/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/examples/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/quickstart/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/quickstart/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/roadmap/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/roadmap/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/api/animations/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/api/animations/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/api/camera/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/api/camera/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/api/colormaps/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/api/colormaps/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/api/colors/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/api/colors/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/api/core/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/api/core/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/api/data/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/api/data/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/api/plots/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/api/plots/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
     <url>
-         <loc>https://matthewplotlib.far.in.net/latest/0.6.2/api/unscii16/</loc>
+         <loc>https://matthewplotlib.far.in.net/0.6.2/api/unscii16/</loc>
          <lastmod>2026-08-20</lastmod>
     </url>
 </urlset>
