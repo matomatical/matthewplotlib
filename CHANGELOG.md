@@ -23,6 +23,10 @@ Changed:
   it half-fills its last character row.
 * Plots report their window in their reprs, rather than separately spelling out
   their dimensions and their ranges.
+* `dstack2` requires its plots to share one window---the same intervals in the
+  same number of character cells---and refuses mismatches, plots without
+  coordinates, and an empty stack with a `ValueError`. It used to compare only
+  the intervals, and to do so with assertions, which vanish under `python -O`.
 * `function2` shows the value of the function at the centre of each grid
   square, rather than at its lower left corner, so that the picture is no
   longer biased half a square towards the low end of each range. With

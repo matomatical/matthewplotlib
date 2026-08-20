@@ -1613,7 +1613,7 @@ class axes(plot):
         w = plot.window
         if w is None or w.xrange is None or w.yrange is None:
             raise ValueError(
-                f"a {type(plot).__name__} plot has no coordinates to label"
+                f"{type(plot).__name__} has no coordinates to label"
             )
 
         # construct tick labels
@@ -1809,40 +1809,38 @@ class dstack2(dstack):
     determined by the maximum width and height among all input plots. Non-blank
     characters from upper layers will obscure characters from lower layers.
 
-    Unlike dstack, the plots must each carry a coordinate on both axes, and
-    the coordinates must match.
+    Unlike dstack, every plot must carry a coordinate on both axes, and they
+    must all share one window: the same intervals covered in the same number
+    of character cells. Two plots covering the same intervals in different
+    numbers of cells put the same coordinate in different places, and a
+    rendered plot cannot be resampled to fix that, so it is refused.
 
     Inputs:
 
     * *plots : plot.
-        A sequence of plot objects to be overlaid. Must have matching
-        coordinates.
+        A sequence of plot objects to be overlaid. At least one, all sharing
+        one window.
     """
     def __init__(
         self,
         *plots: plot,
     ):
-        # check the shared coordinates
-        xrange: tuple[number, number] | None = None
-        yrange: tuple[number, number] | None = None
-        for p in plots:
-            w = p.window
-            assert w is not None, "plot has no coordinates"
-            assert w.xrange is not None and w.yrange is not None
-            assert xrange is None or w.xrange == xrange, "xrange mismatch"
-            assert yrange is None or w.yrange == yrange, "yrange mismatch"
-            xrange = w.xrange
-            yrange = w.yrange
-        assert xrange is not None
-        assert yrange is not None
+        if not plots:
+            raise ValueError("no plots to overlay")
+        shared = plots[0].window
+        if shared is None or shared.xrange is None or shared.yrange is None:
+            raise ValueError(
+                f"{type(plots[0]).__name__} has no coordinates to be "
+                "overlaid in"
+            )
+        for p in plots[1:]:
+            if p.window != shared:
+                raise ValueError(
+                    f"cannot overlay {p.window!r} on {shared!r}"
+                )
 
         super().__init__(*plots)
-        self.window = window(
-            xrange=xrange,
-            yrange=yrange,
-            width=self.width,
-            height=self.height,
-        )
+        self.window = shared
 
     def __repr__(self):
         return f"dstack2({self.window!r}, plots={self.plots!r})"

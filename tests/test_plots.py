@@ -13,6 +13,7 @@ from matthewplotlib.plots import (
     dstack2,
     function2,
     histogram2,
+    image,
     line,
     line3,
     scatter,
@@ -432,6 +433,32 @@ class TestLine:
         )
         assert plot.window.xrange == (0, 4)
         assert drawn_cells(plot).any()
+
+    def test_layers_must_cover_the_same_data(self):
+        with pytest.raises(ValueError, match="cannot overlay"):
+            dstack2(
+                scatter((np.arange(5), np.arange(5)), width=10, height=3),
+                scatter((np.arange(5), np.arange(5)), width=10, height=3,
+                        yrange=(0.0, 10.0)),
+            )
+
+    def test_layers_must_cover_it_in_the_same_number_of_cells(self):
+        """Equal ranges rendered at different sizes put a coordinate in
+        different cells, and a rendered plot cannot be resampled."""
+        data = (np.arange(5), np.arange(5))
+        with pytest.raises(ValueError, match="cannot overlay"):
+            dstack2(
+                scatter(data, width=10, height=3),
+                scatter(data, width=20, height=3),
+            )
+
+    def test_a_plot_without_coordinates_cannot_be_overlaid(self):
+        with pytest.raises(ValueError, match="no coordinates"):
+            dstack2(image(np.zeros((4, 4))))
+
+    def test_there_must_be_something_to_overlay(self):
+        with pytest.raises(ValueError, match="no plots"):
+            dstack2()
 
 
 # # #
