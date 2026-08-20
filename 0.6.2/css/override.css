@@ -1,0 +1,186 @@
+/* Make sidebar sticky and independently scrollable on desktop */
+@media only screen and (min-width: 70em) {
+    #terminal-mkdocs-side-panel {
+        position: sticky;
+        top: 20px;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+    }
+    
+    /* Hide scrollbar for a cleaner look in the sidebar */
+    #terminal-mkdocs-side-panel::-webkit-scrollbar {
+        width: 8px;
+    }
+    #terminal-mkdocs-side-panel::-webkit-scrollbar-track {
+        background: var(--background-color); 
+    }
+    #terminal-mkdocs-side-panel::-webkit-scrollbar-thumb {
+        background: var(--secondary-color);
+    }
+}
+
+/* Fix CSS Grid blowout from wide un-wrappable content like code blocks */
+#terminal-mkdocs-main-content {
+    min-width: 0;
+}
+
+/* API Reference Visual Tweaks */
+.doc-children > .doc-object {
+    border-bottom: 1px dashed var(--secondary-color);
+    margin-bottom: 1.5em;
+    padding-left: 1.5em;
+    border-left: 1px dashed var(--secondary-color);
+}
+
+/* Keep top-level module description flush with the left edge */
+.doc-object.doc-module > .doc-contents.first {
+    padding-left: 0;
+    border-left: none;
+}
+
+/* Fix code block wrapping, scrolling, and borders */
+pre, .highlight pre {
+    white-space: pre !important;
+    overflow-x: auto !important;
+    border: none !important;
+    background-color: var(--code-bg-color) !important;
+    padding: var(--global-space) !important;
+    margin-bottom: var(--global-line-height) !important;
+}
+
+pre code {
+    white-space: pre;
+}
+
+.doc-heading code {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Fix mkdocstrings symbols which expect Material icons */
+.doc-symbol {
+    background: none !important;
+    padding: 0 !important;
+    border: none !important;
+    margin-right: 0em;
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: middle;
+}
+.doc-symbol-module::after { content: "module" !important; color: var(--accent-color); }
+.doc-symbol-class::after { content: "class" !important; color: var(--accent-color); }
+.doc-symbol-function::after { content: "def" !important; color: var(--accent-color); }
+.doc-symbol-method::after { content: "def" !important; color: var(--accent-color); }
+.doc-symbol-attribute::after { content: "attr" !important; color: var(--accent-color); }
+
+/* Plots are pixel art, so scale them without smoothing */
+img {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* mkdocstrings puts whitespace between the name and the colon that closes the
+   declaration. The theme is monospace, so one character cancels it exactly. */
+.doc-declaration-colon {
+    margin-left: -1ch;
+}
+
+/* The theme draws a rule under the page title, but every palette it ships
+   turns it off. Section headings get one too, so that both echo the way the
+   markdown sources underline their headings. */
+:root {
+    --display-h1-decoration: block;
+}
+
+h2:not(.doc-heading) {
+    overflow: hidden;
+    padding-bottom: calc(var(--global-space) * 2);
+}
+
+h2:not(.doc-heading)::after {
+    content: "----------------------------------------------------------------------------------------------------";
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    display: block;
+}
+
+/* Permalinks name what they point at: documented objects are "docs", ordinary
+   headings take the markdown convention. The anchor's own text is hidden so
+   that the two can differ. */
+.headerlink {
+    font-size: 0;
+}
+
+.headerlink::after {
+    content: "#";
+    font-size: var(--global-font-size);
+    margin-left: 0.75em;
+}
+
+.doc-heading .headerlink::after {
+    content: "docs";
+    margin-left: 0;
+}
+
+/* The marker is the only part of the anchor with a size, so it is what the
+   theme's hover highlight has to paint. */
+.headerlink:hover::after {
+    background-color: var(--primary-color);
+    color: var(--invert-font-color);
+}
+
+/* Symbols read as part of the declaration, so they are not set smaller */
+code.doc-symbol {
+    font-size: 1em;
+}
+
+/* Admonitions, which the theme leaves looking like ordinary prose. Set on the
+   blue the code blocks used to sit on, so the two kinds of aside stay apart. */
+.admonition {
+    background-color: var(--sweetie-navy);
+    border-left: 1ch solid var(--primary-color);
+    padding: var(--global-line-height) 1ch;
+    margin: var(--global-line-height) 0;
+}
+
+.admonition > :first-child {
+    margin-top: 0;
+}
+
+.admonition > :last-child {
+    margin-bottom: 0;
+}
+
+.admonition-title {
+    font-weight: 600;
+}
+
+.admonition.tip,
+.admonition.hint {
+    border-left-color: var(--sweetie-lime);
+}
+
+.admonition.warning,
+.admonition.caution {
+    border-left-color: var(--sweetie-yellow);
+}
+
+.admonition.danger,
+.admonition.error {
+    border-left-color: var(--sweetie-red);
+}
+
+/* The version menu sits in the top nav, so it is sized to its contents
+   rather than filling the width a form would. */
+#version-menu:not([hidden]) {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5ch;
+}
+
+#version-select {
+    width: auto;
+    padding: 0 0.5ch;
+    background-color: var(--background-color);
+}
