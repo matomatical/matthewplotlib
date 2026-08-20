@@ -1,11 +1,15 @@
 """
-A collection of pre-defined colormaps. They generally come in two flavours:
+A collection of pre-defined colormaps. They generally come in three flavours:
 
 * Continuous colormaps: Functions of type `float[...] -> uint8[..., 3]`. They
   turn a batch of floats in the range [0.0, 1.0] into a batch of RGB triples.
 * Discrete colormaps: Functions of type `int[...] -> uint8[..., 3]`. They turn
   a batch of integer indices into a batch of RGB triples by indexing into the
   color palette.
+* Vector colormaps: Functions of type `complex[...] -> uint8[..., 3]`. They
+  turn a batch of plane vectors, spelled as complex numbers or as pairs, into
+  a batch of RGB triples, giving the direction and the magnitude their own
+  dimension of the colour.
 """
 
 from typing import Callable
@@ -42,9 +46,22 @@ by indexing into the palette.
 """
 
 
-type ColorMap = ContinuousColorMap | DiscreteColorMap
+type VectorColorMap = Callable[
+    [ArrayLike],
+    np.ndarray,
+] # complex[...] | float[..., 2] -> uint8[..., 3]
 """
-Either kind of colormap, continuous or discrete.
+A colormap over the plane, `complex[...] -> uint8[..., 3]`.
+
+Turns a batch of plane vectors into a batch of RGB triples of the same shape.
+A vector may be spelled as a complex number or as the last axis of a real array
+of length two; the two spellings mean the same thing.
+"""
+
+
+type ColorMap = ContinuousColorMap | DiscreteColorMap | VectorColorMap
+"""
+Any kind of colormap: continuous, discrete, or vector.
 """
 
 
@@ -638,3 +655,161 @@ def nouveau(
         [ 89, 161,  79], [237, 201,  72], [176, 122, 161], [255, 157, 167],
         [156, 117,  95], [186, 176, 172],
     ])[idx]
+
+
+# # #
+# VECTOR COLORMAPS
+
+
+_OCTAVE_SPREAD = 4.0
+"""
+The scale, in octaves of modulus, of `domain`'s ramp from black to white.
+
+The ramp is `tanh(octave / spread)` cubed. Cubing flattens its middle, which
+matters because lightness at either extreme is lightness spent: a colour much
+above a half is washing out towards white and one much below is going dark, and
+either way the phase is harder to read. The flat middle keeps a function's
+ordinary values at full colour and saves the extremes for moduli that really
+are extreme. At this spread a modulus of two moves the lightness only a tenth
+of the way towards white, and it takes a modulus of a few hundred to arrive.
+"""
+
+
+_RING_DEPTH = 0.5
+"""
+How deep `domain` cuts its contour rings, as a fraction of the room available.
+
+A ring only ever darkens. Lightening one would wash it out instead: at full
+saturation a lightness above a half is already on its way to white, so a ring
+drawn upwards costs the colour around it more than it shows. Darkening keeps
+the hue vivid on both sides of the ring.
+
+The depth is scaled by the distance from the nearest of black and white, so
+that a ring never clips; this is the fraction of that distance it may use.
+"""
+
+
+def _as_complex(
+    v: ArrayLike,   # complex[...] | float[..., 2]
+) -> np.ndarray:    # -> complex[...]
+    """
+    Read a batch of plane vectors, in either spelling, as complex numbers.
+
+    A complex array passes through. A real array whose last axis has length two
+    is read as a batch of (x, y) pairs, and that axis is consumed.
+    """
+    arr = np.asarray(v)
+    if np.iscomplexobj(arr):
+        return arr
+    if arr.ndim > 0 and arr.shape[-1] == 2:
+        return arr[..., 0] + 1j * arr[..., 1]
+    raise ValueError(
+        "expected complex numbers, or real numbers with a final axis of (x, y)"
+        f" pairs, but got an array of shape {arr.shape} and type {arr.dtype}"
+    )
+
+
+def _hsv_to_rgb(
+    h: ArrayLike,   # float[...], the hue as a fraction of the colour wheel
+    s: ArrayLike,   # float[...] in [0, 1]
+    v: ArrayLike,   # float[...] in [0, 1]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Hue, saturation and value to RGB bytes, elementwise over any shape.
+    """
+    h, s, v = np.broadcast_arrays(*(np.asarray(a, float) for a in (h, s, v)))
+    # each sixth of the wheel interpolates between two of the three channels
+    sector = np.floor(h * 6.0)
+    offset = h * 6.0 - sector
+    index = sector.astype(int) % 6
+    lo = v * (1.0 - s)
+    falling = v * (1.0 - offset * s)
+    rising = v * (1.0 - (1.0 - offset) * s)
+    channels = np.stack([
+        np.choose(index, [v, falling, lo, lo, rising, v]),
+        np.choose(index, [rising, v, v, falling, lo, lo]),
+        np.choose(index, [lo, lo, rising, v, v, falling]),
+    ], axis=-1)
+    return (np.clip(channels, 0.0, 1.0) * 255.0).round().astype(np.uint8)
+
+
+def _hsl_to_rgb(
+    h: ArrayLike,   # float[...], the hue as a fraction of the colour wheel
+    s: ArrayLike,   # float[...] in [0, 1]
+    l: ArrayLike,   # float[...] in [0, 1]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Hue, saturation and lightness to RGB bytes, elementwise over any shape.
+
+    Lightness differs from value in running all the way from black at zero to
+    white at one, with the fully saturated colour halfway between.
+    """
+    s_, l_ = np.broadcast_arrays(*(np.asarray(a, float) for a in (s, l)))
+    value = l_ + s_ * np.minimum(l_, 1.0 - l_)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        saturation = np.where(value > 0.0, 2.0 * (1.0 - l_ / value), 0.0)
+    return _hsv_to_rgb(h, saturation, value)
+
+
+def chroma(
+    v: ArrayLike,   # complex[...] | float[..., 2]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Vector colormap: direction becomes hue, and magnitude becomes brightness.
+
+    The colour wheel starts at red for a vector along the positive x axis and
+    turns anticlockwise through yellow, green, cyan, blue and magenta. A vector
+    of magnitude zero is black and one of magnitude one or more is at full
+    brightness, so a field should be scaled into the unit disc before it
+    arrives here.
+    """
+    z = _as_complex(v)
+    z = np.where(np.isfinite(z), z, 0.0)
+    hue = np.mod(np.angle(z) / (2.0 * np.pi), 1.0)
+    brightness = np.clip(np.abs(z), 0.0, 1.0)
+    return _hsv_to_rgb(hue, np.ones_like(brightness), brightness)
+
+
+def domain(
+    z: ArrayLike,   # complex[...] | float[..., 2]
+) -> np.ndarray:    # -> uint8[..., 3]
+    """
+    Vector colormap for domain colouring: phase becomes hue, and modulus
+    becomes lightness, with a contour ring at every doubling of the modulus.
+
+    The colour wheel starts at red for a positive real number and turns
+    anticlockwise through yellow, green, cyan, blue and magenta, so the six
+    primaries mark the sixths of a turn of the phase. Lightness places the
+    modulus on an absolute scale: a zero of the function is black, a pole is
+    white, and the unit circle is the fully saturated colour halfway between.
+
+    Unlike a continuous colormap this one is not given its input in a fixed
+    range, because the modulus of a complex function is part of what the
+    picture is about. The scale is logarithmic, symmetric about one, and slow:
+    a function's ordinary values keep their full colour, and it takes many
+    octaves to approach either extreme. Shading over the top of it draws a dark
+    contour ring at every power of two, so the rings count the order of a zero
+    or a pole and their spacing shows how fast the function is growing.
+    """
+    w = _as_complex(z)
+    modulus = np.abs(w)
+    hue = np.mod(np.angle(w) / (2.0 * np.pi), 1.0)
+    hue = np.where(np.isfinite(hue), hue, 0.0)
+
+    # lightness: black at a zero, white at a pole, half on the unit circle,
+    # and symmetric between the two on a logarithmic scale
+    with np.errstate(divide="ignore", invalid="ignore"):
+        octave = np.log2(modulus)
+        lightness = 0.5 + 0.5 * np.tanh(octave / _OCTAVE_SPREAD) ** 3
+    lightness = np.where(np.isnan(lightness), 0.0, lightness)
+
+    # a sawtooth within each octave, cutting a ring at every power of two:
+    # darkest just above the power and easing back to nothing just below the
+    # next one, so the sharp edge of the ring lands on the power itself
+    with np.errstate(invalid="ignore"):
+        band = octave - np.floor(octave)
+    band = np.where(np.isfinite(band), band, 1.0)
+    room = np.minimum(lightness, 1.0 - lightness)
+    lightness = lightness - _RING_DEPTH * (1.0 - band) * room
+
+    return _hsl_to_rgb(hue, np.ones_like(lightness), lightness)

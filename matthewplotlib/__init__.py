@@ -52,6 +52,8 @@ from matthewplotlib.plots import (
     line3,
     image,
     function2,
+    vfunction2,
+    cfunction2,
     histogram2,
     progress,
     bars,
@@ -113,6 +115,7 @@ from matthewplotlib.data import (
 from matthewplotlib.colormaps import (
     ContinuousColorMap,
     DiscreteColorMap,
+    VectorColorMap,
     ColorMap,
     reds,
     greens,
@@ -133,4 +136,6 @@ from matthewplotlib.colormaps import (
     pico8,
     tableau,
     nouveau,
+    chroma,
+    domain,
 )

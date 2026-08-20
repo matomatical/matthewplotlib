@@ -16,6 +16,8 @@ Data plots:
 * `line3`
 * `image`
 * `function2`
+* `vfunction2`
+* `cfunction2`
 * `histogram2`
 * `progress`
 * `bars`
@@ -61,7 +63,7 @@ from PIL import Image
 from typing import Any, Callable, Literal, NamedTuple, Self, cast
 from collections.abc import Mapping, Sequence
 from numpy.typing import ArrayLike, NDArray
-from matthewplotlib.colormaps import ColorMap
+from matthewplotlib.colormaps import ColorMap, chroma, domain
 from matthewplotlib.colors import ColorLike, parse_color, parse_colors
 from numbers import Number
 
@@ -791,6 +793,34 @@ class image(plot):
         return f"image({self.window!r})"
 
 
+def _sample_points(
+    w: window,
+    endpoints: bool,
+) -> NDArray: # float[2 * height * width, 2]
+    """
+    The (x, y) coordinate that each pixel of a window stands for.
+
+    Pixels are listed top row first, so that reshaping the result to
+    `[2 * height, width]` puts them back where they came from.
+
+    By default the pixels tile the window's ranges exactly and each one is
+    represented by its own centre. If `endpoints` is true, the coordinates are
+    instead spread from one end of each range to the other, so that the four
+    corner pixels stand for the four corner combinations of the ranges and the
+    pixels reach half a pixel beyond them.
+    """
+    if w.xrange is None or w.yrange is None:
+        raise ValueError(f"{w!r} has no coordinates to sample")
+    if endpoints:
+        X, Y = np.meshgrid(
+            np.linspace(*w.xrange, num=w.width),
+            np.linspace(*w.yrange, num=2*w.height)[::-1],
+        ) # float[h, w] (x2)
+    else:
+        X, Y = w.pixel_centres()
+    return einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')
+
+
 class function2(image):
     """
     Heatmap representing the image of a 2d function over a square.
@@ -843,14 +873,7 @@ class function2(image):
     ):
         # the coordinates each grid square stands for, top row first
         w = window(xrange=xrange, yrange=yrange, width=width, height=height)
-        if endpoints:
-            X, Y = np.meshgrid(
-                np.linspace(*xrange, num=width),
-                np.linspace(*yrange, num=2*height)[::-1],
-            ) # float[h, w] (x2)
-        else:
-            X, Y = w.pixel_centres()
-        XY = einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')
+        XY = _sample_points(w, endpoints=endpoints)
 
         # sample the function
         Z = F(XY)
@@ -877,6 +900,194 @@ class function2(image):
         
     def __repr__(self):
         return f"function2(f={self.name}, {self.window!r})"
+
+
+class vfunction2(image):
+    """
+    Colour field representing a 2d vector field over a rectangle.
+
+    Every pixel is coloured by the vector the function returns there: the
+    direction becomes the hue and the magnitude becomes the brightness. Unlike
+    a field of arrows this shows a vector at every pixel, so the structure of
+    the field---its sources, sinks, saddles and the channels between them---is
+    visible at whatever resolution the terminal allows.
+
+    Inputs:
+
+    * F : float[batch, 2] -> float[batch, 2].
+        The (vectorised) field to plot. The input is a batch of (x, y)
+        positions. The output should be the batch of (u, v) vectors at those
+        positions.
+    * xrange : (float, float).
+        Lower and upper bounds on the x values to pass into the function.
+    * yrange : (float, float).
+        Lower and upper bounds on the y values to pass into the function.
+    * width : int.
+        The number of character columns in the plot. This will also become the
+        number of grid squares along the x axis.
+    * height : int.
+        The number of character rows in the plot. This will also be half of the
+        number of grid squares, since the result is an image plot with two
+        half-character-pixels per row.
+    * vrange : optional (float, float).
+        Expected lower and upper bounds on the *magnitude* of the vectors, used
+        to scale them into the unit disc for the colormap. By default the lower
+        bound is zero and the upper bound is the largest magnitude over the
+        grid, so that the fastest part of the field is at full brightness.
+        Magnitudes outside these bounds saturate at the nearest end.
+
+        The lower bound is zero by default rather than the smallest magnitude,
+        because a vector field's zeros are where its structure is, and they
+        should come out black.
+    * colormap : optional vector colormap (e.g. mp.chroma).
+        Applied to the scaled field. Defaults to `mp.chroma`. A custom colormap
+        receives the scaled `float[h, w, 2]` field and must return an RGB image
+        of shape `[h, w, 3]`.
+    * endpoints : bool (default: False).
+        By default, the grid squares tile the ranges exactly and each one shows
+        the value of the field at its own centre.
+
+        If true, the field is instead sampled at points spread from one end of
+        each range to the other, so that the four corner squares show the four
+        corner combinations of xrange and yrange. The squares then reach half a
+        square beyond the ranges, which the axes still report as the limits.
+    """
+    def __init__(
+        self,
+        F: Callable[[np.ndarray], np.ndarray],
+        xrange: tuple[float, float],
+        yrange: tuple[float, float],
+        width: int,
+        height: int,
+        vrange: tuple[float, float] | None = None,
+        colormap: ColorMap | None = None,
+        endpoints: bool = False,
+    ):
+        # the coordinates each grid square stands for, top row first
+        w = window(xrange=xrange, yrange=yrange, width=width, height=height)
+        XY = _sample_points(w, endpoints=endpoints)
+
+        # sample the field
+        UV = np.asarray(F(XY), dtype=float)
+        if UV.shape != XY.shape:
+            raise ValueError(
+                f"expected the field to return one (u, v) vector per point, "
+                f"an array of shape {XY.shape}, not {UV.shape}"
+            )
+        vgrid = einops.rearrange(
+            UV,
+            '(h w) uv -> h w uv',
+            h=2*height,
+            w=width,
+        )
+
+        # scale the magnitudes into [0, 1], leaving the directions alone
+        magnitude = np.hypot(vgrid[..., 0], vgrid[..., 1])
+        if vrange is None:
+            finite = magnitude[np.isfinite(magnitude)]
+            vrange = (0., float(finite.max()) if finite.size else 0.)
+        if vrange[0] == vrange[1]:
+            scaled = np.zeros_like(magnitude)
+        else:
+            scaled = (magnitude - vrange[0]) / (vrange[1] - vrange[0])
+            scaled = np.clip(scaled, 0., 1.)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            direction = vgrid / magnitude[..., np.newaxis]
+        direction = np.where(np.isfinite(direction), direction, 0.)
+
+        # create the image plot itself
+        super().__init__(
+            im=direction * scaled[..., np.newaxis],
+            colormap=chroma if colormap is None else colormap,
+            xrange=xrange,
+            yrange=yrange,
+        )
+        self.name = getattr(F, '__name__', '?')
+        self.vrange = vrange
+
+    def __repr__(self):
+        return f"vfunction2(f={self.name}, {self.window!r})"
+
+
+class cfunction2(image):
+    """
+    Domain colouring of a complex function over a rectangle of the plane.
+
+    Every pixel is coloured by the value the function takes there: the phase
+    becomes the hue and the modulus becomes the lightness, so a zero of the
+    function shows up as a black point, a pole as a white one, and the order of
+    either can be counted off the number of times the colour wheel turns around
+    it.
+
+    Inputs:
+
+    * F : complex[batch] -> complex[batch].
+        The (vectorised) function to plot. The input is a batch of points of
+        the complex plane. The output should be the batch of values there.
+    * xrange : (float, float).
+        Lower and upper bounds on the real part of the input.
+    * yrange : (float, float).
+        Lower and upper bounds on the imaginary part of the input.
+    * width : int.
+        The number of character columns in the plot. This will also become the
+        number of grid squares along the real axis.
+    * height : int.
+        The number of character rows in the plot. This will also be half of the
+        number of grid squares, since the result is an image plot with two
+        half-character-pixels per row.
+    * colormap : optional vector colormap (e.g. mp.domain).
+        Applied to the values. Defaults to `mp.domain`. There is no range to
+        configure, because a domain colouring puts the modulus on an absolute
+        scale---the colormap owns it. A custom colormap receives the
+        `complex[h, w]` values and must return an RGB image of shape
+        `[h, w, 3]`.
+    * endpoints : bool (default: False).
+        By default, the grid squares tile the ranges exactly and each one shows
+        the value of the function at its own centre.
+
+        If true, the function is instead sampled at points spread from one end
+        of each range to the other, so that the four corner squares show the
+        four corner combinations of xrange and yrange. The squares then reach
+        half a square beyond the ranges, which the axes still report as the
+        limits.
+
+    Sampling the function at the centre of each square is the default here for
+    a further reason: a function with a pole at a round number, such as `1/z`
+    at the origin, is then never evaluated exactly on it.
+    """
+    def __init__(
+        self,
+        F: Callable[[np.ndarray], np.ndarray],
+        xrange: tuple[float, float],
+        yrange: tuple[float, float],
+        width: int,
+        height: int,
+        colormap: ColorMap | None = None,
+        endpoints: bool = False,
+    ):
+        # the coordinates each grid square stands for, top row first
+        w = window(xrange=xrange, yrange=yrange, width=width, height=height)
+        XY = _sample_points(w, endpoints=endpoints)
+
+        # sample the function over the plane
+        Z = np.asarray(F(XY[:, 0] + 1j * XY[:, 1]))
+        if Z.shape != XY.shape[:1]:
+            raise ValueError(
+                f"expected the function to return one value per point, an "
+                f"array of shape {XY.shape[:1]}, not {Z.shape}"
+            )
+
+        # create the image plot itself
+        super().__init__(
+            im=einops.rearrange(Z, '(h w) -> h w', h=2*height, w=width),
+            colormap=domain if colormap is None else colormap,
+            xrange=xrange,
+            yrange=yrange,
+        )
+        self.name = getattr(F, '__name__', '?')
+
+    def __repr__(self):
+        return f"cfunction2(f={self.name}, {self.window!r})"
 
 
 class histogram2(image):

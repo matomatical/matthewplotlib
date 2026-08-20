@@ -13,6 +13,7 @@ from matthewplotlib.plots import (
     border,
     calendar,
     weeks,
+    cfunction2,
     dstack2,
     function2,
     histogram2,
@@ -22,8 +23,20 @@ from matthewplotlib.plots import (
     scatter,
     table,
     text,
+    vfunction2,
     wrap,
 )
+
+
+class RecordingVectorColormap:
+    """A vector colormap that retains the field it received."""
+
+    def __init__(self):
+        self.input = None
+
+    def __call__(self, values):
+        self.input = np.array(values, copy=True)
+        return np.zeros((*np.shape(values)[:2], 3), dtype=np.uint8)
 
 
 class RecordingColormap:
@@ -422,6 +435,124 @@ class TestFunction2:
 
         assert np.allclose(np.unique(sampled[0][:, 0]), [0.0, 1 / 3, 2 / 3, 1.0])
         assert np.allclose(np.unique(sampled[0][:, 1]), [0.0, 2.0])
+
+
+class TestVFunction2:
+    def test_the_field_is_scaled_into_the_unit_disc(self):
+        colormap = RecordingVectorColormap()
+
+        vfunction2(
+            lambda xy: np.stack([xy[:, 0], np.zeros(len(xy))], axis=-1),
+            xrange=(0.0, 4.0),
+            yrange=(0.0, 1.0),
+            width=2,
+            height=1,
+            colormap=colormap,
+        )
+
+        # x is sampled at 1 and 3, and the largest magnitude becomes one
+        assert np.allclose(colormap.input[..., 0], [[1 / 3, 1.0], [1 / 3, 1.0]])
+
+    def test_magnitudes_outside_vrange_saturate(self):
+        colormap = RecordingVectorColormap()
+
+        vfunction2(
+            lambda xy: np.stack([xy[:, 0], np.zeros(len(xy))], axis=-1),
+            xrange=(0.0, 4.0),
+            yrange=(0.0, 1.0),
+            width=2,
+            height=1,
+            vrange=(0.0, 2.0),
+            colormap=colormap,
+        )
+
+        assert np.allclose(colormap.input[..., 0], [[0.5, 1.0], [0.5, 1.0]])
+
+    def test_scaling_keeps_the_direction(self):
+        colormap = RecordingVectorColormap()
+
+        vfunction2(
+            lambda xy: np.full((len(xy), 2), [3.0, 4.0]),
+            xrange=(0.0, 1.0),
+            yrange=(0.0, 1.0),
+            width=1,
+            height=1,
+            vrange=(0.0, 10.0),
+            colormap=colormap,
+        )
+
+        # magnitude five out of ten, along the same 3:4 diagonal
+        assert np.allclose(colormap.input, [[[0.3, 0.4]], [[0.3, 0.4]]])
+
+    def test_a_field_of_zeroes_does_not_divide_by_zero(self):
+        with np.errstate(all="raise"):
+            plot = vfunction2(
+                lambda xy: np.zeros_like(xy),
+                xrange=(0.0, 1.0),
+                yrange=(0.0, 1.0),
+                width=2,
+                height=1,
+            )
+        assert plot.width == 2
+
+    def test_a_field_that_returns_the_wrong_shape_is_rejected(self):
+        with pytest.raises(ValueError, match="one .u, v. vector per point"):
+            vfunction2(
+                lambda xy: xy[:, 0],
+                xrange=(0.0, 1.0),
+                yrange=(0.0, 1.0),
+                width=2,
+                height=1,
+            )
+
+
+class TestCFunction2:
+    def test_the_values_reach_the_colormap_unnormalised(self):
+        """A domain colouring reads the modulus on an absolute scale."""
+        seen = []
+
+        def colormap(values):
+            seen.append(np.array(values, copy=True))
+            return np.zeros((*np.shape(values), 3), dtype=np.uint8)
+
+        cfunction2(
+            lambda z: 10 * z,
+            xrange=(0.0, 2.0),
+            yrange=(0.0, 1.0),
+            width=2,
+            height=1,
+            colormap=colormap,
+        )
+
+        assert np.allclose(seen[0].real, [[5.0, 15.0], [5.0, 15.0]])
+
+    def test_the_function_is_given_complex_numbers(self):
+        sampled = []
+
+        def record(z):
+            sampled.append(np.array(z, copy=True))
+            return z
+
+        cfunction2(record, (0.0, 2.0), (0.0, 2.0), width=2, height=1)
+
+        assert np.iscomplexobj(sampled[0])
+        assert np.allclose(np.unique(sampled[0].real), [0.5, 1.5])
+        assert np.allclose(np.unique(sampled[0].imag), [0.5, 1.5])
+
+    def test_a_function_that_returns_the_wrong_shape_is_rejected(self):
+        with pytest.raises(ValueError, match="one value per point"):
+            cfunction2(
+                lambda z: np.stack([z.real, z.imag], axis=-1),
+                xrange=(0.0, 1.0),
+                yrange=(0.0, 1.0),
+                width=2,
+                height=1,
+            )
+
+    def test_a_pole_at_the_origin_is_not_sampled_on(self):
+        """Centre sampling never lands on a round number."""
+        with np.errstate(all="raise"):
+            cfunction2(lambda z: 1 / z, (-1.0, 1.0), (-1.0, 1.0), 4, 2)
 
 
 class TestHistogram2:
