@@ -103,9 +103,10 @@ More exotic plot types:
   * [x] Basic Hilbert curves.
   * [ ] Non-square Hilbert curves.
   * [ ] 3d Hilbert curves.
-* [ ] World maps:
+* [ ] World maps (see `notes/world-maps.md`):
   * [ ] Some 2d projections.
   * [ ] 3d globe projection.
+  * [ ] Whether to bundle coastline vectors, and at what resolution.
 * [ ] Dashboard meters (similar to `progress`):
   * [ ] circular
   * [ ] vertical
