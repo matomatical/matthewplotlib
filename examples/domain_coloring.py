@@ -20,19 +20,10 @@ That is enough to read a surprising amount off the picture.
 By Claude Opus 5.
 """
 
-from typing import Callable, NamedTuple
-
 import tyro
 import numpy as np
 
 import matthewplotlib as mp
-
-
-class Function(NamedTuple):
-    """A complex function, and the square of the plane to draw it on."""
-    name: str
-    function: Callable[[np.ndarray], np.ndarray]
-    extent: float
 
 
 def main(
@@ -41,20 +32,30 @@ def main(
     save: str | None = None,
 ):
     """Six complex functions, side by side."""
+    # name, function, and how far the window reaches along both axes
+    functions = [
+        ("z^3", cube, 2.0),
+        ("1/z^2", double_pole, 2.0),
+        ("a rational function", rational, 3.0),
+        ("sin z", sine, 4.0),
+        ("exp(1/z)", essential, 1.0),
+        ("log z", logarithm, 2.0),
+    ]
+
     panels = [
         mp.axes(
             mp.cfunction2(
-                entry.function,
-                xrange=(-entry.extent, entry.extent),
-                yrange=(-entry.extent, entry.extent),
+                function,
+                xrange=(-extent, extent),
+                yrange=(-extent, extent),
                 width=width,
                 height=height,
             ),
-            title=entry.name,
+            title=name,
             xfmt="{x:+.0f}",
             yfmt="{y:+.0f}i",
         )
-        for entry in FUNCTIONS
+        for name, function, extent in functions
     ]
     grid = mp.wrap(*panels, cols=3)
     plot = grid / mp.center(
@@ -112,16 +113,6 @@ def logarithm(z: np.ndarray) -> np.ndarray:
     origin where its modulus runs away.
     """
     return np.log(z)
-
-
-FUNCTIONS = (
-    Function("z^3", cube, extent=2.0),
-    Function("1/z^2", double_pole, extent=2.0),
-    Function("a rational function", rational, extent=3.0),
-    Function("sin z", sine, extent=4.0),
-    Function("exp(1/z)", essential, extent=1.0),
-    Function("log z", logarithm, extent=2.0),
-)
 
 
 if __name__ == "__main__":

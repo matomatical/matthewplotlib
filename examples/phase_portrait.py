@@ -14,50 +14,12 @@ that is only a few dozen columns wide.
 By Claude Opus 5.
 """
 
-from typing import Callable, NamedTuple
+from typing import Callable
 
 import tyro
 import numpy as np
 
 import matthewplotlib as mp
-
-
-class Field(NamedTuple):
-    """A planar vector field, and how to look at it.
-
-    `midpoint` is the magnitude to draw at around half brightness; see
-    `softened` for what happens to the rest.
-    """
-    name: str
-    field: Callable[[np.ndarray], np.ndarray]
-    extent: float
-    midpoint: float
-
-
-def softened(
-    field: Callable[[np.ndarray], np.ndarray],
-    midpoint: float,
-) -> Callable[[np.ndarray], np.ndarray]:
-    """The same field with its directions kept and its magnitudes squashed.
-
-    `vfunction2` scales magnitudes linearly, which is the honest default but
-    the wrong one for a field whose magnitude covers orders of magnitude: the
-    dipole below is a thousand times faster beside a charge than it is out at
-    the corners, and on a linear scale everything but the two charges comes out
-    black. Passing the magnitudes through a `tanh` first spends the brightness
-    evenly instead, at the cost of no longer being able to read a magnitude
-    off a brightness.
-
-    The result has magnitudes in [0, 1), so the plots below leave `vrange` at
-    the unit interval rather than letting it find the largest.
-    """
-    def softened_field(p: np.ndarray) -> np.ndarray:
-        v = field(p)
-        magnitude = np.linalg.norm(v, axis=-1, keepdims=True)
-        direction = v / np.maximum(magnitude, 1e-12)
-        return direction * np.tanh(magnitude / midpoint)
-
-    return softened_field
 
 
 def main(
@@ -66,21 +28,32 @@ def main(
     save: str | None = None,
 ):
     """Six planar vector fields, side by side."""
+    # name, field, how far the window reaches, and the magnitude to draw at
+    # around half brightness
+    fields = [
+        ("saddle", saddle, 3.0, 1.5),
+        ("centre", centre, 3.0, 1.5),
+        ("stable spiral", spiral, 3.0, 1.5),
+        ("vortex lattice", vortex_lattice, np.pi, 0.5),
+        ("damped pendulum", pendulum, 6.0, 2.0),
+        ("dipole", dipole, 3.0, 0.3),
+    ]
+
     panels = [
         mp.axes(
             mp.vfunction2(
-                softened(entry.field, entry.midpoint),
-                xrange=(-entry.extent, entry.extent),
-                yrange=(-entry.extent, entry.extent),
+                softened(field, midpoint),
+                xrange=(-extent, extent),
+                yrange=(-extent, extent),
                 width=width,
                 height=height,
                 vrange=(0.0, 1.0),
             ),
-            title=entry.name,
+            title=name,
             xfmt="{x:+.0f}",
             yfmt="{y:+.0f}",
         )
-        for entry in FIELDS
+        for name, field, extent, midpoint in fields
     ]
     grid = mp.wrap(*panels, cols=3)
     plot = grid / mp.center(
@@ -149,14 +122,25 @@ def dipole(p: np.ndarray) -> np.ndarray:
     return total
 
 
-FIELDS = (
-    Field("saddle", saddle, extent=3.0, midpoint=1.5),
-    Field("centre", centre, extent=3.0, midpoint=1.5),
-    Field("stable spiral", spiral, extent=3.0, midpoint=1.5),
-    Field("vortex lattice", vortex_lattice, extent=np.pi, midpoint=0.5),
-    Field("damped pendulum", pendulum, extent=6.0, midpoint=2.0),
-    Field("dipole", dipole, extent=3.0, midpoint=0.3),
-)
+def softened(
+    field: Callable[[np.ndarray], np.ndarray],
+    midpoint: float,
+) -> Callable[[np.ndarray], np.ndarray]:
+    """The same field with its directions kept and its magnitudes squashed.
+
+    `vrange` scales magnitudes linearly, which spends nearly all of the
+    brightness on the fastest corner of a field like the dipole. A `tanh`
+    spreads it evenly instead, at the cost of no longer being able to read a
+    magnitude off a brightness. The result lands in the unit disc, so the plots
+    above leave `vrange` there.
+    """
+    def softened_field(p: np.ndarray) -> np.ndarray:
+        v = field(p)
+        magnitude = np.linalg.norm(v, axis=-1, keepdims=True)
+        direction = v / np.maximum(magnitude, 1e-12)
+        return direction * np.tanh(magnitude / midpoint)
+
+    return softened_field
 
 
 if __name__ == "__main__":
