@@ -108,6 +108,7 @@ EXAMPLES: tuple[Example, ...] = (
     Example("calendar_heatmap.py",      27, 62, saves="png"),
     Example("chromatic_flow.py",        24, 80, saves="gif",
             args=("--num-frames", "6", "--no-loop")),
+    Example("colorbars.py",             37, 76, saves="png"),
     Example("colormaps.py",             64, 72, saves="png"),
     Example("commit_heatmap.py",        11, 108, saves="png"),
     Example("dashboard.py",             15, 56, saves="gif",

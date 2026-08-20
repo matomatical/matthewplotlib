@@ -19,6 +19,20 @@ New:
   of character cells it covers them with. Every 2d plot carries one, and it
   provides the conversions from data coordinates to the grids of dots and
   pixels the plots are drawn in.
+* `heatmap`: a grid of values, each coloured by where it falls in an interval.
+  It normalises the values onto the colormap rather than asking the caller to
+  scale them first, and keeps the interval and the colormap it used, so that
+  the picture can be given a colorbar. `function2` and `histogram2` are built
+  on it. A grid of colours, of palette indices, or of values already scaled
+  onto the range 0.0 to 1.0 is still an `image`.
+* `colorbar`: the gradient a colour scale is a picture of, running up, down,
+  left or right, at any length and thickness. It takes both halves of the
+  scale off any plot that carries one---a `heatmap`, a `function2`, a
+  `histogram2`, a `calendar` or a `weeks`---so that the bar cannot disagree
+  with the picture beside it, or off a bare interval where there is no plot to
+  read. Carrying one coordinate, it is labelled along the one side that means
+  anything and left alone on the other three.
+* `Direction`: which way along the screen a colorbar runs.
 
 New examples:
 
@@ -26,6 +40,9 @@ New examples:
   interference pattern.
 * `commit_heatmap.py`: a year of commits to this repository as a strip of
   weeks, in the colours GitHub draws a contribution graph in.
+* `colorbars.py`: colour scales and the bars that stand for them, around a map
+  of an island's elevation: every direction and thickness, beside the map they
+  describe, and read off two plots that worked out their own interval.
 
 * A range given descending inverts its axis: `xrange=(1, 0)` mirrors a plot
   left to right and a descending `yrange` turns it over. The plots that place
@@ -61,6 +78,24 @@ Changed:
 * `BoxStyle` no longer offers `LIGHTX`, `HEAVYX` or `LOWERX`. They existed so
   that a border could carry the ticks an `axes` needed, and an `axes` derives
   its own now.
+* `function2` takes its colour scale as `vrange` rather than `zrange`, the name
+  the rest of the library already gave the interval of values a plot covers.
+* A `vrange` is a pair of numbers or nothing at all. `bars`, `columns`,
+  `calendar` and `weeks` used to accept a single number too, meaning zero up to
+  it; write `(0, hi)` instead. `histogram`, `vistogram` and `histogram2` keep
+  their own `max_count`, which is that shorthand under a name that says what it
+  is counting.
+* A plot keeps the interval it settled on as `plot.vrange`, one pair, rather
+  than as `plot.vmin` and `plot.vmax`.
+* `image` keeps the colormap it was given, as `plot.colormap`. It carries no
+  interval, since its data is already colours or already scaled, so its
+  `vrange` is `None` and a colorbar for it has to be told one.
+* A `vrange` the caller wrote that covers no interval is an error, rather than
+  quietly colouring everything at the bottom of the scale. One inferred from
+  values that are all the same still puts them all at the bottom, there being
+  nothing else it could mean.
+* A `heatmap` value that is not a number is left out of an inferred interval,
+  and comes out at the bottom of the colormap wherever it appears.
 
 Fixed:
 

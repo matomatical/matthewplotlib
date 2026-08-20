@@ -43,8 +43,9 @@ Styling plots with colors:
 Specifying colors:
 
 * [ ] Consistent API for color specification.
-* [ ] Configurable colour scales and normalisation.
-* [ ] Color bars, in any of the four directions. See `notes/colorbars.md`.
+* [ ] Configurable colour scales and normalisation. See `notes/scales.md`.
+* [x] Color bars, in any of the four directions. See
+  `notes/closed/colorbars.md`.
 
 Rendering:
 
@@ -132,7 +133,8 @@ Advancements of basic plot types:
     `notes/reference/myplot.py`).
 * [ ] Advanced image options:
   * [ ] Integer-factor down- and upsampling.
-  * [ ] Normalisation colormaps.
+  * [x] A plot that normalises values onto the colormap itself (`heatmap`).
+  * [ ] Nonlinear normalisation. See `notes/scales.md`.
 * [ ] Advanced text formatting parser (`rich=True` or something):
   * [ ] Bold, italic, underline, based on markdown?
   * [ ] Some way of specifying colors, html-style tags?

@@ -475,6 +475,20 @@ Utilities
   </tr>
   <tr>
     <td align="center">
+      <img src="../images/colorbars.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Colorbars</strong></p>
+      <p>Colour scales and the bars that stand for them: the same scale in
+      each of the four directions and at four thicknesses, beside the map of
+      an island it describes, and read off two plots that worked out their own
+      interval.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/colorbars.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="../images/colormaps.png" width="100%">
     </td>
     <td>
