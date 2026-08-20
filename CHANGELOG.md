@@ -24,6 +24,8 @@ New examples:
 
 * `axes_gallery.py`: every way of drawing an axis, around one two-slit
   interference pattern.
+* `commit_heatmap.py`: a year of commits to this repository as a strip of
+  weeks, in the colours GitHub draws a contribution graph in.
 
 * A range given descending inverts its axis: `xrange=(1, 0)` mirrors a plot
   left to right and a descending `yrange` turns it over. The plots that place
