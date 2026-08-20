@@ -1,8 +1,8 @@
 Roadmap
 =======
 
-Roadmap to version 1
----------------------
+Towards version 1
+-----------------
 
 Basic plot types:
 
@@ -13,6 +13,8 @@ Basic plot types:
 * [x] Progress bars.
 * [x] Basic bar charts and column charts.
 * [x] Histograms.
+* [ ] Candlestick plots.
+* [ ] Box plots.
 
 Basic plot furnishings:
 
@@ -53,9 +55,8 @@ Basic code improvements:
 
 * [x] Split up monolithic file into a small number of modules.
 * [ ] Split up plotting module with one file per plot type.
-* [ ] A window value type for the mapping from data coordinates onto the grid,
-  so that `axes` and `dstack2` take anything that has one rather than a listed
-  union of plot types. See `notes/plot-windows.md`.
+* [x] A window value type for the mapping from data coordinates onto the grid,
+  used by axes. See `notes/plot-windows.md`.
 * [x] Comprehensive type annotations, static type checking with mypy.
 * [ ] Robust input validation and error handling.
 
@@ -70,7 +71,7 @@ Documentation:
 * [x] Quick start guide.
 * [ ] Complete docstrings for modules, constants, etc.
   * [x] Everything exported from the package.
-  * [ ] The parsers and constants the modules keep to themselves.
+  * [ ] Private parsers and constants too.
 * [x] Simple generated markdown documentation on GitHub.
 * [x] Simple generated HTML/CSS documentation, hosted on web.
 
@@ -80,12 +81,38 @@ Repository:
 * [x] A simple example for the quick-start guide.
 * [x] Changelog.
 * [x] Version numbering and keep main branch working.
-* [ ] List on PyPI.
+* [ ] List on PyPI (when we agree we have reached version 1).
 
-Advanced features roadmap
--------------------------
+Advanced features
+-----------------
 
-More plot types:
+More exotic plot types:
+
+* [ ] Calendar heatmap plots.
+  * [ ] Month-chunked calendar (see calendar heatmap example).
+  * [ ] Github contributions-style continuous calendar.
+* [ ] Tables:
+  * [ ] List of dictionaries.
+  * [ ] Dictionary of lists.
+  * [ ] 2d list with/without header.
+  * [ ] Configurable format strings.
+* [ ] Vector field plots:
+  * [ ] color (see chromatic flow example).
+  * [ ] line (see boids example).
+* [ ] Hilbert curves:
+  * [x] Basic Hilbert curves.
+  * [ ] Non-square Hilbert curves.
+  * [ ] 3d Hilbert curves.
+* [ ] World maps:
+  * [ ] Some 2d projections.
+  * [ ] 3d globe projection.
+* [ ] Dashboard meters (similar to `progress`):
+  * [ ] circular
+  * [ ] vertical
+  * [ ] ticking-number
+  * [ ] Scrolling text marquees
+
+Advancements of basic plot types:
 
 * [x] Advanced scatter plots:
   * [x] Different colours for each point.
@@ -97,7 +124,7 @@ More plot types:
   * [ ] Error bars on line plots.
   * [ ] Fill plots.
   * [ ] Dashed and dotted strokes.
-* [ ] Wireframes in three dimensions:
+* [ ] 3d line plots / wireframes:
   * [x] Broken polylines projected from a camera (`line3`), cut off at a near
     plane. See `notes/lines.md`.
   * [ ] An explicit edge list, so a mesh with shared vertices is projected once
@@ -109,35 +136,12 @@ More plot types:
   * [ ] Bar/column charts with other alignments.
   * [x] Bar/column charts with individual colours.
   * [ ] Negative values in bar/column charts.
-* [ ] Tables:
-  * [ ] List of dictionaries.
-  * [ ] Dictionary of lists.
-  * [ ] 2d list with/without header.
-  * [ ] Configurable format strings.
-* [ ] Hilbert curves:
-  * [x] Basic Hilbert curves.
-  * [ ] Non-square Hilbert curves.
-  * [ ] 3d Hilbert curves.
-* [ ] World maps:
-  * [ ] Some 2d projections.
-  * [ ] 3d globe projection.
 * [ ] Advanced heatmaps:
   * [ ] RGB-channel 2d histograms (see `hist2d_rgb` in
     `notes/reference/myplot.py`).
 * [ ] Advanced image options:
   * [ ] Integer-factor down- and upsampling.
   * [ ] Normalisation colormaps.
-* [ ] Candlestick plots.
-* [ ] Box plots.
-* [ ] Vector field plots:
-  * [ ] color (see chromatic flow example).
-  * [ ] line (see boids example).
-* [ ] Calendar heatmap plots (see calendar heatmap example).
-* [ ] Dashboard meters (similar to `progress`):
-  * [ ] circular
-  * [ ] vertical
-  * [ ] ticking-number
-  * [ ] Scrolling text marquees
 
 Advanced plot arrangement:
 
@@ -177,10 +181,6 @@ Advanced rendering:
   * [x] Control over the palette sharing and size. See `notes/gif-size.md`.
   * [x] Automatically optimise saved gifs (lossless compression). See
     `notes/gif-size.md`.
-* [ ] Render plots to SVG (keep console aesthetic).
-* [ ] Render plots to PDF (keep console aesthetic).
-* [ ] Render plots to TikZ/pgfplots source.
-* [ ] Manim?
 
 Backend improvements:
 
@@ -192,8 +192,6 @@ Backend improvements:
 * [x] Differential rendering with shortcut `plot_new - plot_old`.
 * [ ] Vectorised animations (3-D `CharArray`, `codes[T,H,W]`). See
   `notes/animations.md`.
-* [ ] Can we get better performance and/or cleaner code by switching backend to
-  JAX?
 
 More elaborate documentation:
 
@@ -201,8 +199,7 @@ More elaborate documentation:
 * [x] Links to mentioned functions/classes/methods/types within documentation
   (automatically linked to relevant release).
 * [x] Documentation search.
-* [ ] Tutorials and recipes.
-* [ ] Freeze documentation with each version.
+* [x] Versioned documentation.
 * [ ] A logo, used as the website's favicon.
 * [ ] Link previews when the website is shared (Open Graph tags), showing off
   a plot.
@@ -227,14 +224,6 @@ Support non-24-bit-colour modes:
 * [ ] Reduced-colour modes (See `docs/src/compatibility.md`.)
 * [ ] Colormaps that are legible in a reduced-colour mode.
 
-Advanced glyphs and fonts:
-
-* [ ] Fallback for terminals whose font lacks braille.
-* [ ] Opt-in octants (Symbols for Legacy Computing Supplement, U+1CC00–U+1CEBF,
-  new in Unicode 16.0) as an alternative to braille.
-  * [ ] Instructions for installing or patching a font that has them.
-* [ ] Other font extensions, creating new density and shape possibilities?
-
 Advanced examples:
 
 * [x] Sort by feature or maybe style.
@@ -254,9 +243,31 @@ Advanced examples:
   * [ ] Blowup kinda like https://far.in.net/blowing-up
   * [ ] 3b1b fourier analysis video plots.
 
+Longer term
+-----------
+
+More rendering formats:
+
+* [ ] Render plots to SVG (keep console aesthetic).
+* [ ] Render plots to PDF (keep console aesthetic).
+* [ ] Render plots to TikZ/pgfplots source.
+
+Advanced glyphs and fonts:
+
+* [ ] Fallback for terminals whose font lacks braille.
+* [ ] Opt-in octants (Symbols for Legacy Computing Supplement, U+1CC00–U+1CEBF,
+  new in Unicode 16.0) as an alternative to braille.
+  * [ ] Instructions for installing or patching a font that has them.
+* [ ] Other font extensions, creating new density and shape possibilities?
+
+More elaborate documentation:
+
+* [ ] Tutorials and recipes.
+
 Future design directions.
 
 * [ ] Better tools for letting AI agents see the results?
+* [ ] Better performance and/or cleaner code by switching backend to JAX?
 * [ ] Reactive plots.
 * [ ] Manim import/export? Could that make sense?
 
