@@ -658,7 +658,7 @@ class TestPlotClearStr:
 
 # The complete set of escape sequences the library is allowed to send, by final
 # byte. Everything here is in the VT100 core, which is what keeps
-# `docs/compatibility.md` short; the only sequences that are not are the SGR
+# `docs/src/compatibility.md` short; the only sequences that are not are the SGR
 # colours, and those degrade to a nearby colour rather than corrupting a screen.
 ALLOWED_FINALS = {
     "A": "CUU, cursor up",
@@ -784,7 +784,7 @@ VOCABULARY_STRINGS = [emitted for _, emitted in VOCABULARY_SCENARIOS]
 class TestEmittedVocabulary:
     """What the library is allowed to say to a terminal.
 
-    `docs/compatibility.md` documents this set, and what each member of it
+    `docs/src/compatibility.md` documents this set, and what each member of it
     needs from a terminal. This is the same claim, executable: a sequence
     appearing in the renderer that the page does not cover fails here, so the
     page cannot go quietly out of date.

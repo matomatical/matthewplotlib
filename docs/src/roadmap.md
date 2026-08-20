@@ -158,7 +158,7 @@ Advanced plot arrangement:
 * [ ] Indexing and slicing of plots.
 * [ ] Crop plot composition primitive. See `notes/terminal-aware-printing.md`.
   * [ ] Clip plots to terminal width and (almost) height (see
-    `docs/compatibility.md`).
+    `docs/src/compatibility.md`).
   * [ ] `animate` context manager should handle this, and window resizes.
 
 Advanced furnishings:
@@ -223,7 +223,7 @@ Advanced testing:
 
 Support non-24-bit-colour modes:
 
-* [ ] Reduced-colour modes (See `docs/compatibility.md`.)
+* [ ] Reduced-colour modes (See `docs/src/compatibility.md`.)
 * [ ] Colormaps that are legible in a reduced-colour mode.
 
 Advanced glyphs and fonts:

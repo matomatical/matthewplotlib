@@ -1,8 +1,12 @@
 # # # 
 # Documentation website
 #
-# The site is built with mkdocs from docs/ and published to the gh-pages
-# branch by mike, one directory per version. See CONTRIBUTING.md.
+# Everything the site is built from lives in docs/: the sources under
+# docs/src, the templates it overrides, and the mkdocs configuration tying
+# them together. Published to the gh-pages branch by mike, one directory per
+# version. See CONTRIBUTING.md.
+
+CONFIG := docs/mkdocs.yml
 
 # The alias the site root redirects to, moved to each new release.
 DOCS_ALIAS := latest
@@ -12,10 +16,10 @@ DOCS_ALIAS := latest
 docs:
 	@git remote get-url origin 2>/dev/null | grep -q github.com \
 		|| echo "warning: no github remote, API source links will be missing"
-	mkdocs build --strict
+	mkdocs build --config-file $(CONFIG) --strict
 
 serve:
-	mkdocs serve
+	mkdocs serve --config-file $(CONFIG)
 
 # `make docs` leaves the site it built behind, for looking over.
 clean:
@@ -26,8 +30,8 @@ clean:
 # serves as a 404 instead of following.
 deploy:
 	@test -n "$(V)" || (echo "Usage: make deploy V=0.6.3" && exit 1)
-	mike deploy --update-aliases --alias-type=copy $(V) $(DOCS_ALIAS)
-	mike set-default $(DOCS_ALIAS)
+	mike deploy --config-file $(CONFIG) --update-aliases --alias-type=copy $(V) $(DOCS_ALIAS)
+	mike set-default --config-file $(CONFIG) $(DOCS_ALIAS)
 	@echo "deployed. to publish:"
 	@echo "git push origin gh-pages"
 

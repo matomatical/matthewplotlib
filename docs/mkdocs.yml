@@ -5,8 +5,12 @@ copyright: Copyright © 2024–2026 Matthew Farrugia-Roberts, GPLv3.
 # give their own address as canonical.
 site_url: https://matthewplotlib.far.in.net/
 repo_url: https://github.com/matomatical/matthewplotlib
-edit_uri: edit/main/docs/
+edit_uri: edit/main/docs/src/
 strict: true
+
+docs_dir: src
+# keeps the built site out of the sources it was built from
+site_dir: ../site
 
 theme:
   name: terminal
@@ -44,10 +48,10 @@ draft_docs: |
   styletest.md
 
 watch:
-  - README.md
-  - CHANGELOG.md
-  - examples/README.md
-  - matthewplotlib
+  - ../README.md
+  - ../CHANGELOG.md
+  - ../examples/README.md
+  - ../matthewplotlib
   - templates
 
 plugins:
@@ -58,7 +62,7 @@ plugins:
       default_handler: python
       handlers:
         python:
-          paths: ["."]
+          paths: [".."]
           options:
             show_source: false
             show_signature_annotations: true

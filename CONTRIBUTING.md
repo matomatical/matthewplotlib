@@ -34,7 +34,7 @@ To work on a new feature:
      snapshot changed, look at the change before accepting it with
      `make goldens` -- see Testing, below.
    * Documentation site still builds (`make docs`).
-   * Roadmap (`docs/roadmap.md`) is up to date.
+   * Roadmap (`docs/src/roadmap.md`) is up to date.
    * Changelog (`CHANGELOG.md`) is up to date.
    * All new features are exported in `__init__.py`. For `plots`, `colormaps`
      and `animations` this is checked by `tests/test_exports.py`, which derives
@@ -110,12 +110,17 @@ be generated manually with full-length runs, not overwritten by test runs.
 Documentation
 -------------
 
-The website is built from `docs/` with mkdocs, using mkdocstrings to render
-the API reference from the docstrings. `docs/index.md`, `docs/examples.md` and
-`docs/changelog.md` include `README.md`, `examples/README.md` and
-`CHANGELOG.md`, so each of those files serves both GitHub and the site.
-Overrides for the theme's partials and for mkdocstrings' templates live in
-`templates/`, and the palette is in `docs/css/`.
+Everything the website is built from lives in `docs/`:
+
+* `docs/mkdocs.yml`, the configuration, which every path below is relative to.
+* `docs/src/`, the pages, with the stylesheets under `docs/src/css/`.
+* `docs/templates/`, overriding some of the theme's partials and one of
+  mkdocstrings'.
+
+mkdocstrings renders the API reference from the docstrings, and
+`docs/src/index.md`, `docs/src/examples.md` and `docs/src/changelog.md` include
+`README.md`, `examples/README.md` and `CHANGELOG.md`, so each of those files
+serves both GitHub and the site.
 
 ```console
 make serve                  # preview on localhost, reloading as you edit
@@ -123,7 +128,7 @@ make docs                   # build once into site/, failing on any bad link
 make clean                  # throw the built site away
 ```
 
-`docs/styletest.md` exercises the site's own appearance -- every kind of
+`docs/src/styletest.md` exercises the site's own appearance -- every kind of
 heading, code block, admonition and permalink on one page. It is a draft, so
 `make serve` shows it at `/styletest/` and no build publishes it. Extend it
 when styling something new.

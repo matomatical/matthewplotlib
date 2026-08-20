@@ -3,7 +3,7 @@
 Investigated 2026-07-25 (Matthew + Claude), after the differential rendering
 work. Steps 1-3 of the plan built 2026-07-26 (see "What was built", below).
 Steps 4 and 5 were done later the same day: the audit is
-`notes/closed/escape-vocabulary.md`, and the matrix is `docs/compatibility.md`.
+`notes/closed/escape-vocabulary.md`, and the matrix is `docs/src/compatibility.md`.
 
 ## The problem
 
@@ -96,7 +96,7 @@ newline-terminated input -- so it is not evidence of anything.)
      conservative instead. That is the pattern to generalise.
 
 5. **Build a terminal support matrix** (Matthew's idea, and the eventual public
-   artifact; now `docs/compatibility.md`, which answers the terminal question
+   artifact; now `docs/src/compatibility.md`, which answers the terminal question
    by argument from a small vocabulary rather than by a table of ticks, and says
    plainly that only tmux is tested): the sequences and behaviours we rely on,
    against the terminals people actually use -- what supports what, and where behaviour differs.
@@ -120,7 +120,7 @@ newline-terminated input -- so it is not evidence of anything.)
    been because ghostty is a serious modern VT rather than another old one, and
    better than `pyte` because it is a terminal people actually use. Spot-checked
    by hand at this point, not automated; see the roadmap and the terminals table
-   in `docs/compatibility.md`.)
+   in `docs/src/compatibility.md`.)
 
 ## What was built
 

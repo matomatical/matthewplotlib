@@ -40,7 +40,7 @@ library does not know about -- your own status line, another program's output --
 and then shrink or clear the plot. That is rare.
 
 It is not hypothetical, though, and it contradicts a claim now made in public.
-`docs/compatibility.md` says the library "only ever moves relative to the
+`docs/src/compatibility.md` says the library "only ever moves relative to the
 cursor and never addresses the screen absolutely, [so] output composes with
 whatever else is on screen. It does not own the display." Whole-line erasing is
 the one place that is false.
