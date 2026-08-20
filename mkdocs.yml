@@ -13,6 +13,7 @@ theme:
     - navigation.side.indexes
 extra_css:
   - css/sweetie16.css
+  - css/pygments.css
   - css/override.css
 nav:
   - Home: index.md
@@ -65,6 +66,5 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.highlight:
       use_pygments: true
-      pygments_style: github-dark # TODO: Sweetie-16
-      noclasses: true
+      noclasses: false
   - pymdownx.inlinehilite

@@ -1,0 +1,53 @@
+/* Pygments tokens in Sweetie 16. Code sits on --code-bg-color. */
+
+/* comments */
+.highlight .c, .highlight .ch, .highlight .cm, .highlight .c1,
+.highlight .cs, .highlight .cp, .highlight .cpf {
+    color: var(--sweetie-silver);
+    font-style: italic;
+}
+
+/* keywords */
+.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn,
+.highlight .kp, .highlight .kr, .highlight .kt {
+    color: var(--sweetie-orange);
+}
+
+/* strings */
+.highlight .s, .highlight .sa, .highlight .sb, .highlight .sc,
+.highlight .sd, .highlight .s2, .highlight .se, .highlight .sh,
+.highlight .sr, .highlight .s1, .highlight .ss, .highlight .sx {
+    color: var(--sweetie-lime);
+}
+
+/* numbers, and what a string interpolates */
+.highlight .m, .highlight .mb, .highlight .mf, .highlight .mh,
+.highlight .mi, .highlight .mo, .highlight .il, .highlight .si {
+    color: var(--sweetie-cyan);
+}
+
+/* builtins */
+.highlight .nb, .highlight .bp {
+    color: var(--sweetie-yellow);
+}
+
+/* what is being defined, called, or imported */
+.highlight .nc, .highlight .nd, .highlight .ne, .highlight .nf,
+.highlight .fm, .highlight .nn {
+    color: var(--sweetie-azure);
+}
+
+/* punctuation recedes; operators, names and console output read as text */
+.highlight .p {
+    color: var(--sweetie-silver);
+}
+
+.highlight .n, .highlight .nx, .highlight .nv, .highlight .o,
+.highlight .ow, .highlight .go, .highlight .w {
+    color: var(--code-font-color);
+}
+
+/* errors, and the prompt in a console transcript */
+.highlight .err, .highlight .gp {
+    color: var(--sweetie-red);
+}

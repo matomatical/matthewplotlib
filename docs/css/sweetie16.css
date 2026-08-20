@@ -1,18 +1,35 @@
-/* The Sweetie 16 palette, mapped onto the terminal theme's variables. */
+/* The Sweetie 16 palette, and the terminal theme's variables in terms of it. */
 
 :root {
-    --background-color: #1a1c2c;
-    --font-color: #f4f4f4;
-    --invert-font-color: #1a1c2c;
-    --primary-color: #41a6f6;
-    --secondary-color: #94b0c2;
-    --tertiary-color: #94b0c2;
-    --accent-color: #b13e53;
-    --error-color: #b13e53;
-    --progress-bar-background: #333c57;
-    --progress-bar-fill: #73eff7;
-    --code-bg-color: #29366f;
-    --code-font-color: #f4f4f4;
-    --block-background-color: #1a1c2c;
+    --sweetie-black:  #1a1c2c;
+    --sweetie-purple: #5d275d;
+    --sweetie-red:    #b13e53;
+    --sweetie-orange: #ef7d57;
+    --sweetie-yellow: #ffcd75;
+    --sweetie-lime:   #a7f070;
+    --sweetie-green:  #38b764;
+    --sweetie-teal:   #257179;
+    --sweetie-navy:   #29366f;
+    --sweetie-blue:   #3b5dc9;
+    --sweetie-azure:  #41a6f6;
+    --sweetie-cyan:   #73eff7;
+    --sweetie-white:  #f4f4f4;
+    --sweetie-silver: #94b0c2;
+    --sweetie-grey:   #566c86;
+    --sweetie-slate:  #333c57;
+
+    --background-color: var(--sweetie-black);
+    --font-color: var(--sweetie-white);
+    --invert-font-color: var(--sweetie-black);
+    --primary-color: var(--sweetie-azure);
+    --secondary-color: var(--sweetie-silver);
+    --tertiary-color: var(--sweetie-silver);
+    --accent-color: var(--sweetie-red);
+    --error-color: var(--sweetie-red);
+    --progress-bar-background: var(--sweetie-slate);
+    --progress-bar-fill: var(--sweetie-cyan);
+    --code-bg-color: var(--sweetie-navy);
+    --code-font-color: var(--sweetie-white);
+    --block-background-color: var(--sweetie-black);
     --display-h1-decoration: block;
 }
