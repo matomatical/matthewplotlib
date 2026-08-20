@@ -6,19 +6,28 @@ In development
 
 New:
 
-* `calendar`: a heatmap of values observed on dates, drawing a block per month
-  with a cell per day and wrapping the months into a grid.
-* `weeks`: the same days as one unbroken strip, a column per week and a row per
-  weekday, captioned with the months and years along the top. A `width` wraps a
-  strip too long for the terminal onto further bands, each captioned again.
-* `DateSeries`: the forms dated data arrives in, accepted by `calendar`. A
-  mapping from dates to values, separate sequences of dates and values, or one
-  date standing in for the consecutive days from there. Dates may be spelled as
-  `datetime` dates or datetimes, NumPy `datetime64`s, or ISO 8601 strings.
+* Calendar plots and support:
+  * `calendar`: a heatmap of values observed on dates, drawing a block per
+    month with a cell per day and wrapping the months into a grid.
+  * `weeks`: the same days as one unbroken strip, a column per week and a row
+    per weekday, captioned with the months and years along the top. A `width`
+    wraps a strip too long for the terminal onto further bands, each captioned
+    again.
+  * `DateSeries`: the forms dated data arrives in, accepted by `calendar`. A
+    mapping from dates to values, separate sequences of dates and values, or one
+    date standing in for the consecutive days from there. Dates may be spelled as
+    `datetime` dates or datetimes, NumPy `datetime64`s, or ISO 8601 strings.
+* 
 * `window`: the interval of data a plot covers on each axis, and the rectangle
   of character cells it covers them with. Every 2d plot carries one, and it
   provides the conversions from data coordinates to the grids of dots and
   pixels the plots are drawn in.
+* A range given descending inverts its axis: `xrange=(1, 0)` mirrors a plot
+  left to right and a descending `yrange` turns it over. The plots that place
+  points and sample functions did this already, by arithmetic rather than by
+  design; `histogram2` now does it too, binning with its edges ascending and
+  turning the counts around afterwards, so that the same data always lands in
+  the same bin.
 
 New examples:
 
@@ -26,13 +35,6 @@ New examples:
   interference pattern.
 * `commit_heatmap.py`: a year of commits to this repository as a strip of
   weeks, in the colours GitHub draws a contribution graph in.
-
-* A range given descending inverts its axis: `xrange=(1, 0)` mirrors a plot
-  left to right and a descending `yrange` turns it over. The plots that place
-  points and sample functions did this already, by arithmetic rather than by
-  design; `histogram2` now does it too, binning with its edges ascending and
-  turning the counts around afterwards, so that the same data always lands in
-  the same bin.
 
 Changed:
 
@@ -42,8 +44,8 @@ Changed:
   outside it. Left unspecified, each coordinate the plot carries is labelled
   once, below it and to its left, and the remaining sides are ruled when the
   plot carries both coordinates and dropped when it carries only one. So a
-  gradient with one coordinate is labelled along one side and left alone on
-  the others.
+  gradient with one coordinate is labelled along one side and left alone on the
+  others.
 * `axes` takes a `LineStyle`---`LIGHT`, `HEAVY`, `ROUND` or `DOUBLE`---rather
   than a `BoxStyle`. The characters where its rules meet, and the ticks
   reaching out towards its labels, are derived from which sides are drawn
