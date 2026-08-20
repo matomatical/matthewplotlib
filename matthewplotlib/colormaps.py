@@ -6,10 +6,6 @@ A collection of pre-defined colormaps. They generally come in two flavours:
 * Discrete colormaps: Functions of type `int[...] -> uint8[..., 3]`. They turn
   a batch of integer indices into a batch of RGB triples by indexing into the
   color palette.
-
-For example:
-
-![](../images/colormaps.png)
 """
 
 from typing import Callable
