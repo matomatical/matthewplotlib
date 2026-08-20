@@ -134,3 +134,39 @@ h2:not(.doc-heading)::after {
 code.doc-symbol {
     font-size: 1em;
 }
+
+/* Admonitions, which the theme leaves looking like ordinary prose. Set on the
+   blue the code blocks used to sit on, so the two kinds of aside stay apart. */
+.admonition {
+    background-color: var(--sweetie-navy);
+    border-left: calc(var(--global-space) / 2) solid var(--primary-color);
+    padding: var(--global-space);
+    margin-bottom: var(--global-line-height);
+}
+
+.admonition > :first-child {
+    margin-top: 0;
+}
+
+.admonition > :last-child {
+    margin-bottom: 0;
+}
+
+.admonition-title {
+    font-weight: 600;
+}
+
+.admonition.tip,
+.admonition.hint {
+    border-left-color: var(--sweetie-lime);
+}
+
+.admonition.warning,
+.admonition.caution {
+    border-left-color: var(--sweetie-yellow);
+}
+
+.admonition.danger,
+.admonition.error {
+    border-left-color: var(--sweetie-red);
+}

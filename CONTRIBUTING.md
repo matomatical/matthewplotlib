@@ -122,6 +122,11 @@ make serve                  # preview on localhost, reloading as you edit
 make docs                   # build once into site/, failing on any bad link
 ```
 
+`docs/styletest.md` exercises the site's own appearance -- every kind of
+heading, code block, admonition and permalink on one page. It is a draft, so
+`make serve` shows it at `/styletest/` and no build publishes it. Extend it
+when styling something new.
+
 Each version gets its own directory on the `gh-pages` branch, published by
 mike. The `latest` alias follows the newest release, and the site root
 redirects there. `make deploy V=<version>` builds the current tree as that

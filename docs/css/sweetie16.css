@@ -28,7 +28,7 @@
     --error-color: var(--sweetie-red);
     --progress-bar-background: var(--sweetie-slate);
     --progress-bar-fill: var(--sweetie-cyan);
-    --code-bg-color: var(--sweetie-navy);
+    --code-bg-color: var(--sweetie-slate);
     --code-font-color: var(--sweetie-white);
     --block-background-color: var(--sweetie-black);
 }

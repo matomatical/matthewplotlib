@@ -33,6 +33,11 @@ nav:
   - Changelog: changelog.md
   - Roadmap: roadmap.md
 
+# Served by `mkdocs serve` for checking the site's own styling, and left out
+# of anything published.
+draft_docs: |
+  styletest.md
+
 watch:
   - README.md
   - CHANGELOG.md
