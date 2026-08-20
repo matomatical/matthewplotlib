@@ -105,7 +105,7 @@ More exotic plot types:
     (`cfunction2`).
   * [ ] line (see boids example). Parked on legibility rather than
     machinery; see `notes/quiver-plots.md`.
-* [ ] Hilbert curves:
+* [ ] Hilbert curves (see `notes/hilbert-curves.md`):
   * [x] Basic Hilbert curves.
   * [ ] Non-square Hilbert curves.
   * [ ] 3d Hilbert curves.
