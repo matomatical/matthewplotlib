@@ -13,6 +13,28 @@ New:
 
 Changed:
 
+* `axes` draws each of its four sides independently. Every side takes a `Side`:
+  `"crop"` for nothing at all, `"pad"` for a blank cell, `"rule"` for a line,
+  or `"label"` for a line with ticks at its ends and its coordinate's limits
+  outside it. Left unspecified, each coordinate the plot carries is labelled
+  once, below it and to its left, and the remaining sides are ruled when the
+  plot carries both coordinates and dropped when it carries only one. So a
+  gradient with one coordinate is labelled along one side and left alone on
+  the others.
+* `axes` takes a `LineStyle`---`LIGHT`, `HEAVY`, `ROUND` or `DOUBLE`---rather
+  than a `BoxStyle`. The characters where its rules meet, and the ticks
+  reaching out towards its labels, are derived from which sides are drawn
+  rather than written down, which an eight-character `BoxStyle` cannot
+  express. `border` still takes a `BoxStyle`, with all of its styles.
+* `axes` no longer garbles the limits of a plot too narrow to hold them, or
+  raises when such a plot is also given an axis name. The limits use the whole
+  width available, including the gutter under the y labels, and are replaced
+  by hashes if even that will not fit them, as a spreadsheet does. Axis names
+  are truncated as before.
+* `axes` writes a title into the north side when that side is blank or ruled,
+  and gives it a row of its own otherwise.
+* `axes` refuses a plot carrying no coordinates at all, rather than silently
+  framing it. `border` is for that.
 * `plot.xrange` and `plot.yrange` have moved onto the window, as
   `plot.window.xrange` and `plot.window.yrange`.
 * `axes` and `dstack2` accept any plot carrying a window, rather than a listed

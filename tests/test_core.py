@@ -9,7 +9,9 @@ import matthewplotlib as mp
 from matthewplotlib.core import (
     CharArray,
     BoxStyle,
+    LineStyle,
     ords,
+    unicode_frame,
     unicode_bar,
     unicode_col,
     unicode_box,
@@ -426,6 +428,105 @@ class TestUnicodeCol:
         """3/8 of height 4 = 12 eighths = 1 full + 4/8 partial."""
         result = unicode_col(3/8, 4).to_plain_str()
         assert result == " \n \n▄\n█"
+
+
+# # #
+# unicode_frame
+
+
+ALL = (True, True, True, True)
+NONE = (False, False, False, False)
+
+
+class TestUnicodeFrame:
+    def test_a_full_frame_ticked_below_and_left_is_the_old_ticked_box(self):
+        """The characters are derived from which arms meet, so a frame ruled
+        all round and ticked on its west and south sides must come out as the
+        style that used to be written down for exactly that case."""
+        inner = CharArray.from_size(3, 5)
+        framed = unicode_frame(
+            inner,
+            LineStyle.LIGHT,
+            cells=ALL,
+            rules=ALL,
+            ticks=(False, False, True, True),
+        )
+
+        assert framed.to_plain_str() == unicode_box(
+            inner, BoxStyle.LIGHTX
+        ).to_plain_str()
+
+    def test_a_lone_ticked_rule_turns_at_its_ends(self):
+        inner = CharArray.from_size(1, 6)
+        framed = unicode_frame(
+            inner,
+            LineStyle.LIGHT,
+            cells=(False, False, True, False),
+            rules=(False, False, True, False),
+            ticks=(False, False, True, False),
+        )
+
+        assert framed.to_plain_str().splitlines()[-1] == "┌────┐"
+
+    def test_a_lone_rule_stops_short_without_ticks(self):
+        inner = CharArray.from_size(1, 6)
+        framed = unicode_frame(
+            inner,
+            LineStyle.LIGHT,
+            cells=(False, False, True, False),
+            rules=(False, False, True, False),
+            ticks=NONE,
+        )
+
+        assert framed.to_plain_str().splitlines()[-1] == "╶────╴"
+
+    def test_a_blank_side_stays_outside_the_frame(self):
+        """A padded side holds its space, and the rules beside it stop at the
+        plot rather than reaching into its corner."""
+        inner = CharArray.from_size(2, 4)
+        framed = unicode_frame(
+            inner,
+            LineStyle.LIGHT,
+            cells=(True, False, True, True),
+            rules=(False, False, True, True),
+            ticks=NONE,
+        )
+
+        assert framed.to_plain_str().splitlines()[0] == "     "
+
+    def test_only_the_sides_that_take_a_cell_cost_anything(self):
+        inner = CharArray.from_size(3, 5)
+        framed = unicode_frame(
+            inner,
+            LineStyle.LIGHT,
+            cells=(False, False, True, True),
+            rules=(False, False, True, True),
+            ticks=NONE,
+        )
+
+        assert (framed.height, framed.width) == (4, 6)
+
+    def test_a_rule_needs_a_cell_to_be_drawn_in(self):
+        with pytest.raises(ValueError, match="takes no cell"):
+            unicode_frame(
+                CharArray.from_size(1, 1), LineStyle.LIGHT,
+                cells=NONE, rules=ALL, ticks=NONE,
+            )
+
+    def test_a_tick_needs_a_rule_to_grow_from(self):
+        with pytest.raises(ValueError, match="draws no rule"):
+            unicode_frame(
+                CharArray.from_size(1, 1), LineStyle.LIGHT,
+                cells=ALL, rules=NONE, ticks=ALL,
+            )
+
+    def test_a_title_needs_a_north_side(self):
+        with pytest.raises(ValueError, match="north side"):
+            unicode_frame(
+                CharArray.from_size(1, 4), LineStyle.LIGHT,
+                cells=(False, True, True, True), rules=NONE, ticks=NONE,
+                title="hi",
+            )
 
 
 # # #

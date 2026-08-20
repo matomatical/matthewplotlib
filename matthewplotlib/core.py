@@ -1293,6 +1293,166 @@ def unicode_box(
     return wrapped_chars
 
 
+# # #
+# UNICODE RULES AND TICKS
+
+
+# the four directions a character can reach out in, summed into the index of
+# the character that joins them
+_UP, _DOWN, _LEFT, _RIGHT = 1, 2, 4, 8
+
+
+class LineStyle(str, enum.Enum):
+    """
+    A string enum defining the weights of line available to draw axes with.
+
+    Each style is a string of sixteen characters, one for every combination of
+    directions a character can reach out in. Index the string by the sum of 1
+    for up, 2 for down, 4 for left and 8 for right to find the character that
+    joins exactly those directions.
+
+    Available Styles:
+
+    * `LIGHT`:  Single lines meeting at square corners.
+    * `HEAVY`:  Thick single lines.
+    * `ROUND`:  Single lines meeting at rounded corners.
+    * `DOUBLE`: Double lines. This set has no half-length stubs, so a line
+      that ends without either a corner or a tick to finish it runs to the
+      edge of its final cell instead of stopping halfway.
+
+    Demo:
+
+    ```
+    ┌─┬─┐  ┏━┳━┓  ╭─┬─╮  ╔═╦═╗
+    ├─┼─┤  ┣━╋━┫  ├─┼─┤  ╠═╬═╣
+    └─┴─┘  ┗━┻━┛  ╰─┴─╯  ╚═╩═╝
+    ```
+    """
+    LIGHT  = " ╵╷│╴┘┐┤╶└┌├─┴┬┼"
+    HEAVY  = " ╹╻┃╸┛┓┫╺┗┏┣━┻┳╋"
+    ROUND  = " ╵╷│╴╯╮┤╶╰╭├─┴┬┼"
+    DOUBLE = " ║║║═╝╗╣═╚╔╠═╩╦╬"
+
+
+def unicode_frame(
+    chars: CharArray,
+    style: LineStyle,
+    cells: tuple[bool, bool, bool, bool],
+    rules: tuple[bool, bool, bool, bool],
+    ticks: tuple[bool, bool, bool, bool],
+    title: str = "",
+    fgcolor: ColorLike | None = None,
+) -> CharArray:
+    """
+    Surround a character array with a rule along any of its four sides.
+
+    Each side, in the order north, east, south, west, is described by three
+    flags: whether it takes a cell at all, whether a line is drawn in that
+    cell, and whether the ends of that line are ticked. A tick is an arm
+    reaching outward from the end of a line, towards wherever a label goes.
+
+    Every character is derived rather than chosen. A cell reaches towards each
+    neighbouring cell that is also part of a rule, and outward wherever a tick
+    is called for, and the resulting set of directions selects the character
+    from the style. So the corner where two ruled sides meet turns, the corner
+    where one of them is missing finishes, and a ticked end grows the arm that
+    points at its label, without any of the three being written down.
+
+    A rule runs the length of the array it is drawn beside, and reaches into
+    the corner cell it shares with a neighbouring side only when that side is
+    ruled as well, so that a side left blank stays outside the frame.
+
+    Inputs:
+
+    * chars : CharArray.
+        The array to surround.
+    * style : LineStyle.
+        The weight of line to draw.
+    * cells : (bool, bool, bool, bool).
+        Whether the north, east, south and west sides each take a cell.
+    * rules : (bool, bool, bool, bool).
+        Whether a line is drawn in that cell. A side that draws one must take
+        a cell.
+    * ticks : (bool, bool, bool, bool).
+        Whether the ends of that line are ticked. A side that ticks must draw
+        a line.
+    * title : str.
+        Written along the north side, centred over the array and truncated to
+        fit. The north side must take a cell.
+    * fgcolor : optional ColorLike.
+        The colour of the rules and the title. Defaults to the terminal's
+        foreground colour.
+
+    Returns:
+
+    * framed : CharArray.
+        The array, surrounded by whichever of the four sides took a cell.
+    """
+    for side, cell, rule, tick in zip("nesw", cells, rules, ticks):
+        if rule and not cell:
+            raise ValueError(f"side {side} draws a rule but takes no cell")
+        if tick and not rule:
+            raise ValueError(f"side {side} is ticked but draws no rule")
+    if title and not cells[0]:
+        raise ValueError("a title needs the north side to take a cell")
+
+    n_cell, e_cell, s_cell, w_cell = (int(c) for c in cells)
+    n_rule, e_rule, s_rule, w_rule = (int(r) for r in rules)
+    n_tick, e_tick, s_tick, w_tick = ticks
+
+    framed = chars.pad(
+        above=n_cell,
+        below=s_cell,
+        left=w_cell,
+        right=e_cell,
+        fgcolor=fgcolor,
+    )
+    height, width = framed.height, framed.width
+
+    # each rule runs the length of the array, reaching into a shared corner
+    # only where the neighbouring side is ruled too
+    columns = slice(w_cell - w_rule, w_cell + chars.width + e_rule)
+    rows = slice(n_cell - n_rule, n_cell + chars.height + s_rule)
+    ruled = np.zeros((height, width), dtype=bool)
+    if n_rule:
+        ruled[0, columns] = True
+    if s_rule:
+        ruled[-1, columns] = True
+    if w_rule:
+        ruled[rows, 0] = True
+    if e_rule:
+        ruled[rows, -1] = True
+
+    # a ruled cell reaches towards each of its ruled neighbours
+    arms = np.zeros((height, width), dtype=int)
+    arms[1:, :] |= np.where(ruled[:-1, :], _UP, 0)
+    arms[:-1, :] |= np.where(ruled[1:, :], _DOWN, 0)
+    arms[:, 1:] |= np.where(ruled[:, :-1], _LEFT, 0)
+    arms[:, :-1] |= np.where(ruled[:, 1:], _RIGHT, 0)
+    arms[~ruled] = 0
+
+    # and outward, at the ends of a ticked rule, towards its labels
+    for tick, direction, ends in (
+        (n_tick, _UP,    ((0, columns.start), (0, columns.stop - 1))),
+        (s_tick, _DOWN,  ((-1, columns.start), (-1, columns.stop - 1))),
+        (w_tick, _LEFT,  ((rows.start, 0), (rows.stop - 1, 0))),
+        (e_tick, _RIGHT, ((rows.start, -1), (rows.stop - 1, -1))),
+    ):
+        if tick:
+            for row, column in ends:
+                arms[row, column] |= direction
+
+    glyphs = np.array([ord(c) for c in style], dtype=np.uint32)
+    framed.codes[ruled] = glyphs[arms[ruled]]
+
+    # position title
+    title = title[:chars.width]
+    start = width // 2 - len(title) // 2
+    framed.codes[0, start:start + len(title)] = ords(title)
+
+    return framed
+
+
 # # # 
 # UNICODE HALF-BLOCK IMAGE
 

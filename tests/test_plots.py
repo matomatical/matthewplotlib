@@ -101,6 +101,106 @@ def _interior_rows(plot):
     return plot.chars.to_plain_str().splitlines()[1:-2]
 
 
+class TestAxesSides:
+    def test_a_plot_with_both_coordinates_is_framed(self):
+        plot = axes(_narrow_ticks_scatter())
+
+        assert plot.sides == ("rule", "rule", "label", "label")
+
+    def test_a_plot_with_one_coordinate_is_labelled_on_one_side_only(self):
+        """A colorbar is a strip, and a frame is for a 2d canvas, so the
+        sides belonging to the missing coordinate are dropped entirely."""
+        bar = image(np.linspace(0, 1, 8)[:, None], yrange=(0.0, 1.0))
+
+        assert axes(bar).sides == ("crop", "crop", "crop", "label")
+
+    def test_labelling_one_side_rules_the_opposite_one(self):
+        plot = axes(_narrow_ticks_scatter(), north="label")
+
+        assert plot.sides == ("label", "rule", "rule", "label")
+
+    def test_both_sides_of_an_axis_can_be_labelled_on_request(self):
+        plot = axes(_narrow_ticks_scatter(), north="label", south="label")
+
+        assert plot.sides == ("label", "rule", "label", "label")
+
+    def test_a_side_cannot_be_labelled_without_its_coordinate(self):
+        bar = image(np.linspace(0, 1, 8)[:, None], yrange=(0.0, 1.0))
+
+        with pytest.raises(ValueError, match="no x coordinate"):
+            axes(bar, south="label")
+
+    def test_a_plot_with_no_coordinates_cannot_be_given_axes(self):
+        with pytest.raises(ValueError, match="no coordinates"):
+            axes(image(np.zeros((4, 4))))
+
+    def test_a_cropped_side_costs_nothing(self):
+        framed = axes(_narrow_ticks_scatter())
+        bare = axes(
+            _narrow_ticks_scatter(),
+            north="crop", east="crop", south="crop", west="crop",
+        )
+        inner = _narrow_ticks_scatter()
+
+        assert (bare.height, bare.width) == (inner.height, inner.width)
+        assert framed.width > bare.width
+
+    def test_a_padded_side_holds_its_space_without_drawing(self):
+        plot = axes(
+            _narrow_ticks_scatter(),
+            north="pad", east="crop", south="crop", west="crop",
+        )
+
+        assert plot.height == _narrow_ticks_scatter().height + 1
+        assert plot.chars.to_plain_str().splitlines()[0].strip() == ""
+
+    def test_a_title_goes_into_a_ruled_north_side(self):
+        plot = axes(_narrow_ticks_scatter(), title="hi")
+
+        assert "hi" in plot.chars.to_plain_str().splitlines()[0]
+        assert plot.height == axes(_narrow_ticks_scatter()).height
+
+    def test_a_title_takes_its_own_row_when_north_is_not_ruled(self):
+        plain = axes(_narrow_ticks_scatter(), north="crop")
+        titled = axes(_narrow_ticks_scatter(), north="crop", title="hi")
+
+        assert titled.height == plain.height + 1
+        assert "hi" in titled.chars.to_plain_str().splitlines()[0]
+
+
+class TestAxesLabelsThatDoNotFit:
+    def _bottom_row(self, width, **kwargs):
+        data = np.array([[0.0, 0.0], [1.0, 1.0]])
+        plot = axes(scatter(data, width=width, height=2), **kwargs)
+        return plot.chars.to_plain_str().splitlines()[-1]
+
+    def test_the_limits_spread_into_the_gutter_before_giving_up(self):
+        """The label row is as wide as the whole plot, and the columns under
+        the y gutter are blank, so they are used before anything is lost."""
+        assert self._bottom_row(2) == "0.0 1.0"
+
+    def test_limits_with_no_room_at_all_are_hashed_out(self):
+        assert self._bottom_row(2, xfmt="{x:.3f}") == "#######"
+
+    def test_hashing_does_not_widen_the_plot(self):
+        data = np.array([[0.0, 0.0], [1.0, 1.0]])
+        narrow = axes(scatter(data, width=2, height=2), xfmt="{x:.3f}")
+        plain = axes(scatter(data, width=2, height=2), xfmt="{x:.1f}")
+
+        assert narrow.width == plain.width
+
+    def test_an_axis_name_survives_a_narrow_plot(self):
+        with_name = self._bottom_row(30, xlabel="time")
+
+        assert "time" in with_name
+
+    def test_a_narrow_plot_with_an_axis_name_does_not_raise(self):
+        # the name is squeezed to whatever is left, but the limits survive it
+        row = self._bottom_row(2, xlabel="time")
+
+        assert row.startswith("0.0") and row.endswith("1.0")
+
+
 class TestAxesYLabelGutter:
     # The ylabel is painted at column L-1-ypad, where L is the width of the y
     # tick gutter. When the ticks are narrower than ypad+1 that index goes

@@ -170,7 +170,7 @@ Advanced furnishings:
 
 * [ ] Axis transformations (e.g. logarithmic scale).
 * [ ] Axis segments (see `notes/axis-series.md`).
-* [ ] Axes on any subset of the four sides, each blank, ruled, or ruled with
+* [x] Axes on any subset of the four sides, each blank, ruled, or ruled with
   ticks and labels, so that a colorbar can be labelled without a full border.
   See `notes/axes-sides.md`.
 * [ ] Legend construction (API needs thought).

@@ -79,7 +79,9 @@ from matthewplotlib.core import (
     ords,
     _validate_text,
     BoxStyle,
+    LineStyle,
     unicode_box,
+    unicode_frame,
     unicode_braille_array,
     unicode_bar,
     unicode_col,
@@ -1566,100 +1568,270 @@ class border(plot):
         return f"border(style={self.style!r}, plot={self.plot!r})"
 
 
+type Side = Literal["crop", "pad", "rule", "label"]
+"""
+What is drawn along one side of an `axes`, in increasing order of what it
+costs and what it shows.
+
+* `"crop"`: nothing at all, taking no space.
+* `"pad"`: one blank cell, holding the space open.
+* `"rule"`: one cell, holding a line.
+* `"label"`: the line, ticks at its two ends, and a row or column outside it
+  carrying the limits of the coordinate and the name of the axis.
+"""
+
+
+def _infer_side_pair(
+    present: bool,
+    primary: Side | None,
+    secondary: Side | None,
+    frame: Side,
+) -> tuple[Side, Side]:
+    """
+    Fill in the modes for the two sides facing each other across one axis.
+
+    The axis is labelled on its primary side---south for x, west for y---
+    unless it is labelled on the other side instead, or the coordinate is
+    missing, or the caller asked for something else. Anything not labelled
+    falls back to the frame's own mode.
+    """
+    if not present:
+        return (primary or frame, secondary or frame)
+    labelled = "label" in (primary, secondary)
+    return (primary or (frame if labelled else "label"), secondary or frame)
+
+
+def _end_labels(
+    lo: str,
+    hi: str,
+    span: tuple[int, int],
+    room: int,
+) -> tuple[tuple[str, int], tuple[str, int]]:
+    """
+    Where the two limits of one axis go along a row or column of labels.
+
+    They sit at the ends of the span the ticks mark if they fit there, spread
+    across everything available if they do not, and are replaced by hashes if
+    even that is too narrow---so that a plot is never widened to fit its
+    labels, and never shows a number that has had digits taken off it.
+
+    Inputs:
+
+    * lo, hi : str.
+        The labels for the low and the high end of the axis.
+    * span : (int, int).
+        Where the ticks are: the first cell and the number of cells between
+        them inclusive.
+    * room : int.
+        The total number of cells available, the span included.
+
+    Returns:
+
+    * lo, hi : (str, int).
+        Each label and the offset it starts at.
+    """
+    start, width = span
+    if len(lo) + len(hi) <= width:
+        return (lo, start), (hi, start + width - len(hi))
+    if len(lo) + len(hi) <= room:
+        return (lo, 0), (hi, room - len(hi))
+    half = room // 2
+    lo = lo if len(lo) <= half else "#" * half
+    hi = hi if len(hi) <= room - half else "#" * (room - half)
+    return (lo, 0), (hi, room - len(hi))
+
+
 class axes(plot):
     """
-    Add an annotated border around a 2d plot using box-drawing characters.
+    Rule and label the sides of a plot that carries coordinates.
+
+    Each of the four sides is drawn independently, so that a plot can be given
+    a full frame with labels below and to its left, a single labelled rule
+    along one side, or anything in between. The characters where the rules
+    meet, and the ticks that reach out towards the labels, follow from which
+    sides are drawn.
 
     Inputs:
 
     * plot : plot.
-        The plot object to be enclosed by the axes. Must carry a coordinate on
-        each axis.
+        The plot to draw the axes around. Must carry a window.
+    * north, east, south, west : optional Side.
+        What to draw along each side: `"crop"`, `"pad"`, `"rule"` or
+        `"label"`. A side may only be labelled if the plot carries the
+        matching coordinate: north and south need an x range, east and west a
+        y range.
+
+        Left unspecified, each axis the plot carries is labelled once---below
+        it and to its left---and the remaining sides are ruled if the plot
+        carries both coordinates, or dropped if it carries only one, so that a
+        colorbar is labelled along one side and left alone on the others.
+        Asking for a label on one side of an axis rules the opposite side
+        rather than labelling it twice.
     * title: optional str.
-        An optional title for the axes. Placed centrally along the top row of
-        the axes. Truncated to fit.
+        Placed centrally along the top. Written into the north side if that
+        side is blank or ruled, and given a row of its own above everything
+        otherwise. Truncated to fit.
     * xlabel: optional str.
-        String to be used as label under the x axis. Truncated to fit between
-        min and max labels.
+        The name of the x axis, written along each labelled horizontal side,
+        between the limits and truncated to fit between them.
     * ylabel: optional str.
-        String to be used as label next to the y axis. Written vertically, and
-        truncated to fit between min and max labels.
-    * xfmt: str (default "{x:.2f}").
+        The name of the y axis, written vertically along each labelled
+        vertical side. Truncated to fit.
+    * xfmt: str (default "{x:.1f}").
         Format string for x labels. Should have one keyword argument with the
         key 'x'.
-    * yfmt: str (default "{y:.2f}").
+    * yfmt: str (default "{y:.1f}").
         Format string for y labels. Should have one keyword argument with the
         key 'y'.
     * ypad: int (default 1).
-        How many columns between the y axis and the vertical y axis label.
-    * style : BoxStyle (default: BoxStyle.ROUND).
-        The style of the border. Predefined styles are available in `BoxStyle`.
+        How many columns between a vertical axis and its name.
+    * style : LineStyle (default: LineStyle.LIGHT).
+        The weight of the rules.
     * color : optional ColorLike.
-        The color of the border characters and labels. Defaults to 50% gray.
-        Set to `None` to use foreground color.
+        The color of the rules and the labels. Defaults to 50% gray. Set to
+        `None` to use the foreground color.
+
+    A limit that will not fit in the space its side has is replaced by hashes,
+    as a spreadsheet does, rather than shortened into a different number or
+    allowed to widen the plot.
     """
     def __init__(
         self,
         plot: plot,
+        north: Side | None = None,
+        east: Side | None = None,
+        south: Side | None = None,
+        west: Side | None = None,
         title: str = "",
         xlabel: str = "",
         ylabel: str = "",
         xfmt: str = "{x:.1f}",
         yfmt: str = "{y:.1f}",
         ypad: int = 1,
-        style: BoxStyle = BoxStyle.LIGHTX,
+        style: LineStyle = LineStyle.LIGHT,
         color: ColorLike | None = (0.5, 0.5, 0.5),
     ):
         w = plot.window
-        if w is None or w.xrange is None or w.yrange is None:
+        if w is None or (w.xrange is None and w.yrange is None):
             raise ValueError(
-                f"{type(plot).__name__} has no coordinates to label"
+                f"{type(plot).__name__} has no coordinates to draw axes for; "
+                "for an unlabelled frame, use border"
             )
+        frame: Side = (
+            "rule" if w.xrange is not None and w.yrange is not None else "crop"
+        )
+        south, north = _infer_side_pair(w.xrange is not None, south, north, frame)
+        west, east = _infer_side_pair(w.yrange is not None, west, east, frame)
+        for name, side, range in (
+            ("north", north, w.xrange), ("south", south, w.xrange),
+            ("east", east, w.yrange), ("west", west, w.yrange),
+        ):
+            if side == "label" and range is None:
+                raise ValueError(
+                    f"cannot label the {name} side of a plot with no "
+                    f"{'x' if name in ('north', 'south') else 'y'} coordinate"
+                )
 
-        # construct tick labels
-        ymin_label = yfmt.format(y=w.yrange[0])
-        ymax_label = yfmt.format(y=w.yrange[1])
-        xmin_label = xfmt.format(x=w.xrange[0])
-        xmax_label = xfmt.format(x=w.xrange[1])
+        # the numbers each labelled side carries
+        xlo, xhi = (
+            (xfmt.format(x=w.xrange[0]), xfmt.format(x=w.xrange[1]))
+            if w.xrange is not None else ("", "")
+        )
+        ylo, yhi = (
+            (yfmt.format(y=w.yrange[0]), yfmt.format(y=w.yrange[1]))
+            if w.yrange is not None else ("", "")
+        )
+        gutter = max(len(ylo), len(yhi))
+        if ylabel:
+            gutter = max(gutter, ypad + 1)
+        left_gutter = gutter if west == "label" else 0
+        right_gutter = gutter if east == "label" else 0
+        title_row = bool(title) and north in ("crop", "label")
+        above = int(title_row) + int(north == "label")
 
-        # size of left gutter to fit tick labels and y label
-        has_ylabel = bool(ylabel)
-        L = max(len(ymin_label), len(ymax_label))
-        if has_ylabel:
-            L = max(L, ypad + 1)
-
-        # truncate axis labels
-        xroom = plot.width + 2 - len(xmin_label) - len(xmax_label)
-        xlabel = xlabel[:xroom].center(xroom)
-        yroom = plot.height
-        ylabel = ylabel[:yroom].center(yroom)
-
-        # construct inner plot with axes
-        chars_boxed = unicode_box(
+        # rule the sides, and reserve room outside them for the labels
+        sides = (north, east, south, west)
+        cells = (
+            north != "crop", east != "crop", south != "crop", west != "crop",
+        )
+        rules = (
+            north in ("rule", "label"), east in ("rule", "label"),
+            south in ("rule", "label"), west in ("rule", "label"),
+        )
+        ticks = (
+            north == "label", east == "label",
+            south == "label", west == "label",
+        )
+        chars = unicode_frame(
             chars=plot.chars,
-            title=title,
             style=style,
+            cells=cells,
+            rules=rules,
+            ticks=ticks,
+            title="" if title_row else title,
+            fgcolor=color,
+        ).pad(
+            above=above,
+            below=int(south == "label"),
+            left=left_gutter,
+            right=right_gutter,
             fgcolor=color,
         )
 
-        # pad chars to make space for labels
-        chars_padded = chars_boxed.pad(left=L, below=1, fgcolor=color)
-        # paint ylabels
-        chars_padded.codes[0,L-len(ymax_label):L] = ords(ymax_label)
-        chars_padded.codes[-2,L-len(ymin_label):L] = ords(ymin_label)
-        if has_ylabel:
-            chars_padded.codes[1:-2,L-1-ypad] = ords(ylabel)
-        # paint xlabels
-        chars_padded.codes[-1,L:L+len(xmin_label)] = ords(xmin_label)
-        chars_padded.codes[-1,-len(xmax_label):] = ords(xmax_label)
-        chars_padded.codes[-1,L+len(xmin_label):-len(xmax_label)] = ords(xlabel)
+        # where the ticks are: the ends of each rule, in the padded array
+        first_row = above + cells[0] - rules[0]
+        last_row = above + cells[0] + plot.height + rules[2] - 1
+        first_col = left_gutter + cells[3] - rules[3]
+        last_col = left_gutter + cells[3] + plot.width + rules[1] - 1
 
-        super().__init__(chars_padded)
-        self.style = style[2]
+        # the limits of the vertical axis, in the gutters beside its ticks,
+        # hashed out where the two ticks land on one row
+        crowded = first_row == last_row
+        yhi_, ylo_ = ("#" * gutter, "") if crowded else (yhi, ylo)
+        if west == "label":
+            chars.codes[first_row, left_gutter-len(yhi_):left_gutter] = ords(yhi_)
+            chars.codes[last_row, left_gutter-len(ylo_):left_gutter] = ords(ylo_)
+        if east == "label":
+            edge = chars.width - right_gutter
+            chars.codes[first_row, edge:edge+len(yhi_)] = ords(yhi_)
+            chars.codes[last_row, edge:edge+len(ylo_)] = ords(ylo_)
+
+        # and its name, down whatever the limits leave between them
+        room = last_row - first_row - 1
+        if ylabel and room > 0:
+            name = ylabel[:room].center(room)
+            rows = slice(first_row + 1, last_row)
+            if west == "label":
+                chars.codes[rows, left_gutter-1-ypad] = ords(name)
+            if east == "label":
+                chars.codes[rows, chars.width-right_gutter+ypad] = ords(name)
+
+        # the limits of the horizontal axis, in the rows outside its ticks
+        span = (first_col, last_col - first_col + 1)
+        for side, row in ((north, int(title_row)), (south, chars.height - 1)):
+            if side != "label":
+                continue
+            (lo, lo_col), (hi, hi_col) = _end_labels(xlo, xhi, span, chars.width)
+            chars.codes[row, lo_col:lo_col+len(lo)] = ords(lo)
+            chars.codes[row, hi_col:hi_col+len(hi)] = ords(hi)
+            gap = hi_col - lo_col - len(lo)
+            if xlabel and gap > 0:
+                name = xlabel[:gap].center(gap)
+                chars.codes[row, lo_col+len(lo):hi_col] = ords(name)
+
+        # the title, when there was no side to write it into
+        if title_row:
+            name = title[:chars.width]
+            start = chars.width // 2 - len(name) // 2
+            chars.codes[0, start:start+len(name)] = ords(name)
+
+        super().__init__(chars)
+        self.sides = sides
         self.plot = plot
-    
+
     def __repr__(self):
-        return f"axes(style={self.style!r}, plot={self.plot!r})"
+        n, e, s, w = self.sides
+        return f"axes(n={n}, e={e}, s={s}, w={w}, plot={self.plot!r})"
 
 
 # # #

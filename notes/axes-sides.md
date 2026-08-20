@@ -157,8 +157,10 @@ them, truncated. Working through it:
     w=8  g=3   |-1.5   1000.0|                       uneven, both still fit
 
 Using the whole row is what fixes the width-2 case; hashing only happens when
-even that is impossible. East and west never need it: their labels are one to a
-row, and the gutter is sized to the longest of them.
+even that is impossible. East and west need it only once: their labels are one
+to a row and their gutter is sized to the longest of them, so the only way they
+can clash is a rule one cell long, whose two ends are the same cell. That cell
+is hashed.
 
 ## Not in this design
 
@@ -171,6 +173,9 @@ row, and the gutter is sized to the longest of them.
   sides are drawn, so it is independent of all of this.
 
 ## Consequences elsewhere
+
+A plot carrying neither coordinate is refused rather than framed, since that
+is what `border` is for.
 
 `axes` carries no window. Its rectangle is the child's plus the gutters, rules
 and label rows, so it is not the child's window and claiming otherwise would

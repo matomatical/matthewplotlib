@@ -62,6 +62,7 @@ from matthewplotlib.plots import (
     text,
     border,
     axes,
+    Side,
     blank,
     hstack,
     vstack,
@@ -86,6 +87,7 @@ from matthewplotlib.colors import (
 
 from matthewplotlib.core import (
     BoxStyle,
+    LineStyle,
 )
 
 
