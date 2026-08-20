@@ -132,6 +132,11 @@ mike. The `latest` alias follows the newest release, and the site root
 redirects there. `make deploy V=<version>` builds the current tree as that
 version and moves the alias.
 
+The reference page for the package itself carries only its docstring, since
+mkdocstrings does not document re-exported names: every symbol appears once, on
+the page for the module that defines it. That docstring is therefore where the
+map of the submodules lives.
+
 The API reference links each object to its source on GitHub. Those links are
 derived from the `origin` remote, so a checkout without one silently builds a
 site with no source links.

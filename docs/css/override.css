@@ -139,9 +139,9 @@ code.doc-symbol {
    blue the code blocks used to sit on, so the two kinds of aside stay apart. */
 .admonition {
     background-color: var(--sweetie-navy);
-    border-left: calc(var(--global-space) / 2) solid var(--primary-color);
-    padding: var(--global-space);
-    margin-bottom: var(--global-line-height);
+    border-left: 1ch solid var(--primary-color);
+    padding: 0 1ch;
+    margin: var(--global-line-height) 0;
 }
 
 .admonition > :first-child {
