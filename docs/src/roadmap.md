@@ -14,7 +14,7 @@ Basic plot types:
 * [x] Basic bar charts and column charts.
 * [x] Histograms.
 * [ ] Box plots.
-* [ ] Candlestick plots.
+* [x] Candlestick plots. See `notes/candlesticks.md`.
 
 Basic plot furnishings:
 
@@ -22,8 +22,11 @@ Basic plot furnishings:
 * [x] Borders.
 * [x] Axis ticks and tick labels for scatter plots.
 * [x] Axis labels and titles.
-* [ ] Labels and ticks for bar/column charts, histograms, box plots.
-  See `bars` and `hist` in `notes/reference/myplot.py`.
+* [ ] Labels and ticks for bar/column charts, histograms, candlesticks, box
+  plots. These lay marks out side by side, so the axis along them is a list of
+  names rather than an interval of numbers, and there is no way to describe one
+  yet. See `notes/categorical-axes.md`, and `bars` and `hist` in
+  `notes/reference/myplot.py`.
 
 Basic plot arrangement:
 

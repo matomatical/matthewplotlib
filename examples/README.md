@@ -32,6 +32,19 @@ Series Data Visualisation
 <tbody>
   <tr>
     <td align="center">
+      <img src="../images/candlesticks.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Candlesticks</strong></p>
+      <p>A simulated price series as candles, one column to a period. A
+      candlestick chart paints its own background, which is what lets a body
+      land on an eighth of a character cell.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/candlesticks.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="../images/lines.png" width="100%">
     </td>
     <td>

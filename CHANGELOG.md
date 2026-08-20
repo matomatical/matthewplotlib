@@ -17,6 +17,15 @@ New:
     mapping from dates to values, separate sequences of dates and values, or one
     date standing in for the consecutive days from there. Dates may be spelled as
     `datetime` dates or datetimes, NumPy `datetime64`s, or ISO 8601 strings.
+* `candles`: a candlestick chart, one candle per period, its body spanning the
+  opening and closing values and its wick reaching out of the body to the high
+  and the low. Bodies are coloured by whether the period closed above or below
+  where it opened, and land on an eighth of a character cell; wicks are drawn
+  with the vertical lines of a `LineStyle`, and land on a half. Unlike every
+  other plot, a candlestick chart paints its own background rather than leaving
+  the terminal's showing, which is what reaching every eighth costs: half of
+  them are drawn as a background-coloured block over a body-coloured cell. See
+  `notes/candlesticks.md`.
 * `table`: a grid of values, formatted into aligned columns and ruled. Takes
   a list of dicts, a dict of lists, or a 2d array, and sizes each column to
   what is in it.
@@ -62,6 +71,8 @@ New examples:
 
 * `axes_gallery.py`: demonstrating different ways of attaching axes to some
   data.
+* `candlesticks.py`: a simulated price series as candles, one column to a
+  period.
 * `commit_heatmap.py`: a year of commits to this repository as a strip of
   weeks.
 * `domain_coloring.py`: six complex functions, painted onto their own input

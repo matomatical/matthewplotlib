@@ -60,6 +60,7 @@ from matthewplotlib.plots import (
     histogram,
     columns,
     vistogram,
+    candles,
     hilbert,
     calendar,
     weeks,
