@@ -452,7 +452,7 @@
 <p>Basic plot types:</p>
 <ul>
 <li>[x] Scatter plots.</li>
-<li>[x] Line plots (connect the dots).</li>
+<li>[x] Line plots (connect the dots). See <code>notes/lines.md</code>.</li>
 <li>[x] Image plots / matrix heatmaps.</li>
 <li>[x] Function heatmap plots.</li>
 <li>[x] Progress bars.</li>
@@ -473,7 +473,8 @@
 <li>[x] Horizontal and vertical stacking.</li>
 <li>[x] Naive layering plots on top of each other.</li>
 <li>[x] Automatically wrapping plots into a grid.</li>
-<li>[ ] Finalise operator assignment.</li>
+<li>[ ] Finalise operator assignment, including an operator for temporal
+  stacking (<code>tstack</code>), which the pre-library sketch spelled <code>|</code>.</li>
 </ul>
 <p>Styling plots with colors:</p>
 <ul>
@@ -513,9 +514,7 @@
 <ul>
 <li>[x] Minimal docstrings for everything user-facing.</li>
 <li>[x] Quick start guide.</li>
-<li>[ ] Complete docstrings for modules, constants, etc.</li>
-<li>[x] Everything exported from the package.</li>
-<li>[ ] The parsers and constants the modules keep to themselves.</li>
+<li>[x] Complete docstrings for modules, constants, etc.</li>
 <li>[x] Simple generated markdown documentation on GitHub.</li>
 <li>[x] Simple generated HTML/CSS documentation, hosted on web.</li>
 </ul>
@@ -552,11 +551,6 @@
 <li>[ ] Bar/column charts with other alignments.</li>
 <li>[x] Bar/column charts with individual colours.</li>
 <li>[ ] Negative values in bar/column charts.</li>
-<li>[ ] Tables:</li>
-<li>[ ] List of dictionaries.</li>
-<li>[ ] Dictionary of lists.</li>
-<li>[ ] 2d list with/without header.</li>
-<li>[ ] Configurable format strings.</li>
 <li>[ ] Hilbert curves:</li>
 <li>[x] Basic Hilbert curves.</li>
 <li>[ ] Non-square Hilbert curves.</li>
@@ -567,19 +561,12 @@
 <li>[ ] Advanced heatmaps:</li>
 <li>[ ] RGB-channel 2d histograms (see <code>hist2d_rgb</code> in
     <code>notes/reference/myplot.py</code>).</li>
-<li>[ ] Advanced image options:</li>
-<li>[ ] Integer-factor down- and upsampling.</li>
-<li>[ ] Normalisation colormaps.</li>
+<li>[ ] Integer-factor down- and upsampling for <code>image</code>.</li>
+<li>[ ] Other:</li>
+<li>[ ] Calendar heatmap plots (see calendar heatmap example for now).</li>
 <li>[ ] Candlestick plots.</li>
 <li>[ ] Box plots.</li>
-<li>[ ] Vector field plots (color? see chromatic flow example; or line? see boids
-  example).</li>
-<li>[ ] Calendar heatmap plots (see calendar heatmap example).</li>
-<li>[ ] Dashboard meters (similar to <code>progress</code>):</li>
-<li>[ ] circular</li>
-<li>[ ] vertical</li>
-<li>[ ] ticking-number</li>
-<li>[ ] Scrolling text marquees</li>
+<li>[ ] Vector field plots.</li>
 </ul>
 <p>Advanced plot arrangement:</p>
 <ul>
@@ -594,35 +581,45 @@
 <li>[x] Indexing, slicing and mapping over frames.</li>
 <li>[x] Padding frames to a common size, so an animation cannot jitter.</li>
 <li>[x] Building one straight from an array with a time axis (<code>animation</code>).</li>
-<li>[ ] Operator for temporal stacking.</li>
-<li>[ ] Per-frame durations.</li>
+<li>[ ] An operator for temporal stacking. <code>|</code> is vstack's; <code>&gt;&gt;</code> reads as
+    "then". Part of "finalise operator assignment" above.</li>
+<li>[ ] Per-frame durations as the primitive instead of a single frame rate, so
+    that concatenating animations of different rates keeps each part at its own
+    speed, and a gif can be written with non-uniform frame delays throughout
+    rather than only from a recording.</li>
 <li>[ ] Mapping over the other composites, <code>hstack</code> and friends. See
   <code>notes/mapping-over-composites.md</code>.</li>
 <li>[ ] Indexing and slicing of plots.</li>
 <li>[ ] Crop plot composition primitive. See <code>notes/terminal-aware-printing.md</code>.</li>
-<li>[ ] Clip plots to terminal width and (almost) height (see
-    <code>docs/compatibility.md</code>).</li>
-<li>[ ] <code>animate</code> context manager should handle this, and window resizes.</li>
+<li>[ ] By default, clip plots to terminal width and (almost) height, to enable
+    terminal-aware printing. A plot wider than the screen is currently
+    undefined behaviour, and silently so: see <code>pages/compatibility.md</code>.</li>
+<li>[ ] Have <code>animate</code> crop for the caller, and keep cropping correctly when
+    the terminal is resized mid-animation — the session already knows the
+    terminal's height, and a resize invalidates every cursor calculation the
+    next diff is written against.</li>
 </ul>
 <p>Advanced furnishings:</p>
 <ul>
 <li>[ ] Axis transformations (e.g. logarithmic scale).</li>
-<li>[ ] Axis segments (see <code>notes/axis-series.md</code>).</li>
+<li>[ ] Axis series that mean a segment rather than a sampling of one, and the
+  "values against an axis" form that <code>data</code> documents but does not implement.
+  See <code>notes/axis-series.md</code>.</li>
 <li>[ ] Legend construction (API needs thought).</li>
 <li>[x] Text embedded in borders.</li>
 <li>[ ] More border styles: dashed and bold lines, and corner treatments
   (rounded, cut, doubled, crossed).</li>
+<li>[ ] Dashboard meters: circular, vertical and ticking-number variants of
+  <code>progress</code>, and scrolling text marquees.</li>
 </ul>
 <p>Advanced rendering:</p>
 <ul>
 <li>[x] Export animations to gifs, at the requested or the achieved frame rate.</li>
-<li>[x] Control over the palette sharing and size. See <code>notes/gif-size.md</code>.</li>
-<li>[x] Automatically optimise saved gifs (lossless compression). See
-    <code>notes/gif-size.md</code>.</li>
+<li>[x] Control over the palette: one for the animation or one per frame, and
+    how many colours it holds. See <code>notes/gif-size.md</code>.</li>
 <li>[ ] Render plots to SVG (keep console aesthetic).</li>
 <li>[ ] Render plots to PDF (keep console aesthetic).</li>
 <li>[ ] Render plots to TikZ/pgfplots source.</li>
-<li>[ ] Manim?</li>
 </ul>
 <p>Backend improvements:</p>
 <ul>
@@ -631,11 +628,12 @@
 <li>[x] Vectorised bitmap rendering.</li>
 <li>[x] Intelligent ANSI rendering (only include necessary control codes and
   resets, e.g., if several characters in a row use the same colours).</li>
-<li>[x] Differential rendering with shortcut <code>plot_new - plot_old</code>.</li>
-<li>[ ] Vectorised animations (3-D <code>CharArray</code>, <code>codes[T,H,W]</code>). See
-  <code>notes/animations.md</code>.</li>
-<li>[ ] Can we get better performance and/or cleaner code by switching backend to
-  JAX?</li>
+<li>[x] Faster animated plot redraws: differential rendering with shortcut <code>-</code>.</li>
+<li>[ ] Automatically optimise saved gifs (lossless compression). See
+  <code>notes/gif-size.md</code>.</li>
+<li>[ ] A 3-D <code>CharArray</code> (<code>codes[T,H,W]</code>), so animations vectorise the way
+  plots do rather than being a tuple of them. See <code>notes/animations.md</code>.</li>
+<li>[ ] Clean up backend code e.g. using JAX PyTrees and vectorisation.</li>
 </ul>
 <p>More elaborate documentation:</p>
 <ul>
@@ -645,10 +643,7 @@
 <li>[x] Documentation search.</li>
 <li>[ ] Tutorials and recipes.</li>
 <li>[ ] Freeze documentation with each version.</li>
-<li>[ ] A logo, used as the website's favicon.</li>
-<li>[ ] Link previews when the website is shared (Open Graph tags), showing off
-  a plot.</li>
-<li>[x] Terminal support matrix / compatibility docs.</li>
+<li>[x] Terminal support matrix / compatibility docs</li>
 </ul>
 <p>Advanced testing:</p>
 <ul>
@@ -658,7 +653,6 @@
 <li>[x] tmux</li>
 <li>[ ] More virtual terminal test backends</li>
 <li>[ ] zmx (backed by ghostty-vt)</li>
-<li>[ ] pyte and friends</li>
 <li>[ ] more?</li>
 <li>[x] Test the set of escape sequences we emit</li>
 <li>[x] Regression testing for str output and image output of examples (See
@@ -666,8 +660,9 @@
 </ul>
 <p>Support non-24-bit-colour modes:</p>
 <ul>
-<li>[ ] Reduced-colour modes (See <code>docs/compatibility.md</code>.)</li>
-<li>[ ] Colormaps that are legible in a reduced-colour mode.</li>
+<li>[ ] Reduced-colour modes (See <code>pages/compatibility.md</code>.)</li>
+<li>[ ] Colormaps that are legible in a reduced-colour mode, since a continuous
+  map quantised to 256 colours bands badly.</li>
 </ul>
 <p>Advanced glyphs and fonts:</p>
 <ul>
@@ -675,32 +670,19 @@
 <li>[ ] Opt-in octants (Symbols for Legacy Computing Supplement, U+1CC00–U+1CEBF,
   new in Unicode 16.0) as an alternative to braille.</li>
 <li>[ ] Instructions for installing or patching a font that has them.</li>
-<li>[ ] Other font extensions, creating new density and shape possibilities?</li>
 </ul>
-<p>Advanced examples:</p>
+<p>More examples:</p>
 <ul>
-<li>[x] Sort by feature or maybe style.</li>
-<li>[ ] Systematically ensure there is at least one example per major plot type
-  or feature.</li>
-<li>[ ] Need more dashboard and progress bar demos.</li>
-<li>[ ] Advanced example categories:</li>
-<li>[ ] Real-time signal processing (music visualiser, webcam with filters?)</li>
-<li>[ ] Games / real-time input collection with animation (snake? hexagon?)</li>
-<li>[ ] Specific example requests:</li>
-<li>[ ] 2d/3d water physics simulation.</li>
-<li>[ ] Curl field, floating specs, wind simulation.</li>
-<li>[ ] Playable super hexagon.</li>
-<li>[ ] Lightbike game, AI bots vs 0,1,2 players.</li>
-<li>[ ] Enhance vaporwave with procgen city skyline, motorway, light cycle;
-    plus special edition red/white/black color scheme?</li>
-<li>[ ] Blowup kinda like https://far.in.net/blowing-up</li>
-<li>[ ] 3b1b fourier analysis video plots.</li>
+<li>[x] Something to show bar/column plots and histograms.</li>
+<li>[x] Game of life as a demonstration of differential rendering.</li>
+<li>[x] Amiga Boing Ball as a demonstration of animations as values.</li>
+<li>[x] Line charts, and what thickness does to a stroke.</li>
+<li>[x] A wireframe landscape, as a demonstration of <code>line3</code>.</li>
+<li>[ ] Webcam with ffmpeg</li>
 </ul>
 <p>Future design directions.</p>
 <ul>
-<li>[ ] Better tools for letting AI agents see the results?</li>
 <li>[ ] Reactive plots.</li>
-<li>[ ] Manim import/export? Could that make sense?</li>
 </ul>
 <h2 id="related-work">Related work<a class="headerlink" href="#related-work" title="Permanent link">docs</a></h2>
 <p>Matthewplotlib aspires to achieve a similar levels of functionality as covered
@@ -720,7 +702,7 @@ by the following projects.</p>
 <li>R https://github.com/cheuerde/plotcli</li>
 <li>See also https://github.com/bbnkmp/txtplot/ and
     https://github.com/geotheory/r-plot</li>
-<li>GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.md</li>
+<li>GNU plot (dumb terminal mode) http://gnuplot.info/docs_6.0/loc19814.html</li>
 </ul>
 <p>Braille art:</p>
 <ul>
@@ -755,9 +737,8 @@ interactivity that there are no plans to replicate.</p>
 <aside>
     <p>
         <small>
-            <i>Page last updated 2026-08-20.
-            Built from
-            <a href="https://github.com/matomatical/matthewplotlib/blob/main/docs/roadmap.md">docs/roadmap.md</a>.
+            <i>Built from
+            <a href="https://github.com/matomatical/matthewplotlib/blob/v0.6.2/pages/roadmap.md">pages/roadmap.md</a>.
             </i>
         </small>
     </p>

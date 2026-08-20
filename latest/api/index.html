@@ -427,8 +427,7 @@
 <h4>Page contents</h4>
 <nav>
     <ul style="list-style-type: none; padding-left: 0; margin-left: 0;">
-        <li style="margin-left: 0em;"><a href="#api-reference">API Reference</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;matthewplotlib</a></li>
+        <li style="margin-left: 0em;"><a href="#matthewplotlib"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;matthewplotlib</a></li>
 
     </ul>
 </nav>
@@ -441,49 +440,15 @@
     
 
 <section id="mkdocs-terminal-content">
-    <h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">docs</a></h1>
-
-
-<div class="doc doc-object doc-module">
+    <div class="doc doc-object doc-module">
 
 
 
 <a id="matthewplotlib"></a>
     <div class="doc doc-contents first">
 
-        <p>Matthew's plotting library.</p>
-<p>Everything the library offers is re-exported here, so one import reaches all of
-it. Write <code>mp.scatter</code>, <code>mp.animate</code>, <code>mp.viridis</code>, and so on; no submodule ever
-has to be imported by hand.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">matthewplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
-</code></pre></div>
-<p>The code behind that namespace is organised into submodules, and the API
-reference documents it one submodule at a time.</p>
-<p>The plots themselves:</p>
-<ul>
-<li><a class="autorefs autorefs-internal" href="plots/#matthewplotlib.plots"><code>plots</code></a>: All of the plot types, and the operators
-  that compose them into larger plots. The place to start.</li>
-<li><a class="autorefs autorefs-internal" href="animations/#matthewplotlib.animations"><code>animations</code></a>: A sequence of plots as a value,
-  and the terminal session that shows one.</li>
-</ul>
-<p>What a plot accepts:</p>
-<ul>
-<li><a class="autorefs autorefs-internal" href="data/#matthewplotlib.data"><code>data</code></a>: The forms in which point data can arrive, and
-  how each is normalised before plotting.</li>
-<li><a class="autorefs autorefs-internal" href="colors/#matthewplotlib.colors"><code>colors</code></a>: The spellings a color can arrive in, one
-  for a whole series or one per point.</li>
-<li><a class="autorefs autorefs-internal" href="colormaps/#matthewplotlib.colormaps"><code>colormaps</code></a>: Ready-made continuous and discrete
-  colormaps to map data onto colors.</li>
-</ul>
-<p>What draws them:</p>
-<ul>
-<li><a class="autorefs autorefs-internal" href="core/#matthewplotlib.core"><code>core</code></a>: The grid of coloured characters every plot is
-  ultimately drawn on, and the glyphs dense enough to draw with.</li>
-<li><a class="autorefs autorefs-internal" href="camera/#matthewplotlib.camera"><code>camera</code></a>: Projecting points and lines in space onto
-  a viewing plane, for the plot types that take three dimensions.</li>
-<li><a class="autorefs autorefs-internal" href="unscii16/#matthewplotlib.unscii16"><code>unscii16</code></a>: The bitmap font that renders a plot
-  when it is exported to an image or a gif.</li>
-</ul>
+        <p>Top-level module. Imports various documents items from other modules and makes
+them available under the top-level namespace.</p>
 
 
 
@@ -495,42 +460,6 @@ reference documents it one submodule at a time.</p>
 
 
 <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -772,7 +701,7 @@ reference documents it one submodule at a time.</p>
     <p>
         <small>
             <i>Built from
-            <a href="https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/__init__.py">matthewplotlib/__init__.py</a>.
+            <a href="https://github.com/matomatical/matthewplotlib/blob/v0.6.2/matthewplotlib/__init__.py">matthewplotlib/__init__.py</a>.
             </i>
         </small>
     </p>

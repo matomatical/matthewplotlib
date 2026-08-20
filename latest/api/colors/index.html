@@ -427,11 +427,9 @@
 <h4>Page contents</h4>
 <nav>
     <ul style="list-style-type: none; padding-left: 0; margin-left: 0;">
-        <li style="margin-left: 0em;"><a href="#colors">colors</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.colors"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;colors</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.colors.ColorLike"><code class="doc-symbol doc-symbol-toc doc-symbol-type_alias"></code>&nbsp;ColorLike</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.colors.parse_color"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;parse_color</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.colors.parse_colors"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;parse_colors</a></li>
+        <li style="margin-left: 0em;"><a href="#matthewplotlib.colors"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;colors</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colors.parse_color"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;parse_color</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colors.parse_colors"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;parse_colors</a></li>
 
     </ul>
 </nav>
@@ -444,10 +442,7 @@
     
 
 <section id="mkdocs-terminal-content">
-    <h1 id="colors">colors<a class="headerlink" href="#colors" title="Permanent link">docs</a></h1>
-
-
-<div class="doc doc-object doc-module">
+    <div class="doc doc-object doc-module">
 
 
 
@@ -495,47 +490,6 @@ point.</p>
 
 
 
-
-
-
-
-<div class="doc doc-object doc-type_alias">
-
-
-
-<h2 id="matthewplotlib.colors.ColorLike" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-type_alias"></code>            <code class="highlight language-python"><span class="n">ColorLike</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">Color</span></code>
-<span class="doc doc-declaration-colon">:</span>
-  <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/colors.py#L47-L53"
-        target="_blank"
-        style="text-decoration: none;"
-        title="View Source on GitHub">source</a>
-  </span>
-
-<a href="#matthewplotlib.colors.ColorLike" class="headerlink" title="Permanent link">docs</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Anything accepted in place of a single color.</p>
-<p>A named color or a hex string, an array or tuple of three integers from 0 to
-255, or one of three floats from 0.0 to 1.0.
-<a class="autorefs autorefs-internal" title="            parse_color(color: ColorLike | None) -> Color | None
-:
-  
-    source
-  " href="#matthewplotlib.colors.parse_color"><code>parse_color</code></a> standardises each of them,
-and documents the spellings it recognises.</p>
-    </div>
-
-</div>
-
-
-
-
-
-
 <div class="doc doc-object doc-function">
 
 
@@ -543,7 +497,7 @@ and documents the spellings it recognises.</p>
 <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">parse_color</span><span class="p">(</span><span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color</span> <span class="o">|</span> <span class="kc">None</span></code>
 <span class="doc doc-declaration-colon">:</span>
   <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/colors.py#L75-L127"
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/1d93b26c1d5eb2066af3744142ec8dc1fe86b2d3/matthewplotlib/colors.py#L67-L119"
         target="_blank"
         style="text-decoration: none;"
         title="View Source on GitHub">source</a>
@@ -601,7 +555,7 @@ become float triples.)</p>
 <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">parse_colors</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">ColorSpec</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">colormap</span><span class="p">:</span> <span class="n">ColorMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span></code>
 <span class="doc doc-declaration-colon">:</span>
   <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/colors.py#L130-L233"
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/1d93b26c1d5eb2066af3744142ec8dc1fe86b2d3/matthewplotlib/colors.py#L122-L225"
         target="_blank"
         style="text-decoration: none;"
         title="View Source on GitHub">source</a>
@@ -660,7 +614,7 @@ channels in the range 0 to 255. Values outside those ranges are clipped.</p>
     <p>
         <small>
             <i>Built from
-            <a href="https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/colors.py">matthewplotlib/colors.py</a>.
+            <a href="https://github.com/matomatical/matthewplotlib/blob/v0.6.2/matthewplotlib/colors.py">matthewplotlib/colors.py</a>.
             </i>
         </small>
     </p>

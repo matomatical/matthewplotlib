@@ -427,16 +427,10 @@
 <h4>Page contents</h4>
 <nav>
     <ul style="list-style-type: none; padding-left: 0; margin-left: 0;">
-        <li style="margin-left: 0em;"><a href="#data">data</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.data"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;data</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.data.Series"><code class="doc-symbol doc-symbol-toc doc-symbol-type_alias"></code>&nbsp;Series</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.data.Series3"><code class="doc-symbol doc-symbol-toc doc-symbol-type_alias"></code>&nbsp;Series3</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.data.parse_range"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;parse_range</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.data.parse_segments"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;parse_segments</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.data.parse_segments3"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;parse_segments3</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.data.xaxis"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;xaxis</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.data.yaxis"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;yaxis</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.data.zaxis"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;zaxis</a></li>
+        <li style="margin-left: 0em;"><a href="#matthewplotlib.data"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;data</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.data.parse_range"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;parse_range</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.data.parse_segments"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;parse_segments</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.data.parse_segments3"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;parse_segments3</a></li>
 
     </ul>
 </nav>
@@ -449,10 +443,7 @@
     
 
 <section id="mkdocs-terminal-content">
-    <h1 id="data">data<a class="headerlink" href="#data" title="Permanent link">docs</a></h1>
-
-
-<div class="doc doc-object doc-module">
+    <div class="doc doc-object doc-module">
 
 
 
@@ -506,86 +497,6 @@ defines what is accepted and normalises it before plotting.</p>
 
 
 
-<div class="doc doc-object doc-type_alias">
-
-
-
-<h2 id="matthewplotlib.data.Series" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-type_alias"></code>            <code class="highlight language-python"><span class="n">Series</span> <span class="o">=</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">ColorSpec</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ColorSpec</span><span class="p">]</span> <span class="o">|</span> <span class="n">axis</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="n">ColorSpec</span><span class="p">]</span></code>
-<span class="doc doc-declaration-colon">:</span>
-  <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/data.py#L49-L56"
-        target="_blank"
-        style="text-decoration: none;"
-        title="View Source on GitHub">source</a>
-  </span>
-
-<a href="#matthewplotlib.data.Series" class="headerlink" title="Permanent link">docs</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-        <p>The accepted shapes for 2d point data.</p>
-<p>Any of the following, for a series of n points, where the colors are one
-<code>ColorSpec</code> for the whole series:</p>
-<ul>
-<li><code>number[n,2]</code>: An array of coordinate pairs.</li>
-<li><code>(number[n,2], colors)</code>: The same, coloured.</li>
-<li><code>(number[n], number[n])</code>: The x and y coordinates as separate sequences.</li>
-<li><code>(number[n], number[n], colors)</code>: The same, coloured.</li>
-<li><code>axis</code>: An axis, standing in for points spaced along it, with the other
-  coordinate held at zero.</li>
-<li><code>(axis, colors)</code>: The same, coloured.</li>
-</ul>
-    </div>
-
-</div>
-
-
-
-
-
-
-<div class="doc doc-object doc-type_alias">
-
-
-
-<h2 id="matthewplotlib.data.Series3" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-type_alias"></code>            <code class="highlight language-python"><span class="n">Series3</span> <span class="o">=</span> <span class="n">NDArray</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">ColorSpec</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">ColorSpec</span><span class="p">]</span> <span class="o">|</span> <span class="n">axis</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="n">ColorSpec</span><span class="p">]</span></code>
-<span class="doc doc-declaration-colon">:</span>
-  <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/data.py#L73-L80"
-        target="_blank"
-        style="text-decoration: none;"
-        title="View Source on GitHub">source</a>
-  </span>
-
-<a href="#matthewplotlib.data.Series3" class="headerlink" title="Permanent link">docs</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-        <p>The accepted shapes for 3d point data.</p>
-<p>As <code>Series</code>, with a third coordinate:</p>
-<ul>
-<li><code>number[n,3]</code>: An array of coordinate triples.</li>
-<li><code>(number[n,3], colors)</code>: The same, coloured.</li>
-<li><code>(number[n], number[n], number[n])</code>: The three coordinates as separate
-  sequences.</li>
-<li><code>(number[n], number[n], number[n], colors)</code>: The same, coloured.</li>
-<li><code>axis</code>: An axis, standing in for points spaced along it, with the other two
-  coordinates held at zero.</li>
-<li><code>(axis, colors)</code>: The same, coloured.</li>
-</ul>
-    </div>
-
-</div>
-
-
-
-
-
-
 <div class="doc doc-object doc-function">
 
 
@@ -593,7 +504,7 @@ defines what is accepted and normalises it before plotting.</p>
 <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">parse_range</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="nb">range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">number</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">number</span><span class="p">,</span> <span class="n">number</span><span class="p">]</span></code>
 <span class="doc doc-declaration-colon">:</span>
   <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/data.py#L101-L124"
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/1d93b26c1d5eb2066af3744142ec8dc1fe86b2d3/matthewplotlib/data.py#L73-L96"
         target="_blank"
         style="text-decoration: none;"
         title="View Source on GitHub">source</a>
@@ -627,7 +538,7 @@ range around itself to be drawn in the middle of.</p>
 <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">parse_segments</span><span class="p">(</span><span class="o">*</span><span class="n">seriess</span><span class="p">:</span> <span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span></code>
 <span class="doc doc-declaration-colon">:</span>
   <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/data.py#L181-L198"
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/1d93b26c1d5eb2066af3744142ec8dc1fe86b2d3/matthewplotlib/data.py#L153-L170"
         target="_blank"
         style="text-decoration: none;"
         title="View Source on GitHub">source</a>
@@ -662,7 +573,7 @@ the next.</p>
 <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">parse_segments3</span><span class="p">(</span><span class="o">*</span><span class="n">seriess</span><span class="p">:</span> <span class="n">Series3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]</span></code>
 <span class="doc doc-declaration-colon">:</span>
   <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/data.py#L264-L276"
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/1d93b26c1d5eb2066af3744142ec8dc1fe86b2d3/matthewplotlib/data.py#L236-L248"
         target="_blank"
         style="text-decoration: none;"
         title="View Source on GitHub">source</a>
@@ -676,183 +587,6 @@ the next.</p>
         <p>Turn 3d series into the segments joining their consecutive points, with the
 colors at each end of each. See <code>parse_segments</code>.</p>
 
-
-    </div>
-
-</div>
-
-
-
-
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="matthewplotlib.data.xaxis" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>xaxis</code>
-
-<span class="doc doc-declaration-colon">:</span>
-  <span class="doc doc-labels">
-      <span class="doc doc-label doc-label-dataclass"><code>dataclass</code></span>
-  </span>
-  <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/data.py#L328-L339"
-        target="_blank"
-        style="text-decoration: none;"
-        title="View Source on GitHub">source</a>
-  </span>
-
-<a href="#matthewplotlib.data.xaxis" class="headerlink" title="Permanent link">docs</a></h2>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="matthewplotlib.data.axis">axis</span></code></p>
-
-
-
-        <p>A series of <code>n</code> points evenly spaced from <code>a</code> to <code>b</code> along the x
-axis, with the y and z coordinates held at zero.</p>
-<p>Accepted wherever a series is, so that something can be plotted against an
-axis without building coordinates for it by hand.</p>
-
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-children">
-
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-
-
-
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="matthewplotlib.data.yaxis" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>yaxis</code>
-
-<span class="doc doc-declaration-colon">:</span>
-  <span class="doc doc-labels">
-      <span class="doc doc-label doc-label-dataclass"><code>dataclass</code></span>
-  </span>
-  <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/data.py#L342-L353"
-        target="_blank"
-        style="text-decoration: none;"
-        title="View Source on GitHub">source</a>
-  </span>
-
-<a href="#matthewplotlib.data.yaxis" class="headerlink" title="Permanent link">docs</a></h2>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="matthewplotlib.data.axis">axis</span></code></p>
-
-
-
-        <p>A series of <code>n</code> points evenly spaced from <code>a</code> to <code>b</code> along the y
-axis, with the x and z coordinates held at zero.</p>
-<p>Accepted wherever a series is, so that something can be plotted against an
-axis without building coordinates for it by hand.</p>
-
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-children">
-
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-
-
-
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="matthewplotlib.data.zaxis" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>zaxis</code>
-
-<span class="doc doc-declaration-colon">:</span>
-  <span class="doc doc-labels">
-      <span class="doc doc-label doc-label-dataclass"><code>dataclass</code></span>
-  </span>
-  <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/data.py#L356-L367"
-        target="_blank"
-        style="text-decoration: none;"
-        title="View Source on GitHub">source</a>
-  </span>
-
-<a href="#matthewplotlib.data.zaxis" class="headerlink" title="Permanent link">docs</a></h2>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="matthewplotlib.data.axis">axis</span></code></p>
-
-
-
-        <p>A series of <code>n</code> points evenly spaced from <code>a</code> to <code>b</code> along the z
-axis, with the x and y coordinates held at zero.</p>
-<p>Accepted wherever a series is, so that something can be plotted against an
-axis without building coordinates for it by hand.</p>
-
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-children">
-
-
-
-
-
-  </div>
 
     </div>
 
@@ -877,7 +611,7 @@ axis without building coordinates for it by hand.</p>
     <p>
         <small>
             <i>Built from
-            <a href="https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/data.py">matthewplotlib/data.py</a>.
+            <a href="https://github.com/matomatical/matthewplotlib/blob/v0.6.2/matthewplotlib/data.py">matthewplotlib/data.py</a>.
             </i>
         </small>
     </p>

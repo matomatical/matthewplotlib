@@ -427,12 +427,11 @@
 <h4>Page contents</h4>
 <nav>
     <ul style="list-style-type: none; padding-left: 0; margin-left: 0;">
-        <li style="margin-left: 0em;"><a href="#camera">camera</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.camera"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;camera</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.camera.view_matrix"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;view_matrix</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.camera.perspective"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;perspective</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.camera.project3"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;project3</a></li>
-<li style="margin-left: 1em;"><a href="#matthewplotlib.camera.project3_segments"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;project3_segments</a></li>
+        <li style="margin-left: 0em;"><a href="#matthewplotlib.camera"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;camera</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.camera.view_matrix"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;view_matrix</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.camera.perspective"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;perspective</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.camera.project3"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;project3</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.camera.project3_segments"><code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;project3_segments</a></li>
 
     </ul>
 </nav>
@@ -445,10 +444,7 @@
     
 
 <section id="mkdocs-terminal-content">
-    <h1 id="camera">camera<a class="headerlink" href="#camera" title="Permanent link">docs</a></h1>
-
-
-<div class="doc doc-object doc-module">
+    <div class="doc doc-object doc-module">
 
 
 
@@ -496,7 +492,7 @@ the film, for the 3d plot types in <code>matthewplotlib.plots</code>.</p>
 <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">view_matrix</span><span class="p">(</span><span class="n">camera_position</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]),</span> <span class="n">camera_target</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">scene_up</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
 <span class="doc doc-declaration-colon">:</span>
   <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/camera.py#L26-L57"
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/1d93b26c1d5eb2066af3744142ec8dc1fe86b2d3/matthewplotlib/camera.py#L26-L57"
         target="_blank"
         style="text-decoration: none;"
         title="View Source on GitHub">source</a>
@@ -544,7 +540,7 @@ Y up, and Z towards whatever the camera is pointed at.</p>
 <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">perspective</span><span class="p">(</span><span class="n">xyz</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span><span class="p">,</span> <span class="n">valid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>
 <span class="doc doc-declaration-colon">:</span>
   <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/camera.py#L60-L96"
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/1d93b26c1d5eb2066af3744142ec8dc1fe86b2d3/matthewplotlib/camera.py#L60-L96"
         target="_blank"
         style="text-decoration: none;"
         title="View Source on GitHub">source</a>
@@ -592,7 +588,7 @@ Y up, and Z towards whatever the camera is pointed at.</p>
 <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">project3</span><span class="p">(</span><span class="n">xyz</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">camera_position</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]),</span> <span class="n">camera_target</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">scene_up</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span> <span class="n">fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span></code>
 <span class="doc doc-declaration-colon">:</span>
   <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/camera.py#L99-L168"
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/1d93b26c1d5eb2066af3744142ec8dc1fe86b2d3/matthewplotlib/camera.py#L99-L168"
         target="_blank"
         style="text-decoration: none;"
         title="View Source on GitHub">source</a>
@@ -666,7 +662,7 @@ configuration.</p>
 <code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">project3_segments</span><span class="p">(</span><span class="n">starts</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ends</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">camera_position</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]),</span> <span class="n">camera_target</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">scene_up</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span> <span class="n">fov_degrees</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span><span class="p">,</span> <span class="n">near</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-06</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span></code>
 <span class="doc doc-declaration-colon">:</span>
   <span class="doc doc-labels doc-label-source">
-    <a  href="https://github.com/matomatical/matthewplotlib/blob/8ef3976f49987c9ada5bd4f0230a37a2dbd99647/matthewplotlib/camera.py#L171-L264"
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/1d93b26c1d5eb2066af3744142ec8dc1fe86b2d3/matthewplotlib/camera.py#L171-L264"
         target="_blank"
         style="text-decoration: none;"
         title="View Source on GitHub">source</a>
@@ -740,7 +736,7 @@ centre of the image.</p>
     <p>
         <small>
             <i>Built from
-            <a href="https://github.com/matomatical/matthewplotlib/blob/main/matthewplotlib/camera.py">matthewplotlib/camera.py</a>.
+            <a href="https://github.com/matomatical/matthewplotlib/blob/v0.6.2/matthewplotlib/camera.py">matthewplotlib/camera.py</a>.
             </i>
         </small>
     </p>
