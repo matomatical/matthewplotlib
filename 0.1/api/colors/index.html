@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="generator" content="mkdocs-1.6.1, mkdocs-terminal-4.8.0">
+    
+    <meta name="description" content="A Python plotting library that aspires to not be painful."> 
+     
+    
+    <link rel="canonical" href="https://matthewplotlib.far.in.net/0.1/api/colors/"><link rel="icon" type="image/png" sizes="192x192" href="../../img/android-chrome-192x192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="../../img/android-chrome-512x512.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png" />
+<link rel="shortcut icon" type="image/png" sizes="48x48" href="../../img/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png" />
+
+
+    
+ 
+<title>colors - matthewplotlib</title>
+
+
+<link href="../../css/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+<link href="../../css/fontawesome/css/solid.min.css" rel="stylesheet">
+<link href="../../css/normalize.css" rel="stylesheet">
+<link href="../../css/terminal.css" rel="stylesheet">
+<link href="../../css/theme.css" rel="stylesheet">
+<link href="../../css/theme.tile_grid.css" rel="stylesheet">
+<link href="../../css/theme.footer.css" rel="stylesheet">
+<!-- dark color palette -->
+<link href="../../css/palettes/dark.css" rel="stylesheet">
+
+<!-- page layout -->
+<style>
+/* initially set page layout to a one column grid */
+.terminal-mkdocs-main-grid {
+    display: grid;
+    grid-column-gap: 1.4em;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+/*  
+*   when side navigation is not hidden, use a two column grid.  
+*   if the screen is too narrow, fall back to the initial one column grid layout.
+*   in this case the main content will be placed under the navigation panel. 
+*/
+@media only screen and (min-width: 70em) {
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: 4fr 9fr;
+    }
+}</style>
+
+
+
+    
+    <link href="../../assets/_mkdocstrings.css" rel="stylesheet"> 
+    <link href="../../css/sweetie16.css" rel="stylesheet"> 
+    <link href="../../css/pygments.css" rel="stylesheet"> 
+    <link href="../../css/override.css" rel="stylesheet">  
+    
+    
+
+    
+    <!-- search css support -->
+<link href="../../css/search/bootstrap-modal.css" rel="stylesheet">
+<!-- search scripts -->
+<script>
+    var base_url = "../..",
+    shortcuts = "{}";
+</script>
+<script src="../../js/jquery/jquery-1.10.1.min.js" defer></script>
+<script src="../../js/bootstrap/bootstrap.min.js" defer></script>
+<script src="../../js/mkdocs/base.js" defer></script>
+    
+    
+    
+    
+    <script src="../../search/main.js"></script>
+    
+
+    
+</head>
+
+<body class="terminal"><div class="container">
+    <div class="terminal-nav">
+        <header class="terminal-logo">
+            <div id="mkdocs-terminal-site-name" class="logo terminal-prompt"><a href="https://matthewplotlib.far.in.net/0.1" class="no-style">matthewplotlib</a></div>
+        </header>
+        
+        <nav class="terminal-menu">
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                <li id="version-menu" hidden>
+                    <label class="menu-item" for="version-select">version</label>
+                    <select id="version-select"></select>
+                </li>
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="https://github.com/matomatical/matthewplotlib" class="menu-item" property="item" typeof="WebPage">
+                        <span property="name">GitHub</span>
+                    </a>
+                </li>
+                    
+                    
+
+
+<li property="itemListElement" typeof="ListItem">
+    <a href="#" class="menu-item" data-toggle="modal" data-target="#mkdocs_search_modal" property="item" typeof="SearchAction">
+        <i aria-hidden="true" class="fa fa-search"></i> <span property="name">Search</span>
+    </a>
+    <meta property="position" content="0">
+</li>
+                    
+            </ul>
+        </nav>
+<script>
+// The versions mike published live one directory above this one, listed in a
+// file it writes at the root of the branch. Absent when serving locally, in
+// which case the menu stays hidden.
+(function () {
+    var root = new URL("../../", window.location.href);
+    var here = decodeURIComponent(window.location.pathname);
+    var rest = here.slice(root.pathname.length);
+    var current = root.pathname.replace(/^\/|\/$/g, "").split("/").pop();
+
+    fetch(new URL("../versions.json", root).href).then(function (response) {
+        if (!response.ok) throw new Error("no versions.json");
+        return response.json();
+    }).then(function (versions) {
+        if (!versions.length) return;
+        var select = document.getElementById("version-select");
+        versions.forEach(function (version) {
+            var names = [version.version].concat(version.aliases || []);
+            var option = document.createElement("option");
+            option.value = version.aliases && version.aliases.length
+                ? version.aliases[0]
+                : version.version;
+            option.textContent = version.title || version.version;
+            option.selected = names.indexOf(current) !== -1;
+            select.appendChild(option);
+        });
+        // A directory the list does not mention, so name it rather than
+        // leaving some other version showing as the current one.
+        if (select.selectedIndex === -1) {
+            var unlisted = document.createElement("option");
+            unlisted.value = current;
+            unlisted.textContent = current;
+            unlisted.selected = true;
+            select.insertBefore(unlisted, select.firstChild);
+        }
+        document.getElementById("version-menu").hidden = false;
+
+        // Keep the reader on the same page where the chosen version has one.
+        select.addEventListener("change", function () {
+            var version = new URL("../" + select.value + "/", root);
+            var same = new URL(rest, version);
+            fetch(same.href, {method: "HEAD"}).then(function (response) {
+                window.location.assign(response.ok ? same.href : version.href);
+            }).catch(function () {
+                window.location.assign(version.href);
+            });
+        });
+    }).catch(function () {
+        /* nothing published to switch between */
+    });
+})();
+</script>
+    </div>
+</div>
+        
+    <div class="container">
+        <div class="terminal-mkdocs-main-grid"><aside id="terminal-mkdocs-side-panel"><nav>
+    <h4>Site contents</h4>
+    <ul class="terminal-mkdocs-side-nav-items">
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../..">Home</a>
+        
+    
+    
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+        
+        
+            
+                
+        
+        
+            
+    
+        
+        <span class="
+        
+            
+        
+    terminal-mkdocs-side-nav-item--active terminal-mkdocs-side-nav-section-no-index">API Reference</span>
+    
+    
+        
+        
+            <ul class="terminal-mkdocs-side-nav-li-ul">
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../">matthewplotlib</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../plots/">plots</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        <span class="terminal-mkdocs-side-nav-item--active">colors</span>
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../colormaps/">colormaps</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../core/">core</a>
+        
+    
+    </li>
+            
+        
+            
+            
+                
+                
+            
+             
+                <li class="terminal-mkdocs-side-nav-li-ul-li">
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../unscii16/">unscii16</a>
+        
+    
+    </li>
+            
+            
+    </ul>
+        
+    
+       </li>
+        
+          <li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="terminal-mkdocs-side-nav-item" href="../../changelog/">Changelog</a>
+        
+    
+    
+    
+       </li>
+        
+    </ul>
+</nav><hr>
+<h4>Page contents</h4>
+<nav>
+    <ul style="list-style-type: none; padding-left: 0; margin-left: 0;">
+        <li style="margin-left: 0em;"><a href="#matthewplotlib.colors"><code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;colors</a></li>
+<li style="margin-left: 0em;"><a href="#matthewplotlib.colors.Color"><code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Color</a></li>
+<li style="margin-left: 1em;"><a href="#matthewplotlib.colors.Color.parse"><code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;parse</a></li>
+
+    </ul>
+</nav>
+</aside>
+            <main id="terminal-mkdocs-main-content">
+    
+    
+    
+    
+    
+
+<section id="mkdocs-terminal-content">
+    <div class="doc doc-object doc-module">
+
+
+
+<a id="matthewplotlib.colors"></a>
+    <div class="doc doc-contents first">
+
+        <p>Configuring various plots involves specifying colours. In most cases, colours
+can be specified in one of the following <code>ColorLike</code> formats:</p>
+<ol>
+<li>
+<p><strong>Named colours:</strong> The following strings are recognised and translated to
+   RGB triples: <code>"black"</code>, <code>"red"</code>, <code>"green"</code>, <code>"blue"</code>, <code>"cyan"</code>, <code>"magenta"</code>,
+   <code>"yellow"</code>, <code>"white"</code>.</p>
+</li>
+<li>
+<p><strong>Hexadecimal:</strong> A hexadecimal string like <code>"#ff0000"</code> specifying the RGB
+   values in the usual manner.</p>
+</li>
+<li>
+<p><strong>Short hexadecimal:</strong> A three-character hexadecimal string like <code>"#f00"</code>,
+   where <code>"#RGB"</code> is equivalent to <code>"#RRGGBB"</code> in the usual hexadecimal format.</p>
+</li>
+<li>
+<p><strong>Integer triple:</strong> An array or tuple of three integers in the range 0 to
+    255, converted directly to an RGB triple.</p>
+</li>
+<li>
+<p><strong>Float triple:</strong> An array or tuple of three floats in the range 0.0 to 1.0,
+   converted to an RGB triple by multiplying by 255 and rounding down to the
+   nearest integer.</p>
+</li>
+</ol>
+<p>(Arrays or tuples with mixed integers and floats are promoted by NumPy to
+   become float triples.)</p>
+<p>The <code>Color</code> class is used internally to represent an RGB colour that has been
+parsed from one of the above formats. In most cases, it is not used externally.</p>
+<p>In some contexts, colours are specified through a colour map rather than
+directly specified---see the <code>matthewplotlib.colormaps</code> module for details.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="matthewplotlib.colors.Color" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>Color</code>
+
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels">
+      <span class="doc doc-label doc-label-dataclass"><code>dataclass</code></span>
+  </span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/75ce4da989e9a4be3b27fa56429bd1d2eeddc178/matthewplotlib/colors.py#L47-L99"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colors.Color" class="headerlink" title="Permanent link">docs</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>An RGB color triple.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="matthewplotlib.colors.Color.parse" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">parse</span><span class="p">(</span><span class="n">color</span><span class="p">:</span> <span class="n">ColorLike</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Color</span> <span class="o">|</span> <span class="kc">None</span></code>
+<span class="doc doc-declaration-colon">:</span>
+  <span class="doc doc-labels">
+      <span class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></span>
+  </span>
+  <span class="doc doc-labels doc-label-source">
+    <a  href="https://github.com/matomatical/matthewplotlib/blob/75ce4da989e9a4be3b27fa56429bd1d2eeddc178/matthewplotlib/colors.py#L61-L99"
+        target="_blank"
+        style="text-decoration: none;"
+        title="View Source on GitHub">source</a>
+  </span>
+
+<a href="#matthewplotlib.colors.Color.parse" class="headerlink" title="Permanent link">docs</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Accept and standardise RGB triples in various formats. See module-level
+documentation for a description of the possible formats.</p>
+
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+</section>
+
+<section id="mkdocs-terminal-after-content">
+    
+</section>
+<section id="mkdocs-terminal-revision">
+<br>
+<aside>
+    <p>
+        <small>
+            <i>Built from
+            <a href="https://github.com/matomatical/matthewplotlib/blob/v0.1/matthewplotlib/colors.py">matthewplotlib/colors.py</a>.
+            </i>
+        </small>
+    </p>
+</aside>
+</section>
+            </main>
+        </div>
+        <hr><footer>
+    <div class="terminal-mkdocs-footer-grid">
+        <div id="terminal-mkdocs-footer-copyright-info">
+            
+            <p class="text-center text-muted">Copyright © 2024–2026 Matthew Farrugia-Roberts, GPLv3.</p>
+             Site built with <a href="http://www.mkdocs.org">MkDocs</a> and a theme based on <a href="https://github.com/ntno/mkdocs-terminal">Terminal for MkDocs</a>.
+        </div>
+    </div>
+</footer>
+    </div>
+
+    
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="alertdialog" aria-modal="true" aria-labelledby="searchModalLabel">
+    <div class="modal-dialog modal-lg" role="search">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Search</h5>
+                <button type="button" class="close btn btn-default btn-ghost" data-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+                <p id="searchInputLabel">Type to start searching</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" aria-labelledby="searchInputLabel" placeholder="" id="mkdocs-search-query" title="Please enter search terms here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No document matches found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</body>
+
+</html>
