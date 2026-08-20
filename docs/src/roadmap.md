@@ -22,8 +22,8 @@ Basic plot furnishings:
 * [x] Borders.
 * [x] Axis ticks and tick labels for scatter plots.
 * [x] Axis labels and titles.
-* [ ] Labels and ticks for bar/column charts and histograms. See `bars` and
-  `hist` in `notes/reference/myplot.py` for a reference.
+* [ ] Labels and ticks for bar/column charts, histograms, box plots.
+  See `bars` and `hist` in `notes/reference/myplot.py`.
 
 Basic plot arrangement:
 
