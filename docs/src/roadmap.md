@@ -129,8 +129,9 @@ More plot types:
   * [ ] Normalisation colormaps.
 * [ ] Candlestick plots.
 * [ ] Box plots.
-* [ ] Vector field plots (color? see chromatic flow example; or line? see boids
-  example).
+* [ ] Vector field plots:
+  * [ ] color (see chromatic flow example).
+  * [ ] line (see boids example).
 * [ ] Calendar heatmap plots (see calendar heatmap example).
 * [ ] Dashboard meters (similar to `progress`):
   * [ ] circular
