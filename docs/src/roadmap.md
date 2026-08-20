@@ -102,7 +102,7 @@ More exotic plot types:
 * [ ] Vector field plots:
   * [x] color (`vfunction2`), including domain colouring of complex functions
     (`cfunction2`).
-  * [ ] line (see boids example).
+  * [ ] line (see boids example, and `notes/quiver-plots.md`).
 * [ ] Hilbert curves:
   * [x] Basic Hilbert curves.
   * [ ] Non-square Hilbert curves.
