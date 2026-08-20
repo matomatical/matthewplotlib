@@ -13,8 +13,8 @@ Basic plot types:
 * [x] Progress bars.
 * [x] Basic bar charts and column charts.
 * [x] Histograms.
-* [ ] Candlestick plots.
 * [ ] Box plots.
+* [ ] Candlestick plots.
 
 Basic plot furnishings:
 
@@ -118,19 +118,10 @@ Advancements of basic plot types:
   * [x] Different colours for each point.
   * [x] Multiple point clouds on a single scatter plot.
   * [x] 3d scatter plots.
-* [ ] Advanced line plots:
+* [x] Advanced line plots (See `notes/lines.md`).
   * [x] Configurable stroke thickness, with round caps and filled joins.
   * [x] Gaps, where a coordinate is non-finite.
-  * [ ] Error bars on line plots.
-  * [ ] Fill plots.
-  * [ ] Dashed and dotted strokes.
-* [ ] 3d line plots / wireframes:
-  * [x] Broken polylines projected from a camera (`line3`), cut off at a near
-    plane. See `notes/lines.md`.
-  * [ ] An explicit edge list, so a mesh with shared vertices is projected once
-    per vertex rather than once per wire through it.
-  * [ ] Hidden line removal, or some depth ordering. Colouring by depth is the
-    stand-in for now.
+  * [x] 3d line plots / wireframes.
 * [ ] Advanced bar charts:
   * [x] Bar/column charts with configurable sizes and spacing.
   * [ ] Bar/column charts with other alignments.
@@ -142,6 +133,9 @@ Advancements of basic plot types:
 * [ ] Advanced image options:
   * [ ] Integer-factor down- and upsampling.
   * [ ] Normalisation colormaps.
+* [ ] Advanced text formatting parser (`rich=True` or something):
+  * [ ] Bold, italic, underline, based on markdown?
+  * [ ] Some way of specifying colors, html-style tags?
 
 Advanced plot arrangement:
 
@@ -173,10 +167,7 @@ Advanced furnishings:
 * [x] Axes on any subset of the four sides, each blank, ruled, or ruled with
   ticks and labels, so that a colorbar can be labelled without a full border.
   See `notes/axes-sides.md`.
-* [ ] Legend construction (API needs thought).
 * [x] Text embedded in borders.
-* [ ] More border styles: dashed and bold lines, and corner treatments
-  (rounded, cut, doubled, crossed).
 
 Advanced rendering:
 
@@ -199,13 +190,12 @@ Backend improvements:
 More elaborate documentation:
 
 * [x] Links to source code from within documentation.
-* [x] Links to mentioned functions/classes/methods/types within documentation
+* [ ] Links to mentioned functions/classes/methods/types within documentation
   (automatically linked to relevant release).
 * [x] Documentation search.
 * [x] Versioned documentation.
-* [ ] A logo, used as the website's favicon.
-* [ ] Link previews when the website is shared (Open Graph tags), showing off
-  a plot.
+* [ ] Logo and favicon.
+* [ ] Link previews (Open Graph tags).
 * [x] Terminal support matrix / compatibility docs.
 
 Advanced testing:
@@ -218,7 +208,7 @@ Advanced testing:
   * [ ] zmx (backed by ghostty-vt)
   * [ ] pyte and friends
   * [ ] more?
-* [x] Test the set of escape sequences we emit
+* [x] Test the set of escape sequences we emit.
 * [x] Regression testing for str output and image output of examples (See
   `notes/closed/example-snapshot-tests.md`).
 
@@ -245,9 +235,25 @@ Advanced examples:
     plus special edition red/white/black color scheme?
   * [ ] Blowup kinda like https://far.in.net/blowing-up
   * [ ] 3b1b fourier analysis video plots.
+  * [ ] Markdown renderer.
 
 Longer term
 -----------
+
+Further plot enhancements:
+
+* [ ] More advanced line plots:
+  * [ ] Error bars on line plots.
+  * [ ] Fill plots.
+  * [ ] Dashed/dotted strokes (allows animated lines if we advance the start
+    index)
+* [ ] Advanced wireframes:
+  * [ ] An explicit edge list, so a mesh with shared vertices is projected once
+    per vertex rather than once per wire through it.
+  * [ ] Hidden line removal, or some depth ordering. Colouring by depth is the
+    stand-in for now.
+* [ ] Legend construction (API needs thought).
+* [ ] Better and more flexible border parameterisation.
 
 More rendering formats:
 
