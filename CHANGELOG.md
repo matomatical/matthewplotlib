@@ -16,6 +16,9 @@ Documentation:
   redirects to the newest release, and page addresses have changed to suit:
   the API reference is now at `/latest/api/`, the quickstart at
   `/latest/quickstart/`, and so on.
+* The website now carries every released version, each at its own address,
+  with a menu in the top bar for moving between them. The root redirects to
+  the newest.
 * Reorganise example page by topic.
 
 New examples:
