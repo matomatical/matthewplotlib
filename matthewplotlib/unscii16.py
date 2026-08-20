@@ -13,6 +13,24 @@ from numpy.typing import NDArray
 def bitmaps(
     codes: NDArray, # uint16[...]
 ) -> NDArray:   # bool[..., 16, 8]
+    """
+    Look up the glyph of each of a batch of unicode codepoints.
+
+    Inputs:
+
+    * codes: uint16[...].
+        Unicode codepoints.
+
+    Returns:
+
+    * bitmaps: bool[..., 16, 8].
+        The glyph for each codepoint, sixteen rows of eight pixels, true
+        wherever the glyph has ink.
+
+    Raises:
+
+    * ValueError: If any of the codepoints has no glyph in the font.
+    """
     # lookup bitmap locations
     indices = np.searchsorted(_UNSCII_16_CODES, codes)
     # check all present

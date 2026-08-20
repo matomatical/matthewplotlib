@@ -51,6 +51,14 @@ type ColorLike = (
     | tuple[float, float, float]
     | Color
 )
+"""
+Anything accepted in place of a single color.
+
+A named color or a hex string, an array or tuple of three integers from 0 to
+255, or one of three floats from 0.0 to 1.0.
+[`parse_color`][matthewplotlib.colors.parse_color] standardises each of them,
+and documents the spellings it recognises.
+"""
 
 
 type ColorSpec = (

@@ -26,15 +26,30 @@ type ContinuousColorMap = Callable[
     [ArrayLike],
     np.ndarray,
 ] # float[...] -> uint8[..., 3]
+"""
+A colormap over a continuous range, `float[...] -> uint8[..., 3]`.
+
+Turns a batch of floats in the range 0.0 to 1.0 into a batch of RGB triples of
+the same shape.
+"""
 
 
 type DiscreteColorMap = Callable[
     [ArrayLike],
     np.ndarray,
 ] # int[...] -> uint8[..., 3]
+"""
+A colormap over a fixed palette, `int[...] -> uint8[..., 3]`.
+
+Turns a batch of integer indices into a batch of RGB triples of the same shape,
+by indexing into the palette.
+"""
 
 
 type ColorMap = ContinuousColorMap | DiscreteColorMap
+"""
+Either kind of colormap, continuous or discrete.
+"""
 
 
 # # # 

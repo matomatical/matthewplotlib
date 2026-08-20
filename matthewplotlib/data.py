@@ -54,6 +54,20 @@ type Series = (
     | axis                                      # axis
     | tuple[axis, ColorSpec]                    # axis, colors
 )
+"""
+The accepted shapes for 2d point data.
+
+Any of the following, for a series of n points, where the colors are one
+`ColorSpec` for the whole series:
+
+* `number[n,2]`: An array of coordinate pairs.
+* `(number[n,2], colors)`: The same, coloured.
+* `(number[n], number[n])`: The x and y coordinates as separate sequences.
+* `(number[n], number[n], colors)`: The same, coloured.
+* `axis`: An axis, standing in for points spaced along it, with the other
+  coordinate held at zero.
+* `(axis, colors)`: The same, coloured.
+"""
 
 
 type Series3 = (
@@ -64,6 +78,20 @@ type Series3 = (
     | axis                                              # axis
     | tuple[axis, ColorSpec]                            # axis, uint8[n,rgb]
 )
+"""
+The accepted shapes for 3d point data.
+
+As `Series`, with a third coordinate:
+
+* `number[n,3]`: An array of coordinate triples.
+* `(number[n,3], colors)`: The same, coloured.
+* `(number[n], number[n], number[n])`: The three coordinates as separate
+  sequences.
+* `(number[n], number[n], number[n], colors)`: The same, coloured.
+* `axis`: An axis, standing in for points spaced along it, with the other two
+  coordinates held at zero.
+* `(axis, colors)`: The same, coloured.
+"""
 
 
 # # # 
@@ -298,18 +326,42 @@ class axis:
 
 
 class xaxis(axis):
+    """
+    A series of `n` points evenly spaced from `a` to `b` along the x
+    axis, with the y and z coordinates held at zero.
+
+    Accepted wherever a series is, so that something can be plotted against an
+    axis without building coordinates for it by hand.
+    """
+
     @property
     def xs(self) -> NDArray:
         return np.linspace(self.a, self.b, self.n)
 
 
 class yaxis(axis):
+    """
+    A series of `n` points evenly spaced from `a` to `b` along the y
+    axis, with the x and z coordinates held at zero.
+
+    Accepted wherever a series is, so that something can be plotted against an
+    axis without building coordinates for it by hand.
+    """
+
     @property
     def ys(self) -> NDArray:
         return np.linspace(self.a, self.b, self.n)
 
 
 class zaxis(axis):
+    """
+    A series of `n` points evenly spaced from `a` to `b` along the z
+    axis, with the x and y coordinates held at zero.
+
+    Accepted wherever a series is, so that something can be plotted against an
+    axis without building coordinates for it by hand.
+    """
+
     @property
     def zs(self) -> NDArray:
         return np.linspace(self.a, self.b, self.n)
