@@ -6,63 +6,15 @@ In development
 
 New:
 
-* Calendar plots and support:
-  * `calendar`: a heatmap of values observed on dates, drawing a block per
-    month with a cell per day and wrapping the months into a grid.
-  * `weeks`: the same days as one unbroken strip, a column per week and a row
-    per weekday, captioned with the months and years along the top. A `width`
-    wraps a strip too long for the terminal onto further bands, each captioned
-    again.
-  * `DateSeries`: the forms dated data arrives in, accepted by `calendar`. A
-    mapping from dates to values, separate sequences of dates and values, or one
-    date standing in for the consecutive days from there. Dates may be spelled as
-    `datetime` dates or datetimes, NumPy `datetime64`s, or ISO 8601 strings.
-* `boxes`: a box plot, one box per group of samples. The box spans the first
-  and third quartiles and is divided at the median, whiskers reach the furthest
-  sample within `whisker_iqrs` times the interquartile range of the quartiles,
-  and every sample beyond them is drawn as a point. Takes raw samples, ragged
-  groups allowed, and works the quartiles out itself.
-  * `box_direction` names the direction of one box rather than of the row of
-    them. Boxes lie flat by default, which gives the value axis both more
-    character cells and finer ones, since terminals are wider than they are
-    tall and character cells are taller than they are wide.
-  * Outlined by default, from box-drawing characters, at one position per cell.
-    `filled=True` draws each box as a solid fill instead, reaching an eighth of
-    a cell for its edges and one of three thin bands for its median, which
-    costs it a named background for the same reason `candles` needs one.
-  * `caps` and `median` can each be left off, so the intermediate settings mean
-    things too: caps without a median is a range plot.
-  * A median with no room is dropped rather than drawn about nothing, and its
-    weight is a `LineStyle`, light lying flat and heavy standing up, each being
-    the weight that matches the eighth blocks it alternates with in that
-    orientation. See `notes/box-plots.md`.
-* `candles`: a candlestick chart, one candle per period, its body spanning the
-  opening and closing values and its wick reaching out of the body to the high
-  and the low. Bodies are coloured by whether the period closed above or below
-  where it opened, and land on an eighth of a character cell; wicks are drawn
-  with the vertical lines of a `LineStyle`, and land on a half. Unlike every
-  other plot, a candlestick chart paints its own background rather than leaving
-  the terminal's showing, which is what reaching every eighth costs: half of
-  them are drawn as a background-coloured block over a body-coloured cell. See
-  `notes/candlesticks.md`.
-  * A candle is `boxes`' mark with the caps, the median and the outlying points
-    switched off, and the two share their drawing, so a candle lies either way
-    too: `candle_direction`, standing up by default. Its sizes are `length`
-    along the value axis and `body_thickness` across one body, since with the
-    orientation a parameter the screen words would name nothing fixed.
-* `table`: a grid of values, formatted into aligned columns and ruled. Takes
-  a list of dicts, a dict of lists, or a 2d array, and sizes each column to
-  what is in it.
-  * A float shows four significant figures and a column of numbers aligns
-    right so its digits line up, until a format or an alignment says otherwise,
-    given for the whole table, per column, or per column name.
-  * Each of its eight rules---`toprule`, `midrule`, `rowrule` and `bottomrule`
-    across, `leftrule`, `indexrule`, `colrule` and `rightrule` down---takes
-    `"skip"`, `"blank"`, `"single"` or `"double"` of its own, defaulting to a
-    line above, a double line under the header and a line below.
-  * Cells take colours one at a time, so a table shaded by its own values reads
-    as a heatmap whose numbers can still be read off exactly. See
-    `notes/tables.md`.
+* `heatmap`: a replacement for many uses of `image` for displaying a grid of
+  values through a colormap. It normalises the values onto the colormap rather
+  than asking the caller to scale them first. A pre-computed grid of colours,
+  or palette indices, or of values already scaled onto the range 0.0 to 1.0 can
+  still be an `image`.
+* Finally, colour bars! Any way you want them!
+  * `colorbar`: a gradient heatmap showing a range of colours.
+  * `Direction`: which way along the screen a colorbar runs. See
+    `notes/closed/colorbars.md`.
 * Vector colormaps and the plots that use them:
   * `chroma`: a colormap over the plane, turning a vector's direction into hue
     and its magnitude into brightness. Vectors may be spelled as complex
@@ -77,29 +29,48 @@ New:
     from zero to the largest by default, leaving the directions alone.
   * `cfunction2`: a domain colouring over a rectangle of the complex plane,
     sampling a complex-valued function of one complex variable.
-  * `image` already accepted array data through a colormap, so an array of
-    vectors or complex numbers can be drawn directly, and `animation` can give
-    one a time axis.
+* Calendar plots and support:
+  * `calendar`: a heatmap of values observed on dates, drawing a block per
+    month with a cell per day and wrapping the months into a grid.
+  * `weeks`: the same days as one unbroken strip, a column per week and a row
+    per weekday, captioned with the months and years along the top. A `width`
+    wraps a strip too long for the terminal onto further bands, each captioned
+    again.
+  * `DateSeries`: the forms dated data arrives in, accepted by `calendar`. A
+    mapping from dates to values, separate sequences of dates and values, or one
+    date standing in for the consecutive days from there. Dates may be spelled as
+    `datetime` dates or datetimes, NumPy `datetime64`s, or ISO 8601 strings.
+* `table`: a grid of values, formatted into aligned columns and ruled. Takes
+  a list of dicts, a dict of lists, or a 2d array, and sizes each column to
+  what is in it.
+  * A float shows four significant figures and a column of numbers aligns
+    right so its digits line up, until a format or an alignment says otherwise,
+    given for the whole table, per column, or per column name.
+  * Each of its eight rules---`toprule`, `midrule`, `rowrule` and `bottomrule`
+    across, `leftrule`, `indexrule`, `colrule` and `rightrule` down---takes
+    `"skip"`, `"blank"`, `"single"` or `"double"` of its own, defaulting to a
+    line above, a double line under the header and a line below.
+  * Cells take colours one at a time, so a table shaded by its own values reads
+    as a heatmap whose numbers can still be read off exactly. See
+    `notes/tables.md`.
+* Box plots and candle plots:
+  * `boxes`: a box plot, one box per group of samples. The box spans the first
+    and third quartiles and is divided at the median, whiskers reach the
+    furthest sample within `whisker_iqrs` times the interquartile range of the
+    quartiles, and every sample beyond them is drawn as a point. Takes raw
+    samples, ragged groups allowed, and works the quartiles out itself.
+    * Horizontal and vertical modes. Which is which? We label by the direction
+      of the box.
+    * Outlined (unicode box-drawing characters) and filled (unicode eigths).
+      Filled has slightly higher resolution but requires a solid background.
+  * `candles`: a candlestick chart, one candle per period, its body spanning
+    the opening and closing values and its wick reaching out of the body to the
+    high and the low. Bodies are coloured by whether the period closed above or
+    below where it opened, and land on an eighth of a character cell.
 * `window`: the interval of data a plot covers on each axis, and the rectangle
   of character cells it covers them with. Every 2d plot carries one, and it
   provides the conversions from data coordinates to the grids of dots and
   pixels the plots are drawn in.
-* Colour scales, and the bars that show them:
-  * `heatmap`: a grid of values, each coloured by where it falls in an interval.
-    It normalises the values onto the colormap rather than asking the caller to
-    scale them first, and keeps the interval it used, so that a colorbar can be
-    drawn over the same numbers. `function2` and `histogram2` are built on it. A grid of colours, of palette indices, or of values already scaled
-    onto the range 0.0 to 1.0 is still an `image`.
-  * `colorbar`: the gradient a colour scale is a picture of, running up, down,
-    left or right, at any length and thickness. Any plot that kept an interval
-    lends it one, so that the numbers on the bar cannot drift from the numbers
-    in the picture, and a bare interval works where there is no plot to read.
-    The colormap is named at the bar, as it is everywhere else in the library,
-    rather than assumed from the plot. Carrying one coordinate, the bar is
-    labelled along the one side that means anything and left alone on the other
-    three.
-  * `Direction`: which way along the screen a colorbar runs. See
-    `notes/closed/colorbars.md`.
 * A range given descending inverts its axis: `xrange=(1, 0)` mirrors a plot
   left to right and a descending `yrange` turns it over. The plots that place
   points and sample functions did this already, by arithmetic rather than by
