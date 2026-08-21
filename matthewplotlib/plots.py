@@ -99,7 +99,6 @@ from matthewplotlib.core import (
     unicode_braille_array,
     unicode_bar,
     unicode_col,
-    unicode_candles,
     unicode_boxes,
     unicode_image,
     unicode_braille_points,
@@ -1654,17 +1653,21 @@ class candles(plot):
         The four values of each period. Each high must be at least as large as
         the opening and closing values of its period, and each low at most as
         small, as the wick reaches out of the body rather than into it.
-    * height : int (default: 12).
-        The number of character rows the candles are drawn in.
-    * body_width : int (default 1).
-        The number of columns each body takes up. The wick runs up the middle
-        one, so an even width leaves it off centre.
+    * length : int (default: 12).
+        The number of character cells along the value axis.
+    * body_thickness : int (default 1).
+        The number of cells across each body. The wick runs along the middle
+        one, so an even thickness leaves it off centre.
     * spacing : int (default 0).
-        The number of blank columns between one candle and the next.
+        The number of blank cells between one candle and the next.
+    * candle_direction : "vertical" | "horizontal" (default: "vertical").
+        Which way one candle lies. Vertical candles stand up and march across
+        the screen, which is the way a price series is usually read and so the
+        default; horizontal candles lie flat and stack up it.
     * vrange : optional (number, number).
-        The values at the bottom and the top of the plot. By default, the
-        lowest low and the highest high, so that every candle fits. Given a
-        narrower interval, the candles outside it are clipped to it.
+        The values at the ends of the value axis. By default, the lowest low
+        and the highest high, so that every candle fits. Given a narrower
+        interval, the candles outside it are clipped to it.
     * rising : ColorLike (default: a green).
         The color of a candle that closed at or above its opening value.
     * falling : ColorLike (default: a red).
@@ -1682,14 +1685,18 @@ class candles(plot):
     * style : LineStyle (default: LineStyle.LIGHT).
         The weight of the wicks.
 
-    The plot carries its value range as a vertical coordinate and no horizontal
-    one, since the candles are a sequence of periods rather than a measured
-    axis. So `axes` labels its value axis and leaves the other three sides
-    alone.
+    The plot carries its value range on the axis its candles stand along and no
+    coordinate on the other, since the candles are a sequence of periods rather
+    than a measured axis. So `axes` labels its value axis and leaves the other
+    three sides alone.
 
     A body is positioned to the nearest eighth of a character cell and a wick
     to the nearest half. A body always keeps its true length, and a candle that
     opened and closed at the same value still shows a hairline.
+
+    A candle and a box are one mark with different switches thrown, so this is
+    `boxes` with its caps, its median and its outlying points switched off, and
+    the two share their drawing. See `notes/box-plots.md`.
     """
     def __init__(
         self,
@@ -1697,9 +1704,10 @@ class candles(plot):
         highs: ArrayLike,   # number[n]
         lows: ArrayLike,    # number[n]
         closes: ArrayLike,  # number[n]
-        height: int = 12,
-        body_width: int = 1,
+        length: int = 12,
+        body_thickness: int = 1,
         spacing: int = 0,
+        candle_direction: Literal["vertical", "horizontal"] = "vertical",
         vrange: tuple[number, number] | None = None,
         rising: ColorLike = (0.30, 0.78, 0.45),
         falling: ColorLike = (0.90, 0.32, 0.36),
@@ -1762,38 +1770,49 @@ class candles(plot):
         if wick is None:
             wick_colors = body_colors
         else:
-            wick_colors = parse_colors(wick, n=num_candles)
+            wick_colors = np.broadcast_to(
+                parse_colors(wick, n=1), (num_candles, 3)
+            )
 
-        # construct the candles
-        chars = unicode_candles(
-            opens=proportions[0],
-            highs=proportions[1],
-            lows=proportions[2],
-            closes=proportions[3],
-            height=height,
-            background=background,
-            body_colors=body_colors,
-            wick_colors=wick_colors,
-            body_width=body_width,
+        # construct the candles: an outer interval drawn thin and an inner one
+        # drawn thick, which is a box plot with its caps, median and outlying
+        # points all switched off
+        opens_p, highs_p, lows_p, closes_p = proportions
+        chars = unicode_boxes(
+            outer_los=lows_p,
+            outer_his=highs_p,
+            inner_los=np.minimum(opens_p, closes_p),
+            inner_his=np.maximum(opens_p, closes_p),
+            length=length,
+            box_colors=body_colors,
+            outer_colors=wick_colors,
+            direction=candle_direction,
+            filled=True,
+            thickness=body_thickness,
             spacing=spacing,
+            caps=False,
+            background=background,
             style=style,
         )
 
         # form a plot object
         super().__init__(chars)
+        standing = candle_direction == "vertical"
         self.window = window(
-            xrange=None,
-            yrange=(vmin, vmax),
+            xrange=None if standing else (vmin, vmax),
+            yrange=(vmin, vmax) if standing else None,
             width=chars.width,
             height=chars.height,
         )
         self.num_candles = num_candles
+        self.vmin = vmin
+        self.vmax = vmax
 
     def __repr__(self):
         return (
             f"candles(height={self.height}, width={self.width}, "
             f"values=<{self.num_candles} candles on "
-            f"[{self.window.yrange[0]:.2f},{self.window.yrange[1]:.2f}]>)"
+            f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
         )
 
 class boxes(plot):

@@ -36,6 +36,14 @@ New:
     weight is a `LineStyle`, light lying flat and heavy standing up, each being
     the weight that matches the eighth blocks it alternates with in that
     orientation. See `notes/box-plots.md`.
+  * `candles` is the same mark with the caps, the median and the points
+    switched off, and the two share their drawing. So it gains a
+    `candle_direction` of its own, and with it a horizontal form; its sizes are
+    now `length` and `body_thickness`, since with the orientation a parameter
+    the screen words no longer name anything fixed. Bodies land on the same
+    eighths as before to within one of them: sub-cells are now counted from the
+    low end of the value axis rather than the high, which shifts a body by at
+    most an eighth and never changes its length.
 * `candles`: a candlestick chart, one candle per period, its body spanning the
   opening and closing values and its wick reaching out of the body to the high
   and the low. Bodies are coloured by whether the period closed above or below

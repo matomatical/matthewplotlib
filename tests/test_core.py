@@ -18,7 +18,6 @@ from matthewplotlib.core import (
     unicode_box,
     unicode_braille_array,
     unicode_image,
-    unicode_candles,
     unicode_boxes,
     disc_offsets,
     rasterise_points,
@@ -1437,255 +1436,11 @@ class TestRasterisePoints:
 
 
 # # #
-# unicode_candles
-
-
-BODY = (255, 0, 0)
-GROUND = (0, 0, 32)
-
-
-def candle(
-    open,
-    high,
-    low,
-    close,
-    height=4,
-    body_width=1,
-    spacing=0,
-    style=LineStyle.LIGHT,
-):
-    """One candle, coloured so its body and its background can be told apart."""
-    return unicode_candles(
-        opens=np.array([open]),
-        highs=np.array([high]),
-        lows=np.array([low]),
-        closes=np.array([close]),
-        height=height,
-        background=GROUND,
-        body_colors=np.array([BODY], dtype=np.uint8),
-        body_width=body_width,
-        spacing=spacing,
-        style=style,
-    )
-
-
-def body_eighths(chars, column=0):
-    """Where the body colour lands, in eighths of a cell counted from the top.
-
-    Reads the rendered pixels rather than the characters, so that a body drawn
-    as a negative counts the same as one drawn directly. The pixel font gives
-    each cell sixteen rows, so an eighth of a cell is two of them.
-    """
-    pixels = chars.to_rgba_array()[:, :, :3]
-    painted = (pixels == np.array(BODY)).all(axis=-1)
-    rows = np.flatnonzero(painted[:, column * 8:(column + 1) * 8].any(axis=1))
-    if not len(rows):
-        return None
-    return rows.min() // 2, rows.max() // 2 + 1
-
-
-class TestUnicodeCandlesBodies:
-    """A body spans the opening and closing values, placed to the nearest
-    eighth of a character cell. Half of those eighths are only reachable by
-    drawing the block that fills what the body leaves empty and swapping the
-    colours, so these tests read pixels rather than characters."""
-
-    def test_a_body_filling_the_column_fills_every_cell(self):
-        chars = candle(open=0.0, high=1.0, low=0.0, close=1.0, height=3)
-        assert chars.to_plain_str() == "█\n█\n█"
-        assert body_eighths(chars) == (0, 24)
-
-    def test_a_body_over_the_lower_half_reaches_the_middle(self):
-        chars = candle(open=0.0, high=0.5, low=0.0, close=0.5, height=2)
-        assert body_eighths(chars) == (8, 16)
-
-    def test_a_body_growing_from_a_cell_bottom_is_a_partial_block(self):
-        chars = candle(open=0.0, high=0.25, low=0.0, close=0.25, height=1)
-        assert chars.to_plain_str() == "▂"
-        assert body_eighths(chars) == (6, 8)
-
-    def test_a_body_hanging_from_a_cell_top_is_drawn_as_a_negative(self):
-        chars = candle(open=0.75, high=1.0, low=0.75, close=1.0, height=1)
-        assert body_eighths(chars) == (0, 2)
-        # the glyph is the block filling the six eighths the body leaves empty
-        assert chars.to_plain_str() == "▆"
-        assert chars.fg_rgb[0, 0].tolist() == list(GROUND)
-        assert chars.bg_rgb[0, 0].tolist() == list(BODY)
-
-    def test_every_eighth_of_a_cell_is_reachable(self):
-        lengths = set()
-        for eighths in range(1, 9):
-            chars = candle(
-                open=0.0, high=eighths / 8, low=0.0, close=eighths / 8,
-                height=1,
-            )
-            top, bottom = body_eighths(chars)
-            lengths.add(bottom - top)
-        assert lengths == set(range(1, 9))
-
-    def test_a_body_keeps_its_length_across_a_cell_boundary(self):
-        # three eighths, straddling the boundary between two cells, so that the
-        # cell above shows a block and the cell below shows a negative
-        chars = candle(open=0.4375, high=0.625, low=0.4375, close=0.625, height=2)
-        assert chars.to_plain_str() == "▂\n▇"
-        top, bottom = body_eighths(chars)
-        assert bottom - top == 3
-
-    def test_a_body_inside_one_cell_keeps_its_length(self):
-        # two eighths, floating in the middle of a single cell
-        chars = candle(open=0.375, high=0.625, low=0.375, close=0.625, height=1)
-        top, bottom = body_eighths(chars)
-        assert bottom - top == 2
-
-    def test_a_body_inside_one_cell_shifts_to_the_nearer_edge(self):
-        # one eighth, nearer the cell's top edge than its bottom
-        chars = candle(open=0.75, high=0.875, low=0.75, close=0.875, height=1)
-        assert body_eighths(chars) == (0, 1)
-        # and one nearer the bottom
-        chars = candle(open=0.125, high=0.25, low=0.125, close=0.25, height=1)
-        assert body_eighths(chars) == (7, 8)
-
-    def test_a_body_of_no_length_still_draws_a_hairline(self):
-        chars = candle(open=0.5, high=0.9, low=0.1, close=0.5, height=2)
-        top, bottom = body_eighths(chars)
-        assert bottom - top == 1
-
-    def test_values_outside_the_column_are_clipped_into_it(self):
-        chars = candle(open=-2.0, high=3.0, low=-2.0, close=3.0, height=2)
-        assert body_eighths(chars) == (0, 16)
-
-
-class TestUnicodeCandlesWicks:
-    """A wick reaches out of the body to the high and the low. It is drawn with
-    the vertical lines of a line style, which come whole or half length, so it
-    is placed to the nearest half cell."""
-
-    def test_a_wick_spans_the_cells_between_the_high_and_the_low(self):
-        # the body sits in the top cell, leaving the rest of the column to the
-        # wick reaching down to the low
-        chars = candle(open=1.0, high=1.0, low=0.0, close=1.0, height=4)
-        assert chars.to_plain_str().splitlines()[1:] == ["│", "│", "│"]
-
-    def test_a_wick_reaching_half_a_cell_is_a_half_length_line(self):
-        upper = candle(open=1.0, high=1.0, low=0.375, close=1.0, height=4)
-        assert upper.to_plain_str().splitlines()[2] == "╵"
-        lower = candle(open=0.0, high=0.625, low=0.0, close=0.0, height=4)
-        assert lower.to_plain_str().splitlines()[1] == "╷"
-
-    def test_a_wick_takes_the_weight_of_its_style(self):
-        chars = candle(
-            open=1.0, high=1.0, low=0.0, close=1.0, height=4,
-            style=LineStyle.HEAVY,
-        )
-        assert chars.to_plain_str().splitlines()[1:] == ["┃", "┃", "┃"]
-
-    def test_a_body_is_drawn_over_the_wick_it_shares_a_cell_with(self):
-        chars = candle(open=0.0, high=1.0, low=0.0, close=1.0, height=2)
-        assert "│" not in chars.to_plain_str()
-
-
-class TestUnicodeCandlesLayout:
-    """Candles sit side by side, each as wide as its body, with the wick up the
-    middle column and any spacing left blank between one candle and the next."""
-
-    def test_the_width_counts_the_bodies_and_the_gaps_between_them(self):
-        chars = unicode_candles(
-            opens=np.zeros(4),
-            highs=np.ones(4),
-            lows=np.zeros(4),
-            closes=np.ones(4),
-            height=2,
-            background=GROUND,
-            body_colors=np.full((4, 3), 255, dtype=np.uint8),
-            body_width=3,
-            spacing=2,
-        )
-        assert chars.width == 4 * 5 - 2
-        assert chars.height == 2
-
-    def test_a_body_covers_every_column_of_its_candle(self):
-        chars = candle(
-            open=0.0, high=1.0, low=0.0, close=1.0, height=1, body_width=3,
-        )
-        assert chars.to_plain_str() == "███"
-
-    def test_a_wick_runs_up_the_middle_column(self):
-        chars = candle(
-            open=0.5, high=1.0, low=0.0, close=0.5, height=2, body_width=3,
-        )
-        assert chars.to_plain_str().splitlines()[0] == " │ "
-
-    def test_spacing_is_left_blank(self):
-        chars = unicode_candles(
-            opens=np.zeros(2),
-            highs=np.ones(2),
-            lows=np.zeros(2),
-            closes=np.ones(2),
-            height=1,
-            background=GROUND,
-            body_colors=np.full((2, 3), 255, dtype=np.uint8),
-            spacing=2,
-        )
-        assert chars.to_plain_str() == "█  █"
-
-    def test_each_candle_keeps_its_own_colour_across_its_columns(self):
-        # three candles, two columns each, one column of spacing between them
-        chars = unicode_candles(
-            opens=np.zeros(3),
-            highs=np.ones(3),
-            lows=np.zeros(3),
-            closes=np.ones(3),
-            height=1,
-            background=GROUND,
-            body_colors=np.array(
-                [[255, 0, 0], [0, 255, 0], [0, 0, 255]], dtype=np.uint8,
-            ),
-            body_width=2,
-            spacing=1,
-        )
-        assert chars.to_plain_str() == "██ ██ ██"
-        painted = [tuple(color) for color in chars.fg_rgb[0]]
-        assert painted[0:2] == [(255, 0, 0)] * 2
-        assert painted[3:5] == [(0, 255, 0)] * 2
-        assert painted[6:8] == [(0, 0, 255)] * 2
-
-    def test_no_candles_at_all(self):
-        chars = unicode_candles(
-            opens=np.zeros(0),
-            highs=np.zeros(0),
-            lows=np.zeros(0),
-            closes=np.zeros(0),
-            height=3,
-            background=GROUND,
-            body_colors=np.zeros((0, 3), dtype=np.uint8),
-        )
-        assert chars.height == 3
-        assert chars.to_plain_str() == " \n \n "
-
-    def test_the_background_is_painted_behind_every_cell(self):
-        chars = candle(open=0.5, high=0.6, low=0.4, close=0.5, height=3)
-        assert chars.bg.all()
-
-    @pytest.mark.parametrize("height,body_width,spacing", [
-        (0, 1, 0),
-        (1, 0, 0),
-        (1, 1, -1),
-    ])
-    def test_a_rectangle_needs_positive_dimensions(
-        self, height, body_width, spacing,
-    ):
-        with pytest.raises(ValueError):
-            candle(
-                open=0.0, high=1.0, low=0.0, close=1.0,
-                height=height, body_width=body_width, spacing=spacing,
-            )
-
-
-# # #
 # unicode_boxes
 
 
 MARK = (255, 0, 0)
+GROUND = (0, 0, 32)
 
 
 def box(
@@ -1853,6 +1608,57 @@ class TestUnicodeBoxesFilled:
             lengths.add(high - low)
         assert lengths == set(range(1, 9))
 
+    def test_a_fill_keeps_its_length_across_a_cell_boundary(self):
+        # three eighths, straddling the boundary between two cells, so that one
+        # cell shows a block and the other shows a negative
+        chars = box(
+            inner_lo=0.4375, inner_hi=0.625, length=2, filled=True,
+            thickness=1,
+        )
+        assert chars.to_plain_str() == "▉▎"
+        low, high = mark_eighths(chars)
+        assert high - low == 3
+
+    def test_a_fill_inside_one_cell_keeps_its_length(self):
+        # two eighths, floating in the middle of a single cell
+        chars = box(
+            inner_lo=0.375, inner_hi=0.625, length=1, filled=True, thickness=1,
+        )
+        low, high = mark_eighths(chars)
+        assert high - low == 2
+
+    def test_a_fill_inside_one_cell_shifts_to_the_nearer_edge(self):
+        # one eighth, nearer the cell's high edge than its low
+        chars = box(
+            inner_lo=0.75, inner_hi=0.875, length=1, filled=True, thickness=1,
+        )
+        assert mark_eighths(chars) == (7, 8)
+        # and one nearer the low edge
+        chars = box(
+            inner_lo=0.125, inner_hi=0.25, length=1, filled=True, thickness=1,
+        )
+        assert mark_eighths(chars) == (0, 1)
+
+    def test_a_fill_of_no_length_still_draws_a_hairline(self):
+        # no caps, so that the only thing painted is the fill
+        chars = box(
+            inner_lo=0.5, inner_hi=0.5, length=2, filled=True, thickness=1,
+            caps=False,
+        )
+        low, high = mark_eighths(chars)
+        assert high - low == 1
+
+    def test_values_outside_the_axis_are_clipped_into_it(self):
+        chars = box(
+            outer_lo=-2.0, outer_hi=3.0, inner_lo=-2.0, inner_hi=3.0,
+            length=2, filled=True, thickness=1,
+        )
+        assert mark_eighths(chars) == (0, 16)
+
+    def test_the_background_is_painted_behind_every_cell(self):
+        chars = box(inner_lo=0.4, inner_hi=0.6, length=6, filled=True)
+        assert chars.bg.all()
+
     def test_a_thickness_of_one_is_allowed(self):
         chars = box(inner_lo=0.0, inner_hi=1.0, length=3, filled=True,
                     thickness=1)
@@ -1881,6 +1687,74 @@ class TestUnicodeBoxesFilled:
                 length=4, box_colors=None,
                 filled=True, thickness=1, background=GROUND,
             )
+
+
+class TestUnicodeBoxesOuterInterval:
+    """The outer interval is a thin line along the middle of the mark, drawn
+    with the lines of a line style. Those come whole or half length, so it
+    lands on the nearest half cell, and a filled mark's fill is drawn over it.
+    """
+
+    def _reaching(self, **kwargs):
+        # a fill in the first cell only, so the rest of the axis is the line
+        return box(
+            inner_lo=0.0, inner_hi=0.25, length=4, thickness=1, filled=True,
+            caps=False, **kwargs,
+        )
+
+    def test_the_line_spans_the_cells_between_the_ends(self):
+        assert self._reaching(outer_lo=0.0, outer_hi=1.0).to_plain_str() == (
+            "█───"
+        )
+
+    def test_a_line_reaching_half_a_cell_is_a_half_length_line(self):
+        assert self._reaching(outer_lo=0.0, outer_hi=0.875).to_plain_str() == (
+            "█──╴"
+        )
+
+    def test_the_line_takes_the_weight_of_its_style(self):
+        chars = self._reaching(
+            outer_lo=0.0, outer_hi=0.875, style=LineStyle.HEAVY,
+        )
+        assert chars.to_plain_str() == "█━━╸"
+
+    def test_the_line_runs_along_the_middle_of_the_thickness(self):
+        chars = box(
+            outer_lo=0.0, outer_hi=1.0, inner_lo=0.0, inner_hi=0.25,
+            length=4, thickness=3, filled=True, caps=False,
+        )
+        assert chars.to_plain_str().splitlines() == ["█   ", "█───", "█   "]
+
+    def test_the_line_takes_a_colour_of_its_own(self):
+        chars = unicode_boxes(
+            outer_los=np.zeros(1), outer_his=np.ones(1),
+            inner_los=np.zeros(1), inner_his=np.full(1, 0.25),
+            length=4,
+            box_colors=np.array([[255, 0, 0]], dtype=np.uint8),
+            outer_colors=np.array([[0, 0, 255]], dtype=np.uint8),
+            thickness=1, filled=True, caps=False, background=GROUND,
+        )
+        painted = [tuple(color) for color in chars.fg_rgb[0]]
+        assert painted[0] == (255, 0, 0)
+        assert painted[1:] == [(0, 0, 255)] * 3
+
+    def test_the_line_takes_the_mark_colour_by_default(self):
+        chars = self._reaching(outer_lo=0.0, outer_hi=1.0)
+        painted = [tuple(color) for color in chars.fg_rgb[0]]
+        assert painted == [MARK] * 4
+
+    def test_an_outlined_mark_gives_the_line_its_own_colour_too(self):
+        chars = unicode_boxes(
+            outer_los=np.zeros(1), outer_his=np.ones(1),
+            inner_los=np.full(1, 0.5), inner_his=np.ones(1),
+            length=4,
+            box_colors=np.array([[255, 0, 0]], dtype=np.uint8),
+            outer_colors=np.array([[0, 0, 255]], dtype=np.uint8),
+            thickness=3, caps=False,
+        )
+        # the line has the first cell to itself; the second is the outline's
+        assert tuple(chars.fg_rgb[1, 0]) == (0, 0, 255)
+        assert tuple(chars.fg_rgb[1, 2]) == (255, 0, 0)
 
 
 class TestUnicodeBoxesInteriorBands:

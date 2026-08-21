@@ -51,22 +51,22 @@ def walk(
 def main(
     periods: int = 56,
     seed: int = 11,
-    height: int = 14,
-    body_width: int = 1,
+    length: int = 14,
+    body_thickness: int = 1,
     spacing: int = 0,
     save: str | None = None,
 ):
     """A candlestick chart of a simulated price series.
 
-    One column to a period by default. Widen the bodies with `body_width` and
-    part them with `spacing` for a chart of fewer periods.
+    One column to a period by default. Widen the bodies with `body_thickness`
+    and part them with `spacing` for a chart of fewer periods.
     """
     series = walk(periods=periods, seed=seed)
     plot = mp.axes(
         mp.candles(
             **series,
-            height=height,
-            body_width=body_width,
+            length=length,
+            body_thickness=body_thickness,
             spacing=spacing,
         ),
         title=f"a random walk over {periods} periods",

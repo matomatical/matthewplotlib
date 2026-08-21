@@ -1227,29 +1227,29 @@ class TestCandles:
         assert self.chart().window.xrange is None
 
     def test_axes_labels_the_value_axis_and_leaves_the_rest_alone(self):
-        lines = axes(self.chart(height=4)).chars.to_plain_str().splitlines()
+        lines = axes(self.chart(length=4)).chars.to_plain_str().splitlines()
         # a gutter of labels down the left, one rule beside it, and no row of
         # labels underneath
         assert len(lines) == 4
         assert [line[:5] for line in lines] == ["13.0┐", "    │", "    │", " 9.5┘"]
 
     def test_the_rectangle_is_one_column_per_candle_by_default(self):
-        plot = self.chart(height=5)
+        plot = self.chart(length=5)
         assert (plot.height, plot.width) == (5, 4)
 
     def test_bodies_and_spacing_widen_the_rectangle(self):
-        plot = self.chart(height=5, body_width=3, spacing=1)
+        plot = self.chart(length=5, body_thickness=3, spacing=1)
         assert plot.width == 4 * 4 - 1
 
     def test_a_rising_candle_takes_the_rising_colour(self):
-        plot = self.chart(height=4, rising=(1.0, 0.0, 0.0))
+        plot = self.chart(length=4, rising=(1.0, 0.0, 0.0))
         column = plot.chars.fg_rgb[:, 0]
         drawn = column[plot.chars.fg[:, 0]]
         assert (drawn == np.array([255, 0, 0])).all(axis=-1).any()
 
     def test_a_falling_candle_takes_the_falling_colour(self):
         # the third period opened at 12.0 and closed at 11.5
-        plot = self.chart(height=4, falling=(0.0, 0.0, 255))
+        plot = self.chart(length=4, falling=(0.0, 0.0, 255))
         column = plot.chars.fg_rgb[:, 2]
         drawn = column[plot.chars.fg[:, 2]]
         assert (drawn == np.array([0, 0, 255])).all(axis=-1).any()
@@ -1260,7 +1260,7 @@ class TestCandles:
             highs=np.array([2.0]),
             lows=np.array([0.0]),
             closes=np.array([1.0]),
-            height=4,
+            length=4,
             rising=(1.0, 0.0, 0.0),
             falling=(0.0, 0.0, 1.0),
         )
@@ -1269,25 +1269,25 @@ class TestCandles:
         assert not (drawn == np.array([0, 0, 255])).all(axis=-1).any()
 
     def test_a_wick_takes_its_body_colour_by_default(self):
-        plot = self.chart(height=6, rising=(1.0, 0.0, 0.0))
+        plot = self.chart(length=6, rising=(1.0, 0.0, 0.0))
         # the first candle rose, so its wick is drawn in the rising colour
         wicks = np.isin(plot.chars.codes[:, 0], [ord("│"), ord("╵"), ord("╷")])
         assert wicks.any()
         assert (plot.chars.fg_rgb[wicks, 0] == np.array([255, 0, 0])).all()
 
     def test_a_wick_colour_applies_to_every_wick(self):
-        plot = self.chart(height=6, wick=(1.0, 1.0, 1.0))
+        plot = self.chart(length=6, wick=(1.0, 1.0, 1.0))
         wicks = np.isin(plot.chars.codes, [ord("│"), ord("╵"), ord("╷")])
         assert wicks.any()
         assert (plot.chars.fg_rgb[wicks] == 255).all()
 
     def test_the_background_is_painted_behind_the_whole_rectangle(self):
-        plot = self.chart(height=5, background=(0.0, 0.0, 0.0))
+        plot = self.chart(length=5, background=(0.0, 0.0, 0.0))
         assert plot.chars.bg.all()
         assert (plot.chars.bg_rgb[~plot.chars.fg] == 0).all()
 
     def test_a_narrower_vrange_clips_the_candles_into_it(self):
-        plot = self.chart(height=4, vrange=(12.0, 13.0))
+        plot = self.chart(length=4, vrange=(12.0, 13.0))
         assert plot.window.yrange == (12.0, 13.0)
         # the first candle traded entirely below the range, so all four of its
         # values clip to the bottom and it is drawn in the bottom row alone
@@ -1349,7 +1349,7 @@ class TestCandles:
             )
 
     def test_a_repr_names_the_candles_and_their_range(self):
-        assert repr(self.chart(height=4)) == (
+        assert repr(self.chart(length=4)) == (
             "candles(height=4, width=4, values=<4 candles on [9.50,13.00]>)"
         )
 

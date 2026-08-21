@@ -213,6 +213,43 @@ the box plot makes. `candles` is safe to refactor --- 44 unit tests and an
 example snapshot fence its behaviour, and it is unreleased, so its signature is
 still free to change.
 
+## What was shared, in the end
+
+Built on 2026-08-21, in that order. `unicode_boxes` draws the general mark and
+both plots are settings of it: `boxes` turns every switch on, `candles` passes
+its low and high as the outer interval, its open and close as the inner one, and
+switches the caps, the interior mark and the points off. `unicode_candles` and
+its four helpers are gone, their behaviour absorbed and their tests retargeted.
+
+The prediction held. Of the candlestick machinery, the fill was reused almost
+verbatim --- eighths of a cell, half of them drawn as negatives --- and so was
+the half-cell outer interval, while everything the outlined mode needed was new,
+which is the dependency that made building the box plot first the right order.
+
+One thing the candlestick wanted that the box plot had not asked for: a colour of
+its own for the outer interval, since `candles` lets every wick be drawn in one
+neutral colour whatever its body. That is `outer_colors`. In a filled mark it is
+a pass of its own; in an outlined mark it colours only the cells the outer
+interval has to itself, the ones it shares with the outline going to the mark's
+own colour, because a cell shows one colour and the structural part is the one
+worth keeping.
+
+The 19 tests over the `candles` plot passed unmodified apart from the two
+renamed parameters, which is what they were there for. One behavioural change
+survived them, and it is worth recording because it is not a bug: sub-cells are
+now counted from the low end of the value axis where `unicode_candles` counted
+from the high end. Over 200000 random intervals that shifts about 2% of them,
+always by exactly one eighth and never changing a length; a zero-length body
+shifts almost always, again by one eighth, because the eighth it rounds into is
+now the one above the value rather than the one below. Both sit inside the
+"nearest eighth" the docstring promises. One candle in the example snapshot moved
+by a cell as a result.
+
+`candles` also picked up the horizontal form the design said it would get for
+nothing, which cost it `height` and `body_width`: with the orientation a
+parameter rather than a fact, the screen words no longer name anything fixed, so
+it spells its sizes `length`, `body_thickness` and `spacing` like `boxes` does.
+
 ## The names, settled
 
 Fixed on 2026-08-21.
