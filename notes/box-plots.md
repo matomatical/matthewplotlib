@@ -1,7 +1,9 @@
 # Box plots, and candles as one of them
 
 Designed 2026-08-20 by MFR and Claude (Opus 5), in conversation, written up by
-Claude. Agreed between us; none of it is built. The measurements are Claude's
+Claude. The questions it left open were settled and the names fixed in a second
+conversation on 2026-08-21, and building started from there; the sections marked
+below carry that second round. Agreed between us. The measurements are Claude's
 and are reproducible from the snippets at the end. `candles` exists already and
 this design absorbs it.
 
@@ -57,6 +59,52 @@ vertical ones. Box plots usually have a handful of groups and want the quartiles
 readable, so the trade goes this way; `candles` has many periods and short
 bodies, so its default goes the other way.
 
+## How the two orientations are drawn
+
+Added 2026-08-21.
+
+The two orientations share their arithmetic and differ only in which glyphs they
+spend it on. Everything is computed in orientation-neutral integers --- sub-cell
+positions along the value axis, whole cells across the thickness, arm masks for
+rules, counts of eighths for fills --- and the glyphs are chosen last, from a
+table per orientation:
+
+|                      | boxes lying flat        | boxes standing up     |
+|----------------------|-------------------------|-----------------------|
+| filled interval      | `PARTIAL_BLOCKS_ROW`    | `PARTIAL_BLOCKS_COL`  |
+| thin interval, caps  | arm bits left and right | arm bits up and down  |
+| interior mark        | `▏│▕`                   | `▔─▁`                 |
+
+An outlined box is the one piece that is genuinely two-dimensional, since a
+corner reaches two ways at once. It gets its arm mask built as a small 2d array
+and transposed by permuting the arm bits before a `LineStyle` is indexed by it,
+which is exact and needs no table, because every style carries all sixteen
+combinations.
+
+**Rejected: drawing in one orientation and rotating the character array.** A
+rotation by a quarter turn clockwise sends each cell's bottom edge to its left
+edge, and Unicode has bottom-anchored eighths and left-anchored eighths, so
+`▁▂…█` maps onto `▏▎…█` and increasing-upward maps onto increasing-rightward,
+which is what the other orientation wants. It would have let one drawing routine
+serve both. It fails because character cells are not square, so a quarter turn
+is not an isometry of the marks:
+
+* the interior mark's three positions are three uniform eighths of a cell
+  standing up (`▔─▁`, two pixels of sixteen each) and three uneven ones lying
+  flat (`▏│▕`, one, two and one of eight), so a rotated median arrives with its
+  middle position at twice the weight of its edges;
+* the thin interval is a hairline an eighth of a cell thick as `─` and a stroke
+  a quarter of a cell thick as `│`, so the thin-against-thick contrast that is
+  the whole grammar of the mark comes out at a different ratio each way;
+* the eighths themselves quantise at two pixels standing up and one lying flat.
+
+It was also a smaller saving than it looked. The glyph-choosing helpers differ
+by a constant apiece --- which block table, which pair of arm bits --- against a
+rotation needing a codepoint translation table. And the table above is the thing
+a rotation would have forbidden: with the orientations parameterised rather than
+derived, details are free to differ where the cell shape says they must, which
+is what lets the interior mark default to a different weight each way.
+
 ## Filled or outlined
 
 Both, chosen by a parameter, defaulting to **outlined**.
@@ -90,8 +138,10 @@ Measured in the bundled font, the thin bands available inside one cell:
     ▁ U+2581 lower one eighth   rows 14-15     ▕ U+2595 right one eighth  col  7
 
 So a median has **three positions per character cell**: against the cell's near
-edge, in the middle, against its far edge. The two sets mirror each other, so
-the mechanism is the same whichever way the box lies.
+edge, in the middle, against its far edge. The two sets mirror each other in
+where the three positions fall, so the mechanism is the same whichever way the
+box lies; they do not mirror each other in weight, which is what the choice of
+`LineStyle` below is about.
 
 That leaves filled boxes at eighths for their edges and thirds for their median.
 The mismatch is mild and in the tolerable direction: over a box four cells long
@@ -105,15 +155,35 @@ would be a line about nothing. `candles` already does this with the wick that
 disappears into the cell holding a body edge, so it is a precedent and not a new
 exception.
 
-**The median's weight should be a `LineStyle`, not a fixed choice.** The pairing
-of the mid-cell line against the eighth slivers is not the same in every font.
-In `unscii16` the horizontal set is exactly matched, all three bands two pixels
-of sixteen, while the vertical mid-cell line is two pixels against the slivers'
-one and there is nothing lighter to reach for. In an ordinary terminal font the
-discrepancy runs the other way, `─` being a hairline where an eighth block is a
-bar. Since `axes` and the candle wicks already take a `LineStyle`, so should
-this, and the default should be chosen by looking at it in a real terminal
-rather than derived from either font alone.
+**The median's weight is a `LineStyle`, light lying flat and heavy standing
+up.** Only the middle of the three positions is a line glyph; the two at the
+cell's edges are eighth blocks and cannot be styled. So the weight is not a
+matter of taste: the median has to read as the same mark at all three of its
+positions as it slides between them, which means the line has to match the
+slivers it alternates with.
+
+Measured in `unscii16`, against the eighth blocks the median lands on at a
+cell's edges:
+
+    standing box, band across a 16px cell    flat box, band across an 8px cell
+      ▔  2px            slivers                ▏  1px            slivers
+      ─  2px    LIGHT                          │  2px    LIGHT
+      ━  4px    HEAVY                          ┃  4px    HEAVY
+      ▁  2px            slivers                ▕  1px            slivers
+
+A flat box is forced: light already overshoots the slivers two to one and there
+is nothing lighter to reach for. A standing box is the only orientation where
+the choice is live, and there the two fonts disagree. `unscii16` matches light
+exactly and doubles it at heavy, so a heavy median visibly fattens whenever it
+lands mid-cell rather than on a cell edge. An ordinary terminal font inverts the
+ratio, `─` being a hairline where an eighth of a cell is a bar, so there light
+is the one that flickers and heavy is the match.
+
+The default serves the terminal, because that is where plots are read;
+`unscii16` only surfaces in image export, so the exported images and the
+documentation carry the mismatch instead. There is no middle setting to escape
+into: `ROUND` is light's weight on a straight run, and `DOUBLE` draws two bands,
+which is a different mark.
 
 ## Statistics
 
@@ -122,12 +192,16 @@ the quantiles computed for you. This matches `histogram`, which takes values and
 bins them. Accepting precomputed five-number summaries can come later if
 something wants it.
 
-Whiskers take a parameter, `whis`, defaulting to `1.5`: Tukey's rule, whiskers
-reaching the furthest sample within 1.5 times the interquartile range of the
-quartiles, with everything beyond drawn individually as outlier points.
-`whis=None` gives min-to-max whiskers and no outliers. The default draws marks
-some readers will not expect, which is accepted because it is the standard and
-because the outliers are usually the informative part.
+Whiskers take a parameter, `whisker_iqrs`, defaulting to `1.5`: Tukey's rule,
+whiskers reaching the furthest sample within 1.5 times the interquartile range
+of the quartiles, with everything beyond drawn individually as outlier points.
+`whisker_iqrs=None` gives min-to-max whiskers and no outliers. The default draws
+marks some readers will not expect, which is accepted because it is the standard
+and because the outliers are usually the informative part.
+
+Matplotlib spells this parameter `whis`. That name is not carried over: it
+abbreviates heavily, and it abbreviates the wrong noun, since the number is a
+multiple of the interquartile range rather than a property of the whiskers.
 
 ## Order of work, and why
 
@@ -139,18 +213,30 @@ the box plot makes. `candles` is safe to refactor --- 44 unit tests and an
 example snapshot fence its behaviour, and it is unreleased, so its signature is
 still free to change.
 
-## Still open
+## The names, settled
 
-* **The size vocabulary.** `width` and `height` cannot survive a parameterised
-  orientation, since each would mean a different thing per setting. Proposed:
-  `length` along the value axis, `thickness` across one mark, `spacing`
-  between marks. `length` is the unloved one; `extent` and `span` are the
-  alternatives. A fixed-orientation preset like `candles` may be better off
-  keeping `height` and `body_width` at its own call sites, on the grounds that
-  once the orientation is known the screen words are the clearer ones.
-* **What `candles` calls `box_direction`,** given a candle is not a box.
-* **The class name:** `boxes`, `boxplot`, or `whiskers`.
-* **The default median weight,** per the paragraph above.
+Fixed on 2026-08-21.
+
+The class is **`boxes`**, matching the plural nouns the other repeated-mark
+plots go by, `bars` and `columns` and `candles`, and leaving `boxplot` and
+`whiskers` unclaimed.
+
+The sizes are **`length`** along the value axis, **`box_thickness`** across one
+box and **`box_spacing`** between them. That maps exactly onto what `bars`
+already does --- one plot-wide dimension, then the mark's own dimension and gap
+prefixed by the mark --- so `width`, `bar_height`, `bar_spacing` becomes
+`length`, `box_thickness`, `box_spacing`. `extent` and `span` were the
+alternatives to `length` and both read worse, `span` especially, in a plot made
+of spans.
+
+`candles` spells its orientation **`candle_direction`**, so the concept is
+spelled twice. The alternative was a bare `direction` shared by both, and the
+argument against it is the one that named `box_direction` in the first place:
+`direction="horizontal"` alone does not say whether it describes the mark or the
+row of them.
+
+Outliers are drawn as `·`, and whether they appear follows from `whisker_iqrs`
+rather than a switch of their own.
 
 ## Not in this design
 
