@@ -60,15 +60,24 @@ def main(save: str | None = None):
 
     # TODO: log scale
 
-    # Histogram 2d, linear colour scale
-    plot3 = mp.border(mp.histogram2(
+    # Histogram 2d, linear colour scale, with a bar to read the colours by.
+    # The bar runs along underneath, so the panel is as wide as the two above.
+    hist = mp.histogram2(
         x=X.ravel(),
         y=Y.ravel(),
         width=78,
         height=11,
         colormap=mp.plasma,
-    ))
-    # TODO: colorbar
+    )
+    plot3 = mp.vstack(
+        mp.border(hist),
+        mp.axes(
+            mp.colorbar(hist, direction="right", length=80),
+            south="label",
+            xlabel="count",
+            xfmt="{x:.0f}",
+        ),
+    )
     print(plot3)
 
     if save:

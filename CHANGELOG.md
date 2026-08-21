@@ -96,6 +96,13 @@ Changed:
   nothing else it could mean.
 * A `heatmap` value that is not a number is left out of an inferred interval,
   and comes out at the bottom of the colormap wherever it appears.
+* The examples that had values on a colour scale draw them with `heatmap`,
+  rather than scaling them into the unit interval by hand first. The ones
+  drawing colours, or palette indices for a discrete colormap, still use
+  `image`, which is what it is for.
+* `time_series_histogram.py` gives its 2d histogram the colorbar it had a
+  standing TODO for, along the foot of the panel so that all three panels stay
+  the same width.
 
 Fixed:
 

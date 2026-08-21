@@ -15,7 +15,7 @@ def main(save: str | None = None):
     np.random.seed(42)
     u = np.random.rand(size**2).reshape(size,size)
     i = np.eye(size)
-    g = np.clip(np.random.normal(size=(size, size)) + 3, 0, 6) / 6
+    g = np.clip(np.random.normal(size=(size, size)) + 3, 0, 6)
     plot = (
         mp.border(
             mp.center(mp.text("G'day matthewplotlib"), height=3, width=46),
@@ -23,24 +23,24 @@ def main(save: str | None = None):
         )
         |
         mp.border(
-            mp.text("uniform:") | mp.image(u, colormap=mp.reds),
+            mp.text("uniform:") | mp.heatmap(u, colormap=mp.reds, vrange=(0, 1)),
             style=mp.BoxStyle.LIGHT,
         ) + mp.border(
-            mp.text("identity:") | mp.image(i, colormap=mp.greens),
+            mp.text("identity:") | mp.heatmap(i, colormap=mp.greens, vrange=(0, 1)),
             style=mp.BoxStyle.HEAVY,
         ) + mp.border(
-            mp.text("gaussian:") | mp.image(g, colormap=mp.blues),
+            mp.text("gaussian:") | mp.heatmap(g, colormap=mp.blues, vrange=(0, 6)),
             style=mp.BoxStyle.DOUBLE,
         )
         |
         mp.border(
-            mp.text("uniform:") | mp.image(u, colormap=mp.yellows),
+            mp.text("uniform:") | mp.heatmap(u, colormap=mp.yellows, vrange=(0, 1)),
             style=mp.BoxStyle.ROUND,
         ) + mp.border(
-            mp.text("identity:") | mp.image(i, colormap=mp.cyber),
+            mp.text("identity:") | mp.heatmap(i, colormap=mp.cyber, vrange=(0, 1)),
             style=mp.BoxStyle.BLANK,
         ) + mp.border(
-            mp.text("gaussian:") | mp.image(g, colormap=mp.cyans),
+            mp.text("gaussian:") | mp.heatmap(g, colormap=mp.cyans, vrange=(0, 6)),
             style=mp.BoxStyle.BUMPER,
         )
         |
