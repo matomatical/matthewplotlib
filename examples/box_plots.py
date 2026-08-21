@@ -75,9 +75,15 @@ def main(
     length: int = 56,
     box_thickness: int = 3,
     box_spacing: int = 1,
+    filled: bool = False,
     save: str | None = None,
 ):
-    """A box plot of four distributions with the same quartiles."""
+    """A box plot of four distributions with the same quartiles.
+
+    `--filled` draws the boxes as solid fills instead of outlines, which places
+    their edges to an eighth of a character cell rather than a whole one, at the
+    cost of painting the plot's own background.
+    """
     groups = shapes(samples=samples, seed=seed)
     palette = ["#7fb3d5", "#7dcea0", "#f5b041", "#e59866"]
 
@@ -95,9 +101,9 @@ def main(
                 length=length,
                 box_thickness=box_thickness,
                 box_spacing=box_spacing,
+                filled=filled,
                 colors=palette,
             ),
-            title="same quartiles, four different shapes",
             xlabel="value",
         ),
     )
