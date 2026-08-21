@@ -57,9 +57,10 @@ def banner(n: int, title: str, expect: str) -> None:
 def ramp(width: int, height: int, phase: float) -> mp.plot:
     """A smooth two-dimensional colour ramp, which banding shows up in."""
     ys, xs = np.mgrid[0:height, 0:width]
-    return mp.image(
+    return mp.heatmap(
         (xs / max(width - 1, 1) + ys / max(height - 1, 1) + phase) % 1.0,
         colormap=mp.viridis,
+        vrange=(0.0, 1.0),
     )
 
 

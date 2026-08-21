@@ -15,6 +15,7 @@ Data plots:
 * `line`
 * `line3`
 * `image`
+* `heatmap`
 * `function2`
 * `vfunction2`
 * `cfunction2`
@@ -36,6 +37,7 @@ Furnishing plots:
 * `text`
 * `border`
 * `axes`
+* `colorbar`
 
 Arrangement plots:
 
@@ -65,10 +67,9 @@ from PIL import Image
 from typing import Any, Callable, Literal, NamedTuple, Self, cast
 from collections.abc import Mapping, Sequence
 from numpy.typing import ArrayLike, NDArray
+from numbers import Number
 from matthewplotlib.colormaps import ColorMap, chroma, domain
 from matthewplotlib.colors import ColorLike, parse_color, parse_colors
-from numbers import Number
-
 from matthewplotlib.data import (
     number,
     Series,
@@ -760,6 +761,10 @@ class image(plot):
     pixel rows leaves the bottom half of its last row blank. Such an image
     cannot be given coordinates, since its rectangle would claim half a cell
     more than the picture covers.
+
+    A grid of values on any other scale is a `heatmap`, which normalises them
+    onto this one and keeps the interval it used, so that the picture can be
+    given a colorbar over the same numbers.
     """
     def __init__(
         self,
@@ -796,6 +801,127 @@ class image(plot):
         return f"image({self.window!r})"
 
 
+def _value_range(
+    vrange: tuple[number, number] | None,
+    values: NDArray,
+    what: str,
+) -> tuple[number, number]:
+    """
+    The interval of values a colour scale covers.
+
+    Given, it is taken as it stands, and one covering no interval is an error.
+    Omitted, it runs from the lowest to the highest finite value there is, so
+    that the colours span the data, and falls back to the unit interval where
+    there are no finite values at all. `what` names the caller in the error.
+    """
+    if vrange is not None:
+        vmin, vmax = vrange
+        if vmin == vmax:
+            raise ValueError(f"{what} vrange covers no interval: {vrange!r}")
+        return (vmin, vmax)
+    finite = values[np.isfinite(values)]
+    if finite.size == 0:
+        return (0.0, 1.0)
+    return (finite.min(), finite.max())
+
+
+def _normalise(
+    values: NDArray,
+    vrange: tuple[number, number],
+) -> NDArray: # float[...]
+    """
+    How far along an interval each value lies, saturating at its ends.
+
+    Runs 0.0 to 1.0 from the first limit to the second, so that an interval
+    given descending turns the scale around. Where the interval covers
+    nothing---which only an inferred one does, over values that are all the
+    same---everything comes out at the bottom, and so does any value that is
+    not a number.
+    """
+    vmin, vmax = vrange
+    if vmin == vmax:
+        return np.zeros(values.shape, dtype=float)
+    scaled = np.clip((values - vmin) / (vmax - vmin), 0., 1.)
+    return np.where(np.isnan(scaled), 0., scaled)
+
+
+class heatmap(image):
+    """
+    Render a grid of values, colouring each by where it falls in an interval.
+
+    The values are normalised onto the range 0.0 to 1.0 and handed to a
+    colormap, so that the caller does not scale them by hand and the colours
+    mean the same thing from one plot to the next. The interval is kept as
+    `vrange`, so that a `colorbar` can be drawn over the same numbers.
+
+    Inputs:
+
+    * values : number[h, w].
+        The value at each pixel, the first row at the top.
+    * colormap : optional ColorMap.
+        Maps each normalised value onto its colour. By default the values come
+        out as shades of grey, black at the bottom of the interval and white
+        at the top.
+    * vrange : optional (number, number).
+        The interval of values the colormap covers. Values outside it saturate
+        at the nearest end. By default the interval runs from the lowest to the
+        highest value in the grid, so that the colours span the data.
+
+        Given descending, the scale turns around: `vrange=(1, 0)` colours the
+        low values the way the high values would have been coloured.
+    * xrange : optional (number, number).
+        The data coordinates at the left and the right edges of the grid. By
+        default the heatmap carries no horizontal coordinate, and so cannot be
+        given an axis or overlaid on another plot.
+    * yrange : optional (number, number).
+        The data coordinates at the bottom and the top edges of the grid. By
+        default the heatmap carries no vertical coordinate.
+
+    Since each character cell holds two pixels, a grid with an odd number of
+    rows leaves the bottom half of its last row blank, and cannot be given
+    coordinates.
+
+    Where every value is the same, they all come out at the bottom of the
+    colormap, since there is no interval for the colours to span. An explicit
+    `vrange` covering no interval is an error rather than a guess.
+
+    A value that is not a number is left out of an inferred interval, and comes
+    out at the bottom of the colormap wherever it appears. Infinities saturate
+    at the ends like any other value beyond the interval.
+
+    A grid of colours, of palette indices, or of values already scaled onto
+    the range 0.0 to 1.0 is an `image` rather than a heatmap: those need no
+    interval, and carry no colour scale.
+    """
+    def __init__(
+        self,
+        values: ArrayLike, # number[h, w]
+        colormap: ColorMap | None = None,
+        vrange: tuple[number, number] | None = None,
+        xrange: tuple[number, number] | None = None,
+        yrange: tuple[number, number] | None = None,
+    ):
+        grid = np.asarray(values, dtype=float)
+        if grid.ndim != 2:
+            raise ValueError(
+                "heatmap needs a 2d grid of values, not an array of shape "
+                f"{grid.shape}"
+            )
+        vrange = _value_range(vrange, grid, "heatmap")
+
+        super().__init__(
+            im=_normalise(grid, vrange),
+            colormap=colormap,
+            xrange=xrange,
+            yrange=yrange,
+        )
+        self.vrange = vrange
+
+    def __repr__(self):
+        vmin, vmax = self.vrange
+        return f"heatmap({self.window!r}, vrange=[{vmin:.2f},{vmax:.2f}])"
+
+
 def _sample_points(
     w: window,
     endpoints: bool,
@@ -824,7 +950,7 @@ def _sample_points(
     return einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')
 
 
-class function2(image):
+class function2(heatmap):
     """
     Heatmap representing the image of a 2d function over a square.
 
@@ -844,14 +970,14 @@ class function2(image):
         The number of character rows in the plot. This will also be half of the
         number of grid squares, since the result is an image plot with two
         half-character-pixels per row.
-    * zrange : optional (float, float).
+    * vrange : optional (float, float).
         Expected lower and upper bounds on the f(x, y) values. Used for
         determining the bounds of the colour scale. By default, the minimum and
         maximum output over the grid are used. Values outside these bounds
         saturate at the nearest end of the colour scale.
     * colormap : optional colormap (e.g. mp.viridis).
         By default, the output will be in greyscale, with black corresponding
-        to zrange[0] and white corresponding to zrange[1]. You can choose a
+        to vrange[0] and white corresponding to vrange[1]. You can choose a
         different colormap (e.g. mp.reds, mp.viridis, etc.) here.
     * endpoints : bool (default: False).
         By default, the grid squares tile the ranges exactly and each one shows
@@ -870,7 +996,7 @@ class function2(image):
         yrange: tuple[float, float],
         width: int,
         height: int,
-        zrange: tuple[float, float] | None = None,
+        vrange: tuple[float, float] | None = None,
         colormap: ColorMap | None = None,
         endpoints: bool = False,
     ):
@@ -881,26 +1007,17 @@ class function2(image):
         # sample the function
         Z = F(XY)
 
-        # create the image array
+        # create the heatmap itself
         zgrid = einops.rearrange(Z, '(h w) -> h w', h=2*height, w=width)
-        if zrange is None:
-            zrange = (zgrid.min(), zgrid.max())
-        if zrange[0] == zrange[1]:
-            zgrid_norm = np.zeros_like(zgrid)
-        else:
-            zgrid_norm = (zgrid - zrange[0]) / (zrange[1] - zrange[0])
-            zgrid_norm = np.clip(zgrid_norm, 0., 1.)
-
-        # create the image plot itself
         super().__init__(
-            im=zgrid_norm,
+            values=zgrid,
             colormap=colormap,
+            vrange=vrange,
             xrange=xrange,
             yrange=yrange,
         )
         self.name = getattr(F, '__name__', '?')
-        self.zrange = zrange
-        
+
     def __repr__(self):
         return f"function2(f={self.name}, {self.window!r})"
 
@@ -1093,7 +1210,7 @@ class cfunction2(image):
         return f"cfunction2(f={self.name}, {self.window!r})"
 
 
-class histogram2(image):
+class histogram2(heatmap):
     """
     Heatmap representing the density of a collection of 2d points.
 
@@ -1185,35 +1302,34 @@ class histogram2(image):
             density=density,
         )
 
-        # transform counts: scale and reorient
-        if max_count is None:
-            max_count = hist.max()
-            if max_count == 0:
-                hist = np.zeros_like(hist)
-            else:
-                hist = np.clip(hist / max_count, 0., 1.)
-        else:
-            if max_count <= 0:
-                raise ValueError(
-                    f"max_count must be positive, not {max_count!r}"
-                )
-            hist = np.clip(hist / max_count, 0., 1.)
+        # reorient the counts to match the window
         hist = hist.T[::-1]     # row zero is the top of the window
         if yflip:
             hist = hist[::-1]
         if xflip:
             hist = hist[:, ::-1]
 
-        # construct the image
+        # the counts the colormap covers, from an empty bin at the bottom to
+        # the fullest one at the top, or to a ceiling the caller sets. A
+        # histogram with nothing in it has no fullest bin to find, so the unit
+        # interval stands in and every bin sits at the bottom regardless.
+        if max_count is None:
+            max_count = hist.max() if hist.max() > 0 else 1
+        elif max_count <= 0:
+            raise ValueError(f"max_count must be positive, not {max_count!r}")
+
+        # construct the heatmap
         super().__init__(
-            im=hist,
+            values=hist,
             colormap=colormap,
+            vrange=(0, max_count),
             xrange=xrange,
             yrange=yrange,
         )
         self.xbins = xedges
         self.ybins = yedges
         self.num_points = len(x)
+        self.max_count = max_count
         
     def __repr__(self):
         return f"histogram2(<{self.num_points} points>, {self.window!r})"
@@ -1297,15 +1413,11 @@ class bars(plot):
         The number of rows comprising each bar.
     * bar_spacing: int (default: 0).
         The number of rows between each bar.
-    * vrange : None | float | (float, float).
-        Determine the scaling of the bars.
-        * If omitted, the bars are scaled such that the bar(s) with the largest
-          value occupy the whole width.
-        * If a single number, then the bars are scaled so that bars with that
-          value (or greater) would occupy the whole width.
-        * If a pair of numbers, the bars are scaled so that bars with the first
-          value (or less) would have zero width and bars with the second value
-          (or greater) would occupy the whole width.
+    * vrange : optional (float, float).
+        The interval of values the bars measure: a bar at the first value or
+        below has zero width and one at the second value or above occupies the
+        whole width. By default the interval runs from zero to the largest
+        value, so that the largest bar or bars fill the width.
     * color : optional ColorLike.
         The color of the filled portion of the bars. Defaults to the terminal's
         default foreground color.
@@ -1324,22 +1436,13 @@ class bars(plot):
         width: int = 30,
         bar_height: int = 1,
         bar_spacing: int = 0,
-        vrange: None | number | tuple[number, number] = None,
+        vrange: tuple[number, number] | None = None,
         color: ColorLike | None = None,
         colors: list[ColorLike | None] | None = None,
     ):
         # standardise inputs
         values = np.asarray(values)
-        vmin: number
-        vmax: number
-        if vrange is None:
-            vmin = 0.0
-            vmax = values.max()
-        elif isinstance(vrange, Number):
-            vmin = 0.0
-            vmax = vrange
-        elif isinstance(vrange, tuple):
-            vmin, vmax = vrange
+        vmin, vmax = (0.0, values.max()) if vrange is None else vrange
         num_bars = len(values)
 
         # compute the bar widths
@@ -1367,15 +1470,15 @@ class bars(plot):
             bars_chars,
         )
         super().__init__(chars=all_chars)
-        self.vmin = vmin
-        self.vmax = vmax
+        self.vrange = (vmin, vmax)
         self.num_bars = num_bars
 
     def __repr__(self):
+        vmin, vmax = self.vrange
         return (
             f"bars(height={self.height}, width={self.width}, "
             f"values=<{self.num_bars} bars on "
-            f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
+            f"[{vmin:.2f},{vmax:.2f}]>)"
         )
 
 
@@ -1446,7 +1549,7 @@ class histogram(bars):
             width=width,
             bar_height=1,
             bar_spacing=0,
-            vrange=max_count,
+            vrange=(0, max_count),
             color=color,
         )
         self.bins = bins_
@@ -1475,15 +1578,11 @@ class columns(plot):
         The total width of full columns.
     * column_width: int (default 1).
     * column_spacing: int (default 0).
-    * vrange : None | number | (number, number).
-        Determine the scaling of the columns.
-        * If omitted, the columns are scaled such that the columns(s) with the
-          largest value occupy the whole width.
-        * If a single number, then the columns are scaled so that columns with
-          that value (or greater) would occupy the whole width.
-        * If a pair of numbers, the columns are scaled so that columns with the
-          first value (or less) would have zero width and columns with the
-          second value (or greater) would occupy the whole width.
+    * vrange : optional (number, number).
+        The interval of values the columns measure: a column at the first value
+        or below has zero height and one at the second value or above occupies
+        the whole height. By default the interval runs from zero to the largest
+        value, so that the tallest column or columns fill the height.
     * color : optional ColorLike.
         The color of the filled portion of the columns. Defaults to the
         terminal's default foreground color.
@@ -1502,22 +1601,13 @@ class columns(plot):
         height: int = 10,
         column_width: int = 1,
         column_spacing: int = 0,
-        vrange: None | number | tuple[number, number] = None,
+        vrange: tuple[number, number] | None = None,
         color: ColorLike | None = None,
         colors: list[ColorLike | None] | None = None,
     ):
         # standardise inputs
         values = np.asarray(values)
-        vmin: number
-        vmax: number
-        if vrange is None:
-            vmin = 0.0
-            vmax = values.max()
-        elif isinstance(vrange, Number):
-            vmin = 0.0
-            vmax = vrange
-        elif isinstance(vrange, tuple):
-            vmin, vmax = vrange
+        vmin, vmax = (0.0, values.max()) if vrange is None else vrange
         num_cols = len(values)
 
         # compute the column heights
@@ -1545,15 +1635,15 @@ class columns(plot):
             cols_chars,
         )
         super().__init__(chars=all_chars)
-        self.vmin = vmin
-        self.vmax = vmax
+        self.vrange = (vmin, vmax)
         self.num_cols = num_cols
 
     def __repr__(self):
+        vmin, vmax = self.vrange
         return (
             f"columns(height={self.height}, width={self.width}, "
             f"values=<{self.num_cols} columns on "
-            f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
+            f"[{vmin:.2f},{vmax:.2f}]>)"
         )
 
 
@@ -1625,7 +1715,7 @@ class vistogram(columns):
             height=height,
             column_width=1,
             column_spacing=0,
-            vrange=max_count,
+            vrange=(0, max_count),
             color=color,
         )
         self.bins = bins_
@@ -2122,13 +2212,12 @@ class _ColoredDays(NamedTuple):
     colors: dict[datetime.date, NDArray]    # uint8[3] per day
     first: datetime.date
     last: datetime.date
-    vmin: number
-    vmax: number
+    vrange: tuple[number, number]
 
 
 def _color_days(
     data: DateSeries,
-    vrange: None | number | tuple[number, number],
+    vrange: tuple[number, number] | None,
     colormap: ColorMap | None,
     daterange: tuple[DateLike, DateLike] | None,
     what: str,
@@ -2161,26 +2250,19 @@ def _color_days(
         if first <= date <= last and np.isfinite(value)
     ]
 
-    # determine the value scale over those days
+    # determine the value scale over those days, and colour them by it
     levels = np.array([value for _, value in drawn], dtype=float)
-    vmin: number
-    vmax: number
-    if vrange is None:
-        vmin, vmax = (levels.min(), levels.max()) if levels.size else (0.0, 1.0)
-    elif isinstance(vrange, tuple):
-        vmin, vmax = vrange
-    else:
-        vmin, vmax = 0.0, vrange
-
-    # color those days
-    levels = np.clip((levels - vmin) / (vmax - vmin + 1e-15), 0.0, 1.0)
-    rgb = parse_colors(levels, n=len(levels), colormap=colormap)
+    vrange = _value_range(vrange, levels, what)
+    rgb = parse_colors(
+        _normalise(levels, vrange),
+        n=len(levels),
+        colormap=colormap,
+    )
     return _ColoredDays(
         colors={date: color for (date, _), color in zip(drawn, rgb)},
         first=first,
         last=last,
-        vmin=vmin,
-        vmax=vmax,
+        vrange=vrange,
     )
 
 
@@ -2273,15 +2355,12 @@ class calendar(plot):
         The dated values to colour: a mapping from dates to values, a pair of
         sequences of dates and values, or one date and the values on the days
         running from it. See `DateSeries` for the full list of forms.
-    * vrange : None | number | (number, number).
-        Determine the mapping of values onto the colormap.
-        * If omitted, the colours are scaled so that the lowest value among
-          the days drawn is at the bottom of the colormap and the highest is
-          at the top.
-        * If a single number, values from zero up to that number span the
-          colormap.
-        * If a pair of numbers, values from the first up to the second span the
-          colormap.
+    * vrange : optional (number, number).
+        The interval of values the colormap covers: values at the first limit
+        or below come out at the bottom of the colormap and values at the
+        second or above come out at the top. By default the interval runs from
+        the lowest to the highest value among the days drawn, so that the
+        colours span the data.
     * colormap : optional ColorMap.
         Maps each day's value, normalised to the range 0.0 to 1.0, onto its
         colour. By default the days are shades of grey, black for the bottom of
@@ -2318,7 +2397,7 @@ class calendar(plot):
     def __init__(
         self,
         data: DateSeries,
-        vrange: None | number | tuple[number, number] = None,
+        vrange: tuple[number, number] | None = None,
         colormap: ColorMap | None = None,
         daterange: tuple[DateLike, DateLike] | None = None,
         cols: int | None = 4,
@@ -2416,17 +2495,17 @@ class calendar(plot):
             bg=grid.bg[:rows, :columns],
             bg_rgb=grid.bg_rgb[:rows, :columns],
         ))
-        self.vmin = dated.vmin
-        self.vmax = dated.vmax
+        self.vrange = dated.vrange
         self.daterange = (first, last)
         self.num_days = len(colors)
 
     def __repr__(self):
         first, last = self.daterange
+        vmin, vmax = self.vrange
         return (
             f"calendar(height={self.height}, width={self.width}, "
             f"data=<{self.num_days} days from {first} to {last} on "
-            f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
+            f"[{vmin:.2f},{vmax:.2f}]>)"
         )
 
 
@@ -2445,15 +2524,12 @@ class weeks(plot):
         The dated values to colour: a mapping from dates to values, a pair of
         sequences of dates and values, or one date and the values on the days
         running from it. See `DateSeries` for the full list of forms.
-    * vrange : None | number | (number, number).
-        Determine the mapping of values onto the colormap.
-        * If omitted, the colours are scaled so that the lowest value among
-          the days drawn is at the bottom of the colormap and the highest is
-          at the top.
-        * If a single number, values from zero up to that number span the
-          colormap.
-        * If a pair of numbers, values from the first up to the second span the
-          colormap.
+    * vrange : optional (number, number).
+        The interval of values the colormap covers: values at the first limit
+        or below come out at the bottom of the colormap and values at the
+        second or above come out at the top. By default the interval runs from
+        the lowest to the highest value among the days drawn, so that the
+        colours span the data.
     * colormap : optional ColorMap.
         Maps each day's value, normalised to the range 0.0 to 1.0, onto its
         colour. By default the days are shades of grey, black for the bottom of
@@ -2494,7 +2570,7 @@ class weeks(plot):
     def __init__(
         self,
         data: DateSeries,
-        vrange: None | number | tuple[number, number] = None,
+        vrange: tuple[number, number] | None = None,
         colormap: ColorMap | None = None,
         daterange: tuple[DateLike, DateLike] | None = None,
         width: int | None = None,
@@ -2613,18 +2689,18 @@ class weeks(plot):
             lambda arrays: np.concatenate(arrays, axis=0),
             band_chars,
         ))
-        self.vmin = dated.vmin
-        self.vmax = dated.vmax
+        self.vrange = dated.vrange
         self.daterange = (first, last)
         self.num_days = len(colors)
         self.num_weeks = num_weeks
 
     def __repr__(self):
         first, last = self.daterange
+        vmin, vmax = self.vrange
         return (
             f"weeks(height={self.height}, width={self.width}, "
             f"data=<{self.num_days} days over {self.num_weeks} weeks from "
-            f"{first} to {last} on [{self.vmin:.2f},{self.vmax:.2f}]>)"
+            f"{first} to {last} on [{vmin:.2f},{vmax:.2f}]>)"
         )
 
 
@@ -3523,6 +3599,124 @@ class axes(plot):
     def __repr__(self):
         n, e, s, w = self.sides
         return f"axes(n={n}, e={e}, s={s}, w={w}, plot={self.plot!r})"
+
+
+type Direction = Literal["up", "down", "left", "right"]
+"""
+Which way along the screen a `colorbar` runs: the axis it lies along, and the
+end of that axis its interval finishes at.
+
+* `"up"`, `"down"`: a vertical bar, two pixels per cell.
+* `"left"`, `"right"`: a horizontal bar, one pixel per cell.
+"""
+
+
+class colorbar(heatmap):
+    """
+    A gradient standing for the mapping from values onto colours.
+
+    The bar is a strip one coordinate wide, so `axes` labels the one side that
+    means anything and leaves the other three alone, and a `border` boxes it
+    without claiming it has two dimensions.
+
+    Inputs:
+
+    * source : plot | (number, number).
+        The interval the bar covers. Any plot that kept one lends it---a
+        `heatmap` and everything built on one, a `calendar`, a `weeks`, a
+        `bars`---so that the numbers on the bar cannot drift from the numbers
+        in the picture. An interval on its own works too, for a scale assembled
+        by hand.
+    * colormap : optional ColorMap.
+        Maps each position along the bar onto its colour. By default the bar
+        runs black to white.
+
+        Name the same one the picture was drawn with: the bar is not told what
+        the picture used, in the same way that nothing else in this library
+        infers a colormap. A bar is a gradient, so a continuous colormap is
+        what it can stand for; a palette wants a swatch beside each label,
+        which is a different plot and is not built.
+    * direction : Direction (default: "up").
+        Which way along the screen the values increase, naming both the axis
+        the bar runs along and the sense it runs in. The first limit of the
+        interval sits at the end the direction points away from, and the
+        second at the end it points towards.
+    * length : int (default: 12).
+        How many character cells the bar covers along the scale.
+    * thickness : int (default: 1).
+        How many character cells the bar covers across the scale.
+
+    A vertical bar has twice the gradient resolution of a horizontal one of
+    the same length, since a character cell holds two half-block pixels
+    vertically and one horizontally.
+
+    ```
+    heat = mp.heatmap(values, colormap=mp.viridis)
+    mp.axes(heat, title="field") \
+        + mp.axes(mp.colorbar(heat, colormap=mp.viridis), east="label")
+    ```
+    """
+    def __init__(
+        self,
+        source: plot | tuple[number, number],
+        colormap: ColorMap | None = None,
+        direction: Direction = "up",
+        length: int = 12,
+        thickness: int = 1,
+    ):
+        if isinstance(source, plot):
+            vrange = getattr(source, "vrange", None)
+            if vrange is None:
+                raise ValueError(
+                    f"{type(source).__name__} carries no interval for a "
+                    "colorbar to draw; pass one instead"
+                )
+        else:
+            vrange = source
+        if direction not in ("up", "down", "left", "right"):
+            raise ValueError(
+                f"direction must be up, down, left or right, not {direction!r}"
+            )
+        if length < 1 or thickness < 1:
+            raise ValueError(
+                "a colorbar must be at least one cell in each direction, not "
+                f"{length} by {thickness}"
+            )
+
+        # the ramp, in screen order: the top row or the leftmost column first.
+        # A vertical cell holds two pixels and a horizontal one holds one, so
+        # the length counts cells and the pixels follow from the direction.
+        first, second = vrange
+        vertical = direction in ("up", "down")
+        steps = 2 * length if vertical else length
+        ramp = (
+            np.linspace(second, first, num=steps)
+            if direction in ("up", "left")
+            else np.linspace(first, second, num=steps)
+        )
+        values = (
+            ramp[:, None].repeat(thickness, axis=1)
+            if vertical
+            else ramp[None, :].repeat(2 * thickness, axis=0)
+        )
+
+        # the coordinate, from the low end of the screen axis to the high end
+        span = (
+            (second, first)
+            if direction in ("down", "left")
+            else (first, second)
+        )
+        super().__init__(
+            values=values,
+            colormap=colormap,
+            vrange=vrange,
+            xrange=None if vertical else span,
+            yrange=span if vertical else None,
+        )
+        self.direction = direction
+
+    def __repr__(self):
+        return f"colorbar({self.direction}, {self.window!r})"
 
 
 # # #

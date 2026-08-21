@@ -49,8 +49,13 @@ Styling plots with colors:
 Specifying colors:
 
 * [ ] Consistent API for color specification.
-* [ ] Configurable colour scales and normalisation.
-* [ ] Color bars, in any of the four directions. See `notes/colorbars.md`.
+* [ ] Configurable colour scales and normalisation. See `notes/scales.md`.
+* [x] Color bars, in any of the four directions. See
+  `notes/closed/colorbars.md`.
+* [ ] Colorbars that take their colormap from the plot they describe, rather
+  than being told it. Needs continuous, discrete and vector colormaps to be
+  distinguishable at runtime, so that a bar can refuse a colormap no gradient
+  stands for. See `notes/scales.md`.
 
 Rendering:
 
@@ -107,13 +112,16 @@ More exotic plot types:
     (`cfunction2`).
   * [ ] line (see boids example). Parked on legibility rather than
     machinery; see `notes/quiver-plots.md`.
-* [ ] Hilbert curves:
+* [ ] Hilbert curves (see `notes/hilbert-curves.md`):
   * [x] Basic Hilbert curves.
   * [ ] Non-square Hilbert curves.
   * [ ] 3d Hilbert curves.
-* [ ] World maps:
+* [ ] World maps (see `notes/world-maps.md`; `examples/world_map.py` and
+  `examples/globe.py` prototype the design, carrying their own coarse
+  coastlines):
   * [ ] Some 2d projections.
   * [ ] 3d globe projection.
+  * [ ] Whether to bundle coastline vectors, and at what resolution.
 * [ ] Dashboard meters (similar to `progress`):
   * [ ] circular
   * [ ] vertical
@@ -140,7 +148,8 @@ Advancements of basic plot types:
     `notes/reference/myplot.py`).
 * [ ] Advanced image options:
   * [ ] Integer-factor down- and upsampling.
-  * [ ] Normalisation colormaps.
+  * [x] A plot that normalises values onto the colormap itself (`heatmap`).
+  * [ ] Nonlinear normalisation. See `notes/scales.md`.
 * [ ] Advanced text formatting parser (`rich=True` or something):
   * [ ] Bold, italic, underline, based on markdown?
   * [ ] Some way of specifying colors, html-style tags?

@@ -28,22 +28,22 @@ def main(save: str | None = None):
         mp.text("test images:"),
         mp.hstack(
             mp.border(
-                mp.image(im_continuous),
+                mp.heatmap(im_continuous),
                 title="linspace(0,1,256",
             ),
             mp.border(
-                mp.image(im_discrete16 / 16),
+                mp.heatmap(im_discrete16, vrange=(0, 16)),
                 title="arange(256)/16",
             ),
             mp.border(
-                mp.image(im_discrete10 / 10),
+                mp.heatmap(im_discrete10, vrange=(0, 10)),
                 title="arange(256)/25.6",
             )
         ),
         mp.text("continuous colormaps:"),
         mp.wrap(*[
             mp.border(
-                mp.image(im_continuous, colormap=c),
+                mp.heatmap(im_continuous, colormap=c),
                 title=c.__name__,
             )
             for c in [

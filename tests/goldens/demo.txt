@@ -1,12 +1,12 @@
 example: demo.py
 args: (none)
-terminal: 62x80
+terminal: 64x80
 image: 1 frames, 720x384, sha256:8ee7a2aca686da95
 
 # Regenerate with `make goldens`. One frame per print; the text and
 # colour grids are the terminal screen, cropped to its content.
 
-frame 0: 1232 bytes, 16x80, cursor 16,0, scrolled 0
+frame 0: 1364 bytes, 18x80, cursor 18,0, scrolled 0
 palette:
   . default default
 text:
@@ -14,18 +14,20 @@ text:
   ght=15, width=48, plots=(border(style='╗', plot=center(height=3, width=46, plot=
   text(height=1, width=20, text="G'day..."))), hstack(height=10, width=48, plots=(
   hstack(height=10, width=32, plots=(border(style='┐', plot=vstack(height=8, width
-  =14, plots=(text(height=1, width=8, text='uniform:'), image(window(14x7 cells)))
-  )), border(style='┓', plot=vstack(height=8, width=14, plots=(text(height=1, widt
-  h=9, text='ident...'), image(window(14x7 cells))))))), border(style='╗', plot=vs
-  tack(height=8, width=14, plots=(text(height=1, width=9, text='gauss...'), image(
-  window(14x7 cells))))))))), hstack(height=10, width=48, plots=(hstack(height=10,
-   width=32, plots=(border(style='╮', plot=vstack(height=8, width=14, plots=(text(
-  height=1, width=8, text='uniform:'), image(window(14x7 cells))))), border(style=
-  ' ', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text='ident.
-  ..'), image(window(14x7 cells))))))), border(style='▜', plot=vstack(height=8, wi
-  dth=14, plots=(text(height=1, width=9, text='gauss...'), image(window(14x7 cells
-  ))))))))), border(style='╮', plot=scatter(<300 points>, window(x=[-5.00,5.00], y
-  =[-4.00,4.00], 46x18 cells)))))
+  =14, plots=(text(height=1, width=8, text='uniform:'), heatmap(window(14x7 cells)
+  , vrange=[0.00,1.00])))), border(style='┓', plot=vstack(height=8, width=14, plot
+  s=(text(height=1, width=9, text='ident...'), heatmap(window(14x7 cells), vrange=
+  [0.00,1.00])))))), border(style='╗', plot=vstack(height=8, width=14, plots=(text
+  (height=1, width=9, text='gauss...'), heatmap(window(14x7 cells), vrange=[0.00,6
+  .00])))))))), hstack(height=10, width=48, plots=(hstack(height=10, width=32, plo
+  ts=(border(style='╮', plot=vstack(height=8, width=14, plots=(text(height=1, widt
+  h=8, text='uniform:'), heatmap(window(14x7 cells), vrange=[0.00,1.00])))), borde
+  r(style=' ', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text
+  ='ident...'), heatmap(window(14x7 cells), vrange=[0.00,1.00])))))), border(style
+  ='▜', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text='gauss
+  ...'), heatmap(window(14x7 cells), vrange=[0.00,6.00])))))))), border(style='╮',
+   plot=scatter(<300 points>, window(x=[-5.00,5.00], y=[-4.00,4.00], 46x18 cells))
+  )))
 colour:
   ................................................................................
   ................................................................................
@@ -43,8 +45,10 @@ colour:
   ................................................................................
   ................................................................................
   ................................................................................
+  ................................................................................
+  ................................................................................
 
-frame 1: 15720 bytes, 61x80, cursor 61,0, scrolled 0
+frame 1: 15720 bytes, 63x80, cursor 63,0, scrolled 0
 palette:
   .. default default
   00 #5f0000 #2e0000
@@ -451,18 +455,20 @@ text:
   ght=15, width=48, plots=(border(style='╗', plot=center(height=3, width=46, plot=
   text(height=1, width=20, text="G'day..."))), hstack(height=10, width=48, plots=(
   hstack(height=10, width=32, plots=(border(style='┐', plot=vstack(height=8, width
-  =14, plots=(text(height=1, width=8, text='uniform:'), image(window(14x7 cells)))
-  )), border(style='┓', plot=vstack(height=8, width=14, plots=(text(height=1, widt
-  h=9, text='ident...'), image(window(14x7 cells))))))), border(style='╗', plot=vs
-  tack(height=8, width=14, plots=(text(height=1, width=9, text='gauss...'), image(
-  window(14x7 cells))))))))), hstack(height=10, width=48, plots=(hstack(height=10,
-   width=32, plots=(border(style='╮', plot=vstack(height=8, width=14, plots=(text(
-  height=1, width=8, text='uniform:'), image(window(14x7 cells))))), border(style=
-  ' ', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text='ident.
-  ..'), image(window(14x7 cells))))))), border(style='▜', plot=vstack(height=8, wi
-  dth=14, plots=(text(height=1, width=9, text='gauss...'), image(window(14x7 cells
-  ))))))))), border(style='╮', plot=scatter(<300 points>, window(x=[-5.00,5.00], y
-  =[-4.00,4.00], 46x18 cells)))))
+  =14, plots=(text(height=1, width=8, text='uniform:'), heatmap(window(14x7 cells)
+  , vrange=[0.00,1.00])))), border(style='┓', plot=vstack(height=8, width=14, plot
+  s=(text(height=1, width=9, text='ident...'), heatmap(window(14x7 cells), vrange=
+  [0.00,1.00])))))), border(style='╗', plot=vstack(height=8, width=14, plots=(text
+  (height=1, width=9, text='gauss...'), heatmap(window(14x7 cells), vrange=[0.00,6
+  .00])))))))), hstack(height=10, width=48, plots=(hstack(height=10, width=32, plo
+  ts=(border(style='╮', plot=vstack(height=8, width=14, plots=(text(height=1, widt
+  h=8, text='uniform:'), heatmap(window(14x7 cells), vrange=[0.00,1.00])))), borde
+  r(style=' ', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text
+  ='ident...'), heatmap(window(14x7 cells), vrange=[0.00,1.00])))))), border(style
+  ='▜', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text='gauss
+  ...'), heatmap(window(14x7 cells), vrange=[0.00,6.00])))))))), border(style='╮',
+   plot=scatter(<300 points>, window(x=[-5.00,5.00], y=[-4.00,4.00], 46x18 cells))
+  )))
   ╔══════════════════════════════════════════════╗
   ║                                              ║
   ║             G'day matthewplotlib             ║
@@ -509,6 +515,8 @@ text:
   │                                              │
   ╰──────────────────────────────────────────────╯
 colour:
+  ................................................................................................................................................................
+  ................................................................................................................................................................
   ................................................................................................................................................................
   ................................................................................................................................................................
   ................................................................................................................................................................

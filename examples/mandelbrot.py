@@ -46,7 +46,7 @@ def main(
                 yrange=yrange,
                 width=width,
                 height=height,
-                zrange=(0, max_iter),
+                vrange=(0, max_iter),
                 colormap=mp.magma,
             )
             frames.append(frame)

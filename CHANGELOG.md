@@ -36,14 +36,6 @@ New:
     weight is a `LineStyle`, light lying flat and heavy standing up, each being
     the weight that matches the eighth blocks it alternates with in that
     orientation. See `notes/box-plots.md`.
-  * `candles` is the same mark with the caps, the median and the points
-    switched off, and the two share their drawing. So it gains a
-    `candle_direction` of its own, and with it a horizontal form; its sizes are
-    now `length` and `body_thickness`, since with the orientation a parameter
-    the screen words no longer name anything fixed. Bodies land on the same
-    eighths as before to within one of them: sub-cells are now counted from the
-    low end of the value axis rather than the high, which shifts a body by at
-    most an eighth and never changes its length.
 * `candles`: a candlestick chart, one candle per period, its body spanning the
   opening and closing values and its wick reaching out of the body to the high
   and the low. Bodies are coloured by whether the period closed above or below
@@ -53,6 +45,11 @@ New:
   the terminal's showing, which is what reaching every eighth costs: half of
   them are drawn as a background-coloured block over a body-coloured cell. See
   `notes/candlesticks.md`.
+  * A candle is `boxes`' mark with the caps, the median and the outlying points
+    switched off, and the two share their drawing, so a candle lies either way
+    too: `candle_direction`, standing up by default. Its sizes are `length`
+    along the value axis and `body_thickness` across one body, since with the
+    orientation a parameter the screen words would name nothing fixed.
 * `table`: a grid of values, formatted into aligned columns and ruled. Takes
   a list of dicts, a dict of lists, or a 2d array, and sizes each column to
   what is in it.
@@ -87,6 +84,22 @@ New:
   of character cells it covers them with. Every 2d plot carries one, and it
   provides the conversions from data coordinates to the grids of dots and
   pixels the plots are drawn in.
+* Colour scales, and the bars that show them:
+  * `heatmap`: a grid of values, each coloured by where it falls in an interval.
+    It normalises the values onto the colormap rather than asking the caller to
+    scale them first, and keeps the interval it used, so that a colorbar can be
+    drawn over the same numbers. `function2` and `histogram2` are built on it. A grid of colours, of palette indices, or of values already scaled
+    onto the range 0.0 to 1.0 is still an `image`.
+  * `colorbar`: the gradient a colour scale is a picture of, running up, down,
+    left or right, at any length and thickness. Any plot that kept an interval
+    lends it one, so that the numbers on the bar cannot drift from the numbers
+    in the picture, and a bare interval works where there is no plot to read.
+    The colormap is named at the bar, as it is everywhere else in the library,
+    rather than assumed from the plot. Carrying one coordinate, the bar is
+    labelled along the one side that means anything and left alone on the other
+    three.
+  * `Direction`: which way along the screen a colorbar runs. See
+    `notes/closed/colorbars.md`.
 * A range given descending inverts its axis: `xrange=(1, 0)` mirrors a plot
   left to right and a descending `yrange` turns it over. The plots that place
   points and sample functions did this already, by arithmetic rather than by
@@ -100,12 +113,15 @@ New examples:
   data.
 * `candlesticks.py`: a simulated price series as candles, one column to a
   period.
+* `colorbars.py`: colour scales, and the bars that stand for them.
 * `commit_heatmap.py`: a year of commits to this repository as a strip of
   weeks.
 * `domain_coloring.py`: six complex functions, painted onto their own input
   plane.
 * `phase_portrait.py`: six planar vector fields, as colour fields.
 * `tables.py`: a hyperparameter sweep reported in tables.
+* `globe.py`: a spinning Earth. See `notes/world-maps.md`.
+* `world_map.py`: great-circle flight routes in different projections.
 
 Changed:
 
@@ -134,6 +150,30 @@ Changed:
 * `BoxStyle` no longer offers `LIGHTX`, `HEAVYX` or `LOWERX`. They existed so
   that a border could carry the ticks an `axes` needed, and an `axes` derives
   its own now.
+* `function2` takes its colour scale as `vrange` rather than `zrange`, the name
+  the rest of the library already gave the interval of values a plot covers.
+* A `vrange` is a pair of numbers or nothing at all. `bars`, `columns`,
+  `calendar` and `weeks` used to accept a single number too, meaning zero up to
+  it; write `(0, hi)` instead. `histogram`, `vistogram` and `histogram2` keep
+  their own `max_count`, which is that shorthand under a name that says what it
+  is counting.
+* A plot keeps the interval it settled on as `plot.vrange`, one pair, rather
+  than as `plot.vmin` and `plot.vmax`.
+* `image` keeps no interval, since its data is already colours or already
+  scaled, so a colorbar for one has to be told the interval outright.
+* A `vrange` the caller wrote that covers no interval is an error, rather than
+  quietly colouring everything at the bottom of the scale. One inferred from
+  values that are all the same still puts them all at the bottom, there being
+  nothing else it could mean.
+* A `heatmap` value that is not a number is left out of an inferred interval,
+  and comes out at the bottom of the colormap wherever it appears.
+* The examples that had values on a colour scale draw them with `heatmap`,
+  rather than scaling them into the unit interval by hand first. The ones
+  drawing colours, or palette indices for a discrete colormap, still use
+  `image`, which is what it is for.
+* `time_series_histogram.py` gives its 2d histogram the colorbar it had a
+  standing TODO for, along the foot of the panel so that all three panels stay
+  the same width.
 
 Fixed:
 

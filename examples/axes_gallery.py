@@ -44,22 +44,18 @@ def field(width: int = 14, height: int = 4) -> mp.function2:
         yrange=YRANGE,
         width=width,
         height=height,
-        zrange=ZRANGE,
+        vrange=ZRANGE,
         colormap=mp.divblues,
     )
 
 
-def scale(vertical: bool, length: int = 14, thickness: int = 1) -> mp.image:
+def scale(direction: mp.Direction, length: int = 14) -> mp.colorbar:
     """A gradient standing for the amplitude, carrying one coordinate."""
-    ramp = np.linspace(1.0, 0.0, 2 * length) if vertical \
-      else np.linspace(0.0, 1.0, length)
-    ramp = ramp[:, None].repeat(thickness, axis=1) if vertical \
-      else ramp[None, :].repeat(2 * thickness, axis=0)
-    return mp.image(
-        ramp,
+    return mp.colorbar(
+        ZRANGE,
         colormap=mp.divblues,
-        xrange=None if vertical else ZRANGE,
-        yrange=ZRANGE if vertical else None,
+        direction=direction,
+        length=length,
     )
 
 
@@ -127,22 +123,23 @@ def main(save: str | None = None):
     # labelled, and the rest are dropped rather than boxing a strip
     scales = gallery(
         "one coordinate, so one labelled side:",
-        panel("inferred", mp.axes(scale(vertical=True, length=4), yfmt="{y:.1f}")),
+        panel("inferred", mp.axes(scale("up", length=4), yfmt="{y:.1f}")),
         panel('east="label"', mp.axes(
-            scale(vertical=True, length=4), east="label", yfmt="{y:.1f}",
+            scale("up", length=4), east="label", yfmt="{y:.1f}",
         )),
-        panel("inferred", mp.axes(scale(vertical=False), xfmt="{x:.1f}")),
+        panel("inferred", mp.axes(scale("right"), xfmt="{x:.1f}")),
         panel('north="label"', mp.axes(
-            scale(vertical=False), north="label", xfmt="{x:.1f}",
+            scale("right"), north="label", xfmt="{x:.1f}",
         )),
     )
 
     # and the reason for all of it: a map with its scale beside it
+    pattern = field(width=44, height=8)
     together = mp.vstack(
         mp.text("and what it is all for:", fgcolor=HEADING),
         mp.hstack(
             mp.axes(
-                field(width=44, height=8),
+                pattern,
                 title=" two-slit interference ",
                 xlabel="x (mm)",
                 ylabel="y (mm)",
@@ -150,7 +147,7 @@ def main(save: str | None = None):
             ),
             mp.blank(height=1, width=2),
             mp.axes(
-                scale(vertical=True, length=5),
+                mp.colorbar(pattern, colormap=mp.divblues, length=5),
                 east="label",
                 ylabel="amp",
                 yfmt="{y:+.1f}",
