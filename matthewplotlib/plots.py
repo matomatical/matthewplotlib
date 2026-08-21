@@ -25,6 +25,7 @@ Data plots:
 * `columns`
 * `vistogram`
 * `candles`
+* `boxes`
 * `hilbert`
 * `calendar`
 * `weeks`
@@ -99,6 +100,7 @@ from matthewplotlib.core import (
     unicode_bar,
     unicode_col,
     unicode_candles,
+    unicode_boxes,
     unicode_image,
     unicode_braille_points,
     unicode_braille_segments,
@@ -1793,6 +1795,233 @@ class candles(plot):
             f"values=<{self.num_candles} candles on "
             f"[{self.window.yrange[0]:.2f},{self.window.yrange[1]:.2f}]>)"
         )
+
+class boxes(plot):
+    """
+    A box plot, one box per group of samples.
+
+    Draw one box per group, spanning the first and third quartiles, divided at
+    the median, with whiskers reaching out to the extremes of the group and any
+    sample beyond them drawn as an individual point.
+
+    Inputs:
+
+    * data : sequence of number[k].
+        The samples in each group. The groups need not be the same length. A 2d
+        array works, one group per row.
+    * length : int (default: 30).
+        The number of character cells along the value axis.
+    * box_thickness : int (default: 3).
+        The number of character cells across one box. At least 3 for an
+        outlined box, which needs two edges and an interior between them, and
+        at least 1 for a filled one.
+    * box_spacing : int (default: 1).
+        The number of blank cells between one box and the next.
+    * box_direction : "horizontal" | "vertical" (default: "horizontal").
+        Which way one box lies. Horizontal boxes lie flat and stack up the
+        screen; vertical boxes stand up and march across it. Horizontal is the
+        default because it gives the value axis both more cells and finer ones:
+        terminals are wider than they are tall, and character cells are taller
+        than they are wide.
+    * filled : bool (default: False).
+        Whether to draw each box as a solid fill rather than an outline. A fill
+        reaches the nearest eighth of a cell where an outline is confined to
+        whole cells, at the cost of needing a background color.
+    * caps : bool (default: True).
+        Whether to draw a cap across the end of each whisker.
+    * median : bool (default: True).
+        Whether to divide each box at its median. The mark is dropped from a
+        box with no room for it regardless.
+    * whisker_iqrs : optional number (default: 1.5).
+        How far the whiskers reach, as a multiple of the interquartile range
+        beyond the quartiles. Each whisker stops at the furthest sample within
+        that reach, and every sample beyond it is drawn as a point: the default
+        is Tukey's rule. Given None, the whiskers reach the smallest and
+        largest samples instead and no points are drawn.
+    * vrange : optional (number, number).
+        The values at the ends of the value axis. By default, the smallest and
+        largest samples, so that every group fits. Given a narrower interval,
+        the boxes outside it are clipped to it and the points outside it are
+        dropped.
+    * color : optional ColorLike.
+        The color of every box. Defaults to the terminal's foreground color,
+        or to white for a filled box, whose color has to be named for the
+        negatives to be drawn against it.
+    * colors : optional ColorLike[n].
+        The color of each box. Should be a list or array as long as `data`.
+    * background : optional ColorLike.
+        The color behind the boxes. A filled plot paints its whole rectangle,
+        defaulting to a near-black, because a fill reaches every eighth of a
+        cell only by drawing some eighths as negatives, which needs the
+        background named. An outlined plot leaves the terminal's own background
+        showing unless one is given.
+    * style : LineStyle (default: LineStyle.LIGHT).
+        The weight of the whiskers, the caps and an outlined box's outline.
+    * median_style : optional LineStyle.
+        The weight of a filled box's median. Defaults to light lying flat and
+        heavy standing up, each being the one that matches the eighth blocks
+        the median lands on at the edges of a cell. An outlined box's median
+        joins its outline and so takes `style` instead.
+
+    The plot carries its value range on one axis and no coordinate on the
+    other, since the groups are a list of categories rather than a measured
+    axis. So `axes` labels the value axis and leaves the other three sides
+    alone.
+    """
+    def __init__(
+        self,
+        data: Sequence[ArrayLike], # sequence of number[k]
+        length: int = 30,
+        box_thickness: int = 3,
+        box_spacing: int = 1,
+        box_direction: Literal["horizontal", "vertical"] = "horizontal",
+        filled: bool = False,
+        caps: bool = True,
+        median: bool = True,
+        whisker_iqrs: number | None = 1.5,
+        vrange: tuple[number, number] | None = None,
+        color: ColorLike | None = None,
+        colors: Sequence[ColorLike] | None = None,
+        background: ColorLike | None = None,
+        style: LineStyle = LineStyle.LIGHT,
+        median_style: LineStyle | None = None,
+    ):
+        # standardise inputs
+        groups = []
+        for i, group in enumerate(data):
+            samples = np.asarray(group, dtype=float)
+            if samples.ndim == 0:
+                raise ValueError(
+                    f"group {i} is the single number {samples}; boxes takes a "
+                    "sequence of samples for each group, so one group of "
+                    "samples is [samples] rather than samples"
+                )
+            if samples.size == 0:
+                raise ValueError(f"group {i} has no samples to summarise")
+            groups.append(samples.reshape(-1))
+        if not groups:
+            raise ValueError("boxes needs at least one group of samples")
+        num_boxes = len(groups)
+        if whisker_iqrs is not None and whisker_iqrs < 0:
+            raise ValueError(
+                f"whisker_iqrs must be non-negative, not {whisker_iqrs}"
+            )
+
+        # summarise each group, and find the samples beyond its whiskers
+        quartiles = np.array(
+            [np.percentile(group, [25, 50, 75]) for group in groups]
+        )
+        first, medians, third = quartiles.T
+        if whisker_iqrs is None:
+            whisker_los = np.array([group.min() for group in groups])
+            whisker_his = np.array([group.max() for group in groups])
+            beyond = np.empty(0)
+            beyond_boxes = np.empty(0, dtype=int)
+        else:
+            reach = whisker_iqrs * (third - first)
+            whisker_los = np.empty(num_boxes)
+            whisker_his = np.empty(num_boxes)
+            outlying = []
+            for i, group in enumerate(groups):
+                low, high = first[i] - reach[i], third[i] + reach[i]
+                within = (group >= low) & (group <= high)
+                # the fence always admits a sample, since it contains the
+                # quartiles and so cannot fall between two samples
+                whisker_los[i] = group[within].min()
+                whisker_his[i] = group[within].max()
+                outlying.append(group[~within])
+            beyond = np.concatenate(outlying)
+            beyond_boxes = np.repeat(
+                np.arange(num_boxes),
+                [len(samples) for samples in outlying],
+            )
+
+        # determine the value range, and where each value sits within it
+        if vrange is None:
+            vmin = min(group.min() for group in groups)
+            vmax = max(group.max() for group in groups)
+        else:
+            vmin, vmax = float(vrange[0]), float(vrange[1])
+        if vmin == vmax:
+            raise ValueError(
+                f"every sample sits at the same value, {vmin}; give a vrange "
+                "spanning an interval to plot them in"
+            )
+        def proportion(values: NDArray) -> NDArray:
+            return (values - vmin) / (vmax - vmin)
+        # a point outside the range is dropped rather than clipped, since a
+        # point drawn at the end of the axis claims a value it does not have
+        outlying_proportions = proportion(beyond)
+        inside = (outlying_proportions >= 0) & (outlying_proportions <= 1)
+
+        # determine the colours
+        box_colors: NDArray | None
+        if colors is not None:
+            if len(colors) != num_boxes:
+                raise ValueError(
+                    f"there are {num_boxes} groups but {len(colors)} colors"
+                )
+            box_colors = np.array(
+                [parse_color(c) for c in colors], dtype=np.uint8
+            )
+        elif color is not None:
+            box_colors = np.broadcast_to(
+                parse_colors(color, n=1), (num_boxes, 3)
+            )
+        elif filled:
+            box_colors = np.full((num_boxes, 3), 255, dtype=np.uint8)
+        else:
+            box_colors = None
+        if filled and background is None:
+            background = (0.08, 0.09, 0.11)
+        if median_style is None:
+            median_style = (
+                LineStyle.LIGHT
+                if box_direction == "horizontal"
+                else LineStyle.HEAVY
+            )
+
+        # construct the boxes
+        chars = unicode_boxes(
+            outer_los=proportion(whisker_los),
+            outer_his=proportion(whisker_his),
+            inner_los=proportion(first),
+            inner_his=proportion(third),
+            interiors=proportion(medians) if median else None,
+            outliers=outlying_proportions[inside],
+            outlier_boxes=beyond_boxes[inside],
+            length=length,
+            box_colors=box_colors,
+            direction=box_direction,
+            filled=filled,
+            thickness=box_thickness,
+            spacing=box_spacing,
+            caps=caps,
+            background=background,
+            style=style,
+            interior_style=median_style,
+        )
+
+        # form a plot object
+        super().__init__(chars)
+        horizontal = box_direction == "horizontal"
+        self.window = window(
+            xrange=(vmin, vmax) if horizontal else None,
+            yrange=None if horizontal else (vmin, vmax),
+            width=chars.width,
+            height=chars.height,
+        )
+        self.num_boxes = num_boxes
+        self.vmin = vmin
+        self.vmax = vmax
+
+    def __repr__(self):
+        return (
+            f"boxes(height={self.height}, width={self.width}, "
+            f"data=<{self.num_boxes} groups on "
+            f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
+        )
+
 
 class hilbert(plot):
     """

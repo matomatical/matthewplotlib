@@ -105,6 +105,7 @@ EXAMPLES: tuple[Example, ...] = (
             args=("--num-frames", "5")),
     Example("boing.py",                 27, 64, saves="gif",
             args=("--num-frames", "8", "--no-loop")),
+    Example("box_plots.py",             19, 70, saves="png"),
     Example("calendar_heatmap.py",      27, 62, saves="png"),
     Example("candlesticks.py",          16, 60, saves="png"),
     Example("chromatic_flow.py",        24, 80, saves="gif",

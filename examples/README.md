@@ -282,6 +282,19 @@ Bars and Columns
 <tbody>
   <tr>
     <td align="center">
+      <img src="../images/box_plots.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Box plots</strong></p>
+      <p>Four distributions built to share a median and an interquartile
+      range, so that <code>mp.boxes</code> draws four nearly identical boxes
+      and only the outlying points give away that the shapes differ.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/box_plots.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="../images/jointplot.png" width="100%">
     </td>
     <td>

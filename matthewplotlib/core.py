@@ -26,6 +26,8 @@ Drawing characters, each packing several data points into one character cell:
 * `unicode_image`: Images to half-block characters, at 1 by 2 pixels per cell.
 * `unicode_candles`: Four values a period to candlesticks, bodies from partial
   blocks and wicks from vertical lines.
+* `unicode_boxes`: Two nested intervals a group, with optional caps, interior
+  mark and outlying points, lying either way and drawn filled or outlined.
 * `unicode_box` and `BoxStyle`: Box-drawing borders, optionally titled.
 * `unicode_frame` and `unicode_grid`, with `LineStyle`: Rules along the sides
   of a plot, or between the cells of a grid, with the corners and junctions
@@ -1956,3 +1958,577 @@ def _place(
     chars.fg_rgb[row, column] = np.where(flip, ground, marks)
     chars.bg[row, column] = True
     chars.bg_rgb[row, column] = np.where(flip, marks, ground)
+
+
+# # #
+# UNICODE BOX PLOTS
+
+
+# how each orientation maps a neighbouring cell onto the direction a character
+# reaches out in to meet it. Each entry names the direction towards the
+# previous and the next cell across the mark's thickness, then along the value
+# axis. Values increase upward on screen, so a mark standing up reaches up for
+# its next cell along where one lying flat reaches right.
+_ARMS_TOWARDS = {
+    "horizontal": (_UP, _DOWN, _LEFT, _RIGHT),
+    "vertical": (_LEFT, _RIGHT, _DOWN, _UP),
+}
+
+# the blocks that fill part of a cell, anchored at the low end of the value
+# axis, so that an interval reaching a cell's low edge is one of these directly
+# and one reaching its high edge is the complement drawn as a negative
+_ANCHORED_BLOCKS = {
+    "horizontal": PARTIAL_BLOCKS_ROW,
+    "vertical": PARTIAL_BLOCKS_COL,
+}
+
+# the two thin bands an interior mark can occupy at the edges of a cell, low
+# edge first. The third position, the middle of the cell, is a line glyph taken
+# from a LineStyle, so that its weight can be chosen to match these.
+_EDGE_BANDS = {
+    "horizontal": (ord("▏"), ord("▕")),
+    "vertical": (ord("▁"), ord("▔")),
+}
+
+# where those three bands sit within a cell, as a fraction of the way across it
+_BAND_OFFSETS = np.array([0.0625, 0.5, 0.9375])
+
+# the arms of the line glyph that draws the middle band: a mark lying flat is
+# crossed by a band standing up, and the other way about
+_BAND_ARMS = {
+    "horizontal": _UP | _DOWN,
+    "vertical": _LEFT | _RIGHT,
+}
+
+# the point drawn for a sample beyond the whiskers
+_OUTLIER = ord("·")
+
+
+def unicode_boxes(
+    outer_los: NDArray,             # float[n]
+    outer_his: NDArray,             # float[n]
+    inner_los: NDArray,             # float[n]
+    inner_his: NDArray,             # float[n]
+    length: int,
+    box_colors: NDArray | None,     # uint8[n, rgb]
+    interiors: NDArray | None = None,       # float[n]
+    outliers: NDArray | None = None,        # float[m]
+    outlier_boxes: NDArray | None = None,   # int[m]
+    direction: str = "horizontal",
+    filled: bool = False,
+    thickness: int = 3,
+    spacing: int = 1,
+    caps: bool = True,
+    background: ColorLike | None = None,
+    style: LineStyle = LineStyle.LIGHT,
+    interior_style: LineStyle = LineStyle.LIGHT,
+) -> CharArray:
+    """
+    Draw a row of interval marks, one per set of values.
+
+    Each mark is an outer interval drawn thin and an inner interval drawn
+    thick, and then caps across the ends of the outer interval, a mark at one
+    value inside the inner interval, and points beyond the outer interval, each
+    drawn only where it is asked for. A box plot is every part present; a
+    candlestick is the two intervals alone.
+
+    Inputs:
+
+    * outer_los, outer_his : float[n].
+        The ends of each mark's outer interval, each as a proportion of the way
+        along the value axis: 0.0 at the low edge of the first character cell,
+        1.0 at the high edge of the last. Values outside that range are clipped
+        into it.
+    * inner_los, inner_his : float[n].
+        The ends of each mark's inner interval, in the same units. Each is
+        clipped into its own outer interval.
+    * length : int (positive).
+        The number of character cells along the value axis.
+    * box_colors : optional uint8[n, rgb].
+        The color of each mark. Omitted, the marks take the terminal's own
+        foreground color, which a filled mark cannot do, since a color it draws
+        negatives against has to be named.
+    * interiors : optional float[n].
+        The value of each mark's interior mark, in the same units. Omitted, no
+        interior mark is drawn.
+    * outliers : optional float[m].
+        The values of the points beyond the outer intervals, in the same units,
+        every mark's points together in one array.
+    * outlier_boxes : optional int[m].
+        Which mark each of those points belongs to.
+    * direction : "horizontal" | "vertical" (default: "horizontal").
+        Which way one mark lies. Horizontal marks lie flat and stack up the
+        screen; vertical marks stand up and march across it.
+    * filled : bool (default: False).
+        Whether the inner interval is a solid fill rather than an outline.
+    * thickness : int (default: 3).
+        The number of character cells across one mark. At least 3 for an
+        outlined mark, which needs two edges and an interior between them, and
+        at least 1 for a filled one.
+    * spacing : int (default: 1).
+        The number of blank cells between one mark and the next.
+    * caps : bool (default: True).
+        Whether to draw a cap across each end of the outer interval.
+    * background : optional ColorLike.
+        The color behind the marks. Required for filled marks, which reach
+        every eighth of a cell only by drawing half of them as negatives.
+    * style : LineStyle (default: LineStyle.LIGHT).
+        The weight of the outer interval, the caps, and an outlined mark's
+        outline.
+    * interior_style : LineStyle (default: LineStyle.LIGHT).
+        The weight of a filled mark's interior mark. An outlined mark's
+        interior mark joins its outline and so takes `style` instead.
+
+    Returns:
+
+    * chars : CharArray.
+        A character array holding the marks side by side, `length` cells along
+        the value axis and `n * (thickness + spacing) - spacing` across.
+
+    An outlined mark is drawn at one position per cell throughout, its corners
+    and junctions derived from which of its neighbours are drawn, exactly as a
+    frame's are. A filled mark reaches finer: its fill lands on the nearest
+    eighth of a cell, its outer interval on the nearest half, and its interior
+    mark on one of the three thin bands a cell can show.
+
+    Where there is no room for it the interior mark is dropped, rather than
+    drawn about nothing. An outlined mark needs a whole cell to spare between
+    the edges of its inner interval. A filled one needs the band's cell filled
+    from edge to edge, because the band is drawn over the fill's color and
+    would otherwise paint the mark outside the interval the band divides.
+    """
+    if length < 1:
+        raise ValueError(f"length must be positive, not {length}")
+    if spacing < 0:
+        raise ValueError(f"spacing must be non-negative, not {spacing}")
+    minimum = 1 if filled else 3
+    if thickness < minimum:
+        kind = "a filled" if filled else "an outlined"
+        raise ValueError(
+            f"{kind} mark needs a thickness of at least {minimum}, not "
+            f"{thickness}"
+        )
+    if direction not in _ARMS_TOWARDS:
+        raise ValueError(
+            f"direction must be 'horizontal' or 'vertical', not {direction!r}"
+        )
+    if filled and background is None:
+        raise ValueError("a filled mark needs a background color")
+    if filled and box_colors is None:
+        raise ValueError("a filled mark needs a color of its own")
+
+    num_boxes = len(outer_los)
+    across_total = max(num_boxes * (thickness + spacing) - spacing, 1)
+    chars = CharArray.from_size(
+        height=across_total if direction == "horizontal" else length,
+        width=length if direction == "horizontal" else across_total,
+        bgcolor=background,
+    )
+    if num_boxes == 0:
+        return chars
+
+    ground = parse_color(background)
+    rows, columns = _mark_cells(
+        num_boxes=num_boxes,
+        length=length,
+        direction=direction,
+        thickness=thickness,
+        spacing=spacing,
+    )
+    colors = None
+    if box_colors is not None:
+        colors = np.broadcast_to(
+            box_colors[:, None, None, :],
+            (num_boxes, thickness, length, 3),
+        )
+    # an inner interval outside its outer one would put a whisker inside the
+    # body, so it is clipped rather than drawn
+    inner_los = np.clip(inner_los, outer_los, outer_his)
+    inner_his = np.clip(inner_his, inner_los, outer_his)
+
+    # the points first, so that a mark is drawn over a point that rounds into
+    # one of its own cells rather than the point erasing part of the mark
+    if outliers is not None and len(outliers):
+        assert outlier_boxes is not None
+        _draw_outliers(
+            chars=chars,
+            rows=rows,
+            columns=columns,
+            box_colors=box_colors,
+            outliers=outliers,
+            outlier_boxes=outlier_boxes,
+            length=length,
+            thickness=thickness,
+        )
+
+    draw = _draw_filled_marks if filled else _draw_outlined_marks
+    draw(
+        chars=chars,
+        rows=rows,
+        columns=columns,
+        colors=colors,
+        ground=ground,
+        outer_los=outer_los,
+        outer_his=outer_his,
+        inner_los=inner_los,
+        inner_his=inner_his,
+        interiors=interiors,
+        length=length,
+        direction=direction,
+        thickness=thickness,
+        caps=caps,
+        style=style,
+        interior_style=interior_style,
+    )
+    return chars
+
+
+def _mark_cells(
+    num_boxes: int,
+    length: int,
+    direction: str,
+    thickness: int,
+    spacing: int,
+) -> tuple[NDArray, NDArray]: # int[n, thickness, length] twice
+    """
+    Say which cell of the character array each cell of each mark lands in.
+
+    A mark is indexed by how far across its thickness a cell sits and how far
+    along the value axis, counting from the low end of that axis. The
+    orientation decides which of those is a row and which a column, and a mark
+    standing up counts its value axis up the screen, against the rows.
+    """
+    starts = np.arange(num_boxes) * (thickness + spacing)
+    across = starts[:, None, None] + np.arange(thickness)[None, :, None]
+    along = np.arange(length)[None, None, :]
+    shape = (num_boxes, thickness, length)
+    if direction == "horizontal":
+        return np.broadcast_to(across, shape), np.broadcast_to(along, shape)
+    return np.broadcast_to(length - 1 - along, shape), np.broadcast_to(
+        across, shape
+    )
+
+
+def _whole_cells(
+    proportions: NDArray,   # float[n]
+    length: int,
+) -> NDArray:               # int[n]
+    """
+    Say which cell along the value axis each proportion falls in.
+    """
+    cells = (np.clip(proportions, 0, 1) * length).astype(int)
+    return np.clip(cells, 0, length - 1)
+
+
+def _sub_cells(
+    los: NDArray,   # float[n]
+    his: NDArray,   # float[n]
+    length: int,
+    per_cell: int,
+) -> tuple[NDArray, NDArray]: # int[n], int[n]
+    """
+    Turn a pair of proportions into the sub-cells an interval covers.
+
+    The sub-cells are counted from the low end of the value axis and come back
+    as a half-open interval, so one covering sub-cells 3 and 4 comes back as
+    (3, 5). The interval is never empty, so one whose two ends round to the
+    same sub-cell still covers it.
+    """
+    units = length * per_cell
+    start = np.rint(np.clip(los, 0, 1) * units).astype(int)
+    stop = np.rint(np.clip(his, 0, 1) * units).astype(int)
+    start = np.clip(start, 0, units - 1)
+    stop = np.clip(stop, start + 1, units)
+    return start, stop
+
+
+def _scatter(
+    chars: CharArray,
+    rows: NDArray,          # int[n, thickness, length]
+    columns: NDArray,       # int[n, thickness, length]
+    codes: NDArray,         # uint32[n, thickness, length]
+    mask: NDArray,          # bool[n, thickness, length]
+    colors: NDArray | None, # uint8[n, thickness, length, rgb]
+    ground: Color | None,
+    inverted: NDArray | None = None, # bool[n, thickness, length]
+) -> None:
+    """
+    Write the cells of every mark into the character array.
+
+    A cell is written only where `mask` holds. Without colors the cells keep
+    the terminal's own foreground. Where `inverted` holds, the mark's color goes
+    to the cell's background and the array's background color to its
+    foreground, so that what shows as the mark is what the glyph leaves
+    unfilled.
+    """
+    row, column = rows[mask], columns[mask]
+    chars.codes[row, column] = codes[mask]
+    if colors is None:
+        return
+    marks = colors[mask]
+    if inverted is None:
+        chars.fg[row, column] = True
+        chars.fg_rgb[row, column] = marks
+        return
+    flip = inverted[mask][:, None]
+    base = np.zeros(3, dtype=np.uint8) if ground is None else ground
+    chars.fg[row, column] = True
+    chars.fg_rgb[row, column] = np.where(flip, base, marks)
+    chars.bg[row, column] = True
+    chars.bg_rgb[row, column] = np.where(flip, marks, base)
+
+
+def _draw_outlined_marks(
+    chars: CharArray,
+    rows: NDArray,
+    columns: NDArray,
+    colors: NDArray | None,
+    ground: Color | None,
+    outer_los: NDArray,
+    outer_his: NDArray,
+    inner_los: NDArray,
+    inner_his: NDArray,
+    interiors: NDArray | None,
+    length: int,
+    direction: str,
+    thickness: int,
+    caps: bool,
+    style: LineStyle,
+    interior_style: LineStyle,
+) -> None:
+    """
+    Draw marks whose inner interval is a rectangle of box-drawing characters.
+
+    Every part lands on a whole cell, and the mark is assembled by saying which
+    cells carry a rule and then reading each cell's corner or junction off which
+    of its neighbours continue the rule through it. So the outline, the outer
+    interval running into it, the caps and the interior mark all meet each other
+    correctly without any of them knowing about the others.
+    """
+    num_boxes = len(outer_los)
+    shape = (num_boxes, thickness, length)
+    along = np.arange(length)[None, None, :]
+    across = np.arange(thickness)[None, :, None]
+    centre = thickness // 2
+
+    outer_lo = _whole_cells(outer_los, length)[:, None, None]
+    outer_hi = _whole_cells(outer_his, length)[:, None, None]
+    inner_lo = _whole_cells(inner_los, length)[:, None, None]
+    inner_hi = _whole_cells(inner_his, length)[:, None, None]
+
+    # the parts that run along the value axis: the two flanks of the inner
+    # interval, and the outer interval reaching out of each end of it along the
+    # middle of the mark. Each reach includes the end of the inner interval it
+    # arrives at, so that it joins the outline there rather than stopping short.
+    inside = (along >= inner_lo) & (along <= inner_hi)
+    middle = across == centre
+    lengthways_parts = [
+        np.broadcast_to(part, shape) for part in (
+            inside & ((across == 0) | (across == thickness - 1)),
+            (along >= outer_lo) & (along <= inner_lo) & middle,
+            (along >= inner_hi) & (along <= outer_hi) & middle,
+        )
+    ]
+    lengthways = np.logical_or.reduce(lengthways_parts)
+
+    # the parts that run across the mark's thickness: the two ends of the inner
+    # interval, the caps, and the interior mark. That mark needs a cell to spare
+    # on either side of it, or it would land on an end and show nothing.
+    crossways = inside & ((along == inner_lo) | (along == inner_hi))
+    if caps:
+        crossways = crossways | (along == outer_lo) | (along == outer_hi)
+    if interiors is not None:
+        interior = _whole_cells(interiors, length)[:, None, None]
+        crossways = crossways | (
+            (along == interior)
+            & (interior > inner_lo)
+            & (interior < inner_hi)
+        )
+    crossways = np.broadcast_to(crossways, shape)
+
+    # Two neighbouring cells reach out towards each other exactly when one and
+    # the same rule runs through both. Asking instead whether each merely
+    # carries some rule running that way would join rules that only touch: a
+    # cap would fuse onto the flank beside it, a narrow inner interval's ends
+    # onto the interior mark between them, and the two halves of a narrow
+    # mark's outer interval onto each other straight through the inner one.
+    before_across, after_across, before_along, after_along = _ARMS_TOWARDS[
+        direction
+    ]
+    across_pairs = crossways[:, :-1, :] & crossways[:, 1:, :]
+    along_pairs = np.logical_or.reduce([
+        part[:, :, :-1] & part[:, :, 1:] for part in lengthways_parts
+    ])
+    arms = np.zeros(shape, dtype=int)
+    arms[:, 1:, :] |= np.where(across_pairs, before_across, 0)
+    arms[:, :-1, :] |= np.where(across_pairs, after_across, 0)
+    arms[:, :, 1:] |= np.where(along_pairs, before_along, 0)
+    arms[:, :, :-1] |= np.where(along_pairs, after_along, 0)
+    ruled = lengthways | crossways
+
+    glyphs = np.array([ord(c) for c in style], dtype=np.uint32)
+    _scatter(
+        chars=chars,
+        rows=rows,
+        columns=columns,
+        codes=glyphs[arms],
+        mask=ruled,
+        colors=colors,
+        ground=ground,
+    )
+
+
+def _draw_filled_marks(
+    chars: CharArray,
+    rows: NDArray,
+    columns: NDArray,
+    colors: NDArray | None,
+    ground: Color | None,
+    outer_los: NDArray,
+    outer_his: NDArray,
+    inner_los: NDArray,
+    inner_his: NDArray,
+    interiors: NDArray | None,
+    length: int,
+    direction: str,
+    thickness: int,
+    caps: bool,
+    style: LineStyle,
+    interior_style: LineStyle,
+) -> None:
+    """
+    Draw marks whose inner interval is a solid fill of partial blocks.
+
+    The three parts land at three resolutions, each the finest its glyphs
+    allow: the fill on the nearest eighth of a cell, the outer interval on the
+    nearest half, and the interior mark on one of the three thin bands a cell
+    can show. The fill is drawn over the outer interval, so in the one cell
+    holding an end of the fill, whatever the fill does not cover shows
+    background rather than the line running under it.
+    """
+    num_boxes = len(outer_los)
+    shape = (num_boxes, thickness, length)
+    along = np.arange(length)[None, None, :]
+    across = np.arange(thickness)[None, :, None]
+    centre = thickness // 2
+    before_across, after_across, before_along, after_along = _ARMS_TOWARDS[
+        direction
+    ]
+
+    # the outer interval, to the nearest half cell, along the mark's middle
+    start, stop = _sub_cells(outer_los, outer_his, length, per_cell=2)
+    start, stop = start[:, None, None], stop[:, None, None]
+    low_half, high_half = 2 * along, 2 * along + 1
+    arms = (
+        np.where((start <= low_half) & (stop > low_half), before_along, 0)
+        | np.where((start <= high_half) & (stop > high_half), after_along, 0)
+    ) * (across == centre)
+
+    # the caps, reaching from the middle of the mark's first cell across to the
+    # middle of its last, or filling its one cell where the mark is that thin
+    if caps:
+        if thickness == 1:
+            reach = np.full((1, 1, 1), before_across | after_across)
+        else:
+            reach = np.where(across > 0, before_across, 0) | np.where(
+                across < thickness - 1, after_across, 0
+            )
+        low_end, high_end = start // 2, (stop - 1) // 2
+        arms = arms | (((along == low_end) | (along == high_end)) * reach)
+        # a cap is where the interval stops, so within the cap's own cell the
+        # interval is drawn inward from it and does not reach out past it
+        arms = arms & ~np.where(along == low_end, before_along, 0)
+        arms = arms & ~np.where(along == high_end, after_along, 0)
+
+    glyphs = np.array([ord(c) for c in style], dtype=np.uint32)
+    _scatter(
+        chars=chars,
+        rows=rows,
+        columns=columns,
+        codes=glyphs[arms],
+        mask=np.broadcast_to(arms > 0, shape),
+        colors=colors,
+        ground=ground,
+    )
+
+    # the inner interval, a fill to the nearest eighth of a cell. A fill
+    # reaching a cell's low edge is a block anchored there; one reaching its
+    # high edge is the complement of a block, drawn as a negative; one reaching
+    # neither keeps its length and shifts to whichever edge is nearer.
+    low, high = _sub_cells(inner_los, inner_his, length, per_cell=8)
+    low, high = low[:, None, None], high[:, None, None]
+    cell_low, cell_high = 8 * along, 8 * along + 8
+    covered = np.minimum(high, cell_high) - np.maximum(low, cell_low)
+    spare_low = np.maximum(low, cell_low) - cell_low
+    spare_high = cell_high - np.minimum(high, cell_high)
+    fill = np.broadcast_to(covered > 0, shape)
+    inverted = fill & (spare_low > 0) & (spare_high <= spare_low)
+    eighths = np.where(inverted, 8 - covered, covered)
+    blocks = np.array(_ANCHORED_BLOCKS[direction], dtype=np.uint32)
+    _scatter(
+        chars=chars,
+        rows=rows,
+        columns=columns,
+        codes=blocks[np.clip(eighths, 0, 8)],
+        mask=fill,
+        colors=colors,
+        ground=ground,
+        inverted=inverted,
+    )
+
+    if interiors is None:
+        return
+
+    # the interior mark, a thin band drawn in the background color over a cell
+    # whose background is the mark's own, which is three regions from the one
+    # glyph and so needs no gap in the fill. Only a cell the fill covers from
+    # edge to edge can carry it, since the band paints its whole cell.
+    bands = (np.arange(length)[:, None] + _BAND_OFFSETS[None, :]).reshape(-1)
+    wanted = np.clip(interiors, 0, 1) * length
+    nearest = np.abs(wanted[:, None] - bands[None, :]).argmin(axis=1)
+    band_cell = (nearest // 3)[:, None, None]
+    band_position = (nearest % 3)[:, None, None]
+    low_band, high_band = _EDGE_BANDS[direction]
+    middle_band = ord(interior_style[_BAND_ARMS[direction]])
+    codes = np.where(
+        band_position == 0,
+        low_band,
+        np.where(band_position == 1, middle_band, high_band),
+    ).astype(np.uint32)
+    room = (low <= 8 * band_cell) & (high >= 8 * band_cell + 8)
+    band = np.broadcast_to((along == band_cell) & room, shape)
+    _scatter(
+        chars=chars,
+        rows=rows,
+        columns=columns,
+        codes=np.broadcast_to(codes, shape),
+        mask=band,
+        colors=colors,
+        ground=ground,
+        inverted=np.ones(shape, dtype=bool),
+    )
+
+
+def _draw_outliers(
+    chars: CharArray,
+    rows: NDArray,
+    columns: NDArray,
+    box_colors: NDArray | None, # uint8[n, rgb]
+    outliers: NDArray,      # float[m]
+    outlier_boxes: NDArray, # int[m]
+    length: int,
+    thickness: int,
+) -> None:
+    """
+    Draw a point for each sample beyond its mark's outer interval, along the
+    middle of the mark it belongs to.
+    """
+    centre = thickness // 2
+    cells = _whole_cells(outliers, length)
+    row = rows[outlier_boxes, centre, cells]
+    column = columns[outlier_boxes, centre, cells]
+    chars.codes[row, column] = _OUTLIER
+    if box_colors is None:
+        return
+    chars.fg[row, column] = True
+    chars.fg_rgb[row, column] = box_colors[outlier_boxes]

@@ -17,6 +17,25 @@ New:
     mapping from dates to values, separate sequences of dates and values, or one
     date standing in for the consecutive days from there. Dates may be spelled as
     `datetime` dates or datetimes, NumPy `datetime64`s, or ISO 8601 strings.
+* `boxes`: a box plot, one box per group of samples. The box spans the first
+  and third quartiles and is divided at the median, whiskers reach the furthest
+  sample within `whisker_iqrs` times the interquartile range of the quartiles,
+  and every sample beyond them is drawn as a point. Takes raw samples, ragged
+  groups allowed, and works the quartiles out itself.
+  * `box_direction` names the direction of one box rather than of the row of
+    them. Boxes lie flat by default, which gives the value axis both more
+    character cells and finer ones, since terminals are wider than they are
+    tall and character cells are taller than they are wide.
+  * Outlined by default, from box-drawing characters, at one position per cell.
+    `filled=True` draws each box as a solid fill instead, reaching an eighth of
+    a cell for its edges and one of three thin bands for its median, which
+    costs it a named background for the same reason `candles` needs one.
+  * `caps` and `median` can each be left off, so the intermediate settings mean
+    things too: caps without a median is a range plot.
+  * A median with no room is dropped rather than drawn about nothing, and its
+    weight is a `LineStyle`, light lying flat and heavy standing up, each being
+    the weight that matches the eighth blocks it alternates with in that
+    orientation. See `notes/box-plots.md`.
 * `candles`: a candlestick chart, one candle per period, its body spanning the
   opening and closing values and its wick reaching out of the body to the high
   and the low. Bodies are coloured by whether the period closed above or below

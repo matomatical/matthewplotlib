@@ -44,8 +44,9 @@ terminal. The library uses four blocks:
 | Range         | Block            | Used by |
 |---------------|------------------|---------|
 | ASCII         | —                | tick labels, titles |
-| U+2500–U+257F | Box Drawing      | `border`, `axes`, `candles` (wicks) |
-| U+2580–U+259F | Block Elements   | `image` (half blocks), `bars`, `columns` and `candles` (eighth blocks), blocky borders |
+| U+00B7        | Latin-1 (a dot)  | `boxes` (outlying points) |
+| U+2500–U+257F | Box Drawing      | `border`, `axes`, `candles` (wicks), `boxes` (outlines, whiskers, caps) |
+| U+2580–U+259F | Block Elements   | `image` (half blocks), `bars`, `columns`, `candles` and `boxes` (eighth blocks), blocky borders |
 | U+2800–U+28FF | Braille Patterns | `scatter`, `hilbert`, dotted borders |
 
 (The library also allows you to render arbitrary glyphs through `text` plots,

@@ -61,6 +61,7 @@ from matthewplotlib.plots import (
     columns,
     vistogram,
     candles,
+    boxes,
     hilbert,
     calendar,
     weeks,

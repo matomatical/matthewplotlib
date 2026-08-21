@@ -19,6 +19,7 @@ from matthewplotlib.core import (
     unicode_braille_array,
     unicode_image,
     unicode_candles,
+    unicode_boxes,
     disc_offsets,
     rasterise_points,
     rasterise_segments,
@@ -1678,3 +1679,454 @@ class TestUnicodeCandlesLayout:
                 open=0.0, high=1.0, low=0.0, close=1.0,
                 height=height, body_width=body_width, spacing=spacing,
             )
+
+
+# # #
+# unicode_boxes
+
+
+MARK = (255, 0, 0)
+
+
+def box(
+    outer_lo=0.0,
+    outer_hi=1.0,
+    inner_lo=0.25,
+    inner_hi=0.75,
+    interior=None,
+    outliers=None,
+    length=8,
+    direction="horizontal",
+    filled=False,
+    thickness=3,
+    caps=True,
+    style=LineStyle.LIGHT,
+    interior_style=LineStyle.LIGHT,
+):
+    """One mark, coloured so that it and its background can be told apart."""
+    return unicode_boxes(
+        outer_los=np.array([outer_lo]),
+        outer_his=np.array([outer_hi]),
+        inner_los=np.array([inner_lo]),
+        inner_his=np.array([inner_hi]),
+        interiors=None if interior is None else np.array([interior]),
+        outliers=None if outliers is None else np.array(outliers),
+        outlier_boxes=None if outliers is None else np.zeros(
+            len(outliers), dtype=int
+        ),
+        length=length,
+        box_colors=np.array([MARK], dtype=np.uint8),
+        direction=direction,
+        filled=filled,
+        thickness=thickness,
+        caps=caps,
+        background=GROUND if filled else None,
+        style=style,
+        interior_style=interior_style,
+    )
+
+
+def mark_eighths(chars, row=0):
+    """Where the mark's colour lands along one pixel row, in eighths of a cell.
+
+    Reads the rendered pixels rather than the characters, so that a fill drawn
+    as a negative counts the same as one drawn directly. The pixel font gives
+    each cell eight columns, so an eighth of a cell is one of them.
+    """
+    pixels = chars.to_rgba_array()[:, :, :3]
+    painted = (pixels == np.array(MARK)).all(axis=-1)
+    columns = np.flatnonzero(painted[row])
+    if not len(columns):
+        return None
+    return columns.min(), columns.max() + 1
+
+
+class TestUnicodeBoxesOutlined:
+    """An outlined mark is a rectangle of box-drawing characters around its
+    inner interval, with the outer interval reaching out of each end of it and
+    a cap across each of those ends. Everything lands on a whole cell, and the
+    corners and junctions follow from which neighbours continue each rule."""
+
+    def test_the_mark_is_a_rectangle_with_whiskers_and_caps(self):
+        chars = box(outer_lo=0.0, outer_hi=1.0, inner_lo=0.25, inner_hi=0.75)
+        assert chars.to_plain_str().splitlines() == [
+            "╷ ┌───┐╷",
+            "├─┤   ├┤",
+            "╵ └───┘╵",
+        ]
+
+    def test_the_whiskers_stop_at_the_ends_of_the_outer_interval(self):
+        chars = box(outer_lo=0.25, outer_hi=0.75, inner_lo=0.375, inner_hi=0.5)
+        assert chars.to_plain_str().splitlines() == [
+            "  ╷┌┐ ╷ ",
+            "  ├┤├─┤ ",
+            "  ╵└┘ ╵ ",
+        ]
+
+    def test_without_caps_the_whiskers_end_in_a_stub(self):
+        chars = box(caps=False)
+        assert chars.to_plain_str().splitlines() == [
+            "  ┌───┐ ",
+            "╶─┤   ├╴",
+            "  └───┘ ",
+        ]
+
+    def test_the_interior_mark_divides_the_rectangle(self):
+        chars = box(inner_lo=0.0, inner_hi=1.0, interior=0.5, caps=False)
+        assert chars.to_plain_str().splitlines() == [
+            "┌───┬──┐",
+            "│   │  │",
+            "└───┴──┘",
+        ]
+
+    def test_the_interior_mark_lands_on_a_whole_cell(self):
+        for interior, column in [(0.30, 2), (0.45, 3), (0.55, 4)]:
+            chars = box(inner_lo=0.0, inner_hi=1.0, interior=interior)
+            top = chars.to_plain_str().splitlines()[0]
+            assert top.index("┬") == column, interior
+
+    def test_an_interior_mark_with_no_cell_to_spare_is_dropped(self):
+        # an inner interval two cells wide has no cell between its ends
+        chars = box(inner_lo=0.25, inner_hi=0.4, interior=0.3)
+        assert "┬" not in chars.to_plain_str()
+        # and one cell more is enough
+        chars = box(inner_lo=0.25, inner_hi=0.5, interior=0.4)
+        assert "┬" in chars.to_plain_str()
+
+    def test_an_interior_mark_on_an_end_of_the_interval_is_dropped(self):
+        chars = box(inner_lo=0.25, inner_hi=0.75, interior=0.25)
+        assert "┬" not in chars.to_plain_str()
+
+    def test_the_parts_take_the_weight_of_the_style(self):
+        chars = box(interior=0.5, style=LineStyle.HEAVY)
+        drawn = set(chars.to_plain_str()) - {" ", "\n"}
+        assert drawn <= set("┏┓┗┛┃━┣┫┳┻╹╻")
+
+    def test_the_interior_mark_ignores_the_interior_style(self):
+        # an outlined interior mark joins the outline, so it has to match it
+        light = box(interior=0.5, interior_style=LineStyle.LIGHT)
+        heavy = box(interior=0.5, interior_style=LineStyle.HEAVY)
+        assert light.to_plain_str() == heavy.to_plain_str()
+
+    def test_a_thickness_below_three_is_an_error(self):
+        with pytest.raises(ValueError):
+            box(thickness=2)
+
+    def test_an_outlined_mark_needs_no_background(self):
+        assert not box().bg.any()
+
+
+class TestUnicodeBoxesFilled:
+    """A filled mark's inner interval is a solid fill of partial blocks,
+    reaching the nearest eighth of a cell by drawing half of the eighths as
+    negatives, so these tests read pixels rather than characters."""
+
+    def test_a_fill_spanning_the_axis_fills_every_cell(self):
+        chars = box(inner_lo=0.0, inner_hi=1.0, length=3, filled=True)
+        assert chars.to_plain_str().splitlines()[1] == "███"
+        assert mark_eighths(chars) == (0, 24)
+
+    def test_a_fill_over_the_low_half_reaches_the_middle(self):
+        chars = box(inner_lo=0.0, inner_hi=0.5, length=2, filled=True)
+        assert mark_eighths(chars) == (0, 8)
+
+    def test_a_fill_from_a_cell_low_edge_is_a_partial_block(self):
+        chars = box(inner_lo=0.0, inner_hi=0.25, length=1, filled=True)
+        assert chars.to_plain_str().splitlines()[1] == "▎"
+        assert mark_eighths(chars) == (0, 2)
+
+    def test_a_fill_to_a_cell_high_edge_is_drawn_as_a_negative(self):
+        chars = box(inner_lo=0.75, inner_hi=1.0, length=1, filled=True)
+        assert mark_eighths(chars) == (6, 8)
+        # the glyph is the block filling the six eighths the fill leaves empty
+        assert chars.to_plain_str().splitlines()[1] == "▊"
+        assert chars.fg_rgb[1, 0].tolist() == list(GROUND)
+        assert chars.bg_rgb[1, 0].tolist() == list(MARK)
+
+    def test_every_eighth_of_a_cell_is_reachable(self):
+        lengths = set()
+        for eighths in range(1, 9):
+            chars = box(
+                inner_lo=0.0, inner_hi=eighths / 8, length=1, filled=True,
+            )
+            low, high = mark_eighths(chars)
+            lengths.add(high - low)
+        assert lengths == set(range(1, 9))
+
+    def test_a_thickness_of_one_is_allowed(self):
+        chars = box(inner_lo=0.0, inner_hi=1.0, length=3, filled=True,
+                    thickness=1)
+        assert chars.height == 1
+
+    def test_the_fill_covers_every_cell_across_the_thickness(self):
+        chars = box(inner_lo=0.0, inner_hi=1.0, length=2, filled=True)
+        assert chars.to_plain_str().splitlines() == ["██", "██", "██"]
+
+    def test_the_fill_is_drawn_over_the_outer_interval(self):
+        chars = box(inner_lo=0.0, inner_hi=1.0, length=2, filled=True)
+        assert "─" not in chars.to_plain_str()
+
+    def test_a_filled_mark_needs_a_background_and_a_colour(self):
+        with pytest.raises(ValueError):
+            unicode_boxes(
+                outer_los=np.zeros(1), outer_his=np.ones(1),
+                inner_los=np.zeros(1), inner_his=np.ones(1),
+                length=4, box_colors=np.array([MARK], dtype=np.uint8),
+                filled=True, thickness=1, background=None,
+            )
+        with pytest.raises(ValueError):
+            unicode_boxes(
+                outer_los=np.zeros(1), outer_his=np.ones(1),
+                inner_los=np.zeros(1), inner_his=np.ones(1),
+                length=4, box_colors=None,
+                filled=True, thickness=1, background=GROUND,
+            )
+
+
+class TestUnicodeBoxesInteriorBands:
+    """A filled mark's interior mark is a thin band drawn in the background
+    colour over a cell whose background is the mark's own, which is three
+    regions from one glyph. A cell has three such bands, at its low edge, its
+    middle and its high edge."""
+
+    @pytest.mark.parametrize("interior,glyph", [
+        (0.01, "▏"),
+        (0.50, "│"),
+        (0.99, "▕"),
+    ])
+    def test_a_flat_mark_has_three_bands_in_a_cell(self, interior, glyph):
+        chars = box(
+            inner_lo=0.0, inner_hi=1.0, interior=interior, length=1,
+            filled=True, thickness=1,
+        )
+        assert chars.to_plain_str() == glyph
+
+    @pytest.mark.parametrize("interior,glyph", [
+        (0.01, "▁"),
+        (0.50, "─"),
+        (0.99, "▔"),
+    ])
+    def test_a_standing_mark_has_the_bands_the_other_way(
+        self, interior, glyph,
+    ):
+        chars = box(
+            inner_lo=0.0, inner_hi=1.0, interior=interior, length=1,
+            filled=True, thickness=1, direction="vertical",
+        )
+        assert chars.to_plain_str() == glyph
+
+    def test_the_band_is_the_background_over_the_mark_colour(self):
+        chars = box(
+            inner_lo=0.0, inner_hi=1.0, interior=0.5, length=1,
+            filled=True, thickness=1,
+        )
+        assert chars.fg_rgb[0, 0].tolist() == list(GROUND)
+        assert chars.bg_rgb[0, 0].tolist() == list(MARK)
+
+    def test_the_middle_band_takes_the_interior_style(self):
+        light = box(
+            inner_lo=0.0, inner_hi=1.0, interior=0.5, length=1, filled=True,
+            thickness=1, interior_style=LineStyle.LIGHT,
+        )
+        heavy = box(
+            inner_lo=0.0, inner_hi=1.0, interior=0.5, length=1, filled=True,
+            thickness=1, interior_style=LineStyle.HEAVY,
+        )
+        assert light.to_plain_str() == "│"
+        assert heavy.to_plain_str() == "┃"
+
+    def test_the_edge_bands_do_not_take_the_interior_style(self):
+        # the eighth blocks at a cell's edges have no weights to choose from
+        for interior in (0.01, 0.99):
+            light = box(
+                inner_lo=0.0, inner_hi=1.0, interior=interior, length=1,
+                filled=True, thickness=1, interior_style=LineStyle.LIGHT,
+            )
+            heavy = box(
+                inner_lo=0.0, inner_hi=1.0, interior=interior, length=1,
+                filled=True, thickness=1, interior_style=LineStyle.HEAVY,
+            )
+            assert light.to_plain_str() == heavy.to_plain_str()
+
+    def test_the_band_spans_the_thickness(self):
+        chars = box(
+            inner_lo=0.0, inner_hi=1.0, interior=0.5, length=1, filled=True,
+            thickness=3,
+        )
+        assert chars.to_plain_str().splitlines() == ["│", "│", "│"]
+
+    def test_a_band_needs_its_cell_filled_from_edge_to_edge(self):
+        # the fill covers half of the one cell, so a band anywhere in it would
+        # paint the mark's colour across the whole cell
+        chars = box(
+            inner_lo=0.0, inner_hi=0.5, interior=0.25, length=1, filled=True,
+            thickness=1,
+        )
+        assert chars.to_plain_str() == "▌"
+
+    def test_the_band_lands_on_the_nearest_of_the_three_positions(self):
+        # over two cells the six bands sit at these fractions of the axis
+        positions = [0.03125, 0.25, 0.46875, 0.53125, 0.75, 0.96875]
+        glyphs = ["▏", "│", "▕", "▏", "│", "▕"]
+        for position, glyph in zip(positions, glyphs):
+            chars = box(
+                inner_lo=0.0, inner_hi=1.0, interior=position, length=2,
+                filled=True, thickness=1,
+            )
+            assert glyph in chars.to_plain_str(), position
+
+
+class TestUnicodeBoxesOrientation:
+    """A mark lying flat runs along the columns and stacks up the rows; one
+    standing up runs up the rows and marches across the columns, counting its
+    value axis up the screen so that low values sit at the bottom."""
+
+    def test_a_flat_mark_is_as_long_as_the_value_axis(self):
+        chars = box(length=12, thickness=3, direction="horizontal")
+        assert (chars.height, chars.width) == (3, 12)
+
+    def test_a_standing_mark_turns_the_rectangle_around(self):
+        chars = box(length=12, thickness=3, direction="vertical")
+        assert (chars.height, chars.width) == (12, 3)
+
+    def test_a_standing_mark_puts_low_values_at_the_bottom(self):
+        chars = box(
+            outer_lo=0.0, outer_hi=1.0, inner_lo=0.0, inner_hi=0.25,
+            length=4, thickness=1, filled=True, direction="vertical",
+        )
+        assert chars.to_plain_str().splitlines()[-1] == "█"
+        assert chars.to_plain_str().splitlines()[0] != "█"
+
+    def test_a_flat_mark_puts_low_values_on_the_left(self):
+        chars = box(
+            outer_lo=0.0, outer_hi=1.0, inner_lo=0.0, inner_hi=0.25,
+            length=4, thickness=1, filled=True,
+        )
+        assert chars.to_plain_str()[0] == "█"
+        assert chars.to_plain_str()[-1] != "█"
+
+    def test_a_standing_mark_reads_the_same_as_a_flat_one_turned(self):
+        flat = box(interior=0.4, length=9, direction="horizontal")
+        standing = box(interior=0.4, length=9, direction="vertical")
+        turned = [
+            "".join(line[i] for line in standing.to_plain_str().splitlines())
+            for i in range(3)
+        ]
+        # the same rules in the same cells, drawn with the other axis's glyphs
+        assert [line.count(" ") for line in turned] == [
+            line.count(" ") for line in flat.to_plain_str().splitlines()
+        ]
+
+
+class TestUnicodeBoxesLayout:
+    """Marks sit side by side, each as thick as asked for, with any spacing
+    left blank between one and the next."""
+
+    def _row(self, n, **kwargs):
+        return unicode_boxes(
+            outer_los=np.zeros(n),
+            outer_his=np.ones(n),
+            inner_los=np.zeros(n),
+            inner_his=np.ones(n),
+            length=1,
+            box_colors=np.full((n, 3), 255, dtype=np.uint8),
+            **kwargs,
+        )
+
+    def test_the_thickness_counts_the_marks_and_the_gaps_between_them(self):
+        chars = self._row(4, thickness=3, spacing=2)
+        assert chars.height == 4 * 5 - 2
+        assert chars.width == 1
+
+    def test_spacing_is_left_blank(self):
+        chars = self._row(2, thickness=1, spacing=2, filled=True,
+                          background=GROUND, caps=False)
+        assert chars.to_plain_str() == "█\n \n \n█"
+
+    def test_each_mark_keeps_its_own_colour(self):
+        chars = unicode_boxes(
+            outer_los=np.zeros(3),
+            outer_his=np.ones(3),
+            inner_los=np.zeros(3),
+            inner_his=np.ones(3),
+            length=1,
+            box_colors=np.array(
+                [[255, 0, 0], [0, 255, 0], [0, 0, 255]], dtype=np.uint8,
+            ),
+            thickness=1,
+            spacing=1,
+            filled=True,
+            background=GROUND,
+            caps=False,
+        )
+        painted = [tuple(color) for color in chars.fg_rgb[:, 0]]
+        assert painted[0::2] == [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
+
+    def test_no_marks_at_all(self):
+        chars = unicode_boxes(
+            outer_los=np.zeros(0),
+            outer_his=np.zeros(0),
+            inner_los=np.zeros(0),
+            inner_his=np.zeros(0),
+            length=3,
+            box_colors=np.zeros((0, 3), dtype=np.uint8),
+        )
+        assert (chars.height, chars.width) == (1, 3)
+
+    @pytest.mark.parametrize("length,spacing", [(0, 1), (1, -1)])
+    def test_a_rectangle_needs_sensible_dimensions(self, length, spacing):
+        with pytest.raises(ValueError):
+            box(length=length, spacing=spacing) if False else unicode_boxes(
+                outer_los=np.zeros(1), outer_his=np.ones(1),
+                inner_los=np.zeros(1), inner_his=np.ones(1),
+                length=length, spacing=spacing,
+                box_colors=np.array([MARK], dtype=np.uint8),
+            )
+
+    def test_an_unknown_direction_is_an_error(self):
+        with pytest.raises(ValueError):
+            box(direction="sideways")
+
+
+class TestUnicodeBoxesOutliers:
+    """A point is drawn for each value beyond a mark's outer interval, along
+    the middle of the mark it belongs to."""
+
+    def test_a_point_is_drawn_beyond_the_whisker(self):
+        chars = box(
+            outer_lo=0.5, outer_hi=0.75, inner_lo=0.5, inner_hi=0.75,
+            outliers=[0.05], length=8,
+        )
+        assert chars.to_plain_str().splitlines()[1][0] == "·"
+
+    def test_points_land_along_the_middle_of_the_mark(self):
+        chars = box(outliers=[0.05], outer_lo=0.5, outer_hi=1.0,
+                    inner_lo=0.5, inner_hi=1.0, thickness=3)
+        lines = chars.to_plain_str().splitlines()
+        assert "·" in lines[1]
+        assert "·" not in lines[0] and "·" not in lines[2]
+
+    def test_each_point_belongs_to_its_own_mark(self):
+        chars = unicode_boxes(
+            outer_los=np.array([0.5, 0.5]),
+            outer_his=np.array([1.0, 1.0]),
+            inner_los=np.array([0.5, 0.5]),
+            inner_his=np.array([1.0, 1.0]),
+            outliers=np.array([0.0, 0.125]),
+            outlier_boxes=np.array([1, 1]),
+            length=8,
+            box_colors=np.full((2, 3), 255, dtype=np.uint8),
+            thickness=1,
+            spacing=0,
+            filled=True,
+            background=GROUND,
+            caps=False,
+        )
+        assert "·" not in chars.to_plain_str().splitlines()[0]
+        assert chars.to_plain_str().splitlines()[1].count("·") == 2
+
+    def test_the_mark_is_drawn_over_a_point_that_lands_on_it(self):
+        # a point rounding into the cap's own cell must not erase the cap
+        chars = box(outer_lo=0.6, outer_hi=1.0, inner_lo=0.7, inner_hi=1.0,
+                    outliers=[0.55], length=4)
+        assert "·" not in chars.to_plain_str()
