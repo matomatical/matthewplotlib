@@ -37,9 +37,7 @@ Series Data Visualisation
     </td>
     <td>
       <p><strong>Candlesticks</strong></p>
-      <p>A simulated price series as candles, one column to a period. A
-      candlestick chart paints its own background, which is what lets a body
-      land on an eighth of a character cell.</p>
+      <p>A simulated price series.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/candlesticks.py">Source</a></p>
     </td>
@@ -168,9 +166,9 @@ Surface Data Visualisation
     </td>
     <td>
       <p><strong>Domain colouring</strong></p>
-      <p>Six complex functions painted onto their own input plane, with hue
-      for the phase and lightness for the modulus. Zeros come out black and
-      poles white, and a dark ring marks every doubling.</p>
+      <p>Six complex functions. Hue for phase and lightness for modulus.
+      Zeros come out black and poles white. A dark ring marks every
+      doubling.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/domain_coloring.py">Source</a></p>
     </td>
@@ -192,9 +190,8 @@ Surface Data Visualisation
     </td>
     <td>
       <p><strong>Phase portraits</strong></p>
-      <p>Six planar vector fields as colour fields, with hue for the direction
-      and brightness for the magnitude. A vector in every cell, so saddles,
-      spirals and vortices survive at terminal resolution.</p>
+      <p>Six planar vector fields as colour fields. Hue for direction and
+      brightness for magnitude.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/phase_portrait.py">Source</a></p>
     </td>
@@ -287,11 +284,8 @@ Maps
     </td>
     <td>
       <p><strong>Globe</strong></p>
-      <p>A spinning Earth, drawn by inverting the map projection at every pixel
-      rather than projecting the sphere onto it, so that the far side of the
-      planet is never computed and needs no culling. Terrain, clouds, city
-      lights and the day-night terminator all follow from what that inversion
-      hands back.</p>
+      <p>A spinning Earth based on projection inversion. Terrain, clouds, city
+      lights, day-night, atmospheric halo.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/globe.py">Source</a></p>
     </td>
@@ -302,10 +296,8 @@ Maps
     </td>
     <td>
       <p><strong>Great-circle routes</strong></p>
-      <p>Ten long-haul flight routes on a world map of 236 hand-listed
-      vertices, each drawn twice: as the great circle a plane would fly, and as
-      the straight line the map makes it look like. Five projections to choose
-      between, and a graticule so you can see which of them bent the path.</p>
+      <p>Ten long-haul flight routes on a world map. Try one of five different
+      projections!</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/world_map.py">Source</a></p>
     </td>
@@ -562,9 +554,7 @@ Utilities
     </td>
     <td>
       <p><strong>Axes gallery</strong></p>
-      <p>Every way of drawing an axis, around one two-slit interference
-      pattern: what each side can be, which sides carry the scale, the weight
-      of the rules, and how a quantity with a single coordinate is labelled.</p>
+      <p>Axis configuration options: Side types, rule types.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/axes_gallery.py">Source</a></p>
     </td>
@@ -586,7 +576,8 @@ Utilities
     </td>
     <td>
       <p><strong>Demo</strong></p>
-      <p>Original library example combining images, borders, and scatter plots.</p>
+      <p>Original library example combining images, borders, and scatter
+      plots.</p>
       <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/demo.py">Source</a></p>
     </td>
