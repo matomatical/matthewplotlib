@@ -107,6 +107,27 @@ than by rule.
   actually get added, which is where the mistake happened and where it would
   happen again. The other three modules have not gained a public name in months.
 
+## What else waits on this
+
+Added 2026-08-21 by Claude, from the session auditing the plot types added over
+the preceding two days.
+
+A test worth having is blocked on the same question: *every type alias named in
+a public signature should be reachable as `mp.something`*. The names need no
+list and cannot go stale --- walk the annotations of the fully-public modules
+with `ast`, keep the `TypeAliasType`s whose `__module__` is one of ours (which
+is what excludes numpy's `ArrayLike` and `NDArray`), and check each against
+`mp`. Six lines.
+
+Run today it reports exactly one name: `number`, which appears in dozens of
+public signatures (`vrange: tuple[number, number] | None` and its like) and is
+deliberately not exported. So the invariant cannot be switched on until it is
+settled whether `mp.number` should exist, and `number` is a clean instance of
+the tier question above --- it is neither plotting vocabulary nor an internal
+helper, but a name the signatures cannot avoid mentioning.
+
+The roadmap entry is under Advanced testing.
+
 ## Questions to answer first
 
 * Is there a tier 2, or is `plot.chars` a mistake to be hidden behind methods?

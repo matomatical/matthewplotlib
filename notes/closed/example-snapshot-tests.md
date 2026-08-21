@@ -103,7 +103,7 @@ Three conclusions, each of which changed the design:
 
 **A text-only golden is blind to the bug this test backend exists for.**
 Deleting the `reset_colour` call before an erase -- the bug
-`notes/terminal-test-backend.md` records as caught by 6 new tests and 0 old
+the `terminal-test-backend` note records as caught by 6 new tests and 0 old
 ones -- changes not one glyph in any example. Only the colour layer and the
 byte counts see it. So the colour layer is not optional.
 

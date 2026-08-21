@@ -1,7 +1,7 @@
 # Erasing whole lines, or only the plot's own columns
 
 Raised 2026-07-26 (Matthew + Claude), noticed during the escape-sequence audit
-(`notes/closed/escape-vocabulary.md`). Not decided; nothing changed. This note
+(the `escape-vocabulary` note). Not decided; nothing changed. This note
 exists because the answer depends on work that has not been done yet, and the
 measurement is cheap to record now.
 
@@ -100,7 +100,7 @@ Leave it for now, and fix it with spaces when terminal-aware printing lands.
 
 The roadmap has "crop plot composition primitive" and "by default, clip plots to
 terminal width and (almost) height" under advanced arrangement, with framing in
-`notes/terminal-aware-printing.md`. That work is about a plot coexisting with a
+the `terminal-aware-printing` note. That work is about a plot coexisting with a
 terminal it does not fill, which is exactly the situation where owning columns
 you did not draw starts to matter. Today the inconsistency is a wart; after that
 work it would be a bug, and the invariant "a plot writes only inside its own

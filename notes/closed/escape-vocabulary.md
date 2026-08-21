@@ -1,7 +1,7 @@
 # Auditing the escape sequences we emit
 
 Audited and implemented 2026-07-26 (Matthew + Claude). This is step 4 of
-`notes/terminal-test-backend.md`, which argued that "testing against N terminals
+the `terminal-test-backend` note, which argued that "testing against N terminals
 is worth less than not depending on the sequences that vary" and left the audit
 itself for later. Step 5, the support matrix, became `docs/src/compatibility.md`.
 
@@ -131,10 +131,10 @@ off-by-one here.
   a correctness bug. Roadmap: "configurable colour scales and normalisation".
 * **Erase granularity.** `EL 2` erases a whole terminal line, while the trailing
   path erases only the plot's own columns, so the two disagree about whether the
-  library owns the columns beside a plot. See `notes/erase-granularity.md`.
+  library owns the columns beside a plot. See the `erase-granularity` note.
 * **Cursor hiding.** Predicted here, and it did not happen. This note was
   written expecting the animation context manager to add `CSI ? 25 l` / `h`;
-  `mp.animate` landed in parallel (`notes/animations.md`) and emits no escape
+  `mp.animate` landed in parallel (the `animations` note) and emits no escape
   sequence of its own, routing every frame through `updatestr` and `print`. So
   the vocabulary survived a whole new feature without widening, which is the
   best evidence so far that it is drawn in the right place. If cursor hiding is

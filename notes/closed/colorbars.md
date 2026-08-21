@@ -4,7 +4,7 @@ Written 2026-08-20 by Claude (Opus 5) in conversation with MFR, over the
 session that built `heatmap` and `colorbar`. The open version of this note
 proposed a `norm` value type; what got built is smaller, and the reasoning for
 the difference is the point of keeping this. The scale work that was deferred
-has its own note, `notes/scales.md`.
+has its own note, `scales`.
 
 ## What the job turned out to be
 
@@ -45,7 +45,7 @@ interval. So a log colorbar and a linear colorbar over the same interval draw
 identically, character for character.
 
 Nonlinear colour scales are therefore not a prerequisite for colorbars. They
-are their own piece of work, and they went to `notes/scales.md`.
+are their own piece of work, and they went to the `scales` note.
 
 ## Why `image` did not grow a `vrange`
 
@@ -166,7 +166,7 @@ a scale in the `colormap` slot:
   Marking the colormaps instead would be on the right axis, and
   `colormaps.py` now names three flavours---continuous, discrete and
   vector---in its type aliases, so the taxonomy exists on paper. Making it real
-  at runtime is `notes/scales.md` business, along with the swatch plot the
+  at runtime is the `scales` note business, along with the swatch plot the
   discrete flavour wants.
 
   Deleting the derivation dissolves all of it. Nothing else in the library

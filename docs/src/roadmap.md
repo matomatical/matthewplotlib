@@ -14,10 +14,10 @@ Basic plot types:
 * [x] Basic bar charts and column charts.
 * [x] Histograms.
 * [x] Box plots, filled or outlined, lying either way (`boxes`). Designed in
-  `notes/box-plots.md`.
-* [x] Candlestick plots. See `notes/candlesticks.md`.
+  the `box-plots` note.
+* [x] Candlestick plots. See the `candlesticks` note.
 * [x] `candles` moved onto what it shares with `boxes`, gaining a horizontal
-  form as it went. See `notes/box-plots.md`.
+  form as it went. See the `box-plots` note.
 
 Basic plot furnishings:
 
@@ -26,10 +26,8 @@ Basic plot furnishings:
 * [x] Axis ticks and tick labels for scatter plots.
 * [x] Axis labels and titles.
 * [ ] Labels and ticks for bar/column charts, histograms, candlesticks, box
-  plots. These lay marks out side by side, so the axis along them is a list of
-  names rather than an interval of numbers, and there is no way to describe one
-  yet. See `notes/categorical-axes.md`, and `bars` and `hist` in
-  `notes/reference/myplot.py`.
+  plots. See the `categorical-axes` note, `notes/reference/myplot.py`.
+* [x] Color bars.
 
 Basic plot arrangement:
 
@@ -48,10 +46,8 @@ Styling plots with colors:
 
 Specifying colors:
 
-* [ ] Consistent API for color specification.
-* [ ] Configurable colour scales and normalisation. See `notes/scales.md`.
-* [x] Color bars, in any of the four directions. See
-  `notes/closed/colorbars.md`.
+* [ ] Consistent API for color specification. See the `color-specs` note.
+* [ ] Configurable colour scales and normalisation. See the `scales` note.
 
 Rendering:
 
@@ -62,9 +58,9 @@ Basic code improvements:
 
 * [x] Split up monolithic file into a small number of modules.
 * [x] A window value type for the mapping from data coordinates onto the grid,
-  used by axes. See `notes/plot-windows.md`.
+  used by axes. See the `plot-windows` note.
 * [x] Comprehensive type annotations, static type checking with mypy.
-* [ ] Robust input validation and error handling.
+* [ ] Basic input validation and error handling.
 
 Testing:
 
@@ -97,7 +93,7 @@ More exotic plot types:
 * [x] Calendar heatmap plots:
   * [x] Month-chunked calendar (`calendar`).
   * [x] Github contributions-style continuous calendar (`weeks`).
-* [x] Tables (see `notes/tables.md`):
+* [x] Tables (see the `tables` note):
   * [x] List of dictionaries.
   * [x] Dictionary of lists.
   * [x] 2d list with/without header.
@@ -105,13 +101,12 @@ More exotic plot types:
 * [ ] Vector field plots:
   * [x] color (`vfunction2`), including domain colouring of complex functions
     (`cfunction2`).
-  * [ ] line (see boids example). Parked on legibility rather than
-    machinery; see `notes/quiver-plots.md`.
-* [ ] Hilbert curves (see `notes/hilbert-curves.md`):
+  * [ ] line (see boids example). See the `quiver-plots` note.
+* [ ] Hilbert curves (see the `hilbert-curves` note):
   * [x] Basic Hilbert curves.
   * [ ] Non-square Hilbert curves.
   * [ ] 3d Hilbert curves.
-* [ ] World maps (see `notes/world-maps.md`; `examples/world_map.py` and
+* [ ] World maps (see the `world-maps` note; `examples/world_map.py` and
   `examples/globe.py` prototype the design, carrying their own coarse
   coastlines):
   * [ ] Some 2d projections.
@@ -129,7 +124,7 @@ Advancements of basic plot types:
   * [x] Different colours for each point.
   * [x] Multiple point clouds on a single scatter plot.
   * [x] 3d scatter plots.
-* [x] Advanced line plots (See `notes/lines.md`).
+* [x] Advanced line plots (See the `lines` note).
   * [x] Configurable stroke thickness, with round caps and filled joins.
   * [x] Gaps, where a coordinate is non-finite.
   * [x] 3d line plots / wireframes.
@@ -144,7 +139,7 @@ Advancements of basic plot types:
 * [ ] Advanced image options:
   * [ ] Integer-factor down- and upsampling.
   * [x] A plot that normalises values onto the colormap itself (`heatmap`).
-  * [ ] Nonlinear normalisation. See `notes/scales.md`.
+  * [ ] Nonlinear normalisation. See the `scales` note.
 * [ ] Advanced text formatting parser (`rich=True` or something):
   * [ ] Bold, italic, underline, based on markdown?
   * [ ] Some way of specifying colors, html-style tags?
@@ -152,7 +147,7 @@ Advancements of basic plot types:
 Advanced plot arrangement:
 
 * [x] Animation context manager (`animate`), owning the printing state. See
-  `notes/animations.md`.
+  the `animations` note.
   * [x] Opt-in frame timing, drift corrected, with the frame's own render and
     write time inside its budget.
   * [x] Opt-in frame collection, reporting the achieved frame rate.
@@ -165,9 +160,9 @@ Advanced plot arrangement:
   * [ ] Operator for temporal stacking.
   * [ ] Per-frame durations.
 * [ ] Mapping over the other composites, `hstack` and friends. See
-  `notes/mapping-over-composites.md`.
+  the `mapping-over-composites` note.
 * [ ] Indexing and slicing of plots.
-* [ ] Crop plot composition primitive. See `notes/terminal-aware-printing.md`.
+* [ ] Crop plot composition primitive. See the `terminal-aware-printing` note.
   * [ ] Clip plots to terminal width and (almost) height (see
     `docs/src/compatibility.md`).
   * [ ] `animate` context manager should handle this, and window resizes.
@@ -175,19 +170,19 @@ Advanced plot arrangement:
 Advanced furnishings:
 
 * [ ] Axis transformations (e.g. logarithmic scale).
-* [ ] Axis segments (see `notes/axis-series.md`).
+* [ ] Axis segments (see the `axis-series` note).
 * [x] Axes on any subset of the four sides, each blank, ruled, or ruled with
   ticks and labels, so that a colorbar can be labelled without a full border.
-  See `notes/axes-sides.md`.
+  See the `axes-sides` note.
 * [x] Text embedded in borders.
-* [ ] Colorbars automatically derive colormap. See `notes/scales.md`.
+* [ ] Colorbars automatically derive colormap. See the `scales` note.
 
 Advanced rendering:
 
 * [x] Export animations to gifs, at the requested or the achieved frame rate.
-  * [x] Control over the palette sharing and size. See `notes/gif-size.md`.
+  * [x] Control over the palette sharing and size. See the `gif-size` note.
   * [x] Automatically optimise saved gifs (lossless compression). See
-    `notes/gif-size.md`.
+    the `gif-size` note.
 
 Backend improvements:
 
@@ -198,7 +193,7 @@ Backend improvements:
   resets, e.g., if several characters in a row use the same colours).
 * [x] Differential rendering with shortcut `plot_new - plot_old`.
 * [ ] Vectorised animations (3-D `CharArray`, `codes[T,H,W]`). See
-  `notes/animations.md`.
+  the `animations` note.
 
 Code organisation:
 
@@ -207,7 +202,7 @@ Code organisation:
 Advanced testing:
 
 * [x] Tests that drive a virtual terminal for testing ANSI control codes (see
-  `notes/terminal-test-backend.md`).
+  the `terminal-test-backend` note).
   * [x] hand-written emulator (retired)
   * [x] tmux
 * [ ] More virtual terminal test backends
@@ -216,7 +211,10 @@ Advanced testing:
   * [ ] more?
 * [x] Test the set of escape sequences we emit.
 * [x] Regression testing for str output and image output of examples (See
-  `notes/closed/example-snapshot-tests.md`).
+  the `example-snapshot-tests` note).
+* [ ] Test that a type alias named in a public signature is reachable as
+  `mp.something`. Derivable, but blocked on `number`. See
+  the `export-policy` note.
 
 Support non-24-bit-colour modes:
 

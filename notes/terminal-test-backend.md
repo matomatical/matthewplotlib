@@ -3,7 +3,7 @@
 Investigated 2026-07-25 (Matthew + Claude), after the differential rendering
 work. Steps 1-3 of the plan built 2026-07-26 (see "What was built", below).
 Steps 4 and 5 were done later the same day: the audit is
-`notes/closed/escape-vocabulary.md`, and the matrix is `docs/src/compatibility.md`.
+the `escape-vocabulary` note, and the matrix is `docs/src/compatibility.md`.
 
 ## The problem
 
@@ -82,7 +82,7 @@ newline-terminated input -- so it is not evidence of anything.)
 
    (Done, and this list was already wrong when written: `ED` had been removed by
    334393d a session earlier. Predictions below scored in
-   `notes/closed/escape-vocabulary.md` -- `ECH` and `CNL` went as guessed, and
+   the `escape-vocabulary` note -- `ECH` and `CNL` went as guessed, and
    `CHA` turned out to matter more than either, for the wrap reason rather than
    the byte count.)
 

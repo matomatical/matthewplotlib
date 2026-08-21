@@ -28,7 +28,7 @@ import matthewplotlib as mp
 # for. Covering those needs an
 # explicit `__all__` per module, or a leading underscore on each internal name.
 # Both would also stop pdoc documenting the internals. The trade-offs, and the
-# counts to decide with, are in `notes/export-policy.md`.
+# counts to decide with, are in the `export-policy` note.
 FULLY_PUBLIC = ("plots", "colormaps", "animations")
 
 

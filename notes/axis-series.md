@@ -33,7 +33,7 @@ draw exactly what two would. Three ways to retire it:
    out solid too, one sample per dot. This retires the concept rather than the
    default: an axis is an interval, and each plot draws it as well as its medium
    allows. It needs the plot's resolution where the parsing happens, which is
-   what the window in `notes/plot-windows.md` would carry, so it belongs after
+   what the window in the `plot-windows` note would carry, so it belongs after
    that and not before it.
 
 ## The form that is documented but missing

@@ -13,7 +13,7 @@ frame of `mandelbrot.py` is a solid black rectangle, and a last-screen-only
 snapshot of it would assert nothing.
 
 A snapshot pins four things per frame, each of which catches regressions the
-others do not (see `notes/example-snapshot-tests.md` for the mutation study):
+others do not (see the `example-snapshot-tests` note for the mutation study):
 
 * the **text** of every cell -- glyph and layout regressions;
 * the **colour** of every cell -- colormap regressions, and erases that paint

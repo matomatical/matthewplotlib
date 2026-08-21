@@ -1,7 +1,7 @@
 > **Closed 2026-07-26.** The aspirational README written *before* the library
 > existed, under the old name "mattplotlib". Kept as the original statement of
 > intent. Its still-unbuilt ideas were harvested into `docs/src/roadmap.md` and
-> into `notes/animations.md`; nothing further is pending from it.
+> into the `animations` note; nothing further is pending from it.
 >
 > Note the operators differ throughout: `&` for hstack, `^` for vstack, `|` for
 > temporal stacking. Today's are `+` and `/`. Still open on the roadmap under

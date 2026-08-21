@@ -119,7 +119,7 @@ box needs two edges and an interior.
 **Filled** is the machinery `candles` already has: partial blocks, half of the
 eighths drawn as negatives against a named background. Eight mark positions per
 cell. Minimum thickness 1, so distributions can be stacked densely. Requires a
-background colour, for the reason `notes/candlesticks.md` sets out.
+background colour, for the reason the `candlesticks` note sets out.
 
 A thickness below the minimum is an error rather than a silent promotion.
 
@@ -278,7 +278,7 @@ rather than a switch of their own.
 ## Not in this design
 
 * **Labelling the category axis.** Box plots want their group names beside them
-  and cannot have them yet, for the reason in `notes/categorical-axes.md`. The
+  and cannot have them yet, for the reason in the `categorical-axes` note. The
   value axis is labelled by `axes` already, since a box plot carries a range on
   that axis and none on the other.
 * **A two-tone median**, splitting a filled box into a lighter and a darker
@@ -299,4 +299,4 @@ np.flatnonzero(bitmap.any(axis=1)), np.flatnonzero(bitmap.any(axis=0))
 
 The cell aspect ratio is in the shape `CharArray.to_rgba_array` returns, sixteen
 pixel rows and eight columns per cell. The resolution comparison for filled
-marks is the one in `notes/candlesticks.md`.
+marks is the one in the `candlesticks` note.

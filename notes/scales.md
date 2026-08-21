@@ -5,7 +5,7 @@ that built `heatmap` and `colorbar`. MFR asked for the scale to be developed as
 a first-class object in a session of its own and threaded through the plots
 that need it, rather than smuggled in behind the colorbars. The design below
 was worked out with him in conversation and then deliberately not built; the
-reasoning for the parts that were settled is in `notes/closed/colorbars.md`.
+reasoning for the parts that were settled is in the `colorbars` note.
 
 Nothing here is built. The roadmap entries are "Configurable colour scales and
 normalisation" and, under advanced image options, "Nonlinear normalisation".
@@ -40,7 +40,7 @@ Four things recommend this over a class per norm:
   and costs nothing since values outside the interval saturate anyway.
 * **The interval stays in data space**, which is what makes the labels right.
   This is the whole reason a transform composed *upstream* of the interval does
-  not work; see `notes/closed/colorbars.md` for the argument, which is worth
+  not work; see the `colorbars` note for the argument, which is worth
   reading before proposing anything tuple-shaped again.
 * **`transform=None` is the linear case**, so a bare pair promotes to a linear
   `scale` and there is one stored type rather than two.
@@ -89,7 +89,7 @@ let `mp.colorbar(plot)` colour itself correctly without being told anything,
 which it deliberately does not do today: the colormap is named at the bar
 because judging whether a given colormap is one a gradient can stand for is a
 question nobody has answered yet (see below, and
-`notes/closed/colorbars.md`). A `scale` carrying its own colormap would be the
+the `colorbars` note). A `scale` carrying its own colormap would be the
 place that judgement finally lands. Against: the two halves are chosen
 independently, and `bars` wants the interval with no colormap at all.
 
@@ -97,7 +97,7 @@ independently, and `bars` wants the interval with no colormap at all.
 only because `axes` labels the two ends. The moment a colorbar carries ticks in
 between, the transform decides where they fall, and the scale needs to say
 where --- matplotlib puts log-spaced ticks on a log colorbar. This is also
-`notes/axis-series.md` territory.
+the `axis-series` note's territory.
 
 **Axis transformations.** The roadmap wants logarithmic *coordinate* axes
 separately from colour scales. A `scale` is very nearly the same object as the

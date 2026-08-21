@@ -39,7 +39,7 @@ labelled is often the bins rather than the interval. So "categorical" and
 readings of the same axis.
 
 **`axes` labels the two ends of a side, not n positions along it.** By design:
-`notes/axes-sides.md` puts interior ticks out of scope, on the grounds that a
+the `axes-sides` note puts interior ticks out of scope, on the grounds that a
 tick anywhere else needs a position along the axis and a rule for choosing tick
 values. A categorical axis supplies exactly that missing thing --- the
 positions are the marks, and the values are their names --- so it is the case
@@ -63,6 +63,6 @@ rediscover the questions:
   spacing --- since `axes` needs the column of each mark's centre and only the
   plot knows it;
 * what happens to a name too long for its mark, which is the same family of
-  problem as the limits that will not fit in `notes/axes-sides.md`, and probably
+  problem as the limits that will not fit in the `axes-sides` note, and probably
   wants the same kind of answer: never wrong, never resized, never raised;
 * whether the histograms label bins, their interval, or either on request.

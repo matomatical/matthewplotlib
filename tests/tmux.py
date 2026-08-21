@@ -28,7 +28,7 @@ Cost: a tmux write is free, but each read is a tmux client invocation, ~4 ms.
 So feed as much as a test needs, then read once.
 
 Design notes, and what a real terminal catches that an emulator did not, are in
-`notes/terminal-test-backend.md`.
+the `terminal-test-backend` note.
 """
 
 import atexit

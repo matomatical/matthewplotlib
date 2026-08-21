@@ -40,7 +40,7 @@ To work on a new feature:
      and `animations` this is checked by `tests/test_exports.py`, which derives
      what to expect from what those modules define. `data`, `colors` and `core`
      keep some things back deliberately and are not covered; widening the rule
-     to them is open, see `notes/export-policy.md`.
+     to them is open, see the `export-policy` note.
 3. Then merge into main
 
 Notes:
@@ -75,7 +75,7 @@ sized to that example, and the resulting screens are compared cell by cell --
 glyph and colour -- along with the byte cost of each print, the cursor, and a
 digest of the image the example saved. The machinery is in `tests/examples.py`,
 and the reasoning, including which layer catches what, is in
-`notes/closed/example-snapshot-tests.md`.
+the `example-snapshot-tests` note.
 
 When one of these fails, the assertion names the cells that moved. To look at
 the two screens in colour, and to accept the new output once you have:

@@ -228,7 +228,7 @@ Legacy:
   * **ECH** (`ESC [ n X`, erase n characters) is now written spaces. The renderer
     already resets the colour to default before blanking anything, so a space
     paints exactly what the erase painted.
-  See `notes/closed/escape-vocabulary.md` for the measurements behind this.
+  See the `escape-vocabulary` note for the measurements behind this.
 
 Screen size
 -----------

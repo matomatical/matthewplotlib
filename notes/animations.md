@@ -219,7 +219,7 @@ n-ary composition of animations stays a comprehension for now —
 `mp.tstack(*[mp.border(f) + panel for f, panel in zip(a, b)])` — because the
 common case is lifting one unary combinator, which `map` covers. The symmetric
 question of whether the *static* composites should have `map` too is a separate
-design with its own note: `notes/mapping-over-composites.md`.
+design with its own note, `mapping-over-composites`.
 
 ## Deliberately not done
 
@@ -253,7 +253,7 @@ design with its own note: `notes/mapping-over-composites.md`.
   which is the wrong model here. Every string this library emits assumes inline
   output that stays on the scrollback where it was printed.
 * **No clipping.** A plot taller than `R-1` cannot animate by any path (see
-  `notes/terminal-aware-printing.md`); the session warns once, naming both
+  the `terminal-aware-printing` note); the session warns once, naming both
   sizes, and draws it anyway rather than raising, because killing a long run
   over a small window is worse than a torn frame. Clipping proper is a layout
   pass, not a session feature.

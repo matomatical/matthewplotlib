@@ -21,7 +21,7 @@ the same reason: a corner's glyph depends on which of its neighbours are
 drawn, and a string cannot say that. `unicode_frame` derives each character
 from the set of arms meeting in its cell, indexing a `LineStyle` by a four-bit
 mask, and a table wants exactly that mechanism one dimension further in. See
-`notes/axes-sides.md` for where the arm model came from.
+the `axes-sides` note for where the arm model came from.
 
 So `unicode_grid` generalises `unicode_frame` from four sides to a grid of
 `nrows + 1` horizontal rules by `ncols + 1` vertical ones. Each rule is two

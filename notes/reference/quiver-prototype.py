@@ -1,5 +1,5 @@
 """
-Throwaway prototype behind the measurements in `notes/quiver-plots.md`.
+Throwaway prototype behind the measurements in the `quiver-plots` note.
 
 Two studies over the same Taylor-Green vortex field, in a 44 by 12 cell plot,
 which is 88 by 48 braille dots. All lengths below are in dots, so that they can
