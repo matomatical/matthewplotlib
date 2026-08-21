@@ -7,12 +7,13 @@ Examples
 
 Contents:
 
-* [Series Data Visualisation](#series-data-visualisation)
+* [Point Data Visualisation](#point-data-visualisation)
 * [Surface Data Visualisation](#surface-data-visualisation)
 * [Nonlinear Visualisation](#nonlinear-visualisation)
-* [Maps](#maps)
 * [Bars and Columns](#bars-and-columns)
+* [Boxes and Candles](#boxes-and-candles)
 * [Media](#media)
+* [Maps](#maps)
 * [Retro Animations](#retro-animations)
 * [Simulations](#simulations)
 * [Dashboards and UI](#dashboards-and-ui)
@@ -21,8 +22,8 @@ Contents:
 See the [examples/](https://github.com/matomatical/matthewplotlib/tree/main/examples)
 folder for source code.
 
-Series Data Visualisation
--------------------------
+Point Data Visualisation
+------------------------
 
 
 <table>
@@ -31,17 +32,6 @@ Series Data Visualisation
   <th width="50%">Example</th>
 </thead>
 <tbody>
-  <tr>
-    <td align="center">
-      <img src="../images/candlesticks.png" width="100%">
-    </td>
-    <td>
-      <p><strong>Candlesticks</strong></p>
-      <p>A simulated price series.</p>
-      <p><em>By Claude Opus 5.</em></p>
-      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/candlesticks.py">Source</a></p>
-    </td>
-  </tr>
   <tr>
     <td align="center">
       <img src="../images/lines.png" width="100%">
@@ -222,6 +212,66 @@ Surface Data Visualisation
 </tbody>
 </table>
 
+Bars and Columns
+----------------
+
+
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/jointplot.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Joint distribution</strong></p>
+      <p>Joint distribution with marginal histograms, demonstrating plot
+      composition with hstack and vstack.</p>
+      <p><em>By Claude Opus 4.6.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/jointplot.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/sorting.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Sorting algorithms</strong></p>
+      <p>Various sorting algorithms racing in parallel, visualised with <code>mp.columns</code> and <code>mp.wrap</code>.</p>
+      <p><em>By Gemini 3.1 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/sorting.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+Boxes and Candles
+-----------------
+
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/candlesticks.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Candlesticks</strong></p>
+      <p>A simulated price series.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/candlesticks.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+
 Nonlinear Visualisation
 -----------------------
 
@@ -268,8 +318,32 @@ Nonlinear Visualisation
 </tbody>
 </table>
 
+Media
+-----
+
+
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/image.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Image rendering</strong></p>
+      <p>Image rendering with various colormaps.</p>
+      <p><em>By Matthew Farrugia-Roberts.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/image.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
 Maps
-----
+-----
 
 
 <table>
@@ -300,66 +374,6 @@ Maps
       projections!</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/world_map.py">Source</a></p>
-    </td>
-  </tr>
-</tbody>
-</table>
-
-Bars and Columns
-----------------
-
-
-<table>
-<thead>
-  <th width="50%">Image</th>
-  <th width="50%">Example</th>
-</thead>
-<tbody>
-  <tr>
-    <td align="center">
-      <img src="../images/jointplot.png" width="100%">
-    </td>
-    <td>
-      <p><strong>Joint distribution</strong></p>
-      <p>Joint distribution with marginal histograms, demonstrating plot
-      composition with hstack and vstack.</p>
-      <p><em>By Claude Opus 4.6.</em></p>
-      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/jointplot.py">Source</a></p>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="../images/sorting.gif" width="100%">
-    </td>
-    <td>
-      <p><strong>Sorting algorithms</strong></p>
-      <p>Various sorting algorithms racing in parallel, visualised with <code>mp.columns</code> and <code>mp.wrap</code>.</p>
-      <p><em>By Gemini 3.1 Pro.</em></p>
-      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/sorting.py">Source</a></p>
-    </td>
-  </tr>
-</tbody>
-</table>
-
-Media
------
-
-
-<table>
-<thead>
-  <th width="50%">Image</th>
-  <th width="50%">Example</th>
-</thead>
-<tbody>
-  <tr>
-    <td align="center">
-      <img src="../images/image.png" width="100%">
-    </td>
-    <td>
-      <p><strong>Image rendering</strong></p>
-      <p>Image rendering with various colormaps.</p>
-      <p><em>By Matthew Farrugia-Roberts.</em></p>
-      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/image.py">Source</a></p>
     </td>
   </tr>
 </tbody>
