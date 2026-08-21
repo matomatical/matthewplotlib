@@ -12,8 +12,10 @@ from matthewplotlib.plots import (
     axes,
     border,
     calendar,
+    candles,
     colorbar,
     weeks,
+    cfunction2,
     dstack2,
     function2,
     heatmap,
@@ -22,9 +24,22 @@ from matthewplotlib.plots import (
     line,
     line3,
     scatter,
+    table,
     text,
+    vfunction2,
     wrap,
 )
+
+
+class RecordingVectorColormap:
+    """A vector colormap that retains the field it received."""
+
+    def __init__(self):
+        self.input = None
+
+    def __call__(self, values):
+        self.input = np.array(values, copy=True)
+        return np.zeros((*np.shape(values)[:2], 3), dtype=np.uint8)
 
 
 class RecordingColormap:
@@ -428,16 +443,15 @@ class TestHeatmap:
         with pytest.raises(ValueError, match="2d grid"):
             heatmap(np.zeros((2, 3, 3)))
 
-    def test_it_carries_the_colour_scale_it_was_given(self):
+    def test_it_keeps_the_interval_it_was_given(self):
         plot = heatmap([[0.0, 1.0]], colormap=mp.viridis, vrange=(0.0, 4.0))
 
         assert plot.vrange == (0.0, 4.0)
-        assert plot.colormap is mp.viridis
 
-    def test_an_image_carries_no_colour_scale(self):
+    def test_an_image_keeps_no_interval(self):
         """Its data is already colours, or already scaled, so there is no
         interval to report and nothing for a colorbar to label."""
-        assert image([[0.0, 1.0]]).vrange is None
+        assert not hasattr(image([[0.0, 1.0]]), "vrange")
 
 
 class TestFunction2:
@@ -489,6 +503,124 @@ class TestFunction2:
 
         assert np.allclose(np.unique(sampled[0][:, 0]), [0.0, 1 / 3, 2 / 3, 1.0])
         assert np.allclose(np.unique(sampled[0][:, 1]), [0.0, 2.0])
+
+
+class TestVFunction2:
+    def test_the_field_is_scaled_into_the_unit_disc(self):
+        colormap = RecordingVectorColormap()
+
+        vfunction2(
+            lambda xy: np.stack([xy[:, 0], np.zeros(len(xy))], axis=-1),
+            xrange=(0.0, 4.0),
+            yrange=(0.0, 1.0),
+            width=2,
+            height=1,
+            colormap=colormap,
+        )
+
+        # x is sampled at 1 and 3, and the largest magnitude becomes one
+        assert np.allclose(colormap.input[..., 0], [[1 / 3, 1.0], [1 / 3, 1.0]])
+
+    def test_magnitudes_outside_vrange_saturate(self):
+        colormap = RecordingVectorColormap()
+
+        vfunction2(
+            lambda xy: np.stack([xy[:, 0], np.zeros(len(xy))], axis=-1),
+            xrange=(0.0, 4.0),
+            yrange=(0.0, 1.0),
+            width=2,
+            height=1,
+            vrange=(0.0, 2.0),
+            colormap=colormap,
+        )
+
+        assert np.allclose(colormap.input[..., 0], [[0.5, 1.0], [0.5, 1.0]])
+
+    def test_scaling_keeps_the_direction(self):
+        colormap = RecordingVectorColormap()
+
+        vfunction2(
+            lambda xy: np.full((len(xy), 2), [3.0, 4.0]),
+            xrange=(0.0, 1.0),
+            yrange=(0.0, 1.0),
+            width=1,
+            height=1,
+            vrange=(0.0, 10.0),
+            colormap=colormap,
+        )
+
+        # magnitude five out of ten, along the same 3:4 diagonal
+        assert np.allclose(colormap.input, [[[0.3, 0.4]], [[0.3, 0.4]]])
+
+    def test_a_field_of_zeroes_does_not_divide_by_zero(self):
+        with np.errstate(all="raise"):
+            plot = vfunction2(
+                lambda xy: np.zeros_like(xy),
+                xrange=(0.0, 1.0),
+                yrange=(0.0, 1.0),
+                width=2,
+                height=1,
+            )
+        assert plot.width == 2
+
+    def test_a_field_that_returns_the_wrong_shape_is_rejected(self):
+        with pytest.raises(ValueError, match="one .u, v. vector per point"):
+            vfunction2(
+                lambda xy: xy[:, 0],
+                xrange=(0.0, 1.0),
+                yrange=(0.0, 1.0),
+                width=2,
+                height=1,
+            )
+
+
+class TestCFunction2:
+    def test_the_values_reach_the_colormap_unnormalised(self):
+        """A domain colouring reads the modulus on an absolute scale."""
+        seen = []
+
+        def colormap(values):
+            seen.append(np.array(values, copy=True))
+            return np.zeros((*np.shape(values), 3), dtype=np.uint8)
+
+        cfunction2(
+            lambda z: 10 * z,
+            xrange=(0.0, 2.0),
+            yrange=(0.0, 1.0),
+            width=2,
+            height=1,
+            colormap=colormap,
+        )
+
+        assert np.allclose(seen[0].real, [[5.0, 15.0], [5.0, 15.0]])
+
+    def test_the_function_is_given_complex_numbers(self):
+        sampled = []
+
+        def record(z):
+            sampled.append(np.array(z, copy=True))
+            return z
+
+        cfunction2(record, (0.0, 2.0), (0.0, 2.0), width=2, height=1)
+
+        assert np.iscomplexobj(sampled[0])
+        assert np.allclose(np.unique(sampled[0].real), [0.5, 1.5])
+        assert np.allclose(np.unique(sampled[0].imag), [0.5, 1.5])
+
+    def test_a_function_that_returns_the_wrong_shape_is_rejected(self):
+        with pytest.raises(ValueError, match="one value per point"):
+            cfunction2(
+                lambda z: np.stack([z.real, z.imag], axis=-1),
+                xrange=(0.0, 1.0),
+                yrange=(0.0, 1.0),
+                width=2,
+                height=1,
+            )
+
+    def test_a_pole_at_the_origin_is_not_sampled_on(self):
+        """Centre sampling never lands on a round number."""
+        with np.errstate(all="raise"):
+            cfunction2(lambda z: 1 / z, (-1.0, 1.0), (-1.0, 1.0), 4, 2)
 
 
 class TestHistogram2:
@@ -543,25 +675,30 @@ class TestHistogram2:
 
 
 class TestColorbar:
-    def test_it_takes_both_halves_of_the_scale_from_a_plot(self):
+    def test_it_takes_its_interval_from_a_plot(self):
         heat = heatmap([[0.0, 20.0]], colormap=mp.viridis)
 
-        bar = colorbar(heat)
+        bar = colorbar(heat, colormap=mp.viridis)
 
         assert bar.vrange == (0.0, 20.0)
-        assert bar.colormap is mp.viridis
         assert bar.window.yrange == (0.0, 20.0)
 
     def test_an_interval_needs_no_plot(self):
         bar = colorbar((-2.0, 2.0), colormap=mp.viridis)
 
         assert bar.vrange == (-2.0, 2.0)
-        assert bar.colormap is mp.viridis
 
-    def test_the_colormap_can_be_overridden(self):
+    def test_the_colormap_is_never_read_off_the_plot(self):
+        """Naming it at the bar is the whole of the contract, so that a plot's
+        colormap is never quietly assumed to be one a gradient can stand for.
+        """
         heat = heatmap([[0.0, 1.0]], colormap=mp.viridis)
 
-        assert colorbar(heat, colormap=mp.magma).colormap is mp.magma
+        grey = colorbar(heat, length=1)
+        viridis = colorbar(heat, colormap=mp.viridis, length=1)
+
+        assert grey.chars.fg_rgb[0, 0].tolist() == [255, 255, 255]
+        assert viridis.chars.fg_rgb[0, 0].tolist() == [253, 231, 36]
 
     @pytest.mark.parametrize(
         "direction, xrange, yrange, first, last",
@@ -615,15 +752,23 @@ class TestColorbar:
 
         assert vertical.input.shape[0] == 2 * horizontal.input.shape[1]
 
-    def test_a_plot_with_no_colour_scale_is_refused(self):
-        with pytest.raises(ValueError, match="no colour scale"):
+    def test_a_plot_that_kept_no_interval_is_refused(self):
+        with pytest.raises(ValueError, match="no interval"):
             colorbar(image([[0.0, 1.0]]))
 
-    def test_a_scale_that_is_not_a_colour_scale_is_refused(self):
-        """Bars measure their values as lengths, so the interval they keep
-        says nothing about what any colour means."""
-        with pytest.raises(ValueError, match="no colour scale"):
-            colorbar(mp.bars([1.0, 2.0]))
+    def test_any_plot_that_kept_one_lends_it(self):
+        """Including the plots that measure something other than a colour by
+        it: what the colours mean is settled where the bar is drawn."""
+        field = mp.vfunction2(
+            lambda xy: xy,
+            xrange=(-1.0, 1.0),
+            yrange=(-1.0, 1.0),
+            width=4,
+            height=1,
+        )
+
+        assert colorbar(field, colormap=mp.reds).vrange == field.vrange
+        assert colorbar(mp.bars([1.0, 2.0])).vrange == (0.0, 2.0)
 
     def test_an_unknown_direction_is_refused(self):
         with pytest.raises(ValueError, match="up, down, left or right"):
@@ -1225,3 +1370,465 @@ class TestWeeks:
         plot = weeks(a_year(), width=4)
         assert plot.width == 4
         assert plot.height == 53 * 9 + 52
+
+
+# # #
+# candles
+
+
+class TestCandles:
+    """A candlestick chart draws one candle per period, coloured by whether the
+    period closed above or below where it opened. It carries its value range as
+    a vertical coordinate and no horizontal one, since its candles are a
+    sequence of periods rather than a measured axis."""
+
+    OPENS = np.array([10.0, 11.0, 12.0, 11.5])
+    HIGHS = np.array([11.5, 12.5, 12.5, 13.0])
+    LOWS = np.array([9.5, 10.5, 11.0, 11.0])
+    CLOSES = np.array([11.0, 12.0, 11.5, 12.5])
+
+    def chart(self, **kwargs):
+        return candles(
+            opens=self.OPENS,
+            highs=self.HIGHS,
+            lows=self.LOWS,
+            closes=self.CLOSES,
+            **kwargs,
+        )
+
+    def test_the_value_range_covers_every_candle(self):
+        plot = self.chart()
+        assert plot.window.yrange == (9.5, 13.0)
+
+    def test_there_is_no_horizontal_coordinate(self):
+        assert self.chart().window.xrange is None
+
+    def test_axes_labels_the_value_axis_and_leaves_the_rest_alone(self):
+        lines = axes(self.chart(height=4)).chars.to_plain_str().splitlines()
+        # a gutter of labels down the left, one rule beside it, and no row of
+        # labels underneath
+        assert len(lines) == 4
+        assert [line[:5] for line in lines] == ["13.0┐", "    │", "    │", " 9.5┘"]
+
+    def test_the_rectangle_is_one_column_per_candle_by_default(self):
+        plot = self.chart(height=5)
+        assert (plot.height, plot.width) == (5, 4)
+
+    def test_bodies_and_spacing_widen_the_rectangle(self):
+        plot = self.chart(height=5, body_width=3, spacing=1)
+        assert plot.width == 4 * 4 - 1
+
+    def test_a_rising_candle_takes_the_rising_colour(self):
+        plot = self.chart(height=4, rising=(1.0, 0.0, 0.0))
+        column = plot.chars.fg_rgb[:, 0]
+        drawn = column[plot.chars.fg[:, 0]]
+        assert (drawn == np.array([255, 0, 0])).all(axis=-1).any()
+
+    def test_a_falling_candle_takes_the_falling_colour(self):
+        # the third period opened at 12.0 and closed at 11.5
+        plot = self.chart(height=4, falling=(0.0, 0.0, 255))
+        column = plot.chars.fg_rgb[:, 2]
+        drawn = column[plot.chars.fg[:, 2]]
+        assert (drawn == np.array([0, 0, 255])).all(axis=-1).any()
+
+    def test_a_candle_that_closed_where_it_opened_counts_as_rising(self):
+        plot = candles(
+            opens=np.array([1.0]),
+            highs=np.array([2.0]),
+            lows=np.array([0.0]),
+            closes=np.array([1.0]),
+            height=4,
+            rising=(1.0, 0.0, 0.0),
+            falling=(0.0, 0.0, 1.0),
+        )
+        drawn = plot.chars.fg_rgb[plot.chars.fg]
+        assert (drawn == np.array([255, 0, 0])).all(axis=-1).any()
+        assert not (drawn == np.array([0, 0, 255])).all(axis=-1).any()
+
+    def test_a_wick_takes_its_body_colour_by_default(self):
+        plot = self.chart(height=6, rising=(1.0, 0.0, 0.0))
+        # the first candle rose, so its wick is drawn in the rising colour
+        wicks = np.isin(plot.chars.codes[:, 0], [ord("│"), ord("╵"), ord("╷")])
+        assert wicks.any()
+        assert (plot.chars.fg_rgb[wicks, 0] == np.array([255, 0, 0])).all()
+
+    def test_a_wick_colour_applies_to_every_wick(self):
+        plot = self.chart(height=6, wick=(1.0, 1.0, 1.0))
+        wicks = np.isin(plot.chars.codes, [ord("│"), ord("╵"), ord("╷")])
+        assert wicks.any()
+        assert (plot.chars.fg_rgb[wicks] == 255).all()
+
+    def test_the_background_is_painted_behind_the_whole_rectangle(self):
+        plot = self.chart(height=5, background=(0.0, 0.0, 0.0))
+        assert plot.chars.bg.all()
+        assert (plot.chars.bg_rgb[~plot.chars.fg] == 0).all()
+
+    def test_a_narrower_vrange_clips_the_candles_into_it(self):
+        plot = self.chart(height=4, vrange=(12.0, 13.0))
+        assert plot.window.yrange == (12.0, 13.0)
+        # the first candle traded entirely below the range, so all four of its
+        # values clip to the bottom and it is drawn in the bottom row alone
+        assert not plot.chars.fg[:-1, 0].any()
+        assert plot.chars.fg[-1, 0]
+
+    def test_the_four_series_must_be_the_same_length(self):
+        with pytest.raises(ValueError, match="same length"):
+            candles(
+                opens=np.zeros(3),
+                highs=np.ones(3),
+                lows=np.zeros(3),
+                closes=np.ones(2),
+            )
+
+    def test_each_series_must_be_one_dimensional(self):
+        with pytest.raises(ValueError, match="sequence of numbers"):
+            candles(
+                opens=np.zeros((2, 2)),
+                highs=np.ones((2, 2)),
+                lows=np.zeros((2, 2)),
+                closes=np.ones((2, 2)),
+            )
+
+    def test_a_high_inside_the_body_is_refused(self):
+        with pytest.raises(ValueError, match="opens, highs, lows, closes"):
+            candles(
+                opens=np.array([1.0]),
+                highs=np.array([1.5]),
+                lows=np.array([0.5]),
+                closes=np.array([2.0]),
+            )
+
+    def test_a_low_inside_the_body_is_refused(self):
+        with pytest.raises(ValueError, match="opens, highs, lows, closes"):
+            candles(
+                opens=np.array([1.0]),
+                highs=np.array([2.0]),
+                lows=np.array([1.5]),
+                closes=np.array([1.2]),
+            )
+
+    def test_candles_all_at_one_value_have_no_range_to_plot_in(self):
+        with pytest.raises(ValueError, match="same value"):
+            candles(
+                opens=np.array([1.0]),
+                highs=np.array([1.0]),
+                lows=np.array([1.0]),
+                closes=np.array([1.0]),
+            )
+
+    def test_no_candles_and_no_range_to_infer_one_from(self):
+        with pytest.raises(ValueError, match="no candles"):
+            candles(
+                opens=np.zeros(0),
+                highs=np.zeros(0),
+                lows=np.zeros(0),
+                closes=np.zeros(0),
+            )
+
+    def test_a_repr_names_the_candles_and_their_range(self):
+        assert repr(self.chart(height=4)) == (
+            "candles(height=4, width=4, values=<4 candles on [9.50,13.00]>)"
+        )
+
+# # #
+# table
+
+
+RUNS = [
+    {"run": "baseline", "lr": 1e-3, "acc": 0.873},
+    {"run": "wider", "lr": 3e-4, "acc": 0.902},
+]
+
+
+def _rows(plot):
+    """The lines of a table, as plain text."""
+    return plot.chars.to_plain_str().splitlines()
+
+
+class TestTableData:
+    def test_a_list_of_dicts_takes_its_columns_from_the_keys(self):
+        plot = table(RUNS)
+
+        assert plot.headers == ["run", "lr", "acc"]
+        assert plot.num_rows == 2
+        assert _rows(plot)[1].split() == ["run", "lr", "acc"]
+
+    def test_a_dict_of_lists_takes_its_columns_from_the_keys(self):
+        plot = table({"run": ["baseline", "wider"], "acc": [0.873, 0.902]})
+
+        assert plot.headers == ["run", "acc"]
+        assert plot.num_rows == 2
+
+    def test_a_2d_array_has_no_headers_of_its_own(self):
+        plot = table(np.arange(6).reshape(2, 3))
+
+        assert plot.headers is None
+        assert plot.num_rows == 2
+        assert plot.num_columns == 3
+
+    def test_a_2d_array_can_be_given_headers(self):
+        plot = table(np.arange(6).reshape(2, 3), headers=["a", "b", "c"])
+
+        assert plot.headers == ["a", "b", "c"]
+
+    def test_headers_pick_out_and_order_the_columns(self):
+        plot = table(RUNS, headers=["acc", "run"])
+
+        assert plot.headers == ["acc", "run"]
+        assert _rows(plot)[3].split() == ["0.873", "baseline"]
+
+    def test_headers_given_as_a_mapping_rename_as_they_pick(self):
+        plot = table(RUNS, headers={"acc": "accuracy"})
+
+        assert plot.headers == ["accuracy"]
+
+    def test_a_row_missing_a_key_leaves_that_cell_blank(self):
+        plot = table([{"a": 1, "b": 2}, {"a": 3}])
+
+        assert _rows(plot)[4].split() == ["3"]
+
+    def test_a_short_column_runs_out_into_blanks(self):
+        plot = table({"a": [1, 2, 3], "b": [4]})
+
+        assert plot.num_rows == 3
+        assert _rows(plot)[5].split() == ["3"]
+
+    def test_a_value_of_none_is_blank_however_it_is_formatted(self):
+        plot = table([[None]], formats=".3f")
+
+        assert _rows(plot)[1].strip() == ""
+
+
+class TestTableFormatting:
+    def test_a_float_is_shown_to_four_significant_figures(self):
+        plot = table([[1 / 3]])
+
+        assert _rows(plot)[1].strip() == "0.3333"
+
+    def test_a_format_spec_applies_to_every_column(self):
+        plot = table([[1.5, 2.5]], formats=".2f")
+
+        assert _rows(plot)[1].split() == ["1.50", "2.50"]
+
+    def test_a_template_with_a_field_in_it_is_filled_in(self):
+        plot = table([[0.873]], formats="{:.1%}")
+
+        assert _rows(plot)[1].strip() == "87.3%"
+
+    def test_a_callable_formats_a_value_however_it_likes(self):
+        plot = table([["ab"]], formats=lambda value: value.upper())
+
+        assert _rows(plot)[1].strip() == "AB"
+
+    def test_a_format_can_be_given_per_column_by_name(self):
+        plot = table(RUNS, formats={"acc": "{:.1%}"})
+
+        assert _rows(plot)[3].split() == ["baseline", "0.001", "87.3%"]
+
+    def test_a_column_is_cut_to_the_widest_it_may_be(self):
+        plot = table([["abcdefgh"]], max_col_width=4)
+
+        assert _rows(plot)[1].strip() == "abc…"
+
+    def test_a_cell_with_newlines_in_it_grows_its_row(self):
+        plot = table([["one\ntwo", "x"]], toprule="skip", bottomrule="skip")
+
+        assert _rows(plot) == ["one  x", "two   "]
+
+
+class TestTableAlignment:
+    def test_a_column_of_numbers_is_aligned_right_by_default(self):
+        plot = table([[1], [100]], toprule="skip", bottomrule="skip")
+
+        assert _rows(plot) == ["  1", "100"]
+
+    def test_a_column_of_anything_else_is_aligned_left(self):
+        plot = table([["a"], ["bcd"]], toprule="skip", bottomrule="skip")
+
+        assert _rows(plot) == ["a  ", "bcd"]
+
+    def test_a_column_of_numbers_with_a_gap_is_still_aligned_right(self):
+        plot = table([[1], [None], [100]], toprule="skip", bottomrule="skip")
+
+        assert _rows(plot) == ["  1", "   ", "100"]
+
+    def test_an_alignment_applies_to_every_column(self):
+        plot = table(
+            [["a"], ["bcd"]],
+            aligns="center",
+            toprule="skip",
+            bottomrule="skip",
+        )
+
+        assert _rows(plot) == [" a ", "bcd"]
+
+    def test_a_header_follows_the_alignment_of_its_column(self):
+        plot = table([[1000]], headers=["n"], toprule="skip", midrule="skip")
+
+        assert _rows(plot)[0] == "   n"
+
+
+class TestTableRules:
+    def test_the_default_is_a_double_rule_under_the_header(self):
+        plot = table(RUNS)
+        top, _header, mid, _first, _second, bottom = _rows(plot)
+
+        assert set(top) == {"─"}
+        assert set(mid) == {"═"}
+        assert set(bottom) == {"─"}
+
+    def test_a_table_with_no_header_row_has_no_midrule(self):
+        plot = table([[1], [2]])
+
+        assert len(_rows(plot)) == 2 + 2
+
+    def test_every_rule_can_be_drawn_at_once(self):
+        plot = table(
+            [[1, 2]],
+            headers=["a", "b"],
+            leftrule="single",
+            colrule="single",
+            rightrule="single",
+        )
+
+        assert _rows(plot) == ["┌───┬───┐", "│ a │ b │", "╞═══╪═══╡",
+                               "│ 1 │ 2 │", "└───┴───┘"]
+
+    def test_a_blank_rule_holds_its_row_open(self):
+        ruled = table([[1], [2]], rowrule="single")
+        blank = table([[1], [2]], rowrule="blank")
+
+        assert _rows(ruled)[2] == "─"
+        assert _rows(blank)[2] == " "
+
+    def test_a_skipped_rule_takes_no_space(self):
+        plot = table([[1]], toprule="skip", bottomrule="skip")
+
+        assert plot.height == 1
+
+    def test_an_index_gets_a_column_of_its_own(self):
+        plot = table([[1], [2]], index=["a", "b"], index_name="i",
+                     headers=["n"], indexrule="single")
+
+        assert _rows(plot)[1] == "i │ n"
+
+    def test_a_rule_has_to_be_one_of_the_four_weights(self):
+        with pytest.raises(ValueError, match="not 'dotted'"):
+            table([[1]], toprule="dotted")
+
+    def test_a_midrule_needs_a_header_to_go_under(self):
+        with pytest.raises(ValueError, match="no header row"):
+            table([[1]], midrule="single")
+
+    def test_an_indexrule_needs_an_index_to_go_beside(self):
+        with pytest.raises(ValueError, match="no index"):
+            table([[1]], indexrule="single")
+
+
+class TestTablePadding:
+    def test_a_cell_is_held_away_from_the_rules_beside_it(self):
+        plot = table([[1, 2]], leftrule="single", rightrule="single",
+                     colrule="single", toprule="skip", bottomrule="skip")
+
+        assert _rows(plot) == ["│ 1 │ 2 │"]
+
+    def test_an_edge_with_no_rule_on_it_is_not_padded(self):
+        plot = table([[1, 2]], toprule="skip", bottomrule="skip")
+
+        assert _rows(plot) == ["1  2"]
+
+    def test_the_padding_can_be_widened(self):
+        plot = table([[1, 2]], cell_padding=2, toprule="skip",
+                     bottomrule="skip")
+
+        assert _rows(plot) == ["1    2"]
+
+    def test_the_padding_cannot_be_negative(self):
+        with pytest.raises(ValueError, match="cell_padding|-1 columns"):
+            table([[1]], cell_padding=-1)
+
+
+class TestTableColors:
+    def test_the_body_can_be_colored_cell_by_cell(self):
+        plot = table(
+            [[1, 2]],
+            bgcolors=np.array([[[255, 0, 0], [0, 0, 255]]]),
+            toprule="skip",
+            bottomrule="skip",
+        )
+
+        assert tuple(plot.chars.bg_rgb[0, 0]) == (255, 0, 0)
+        assert tuple(plot.chars.bg_rgb[0, -1]) == (0, 0, 255)
+
+    def test_a_colormap_shades_the_body_by_its_values(self):
+        colormap = RecordingColormap()
+        table([[0.25, 0.75]], bgcolors=[[0.25, 0.75]], colormap=colormap)
+
+        assert colormap.input.tolist() == [[0.25, 0.75]]
+
+    def test_the_header_and_the_index_take_the_header_color(self):
+        plot = table(
+            [[1]],
+            headers=["n"],
+            index=["r"],
+            header_color="red",
+            color="green",
+        )
+
+        # the header row, then the index label on the row below the midrule
+        assert tuple(plot.chars.fg_rgb[1, 0]) == (255, 0, 0)
+        assert tuple(plot.chars.fg_rgb[3, 0]) == (255, 0, 0)
+        assert tuple(plot.chars.fg_rgb[3, -1]) == (0, 255, 0)
+
+    def test_the_rules_follow_the_table_color_unless_told_otherwise(self):
+        plot = table([[1]], color="green")
+        recolored = table([[1]], color="green", rule_color="red")
+
+        assert tuple(plot.chars.fg_rgb[0, 0]) == (0, 255, 0)
+        assert tuple(recolored.chars.fg_rgb[0, 0]) == (255, 0, 0)
+
+
+class TestTableRejections:
+    def test_it_needs_something_to_tabulate(self):
+        with pytest.raises(ValueError, match="at least one column"):
+            table([])
+
+    def test_the_rows_all_have_to_be_the_same_length(self):
+        with pytest.raises(ValueError, match="row 1 has 1 values"):
+            table([[1, 2], [3]])
+
+    def test_a_row_has_to_be_a_row_of_values(self):
+        with pytest.raises(ValueError, match="not a row of values"):
+            table([1, 2, 3])
+
+    def test_a_header_has_to_name_a_column_the_data_has(self):
+        with pytest.raises(ValueError, match="no column 'nope'"):
+            table(RUNS, headers=["nope"])
+
+    def test_a_format_has_to_name_a_column_the_table_has(self):
+        with pytest.raises(ValueError, match="not a column"):
+            table(RUNS, formats={"nope": ".2f"})
+
+    def test_a_format_per_column_needs_one_for_each(self):
+        with pytest.raises(ValueError, match="2 entries for 3 columns"):
+            table(RUNS, formats=[".2f", ".2f"])
+
+    def test_a_format_per_column_name_needs_headers(self):
+        with pytest.raises(ValueError, match="no headers"):
+            table([[1]], formats={"a": ".2f"})
+
+    def test_a_column_can_only_be_aligned_three_ways(self):
+        with pytest.raises(ValueError, match="cannot align"):
+            table([[1]], aligns="middle")
+
+    def test_the_index_has_to_have_a_label_per_row(self):
+        with pytest.raises(ValueError, match="2 index labels for 1 rows"):
+            table([[1]], index=["a", "b"])
+
+    def test_a_2d_table_has_no_column_names_to_rename(self):
+        with pytest.raises(ValueError, match="names none"):
+            table([[1]], headers={"a": "b"})
+
+    def test_a_cell_cannot_smuggle_in_control_characters(self):
+        with pytest.raises(ValueError, match="control characters"):
+            table([["a\x1b[31mb"]])

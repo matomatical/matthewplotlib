@@ -8,9 +8,10 @@ has its own note, `notes/scales.md`.
 
 ## What the job turned out to be
 
-A colorbar needs two things from the plot it describes: the interval of values
-the colours cover, and the colormap that covers them. Everything else followed
-from finding out where those two things lived.
+A colorbar needs one thing from the plot it describes: the interval of values
+its colours cover. It needs a colormap too, but that comes from the caller ---
+see the last decision below. Everything else followed from finding out where
+the interval lived.
 
 They were in four places, spelled three ways:
 
@@ -83,10 +84,9 @@ Four designs were weighed:
 
 `heatmap` is values on a colour scale; `image` is pixels. `function2` and
 `histogram2` moved onto `heatmap` and stopped carrying their own copies of the
-normalisation. The split also settles the discrete question structurally: a
-palette picture is an `image`, which has no interval, so `colorbar` refuses it
-for its plot type rather than by inspecting its colormap. Marking the colormaps
-became unnecessary.
+normalisation. Marking the colormaps stayed unnecessary, but for a different
+reason than first thought: not because the plot types sort themselves out, but
+because a colorbar never inspects a colormap at all. See below.
 
 The name was already in the code. `function2`'s docstring opens "Heatmap
 representing the image of a 2d function over a square" and `histogram2`'s
@@ -148,10 +148,34 @@ a scale in the `colormap` slot:
   inferred interval and maps it to zero, which is what happened before by
   accident, minus the NumPy cast warning. `image` still warns on the same
   input; that is the "robust input validation" roadmap item, not this one.
-* **`colorbar` recognises a colour scale by duck-typing:** a plot carrying both
-  a `vrange` and a `colormap` attribute. `image` has the colormap and a `None`
-  interval; `bars` has the interval and no colormap. Neither passes, and the
-  error says so.
+* **A colorbar never derives its colormap.** The interval comes from the plot;
+  the colours are named at the bar. Two attempts to be cleverer than that both
+  failed, and the reason they failed is the useful part.
+
+  Deriving the colormap from the plot means deciding whether that colormap is
+  one a gradient can stand for, and **that is a property of the colormap, not
+  of the plot.** `viridis` takes a scalar in [0,1] and a gradient is exactly
+  right; `pico8` takes indices and wants a swatch beside each label; `chroma`
+  and `domain` take plane vectors and no one-dimensional bar represents them.
+  A marker on the plot classes---mixed into `heatmap`, `calendar` and
+  `weeks`---looked like it settled this, and did not: `heatmap(values,
+  colormap=mp.pico8)` carried the marker and drew a "gradient" of three
+  identical black cells. It blocked a colour field for being the wrong plot
+  class while admitting the same mistake through the class it was built for.
+
+  Marking the colormaps instead would be on the right axis, and
+  `colormaps.py` now names three flavours---continuous, discrete and
+  vector---in its type aliases, so the taxonomy exists on paper. Making it real
+  at runtime is `notes/scales.md` business, along with the swatch plot the
+  discrete flavour wants.
+
+  Deleting the derivation dissolves all of it. Nothing else in the library
+  infers a colormap: hand `viridis` an index array and you get whatever you
+  get. A bar is no different, the caller names what the picture was drawn with,
+  and a plot's `vrange` can then be borrowed by anything without the bar having
+  to judge it. That last part is a gain rather than a loss: a colour field's
+  interval really is its brightness scale, and a bar of it with a colormap the
+  caller chooses is a legitimate legend, where the marker had refused one.
 
 ## Left undone
 

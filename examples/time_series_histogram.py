@@ -72,7 +72,12 @@ def main(save: str | None = None):
     plot3 = mp.vstack(
         mp.border(hist),
         mp.axes(
-            mp.colorbar(hist, direction="right", length=80),
+            mp.colorbar(
+                hist,
+                colormap=mp.plasma,
+                direction="right",
+                length=80,
+            ),
             south="label",
             xlabel="count",
             xfmt="{x:.0f}",

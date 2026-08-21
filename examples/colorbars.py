@@ -133,8 +133,8 @@ def main(save: str | None = None):
         ],
     )
 
-    # the reason for all of it: the bar takes the interval and the colormap
-    # off the map, so the two cannot disagree about what a colour means
+    # the reason for all of it: the bar borrows the map's interval, so the
+    # numbers on the two cannot drift apart
     land = island()
     together = mp.vstack(
         mp.text("beside the map it describes:", fgcolor=HEADING),
@@ -148,7 +148,7 @@ def main(save: str | None = None):
             ),
             mp.blank(height=1, width=2),
             mp.axes(
-                mp.colorbar(land, length=5),
+                mp.colorbar(land, colormap=mp.viridis, length=5),
                 east="label",
                 ylabel="m",
                 **WHOLE,
@@ -176,7 +176,7 @@ def main(save: str | None = None):
             mp.axes(gulls, title=" gulls ", **WHOLE),
             mp.blank(height=1, width=1),
             mp.axes(
-                mp.colorbar(gulls, length=5),
+                mp.colorbar(gulls, colormap=mp.magma, length=5),
                 east="label",
                 **WHOLE,
             ),
@@ -188,7 +188,7 @@ def main(save: str | None = None):
             mp.vstack(
                 mp.blank(height=2, width=1),
                 mp.axes(
-                    mp.colorbar(rain, length=7),
+                    mp.colorbar(rain, colormap=mp.blues, length=7),
                     east="label",
                     ylabel="mm",
                     **WHOLE,

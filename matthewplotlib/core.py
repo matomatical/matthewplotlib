@@ -24,7 +24,12 @@ Drawing characters, each packing several data points into one character cell:
 * `unicode_bar` and `unicode_col`: Values to horizontal or vertical bars, using
   partial block characters for eighth-of-a-cell resolution.
 * `unicode_image`: Images to half-block characters, at 1 by 2 pixels per cell.
+* `unicode_candles`: Four values a period to candlesticks, bodies from partial
+  blocks and wicks from vertical lines.
 * `unicode_box` and `BoxStyle`: Box-drawing borders, optionally titled.
+* `unicode_frame` and `unicode_grid`, with `LineStyle`: Rules along the sides
+  of a plot, or between the cells of a grid, with the corners and junctions
+  where they meet derived from which of them are drawn.
 """
 
 from __future__ import annotations
@@ -39,7 +44,7 @@ from typing import Self, Callable, Sequence
 from numpy.typing import NDArray
 
 from matthewplotlib.unscii16 import bitmaps
-from matthewplotlib.colors import ColorLike, parse_color
+from matthewplotlib.colors import Color, ColorLike, parse_color
 
 
 # # # 
@@ -1444,7 +1449,227 @@ def unicode_frame(
     return framed
 
 
-# # # 
+# # #
+# UNICODE GRIDS
+
+
+# where a rule of one weight crosses a rule of another, the character that
+# joins them belongs to neither weight. Each entry here is indexed exactly
+# like a LineStyle---sixteen characters, one per combination of directions---
+# and is keyed by the weight of the vertical rule and then the horizontal one.
+_JOINTS: dict[tuple[LineStyle, LineStyle], str] = {
+    (LineStyle.LIGHT,  LineStyle.LIGHT):  LineStyle.LIGHT.value,
+    (LineStyle.LIGHT,  LineStyle.DOUBLE): " ╵╷│═╛╕╡═╘╒╞═╧╤╪",
+    (LineStyle.DOUBLE, LineStyle.LIGHT):  " ║║║╴╜╖╢╶╙╓╟─╨╥╫",
+    (LineStyle.DOUBLE, LineStyle.DOUBLE): LineStyle.DOUBLE.value,
+}
+
+
+# the weights a grid rule may take, in the order the glyph table indexes them
+_GRID_WEIGHTS: tuple[LineStyle | None, ...] = (
+    None,
+    LineStyle.LIGHT,
+    LineStyle.DOUBLE,
+)
+
+
+def _grid_glyphs() -> NDArray: # uint32[3,3,16]
+    """
+    Every character a grid can need, indexed by the weight of the vertical
+    rule through a cell, the weight of the horizontal one, and the arms.
+    """
+    glyphs = np.full((3, 3, 16), ord(" "), dtype=np.uint32)
+    for v, vertical in enumerate(_GRID_WEIGHTS):
+        for h, horizontal in enumerate(_GRID_WEIGHTS):
+            # a cell with a rule running only one way through it takes its
+            # characters from that rule's own weight, there being nothing to
+            # cross
+            crossing = vertical if vertical is not None else horizontal
+            crossed = horizontal if horizontal is not None else vertical
+            if crossing is None or crossed is None:
+                continue
+            glyphs[v, h] = ords(_JOINTS[(crossing, crossed)])
+    return glyphs
+
+
+_GRID_GLYPHS = _grid_glyphs()
+
+
+def unicode_grid(
+    cells: Sequence[Sequence[CharArray]],
+    hcells: Sequence[bool],
+    hrules: Sequence[LineStyle | None],
+    vcells: Sequence[bool],
+    vrules: Sequence[LineStyle | None],
+    fgcolor: ColorLike | None = None,
+    bgcolor: ColorLike | None = None,
+) -> CharArray:
+    """
+    Lay a rectangular grid of character arrays out with rules between them.
+
+    A grid of cells has one more horizontal rule than it has rows, one above
+    each row and one below the last, and one more vertical rule than it has
+    columns, one to the left of each column and one to the right of the last.
+    Each rule is described by two things: whether it takes a row or column of
+    cells at all, and which weight of line, if any, is drawn in it. A rule
+    that takes no cells does not appear in the output at all; one that takes
+    cells but draws no line is a row or column of blank space, which any rule
+    crossing it still runs through.
+
+    Every character is derived rather than chosen. A rule runs the whole
+    length of the grid, so each of its cells reaches out along it, and reaches
+    across wherever a rule of the other orientation is drawn. The resulting
+    set of directions selects the character. So the corner where two rules
+    meet turns, the junction where they cross joins, and a rule that ends at
+    the edge of the grid fills its last cell rather than stopping halfway.
+    Where a rule of one weight crosses one of another, the character joining
+    them belongs to neither weight, and that too is derived.
+
+    Inputs:
+
+    * cells : CharArray[nrows, ncols].
+        The contents of the grid. Every array in a row must be the same
+        height, and every array in a column the same width.
+    * hcells : bool[nrows+1].
+        Whether each horizontal rule takes a row of cells.
+    * hrules : (LineStyle | None)[nrows+1].
+        The weight of line drawn in each horizontal rule, or None to leave its
+        row blank. A rule that draws a line must take a row.
+    * vcells : bool[ncols+1].
+        Whether each vertical rule takes a column of cells.
+    * vrules : (LineStyle | None)[ncols+1].
+        The weight of line drawn in each vertical rule, or None to leave its
+        column blank. A rule that draws a line must take a column.
+    * fgcolor : optional ColorLike.
+        The colour of the rules. Defaults to the terminal's foreground colour.
+    * bgcolor : optional ColorLike.
+        The colour behind the rules, and behind any blank row or column
+        between the cells. The cells bring their own. Defaults to a
+        transparent background.
+
+    Returns:
+
+    * grid : CharArray.
+        The cells, laid out with whichever rules took cells between them.
+
+    Only `LineStyle.LIGHT` and `LineStyle.DOUBLE` may be drawn. Those are the
+    two weights Unicode provides a complete set of crossings for.
+    """
+    nrows = len(cells)
+    if nrows == 0 or len(cells[0]) == 0:
+        raise ValueError("a grid needs at least one cell")
+    ncols = len(cells[0])
+    for i, row in enumerate(cells):
+        if len(row) != ncols:
+            raise ValueError(
+                f"row {i} has {len(row)} cells, but row 0 has {ncols}"
+            )
+    for name, rule_cells, rule_styles, expected in (
+        ("h", hcells, hrules, nrows + 1),
+        ("v", vcells, vrules, ncols + 1),
+    ):
+        if len(rule_cells) != expected or len(rule_styles) != expected:
+            raise ValueError(
+                f"a grid {nrows} by {ncols} has {expected} {name}rules, but "
+                f"{len(rule_cells)} cell flags and {len(rule_styles)} styles "
+                "were given"
+            )
+        for i, (takes_cells, style) in enumerate(zip(rule_cells, rule_styles)):
+            if style is None:
+                continue
+            if not takes_cells:
+                raise ValueError(
+                    f"{name}rule {i} draws a line but takes no cells"
+                )
+            if style not in _GRID_WEIGHTS:
+                raise ValueError(
+                    f"{name}rule {i} is {style.name}, but a grid can only be "
+                    "ruled LIGHT or DOUBLE"
+                )
+
+    # every array in a row is as tall as the row, every array in a column as
+    # wide as the column
+    row_heights = [row[0].height for row in cells]
+    col_widths = [cell.width for cell in cells[0]]
+    for i, row in enumerate(cells):
+        for j, cell in enumerate(row):
+            if cell.height != row_heights[i] or cell.width != col_widths[j]:
+                raise ValueError(
+                    f"cell {i},{j} is {cell.height} by {cell.width}, but its "
+                    f"row and column are {row_heights[i]} by {col_widths[j]}"
+                )
+
+    # walk the grid, noting where each band of cells begins and marking the
+    # weight of the rule running the length of each row and column
+    height = sum(row_heights) + sum(hcells)
+    width = sum(col_widths) + sum(vcells)
+    hweight = np.zeros(height, dtype=int)
+    vweight = np.zeros(width, dtype=int)
+    tops = []
+    lefts = []
+    y = 0
+    for i in range(nrows + 1):
+        if hcells[i]:
+            hweight[y] = _GRID_WEIGHTS.index(hrules[i])
+            y += 1
+        if i < nrows:
+            tops.append(y)
+            y += row_heights[i]
+    x = 0
+    for j in range(ncols + 1):
+        if vcells[j]:
+            vweight[x] = _GRID_WEIGHTS.index(vrules[j])
+            x += 1
+        if j < ncols:
+            lefts.append(x)
+            x += col_widths[j]
+
+    # a drawn rule occupies its whole row or column, cells and all
+    horizontal = hweight > 0
+    vertical = vweight > 0
+    ruled = horizontal[:, None] | vertical[None, :]
+
+    # each cell of a rule reaches out along it, except at the edge of the
+    # grid, where a rule meeting another turns into it instead of overshooting
+    arms = np.zeros((height, width), dtype=int)
+    arms[horizontal, :] |= _LEFT | _RIGHT
+    arms[:, vertical] |= _UP | _DOWN
+    if width and vertical[0]:
+        arms[:, 0] &= ~_LEFT
+    if width and vertical[-1]:
+        arms[:, -1] &= ~_RIGHT
+    if height and horizontal[0]:
+        arms[0, :] &= ~_UP
+    if height and horizontal[-1]:
+        arms[-1, :] &= ~_DOWN
+
+    # paint the rules, and then the cells over the top of them
+    grid = CharArray.from_size(
+        height=height,
+        width=width,
+        fgcolor=fgcolor,
+        bgcolor=bgcolor,
+    )
+    rows, columns = np.nonzero(ruled)
+    grid.codes[rows, columns] = _GRID_GLYPHS[
+        vweight[columns],
+        hweight[rows],
+        arms[rows, columns],
+    ]
+    for i, row in enumerate(cells):
+        for j, cell in enumerate(row):
+            ys = slice(tops[i], tops[i] + cell.height)
+            xs = slice(lefts[j], lefts[j] + cell.width)
+            grid.codes[ys, xs] = cell.codes
+            grid.fg[ys, xs] = cell.fg
+            grid.fg_rgb[ys, xs] = cell.fg_rgb
+            grid.bg[ys, xs] = cell.bg
+            grid.bg_rgb[ys, xs] = cell.bg_rgb
+
+    return grid
+
+
+# # #
 # UNICODE HALF-BLOCK IMAGE
 
 
@@ -1496,3 +1721,238 @@ def unicode_image(
 
     return chars
 
+
+# # #
+# UNICODE CANDLESTICKS
+
+
+def unicode_candles(
+    opens: NDArray,         # float[n]
+    highs: NDArray,         # float[n]
+    lows: NDArray,          # float[n]
+    closes: NDArray,        # float[n]
+    height: int,
+    background: ColorLike,
+    body_colors: NDArray,   # uint8[n, rgb]
+    wick_colors: NDArray | None = None, # uint8[n, rgb]
+    body_width: int = 1,
+    spacing: int = 0,
+    style: LineStyle = LineStyle.LIGHT,
+) -> CharArray: # Char[height, n * (body_width + spacing) - spacing]
+    """
+    Draw a row of candlesticks, one per set of four values.
+
+    Each candle is a filled body spanning its opening and closing values, with
+    a thin wick reaching out of the body to the high and the low. Bodies are
+    drawn with partial block characters and wicks with the half-length vertical
+    lines of a line style, so that a body reads as a solid bar and a wick as a
+    hairline out of it.
+
+    Inputs:
+
+    * opens, highs, lows, closes: float[n].
+        The four values of each candle, each as a proportion of the way up the
+        column: 0.0 at the bottom edge of the bottom character row, 1.0 at the
+        top edge of the top one. Values outside that range are clipped into it.
+    * height: int (positive).
+        The number of character rows to draw the candles in.
+    * background: ColorLike.
+        The color behind the candles, and the color a body is drawn against.
+    * body_colors: uint8[n, rgb].
+        The color of each body.
+    * wick_colors: optional uint8[n, rgb].
+        The color of each wick. Defaults to the terminal's foreground color.
+    * body_width: int (positive, default 1).
+        The number of columns each body takes up. The wick runs up the middle
+        one.
+    * spacing: int (default 0).
+        The number of blank columns between one candle and the next.
+    * style: LineStyle (default LineStyle.LIGHT).
+        The weight of the wicks.
+
+    Returns:
+
+    * chars: CharArray.
+        A character array `height` rows tall holding the candles side by side.
+
+    A body is placed to the nearest eighth of a character cell and a wick to
+    the nearest half. Reaching every eighth takes both a block growing up from
+    a cell's bottom edge and one hanging from its top, and Unicode provides
+    only the former, so the latter is drawn as a negative: the block is painted
+    in the background color over a cell whose background is the body color.
+    That is why a background color is required rather than left to the
+    terminal.
+
+    Two consequences of drawing a body one cell at a time. A body shorter than
+    a cell that falls strictly inside one keeps its length and shifts to
+    whichever edge of that cell is nearer, since a cell can show a block
+    growing from one of its edges but not one floating between them. And no
+    body is drawn shorter than an eighth, so a candle that opened and closed at
+    the same value reads as a hairline rather than vanishing.
+    """
+    if height < 1:
+        raise ValueError(f"height must be positive, not {height}")
+    if body_width < 1:
+        raise ValueError(f"body_width must be positive, not {body_width}")
+    if spacing < 0:
+        raise ValueError(f"spacing must be non-negative, not {spacing}")
+
+    num_candles = len(opens)
+    stride = body_width + spacing
+    width = max(num_candles * stride - spacing, 1)
+    chars = CharArray.from_size(height=height, width=width, bgcolor=background)
+    if num_candles == 0:
+        return chars
+    ground = parse_color(background)
+    starts = np.arange(num_candles) * stride
+
+    # the wicks, drawn first, up the middle column of each candle
+    wick_codes, wick_mask = _wick_glyphs(
+        lows=lows,
+        highs=highs,
+        height=height,
+        style=style,
+    )
+    _place(
+        chars=chars,
+        columns=starts + body_width // 2,
+        codes=wick_codes,
+        mask=wick_mask,
+        colors=wick_colors,
+        background=ground,
+    )
+
+    # the bodies, drawn over them, across the full width of each candle
+    body_codes, body_mask, body_inverted = _body_glyphs(
+        opens=opens,
+        closes=closes,
+        height=height,
+    )
+    _place(
+        chars=chars,
+        columns=(starts[:, None] + np.arange(body_width)).reshape(-1),
+        codes=np.repeat(body_codes, body_width, axis=1),
+        mask=np.repeat(body_mask, body_width, axis=1),
+        colors=np.repeat(body_colors, body_width, axis=0),
+        background=ground,
+        inverted=np.repeat(body_inverted, body_width, axis=1),
+    )
+    return chars
+
+
+def _sub_cell_rows(
+    lo: NDArray,    # float[n]
+    hi: NDArray,    # float[n]
+    height: int,
+    per_cell: int,
+) -> tuple[NDArray, NDArray]: # int[1, n], int[1, n]
+    """
+    Turn a pair of proportions into the sub-cell rows a mark covers.
+
+    The proportions run from 0.0 at the bottom of the column to 1.0 at the top.
+    The rows come back counted the other way, from 0 at the top, as a half-open
+    interval, so a mark covering rows 3 and 4 comes back as (3, 5). The
+    interval is never empty, so a mark whose two ends round to the same row
+    still covers one.
+    """
+    rows = height * per_cell
+    top = np.rint((1 - np.clip(hi, 0, 1)) * rows).astype(int)
+    bottom = np.rint((1 - np.clip(lo, 0, 1)) * rows).astype(int)
+    top = np.clip(top, 0, rows - 1)
+    bottom = np.clip(bottom, top + 1, rows)
+    return top[None, :], bottom[None, :]
+
+
+def _wick_glyphs(
+    lows: NDArray,      # float[n]
+    highs: NDArray,     # float[n]
+    height: int,
+    style: LineStyle,
+) -> tuple[NDArray, NDArray]: # uint32[height, n], bool[height, n]
+    """
+    Choose a vertical line for each cell of each wick.
+
+    A wick is placed to the nearest half cell, so each cell it passes through
+    holds a line spanning that cell's upper half, its lower half, or both.
+    """
+    top, bottom = _sub_cell_rows(lo=lows, hi=highs, height=height, per_cell=2)
+    rows = np.arange(height)[:, None]
+    upper, lower = 2 * rows, 2 * rows + 1
+    arms = (
+        np.where((top <= upper) & (bottom > upper), _UP, 0)
+        | np.where((top <= lower) & (bottom > lower), _DOWN, 0)
+    )
+    glyphs = np.array([ord(c) for c in style], dtype=np.uint32)
+    return glyphs[arms], arms > 0
+
+
+def _body_glyphs(
+    opens: NDArray,     # float[n]
+    closes: NDArray,    # float[n]
+    height: int,
+) -> tuple[NDArray, NDArray, NDArray]: # uint32, bool, bool [height, n]
+    """
+    Choose a partial block for each cell of each body, and say which of them
+    are to be drawn as negatives.
+
+    A body is placed to the nearest eighth of a cell. In each cell it passes
+    through it covers some number of eighths, leaving some above and some
+    below; how many, and which of the cell's edges the body reaches, picks the
+    block. A body reaching the cell's bottom edge is the block itself, one
+    reaching the top edge is the block that fills what the body leaves empty,
+    drawn as a negative. One reaching neither edge shifts to the nearer one.
+    """
+    top, bottom = _sub_cell_rows(
+        lo=np.minimum(opens, closes),
+        hi=np.maximum(opens, closes),
+        height=height,
+        per_cell=8,
+    )
+    rows = np.arange(height)[:, None]
+    cell_top, cell_bottom = 8 * rows, 8 * rows + 8
+    covered = np.minimum(bottom, cell_bottom) - np.maximum(top, cell_top)
+    above = np.maximum(top, cell_top) - cell_top
+    below = cell_bottom - np.minimum(bottom, cell_bottom)
+    mask = covered > 0
+    # a body that leaves the cell's bottom edge empty is drawn as a negative,
+    # whether it reaches the top edge or merely shifts to it as the nearer one
+    inverted = mask & (below > 0) & (above <= below)
+    eighths = np.where(inverted, 8 - covered, covered)
+    blocks = np.array(PARTIAL_BLOCKS_COL, dtype=np.uint32)
+    return blocks[np.clip(eighths, 0, 8)], mask, inverted
+
+
+def _place(
+    chars: CharArray,
+    columns: NDArray,   # int[m]
+    codes: NDArray,     # uint32[height, m]
+    mask: NDArray,      # bool[height, m]
+    colors: NDArray | None, # uint8[m, rgb]
+    background: Color | None,
+    inverted: NDArray | None = None, # bool[height, m]
+) -> None:
+    """
+    Write a grid of marks into the columns of a character array.
+
+    The marks are indexed by character row and by mark, and `columns` says
+    which column of `chars` each mark occupies. A mark is written only where
+    `mask` holds. Where `inverted` holds, the mark's color goes to the cell's
+    background and the array's background color to its foreground, so that the
+    mark is what the glyph leaves unfilled.
+    """
+    rows = np.broadcast_to(np.arange(chars.height)[:, None], mask.shape)
+    row, column = rows[mask], np.broadcast_to(columns, mask.shape)[mask]
+    chars.codes[row, column] = codes[mask]
+    if colors is None:
+        return
+    marks = np.broadcast_to(colors, (chars.height, *colors.shape))[mask]
+    if inverted is None:
+        chars.fg[row, column] = True
+        chars.fg_rgb[row, column] = marks
+        return
+    flip = inverted[mask][:, None]
+    ground = np.zeros(3, dtype=np.uint8) if background is None else background
+    chars.fg[row, column] = True
+    chars.fg_rgb[row, column] = np.where(flip, ground, marks)
+    chars.bg[row, column] = True
+    chars.bg_rgb[row, column] = np.where(flip, marks, ground)

@@ -106,6 +106,7 @@ EXAMPLES: tuple[Example, ...] = (
     Example("boing.py",                 27, 64, saves="gif",
             args=("--num-frames", "8", "--no-loop")),
     Example("calendar_heatmap.py",      27, 62, saves="png"),
+    Example("candlesticks.py",          16, 60, saves="png"),
     Example("chromatic_flow.py",        24, 80, saves="gif",
             args=("--num-frames", "6", "--no-loop")),
     Example("colorbars.py",             37, 76, saves="png"),
@@ -114,9 +115,12 @@ EXAMPLES: tuple[Example, ...] = (
     Example("dashboard.py",             15, 56, saves="gif",
             args=("--num-frames", "5")),
     Example("demo.py",                  64, 80, saves="png"),
+    Example("domain_coloring.py",       30, 81, saves="png"),
     Example("doomfire.py",              51, 80, saves="gif",
             args=("--num-frames", "5")),
     Example("functions.py",             31, 74, saves="png"),
+    Example("globe.py",                 25, 48, saves="gif",
+            args=("--num-frames", "5", "--no-loop")),
     Example("hilbert_curve.py",         33, 64, saves="png"),
     Example("image.py",                 33, 96, saves="png"),
     Example("jointplot.py",             35, 64, saves="png"),
@@ -128,6 +132,7 @@ EXAMPLES: tuple[Example, ...] = (
             args=("--num-frames", "5")),
     Example("mandelbrot.py",            43, 80, saves="gif",
             args=("--num-frames", "5")),
+    Example("phase_portrait.py",        30, 78, saves="png"),
     Example("quickstart1.py",           14, 81, saves="png"),
     Example("quickstart2.py",           14, 81, saves="gif",
             args=("--num-frames", "5")),
@@ -138,6 +143,7 @@ EXAMPLES: tuple[Example, ...] = (
             args=("--num-frames", "5")),
     Example("starburst.py",             26, 48, saves="gif",
             args=("--num-frames", "6", "--no-loop")),
+    Example("tables.py",                34, 79, saves="png"),
     # --log-every is turned down so that a five step run still exercises
     # `anim.print`. The pane is three rows taller than the 23 the plot needs:
     # one for each logged line, and one for the row `clearstr` cannot step onto
@@ -157,6 +163,7 @@ EXAMPLES: tuple[Example, ...] = (
     Example("vaporwave.py",             25, 80, saves="gif",
             args=("--num-frames", "5", "--no-loop")),
     Example("voronoi.py",               21, 70, saves="png"),
+    Example("world_map.py",             34, 78, saves="png"),
 )
 
 

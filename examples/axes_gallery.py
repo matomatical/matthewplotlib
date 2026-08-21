@@ -147,7 +147,7 @@ def main(save: str | None = None):
             ),
             mp.blank(height=1, width=2),
             mp.axes(
-                mp.colorbar(pattern, length=5),
+                mp.colorbar(pattern, colormap=mp.divblues, length=5),
                 east="label",
                 ylabel="amp",
                 yfmt="{y:+.1f}",

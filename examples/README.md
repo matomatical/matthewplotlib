@@ -7,11 +7,13 @@ Examples
 
 Contents:
 
-* [Series Data Visualisation](#series-data-visualisation)
+* [Point Data Visualisation](#point-data-visualisation)
 * [Surface Data Visualisation](#surface-data-visualisation)
 * [Nonlinear Visualisation](#nonlinear-visualisation)
 * [Bars and Columns](#bars-and-columns)
+* [Boxes and Candles](#boxes-and-candles)
 * [Media](#media)
+* [Maps](#maps)
 * [Retro Animations](#retro-animations)
 * [Simulations](#simulations)
 * [Dashboards and UI](#dashboards-and-ui)
@@ -20,8 +22,8 @@ Contents:
 See the [examples/](https://github.com/matomatical/matthewplotlib/tree/main/examples)
 folder for source code.
 
-Series Data Visualisation
--------------------------
+Point Data Visualisation
+------------------------
 
 
 <table>
@@ -150,6 +152,19 @@ Surface Data Visualisation
   </tr>
   <tr>
     <td align="center">
+      <img src="../images/domain_coloring.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Domain colouring</strong></p>
+      <p>Six complex functions. Hue for phase and lightness for modulus.
+      Zeros come out black and poles white. A dark ring marks every
+      doubling.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/domain_coloring.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <img src="../images/functions.png" width="100%">
     </td>
     <td>
@@ -157,6 +172,18 @@ Surface Data Visualisation
       <p>Mathematical function visualisation with scatter and function2.</p>
       <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/functions.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/phase_portrait.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Phase portraits</strong></p>
+      <p>Six planar vector fields as colour fields. Hue for direction and
+      brightness for magnitude.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/phase_portrait.py">Source</a></p>
     </td>
   </tr>
   <tr>
@@ -184,6 +211,66 @@ Surface Data Visualisation
   </tr>
 </tbody>
 </table>
+
+Bars and Columns
+----------------
+
+
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/jointplot.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Joint distribution</strong></p>
+      <p>Joint distribution with marginal histograms, demonstrating plot
+      composition with hstack and vstack.</p>
+      <p><em>By Claude Opus 4.6.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/jointplot.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/sorting.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Sorting algorithms</strong></p>
+      <p>Various sorting algorithms racing in parallel, visualised with <code>mp.columns</code> and <code>mp.wrap</code>.</p>
+      <p><em>By Gemini 3.1 Pro.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/sorting.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+Boxes and Candles
+-----------------
+
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/candlesticks.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Candlesticks</strong></p>
+      <p>A simulated price series.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/candlesticks.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
 
 Nonlinear Visualisation
 -----------------------
@@ -231,42 +318,6 @@ Nonlinear Visualisation
 </tbody>
 </table>
 
-Bars and Columns
-----------------
-
-
-<table>
-<thead>
-  <th width="50%">Image</th>
-  <th width="50%">Example</th>
-</thead>
-<tbody>
-  <tr>
-    <td align="center">
-      <img src="../images/jointplot.png" width="100%">
-    </td>
-    <td>
-      <p><strong>Joint distribution</strong></p>
-      <p>Joint distribution with marginal histograms, demonstrating plot
-      composition with hstack and vstack.</p>
-      <p><em>By Claude Opus 4.6.</em></p>
-      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/jointplot.py">Source</a></p>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="../images/sorting.gif" width="100%">
-    </td>
-    <td>
-      <p><strong>Sorting algorithms</strong></p>
-      <p>Various sorting algorithms racing in parallel, visualised with <code>mp.columns</code> and <code>mp.wrap</code>.</p>
-      <p><em>By Gemini 3.1 Pro.</em></p>
-      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/sorting.py">Source</a></p>
-    </td>
-  </tr>
-</tbody>
-</table>
-
 Media
 -----
 
@@ -286,6 +337,43 @@ Media
       <p>Image rendering with various colormaps.</p>
       <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/image.py">Source</a></p>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+Maps
+-----
+
+
+<table>
+<thead>
+  <th width="50%">Image</th>
+  <th width="50%">Example</th>
+</thead>
+<tbody>
+  <tr>
+    <td align="center">
+      <img src="../images/globe.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Globe</strong></p>
+      <p>A spinning Earth based on projection inversion. Terrain, clouds, city
+      lights, day-night, atmospheric halo.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/globe.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/world_map.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Great-circle routes</strong></p>
+      <p>Ten long-haul flight routes on a world map. Try one of five different
+      projections!</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/world_map.py">Source</a></p>
     </td>
   </tr>
 </tbody>
@@ -447,6 +535,20 @@ Dashboards and UI
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/dashboard.py">Source</a></p>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/tables.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Sweep report</strong></p>
+      <p>A hyperparameter sweep reported in tables: runs ruled the way a
+      paper rules a table, the sweep itself shaded by the losses it is
+      showing, and a legend whose rows are coloured to match the curves
+      beside them.</p>
+      <p><em>By Claude Opus 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/tables.py">Source</a></p>
+    </td>
+  </tr>
 </tbody>
 </table>
 
@@ -466,9 +568,7 @@ Utilities
     </td>
     <td>
       <p><strong>Axes gallery</strong></p>
-      <p>Every way of drawing an axis, around one two-slit interference
-      pattern: what each side can be, which sides carry the scale, the weight
-      of the rules, and how a quantity with a single coordinate is labelled.</p>
+      <p>Axis configuration options: Side types, rule types.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/axes_gallery.py">Source</a></p>
     </td>
@@ -479,10 +579,8 @@ Utilities
     </td>
     <td>
       <p><strong>Colorbars</strong></p>
-      <p>Colour scales and the bars that stand for them: the same scale in
-      each of the four directions and at four thicknesses, beside the map of
-      an island it describes, and read off two plots that worked out their own
-      interval.</p>
+      <p>Colour scales and the bars that stand for them, in four directions
+      and four thicknesses, beside the plots they describe.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/colorbars.py">Source</a></p>
     </td>
@@ -504,7 +602,8 @@ Utilities
     </td>
     <td>
       <p><strong>Demo</strong></p>
-      <p>Original library example combining images, borders, and scatter plots.</p>
+      <p>Original library example combining images, borders, and scatter
+      plots.</p>
       <p><em>By Matthew Farrugia-Roberts.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/demo.py">Source</a></p>
     </td>

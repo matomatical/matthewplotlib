@@ -6,50 +6,98 @@ In development
 
 New:
 
-* `calendar`: a heatmap of values observed on dates, drawing a block per month
-  with a cell per day and wrapping the months into a grid.
-* `weeks`: the same days as one unbroken strip, a column per week and a row per
-  weekday, captioned with the months and years along the top. A `width` wraps a
-  strip too long for the terminal onto further bands, each captioned again.
-* `DateSeries`: the forms dated data arrives in, accepted by `calendar`. A
-  mapping from dates to values, separate sequences of dates and values, or one
-  date standing in for the consecutive days from there. Dates may be spelled as
-  `datetime` dates or datetimes, NumPy `datetime64`s, or ISO 8601 strings.
+* Calendar plots and support:
+  * `calendar`: a heatmap of values observed on dates, drawing a block per
+    month with a cell per day and wrapping the months into a grid.
+  * `weeks`: the same days as one unbroken strip, a column per week and a row
+    per weekday, captioned with the months and years along the top. A `width`
+    wraps a strip too long for the terminal onto further bands, each captioned
+    again.
+  * `DateSeries`: the forms dated data arrives in, accepted by `calendar`. A
+    mapping from dates to values, separate sequences of dates and values, or one
+    date standing in for the consecutive days from there. Dates may be spelled as
+    `datetime` dates or datetimes, NumPy `datetime64`s, or ISO 8601 strings.
+* `candles`: a candlestick chart, one candle per period, its body spanning the
+  opening and closing values and its wick reaching out of the body to the high
+  and the low. Bodies are coloured by whether the period closed above or below
+  where it opened, and land on an eighth of a character cell; wicks are drawn
+  with the vertical lines of a `LineStyle`, and land on a half. Unlike every
+  other plot, a candlestick chart paints its own background rather than leaving
+  the terminal's showing, which is what reaching every eighth costs: half of
+  them are drawn as a background-coloured block over a body-coloured cell. See
+  `notes/candlesticks.md`.
+* `table`: a grid of values, formatted into aligned columns and ruled. Takes
+  a list of dicts, a dict of lists, or a 2d array, and sizes each column to
+  what is in it.
+  * A float shows four significant figures and a column of numbers aligns
+    right so its digits line up, until a format or an alignment says otherwise,
+    given for the whole table, per column, or per column name.
+  * Each of its eight rules---`toprule`, `midrule`, `rowrule` and `bottomrule`
+    across, `leftrule`, `indexrule`, `colrule` and `rightrule` down---takes
+    `"skip"`, `"blank"`, `"single"` or `"double"` of its own, defaulting to a
+    line above, a double line under the header and a line below.
+  * Cells take colours one at a time, so a table shaded by its own values reads
+    as a heatmap whose numbers can still be read off exactly. See
+    `notes/tables.md`.
+* Vector colormaps and the plots that use them:
+  * `chroma`: a colormap over the plane, turning a vector's direction into hue
+    and its magnitude into brightness. Vectors may be spelled as complex
+    numbers or as pairs.
+  * `domain`: a colormap for domain colouring, turning a complex number's
+    phase into hue and its modulus into lightness. A zero is black and a pole
+    is white, and a dark contour ring falls at every doubling of the modulus,
+    so the rings count the order of a zero or a pole. Its scale is absolute
+    rather than normalised, since the modulus is part of what it is showing.
+  * `vfunction2`: a colour field over a rectangle, sampling a vector-valued
+    function of the plane. `vrange` scales the magnitudes into the unit disc,
+    from zero to the largest by default, leaving the directions alone.
+  * `cfunction2`: a domain colouring over a rectangle of the complex plane,
+    sampling a complex-valued function of one complex variable.
+  * `image` already accepted array data through a colormap, so an array of
+    vectors or complex numbers can be drawn directly, and `animation` can give
+    one a time axis.
 * `window`: the interval of data a plot covers on each axis, and the rectangle
   of character cells it covers them with. Every 2d plot carries one, and it
   provides the conversions from data coordinates to the grids of dots and
   pixels the plots are drawn in.
-* `heatmap`: a grid of values, each coloured by where it falls in an interval.
-  It normalises the values onto the colormap rather than asking the caller to
-  scale them first, and keeps the interval and the colormap it used, so that
-  the picture can be given a colorbar. `function2` and `histogram2` are built
-  on it. A grid of colours, of palette indices, or of values already scaled
-  onto the range 0.0 to 1.0 is still an `image`.
-* `colorbar`: the gradient a colour scale is a picture of, running up, down,
-  left or right, at any length and thickness. It takes both halves of the
-  scale off any plot that carries one---a `heatmap`, a `function2`, a
-  `histogram2`, a `calendar` or a `weeks`---so that the bar cannot disagree
-  with the picture beside it, or off a bare interval where there is no plot to
-  read. Carrying one coordinate, it is labelled along the one side that means
-  anything and left alone on the other three.
-* `Direction`: which way along the screen a colorbar runs.
-
-New examples:
-
-* `axes_gallery.py`: every way of drawing an axis, around one two-slit
-  interference pattern.
-* `commit_heatmap.py`: a year of commits to this repository as a strip of
-  weeks, in the colours GitHub draws a contribution graph in.
-* `colorbars.py`: colour scales and the bars that stand for them, around a map
-  of an island's elevation: every direction and thickness, beside the map they
-  describe, and read off two plots that worked out their own interval.
-
+* Colour scales, and the bars that show them:
+  * `heatmap`: a grid of values, each coloured by where it falls in an interval.
+    It normalises the values onto the colormap rather than asking the caller to
+    scale them first, and keeps the interval it used, so that a colorbar can be
+    drawn over the same numbers. `function2` and `histogram2` are built on it. A grid of colours, of palette indices, or of values already scaled
+    onto the range 0.0 to 1.0 is still an `image`.
+  * `colorbar`: the gradient a colour scale is a picture of, running up, down,
+    left or right, at any length and thickness. Any plot that kept an interval
+    lends it one, so that the numbers on the bar cannot drift from the numbers
+    in the picture, and a bare interval works where there is no plot to read.
+    The colormap is named at the bar, as it is everywhere else in the library,
+    rather than assumed from the plot. Carrying one coordinate, the bar is
+    labelled along the one side that means anything and left alone on the other
+    three.
+  * `Direction`: which way along the screen a colorbar runs. See
+    `notes/closed/colorbars.md`.
 * A range given descending inverts its axis: `xrange=(1, 0)` mirrors a plot
   left to right and a descending `yrange` turns it over. The plots that place
   points and sample functions did this already, by arithmetic rather than by
   design; `histogram2` now does it too, binning with its edges ascending and
   turning the counts around afterwards, so that the same data always lands in
   the same bin.
+
+New examples:
+
+* `axes_gallery.py`: demonstrating different ways of attaching axes to some
+  data.
+* `candlesticks.py`: a simulated price series as candles, one column to a
+  period.
+* `colorbars.py`: colour scales, and the bars that stand for them.
+* `commit_heatmap.py`: a year of commits to this repository as a strip of
+  weeks.
+* `domain_coloring.py`: six complex functions, painted onto their own input
+  plane.
+* `phase_portrait.py`: six planar vector fields, as colour fields.
+* `tables.py`: a hyperparameter sweep reported in tables.
+* `globe.py`: a spinning Earth. See `notes/world-maps.md`.
+* `world_map.py`: great-circle flight routes in different projections.
 
 Changed:
 
@@ -59,8 +107,8 @@ Changed:
   outside it. Left unspecified, each coordinate the plot carries is labelled
   once, below it and to its left, and the remaining sides are ruled when the
   plot carries both coordinates and dropped when it carries only one. So a
-  gradient with one coordinate is labelled along one side and left alone on
-  the others.
+  gradient with one coordinate is labelled along one side and left alone on the
+  others.
 * `axes` takes a `LineStyle`---`LIGHT`, `HEAVY`, `ROUND` or `DOUBLE`---rather
   than a `BoxStyle`. The characters where its rules meet, and the ticks
   reaching out towards its labels, are derived from which sides are drawn
@@ -87,9 +135,8 @@ Changed:
   is counting.
 * A plot keeps the interval it settled on as `plot.vrange`, one pair, rather
   than as `plot.vmin` and `plot.vmax`.
-* `image` keeps the colormap it was given, as `plot.colormap`. It carries no
-  interval, since its data is already colours or already scaled, so its
-  `vrange` is `None` and a colorbar for it has to be told one.
+* `image` keeps no interval, since its data is already colours or already
+  scaled, so a colorbar for one has to be told the interval outright.
 * A `vrange` the caller wrote that covers no interval is an error, rather than
   quietly colouring everything at the bottom of the scale. One inferred from
   values that are all the same still puts them all at the bottom, there being

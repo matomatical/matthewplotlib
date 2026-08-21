@@ -17,14 +17,14 @@ second half is a first-class value --- `mp.viridis` is a function you pass
 around. The first half is a pair of numbers and a division.
 
 Every plot that maps values onto colours takes `vrange: (number, number) |
-None` and keeps the pair it settled on as `plot.vrange`, beside the
-`plot.colormap` it was handed. `_value_range` and `_normalise` in `plots.py` are
-the whole of it: clip to the interval, divide, saturate at the ends. `colorbar`
-reads the two attributes off any plot that has them.
+None` and keeps the pair it settled on as `plot.vrange`. `_value_range` and
+`_normalise` in `plots.py` are the whole of it: clip to the interval, divide,
+saturate at the ends. `colorbar` borrows that pair off any plot that kept one,
+and is told its colormap outright.
 
-So the interval travels with the plot, and the picture and its bar cannot
-disagree. What is missing is any way to say that the colours are not spaced
-linearly in the data.
+So the interval travels with the plot and the numbers cannot drift. What is
+missing is any way to say that the colours are not spaced linearly in the
+data.
 
 ## The shape the value type wants
 
@@ -61,7 +61,7 @@ The keyword already exists, so widen it rather than adding a second one:
     mp.heatmap(m, colormap=mp.magma)                      # infer, linear
     mp.heatmap(m, vrange=(0, 255), colormap=mp.magma)     # linear
     mp.heatmap(m, vrange=mp.scale(1, 255, transform=np.log), colormap=mp.magma)
-    mp.colorbar(that)                                     # labels 1 and 255
+    mp.colorbar(that, colormap=mp.magma)                  # labels 1 and 255
 
 Plots to reach: `heatmap` and therefore `function2` and `histogram2`;
 `calendar` and `weeks`; `bars` and `columns`, whose `vrange` scales a length
@@ -85,9 +85,13 @@ of palette data behind a docstring promising "a collection of pre-defined
 colormaps".
 
 **Whether the colormap belongs inside it.** A `scale` holding both halves would
-make `plot.scale` one attribute and `colorbar(plot)` read one thing instead of
-two. Against: the two halves are chosen independently, and `bars` wants the
-interval with no colormap at all.
+let `mp.colorbar(plot)` colour itself correctly without being told anything,
+which it deliberately does not do today: the colormap is named at the bar
+because judging whether a given colormap is one a gradient can stand for is a
+question nobody has answered yet (see below, and
+`notes/closed/colorbars.md`). A `scale` carrying its own colormap would be the
+place that judgement finally lands. Against: the two halves are chosen
+independently, and `bars` wants the interval with no colormap at all.
 
 **Intermediate ticks.** The claim that a log bar draws like a linear one holds
 only because `axes` labels the two ends. The moment a colorbar carries ticks in
@@ -100,11 +104,20 @@ separately from colour scales. A `scale` is very nearly the same object as the
 mapping a `window` performs from data onto cells, with a transform in the
 middle. Worth looking at whether one type serves both before building two.
 
-**Discrete scales.** `pico8` and `sweetie16` map integers to colours by lookup,
-so `mp.pico8(np.arange(4))` is four unrelated colours rather than a ramp. A
-scale for one of those is a column of swatches with a label beside each. That
-is a different plot type from `colorbar`, and probably the same one legends
-want.
+**Which colormaps a bar can stand for.** A gradient stands for a continuous
+colormap. `pico8` and `sweetie16` map integers to colours by lookup, so
+`mp.pico8(np.arange(4))` is four unrelated colours rather than a ramp, and a
+scale for one of those is a column of swatches with a label beside each ---
+a different plot type, and probably the same one legends want. `chroma` and
+`domain` take plane vectors, and no one-dimensional bar represents them at all.
+
+`colormaps.py` names these three flavours in its type aliases, but they are all
+the same `Callable` at runtime, so nothing can check them. Whoever makes that
+taxonomy real gets three things at once: a bar that can refuse a colormap it
+cannot draw, the swatch plot the discrete flavour wants, and the option of
+letting a `scale` carry its own colormap. Until then a colorbar is told its
+colours and asks no questions, which is what the rest of the library does with
+colormaps too.
 
 ## Not in this design
 
