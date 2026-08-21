@@ -579,8 +579,8 @@ Utilities
     </td>
     <td>
       <p><strong>Colorbars</strong></p>
-      <p>Colour scales and the bars that stand for them, in four directions
-      and four thicknesses, beside the plots they describe.</p>
+      <p>An island's elevation with its scale beside it, then the same scale
+      in four directions and four thicknesses.</p>
       <p><em>By Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/colorbars.py">Source</a></p>
     </td>
