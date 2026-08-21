@@ -52,10 +52,6 @@ Specifying colors:
 * [ ] Configurable colour scales and normalisation. See `notes/scales.md`.
 * [x] Color bars, in any of the four directions. See
   `notes/closed/colorbars.md`.
-* [ ] Colorbars that take their colormap from the plot they describe, rather
-  than being told it. Needs continuous, discrete and vector colormaps to be
-  distinguishable at runtime, so that a bar can refuse a colormap no gradient
-  stands for. See `notes/scales.md`.
 
 Rendering:
 
@@ -65,7 +61,6 @@ Rendering:
 Basic code improvements:
 
 * [x] Split up monolithic file into a small number of modules.
-* [ ] Split up plotting module with one file per plot type.
 * [x] A window value type for the mapping from data coordinates onto the grid,
   used by axes. See `notes/plot-windows.md`.
 * [x] Comprehensive type annotations, static type checking with mypy.
@@ -185,6 +180,7 @@ Advanced furnishings:
   ticks and labels, so that a colorbar can be labelled without a full border.
   See `notes/axes-sides.md`.
 * [x] Text embedded in borders.
+* [ ] Colorbars automatically derive colormap. See `notes/scales.md`.
 
 Advanced rendering:
 
@@ -204,16 +200,9 @@ Backend improvements:
 * [ ] Vectorised animations (3-D `CharArray`, `codes[T,H,W]`). See
   `notes/animations.md`.
 
-More elaborate documentation:
+Code organisation:
 
-* [x] Links to source code from within documentation.
-* [ ] Links to mentioned functions/classes/methods/types within documentation
-  (automatically linked to relevant release).
-* [x] Documentation search.
-* [x] Versioned documentation.
-* [ ] Logo and favicon.
-* [ ] Link previews (Open Graph tags).
-* [x] Terminal support matrix / compatibility docs.
+* [ ] Split up plotting module with one file per plot family.
 
 Advanced testing:
 
@@ -233,6 +222,17 @@ Support non-24-bit-colour modes:
 
 * [ ] Reduced-colour modes (See `docs/src/compatibility.md`.)
 * [ ] Colormaps that are legible in a reduced-colour mode.
+
+More elaborate documentation:
+
+* [x] Links to source code from within documentation.
+* [ ] Links to mentioned functions/classes/methods/types within documentation
+  (automatically linked to relevant release).
+* [x] Documentation search.
+* [x] Versioned documentation.
+* [ ] Logo and favicon.
+* [ ] Link previews (Open Graph tags).
+* [x] Terminal support matrix / compatibility docs.
 
 Advanced examples:
 
