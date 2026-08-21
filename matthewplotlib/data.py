@@ -3,8 +3,9 @@ Specifying the data that goes into a plot.
 
 Plot constructors are deliberately permissive about how data arrives: a single
 array of points, a pair of coordinate sequences, or an axis object standing in
-for one of the coordinates, each optionally paired with colors. This module
-defines what is accepted and normalises it before plotting.
+for one of the coordinates, each optionally paired with colors; a mapping from
+dates to values, or a grid of them keyed by column. This module defines what is
+accepted and normalises it before plotting.
 
 Types:
 
@@ -12,6 +13,7 @@ Types:
 * `Series` and `Series3`: The accepted shapes for 2d and 3d point data. See
   these aliases for the full list of forms.
 * `DateSeries`: The accepted shapes for values observed on dates.
+* `TableData`: The accepted shapes for a grid of values to tabulate.
 
 Special series:
 
@@ -25,6 +27,9 @@ Parsers:
   any accepted form into arrays of points and colors.
 * `parse_date` and `parse_date_series`: Turn any accepted form of dated data
   into a list of dates and an array of values.
+* `parse_table_data`: Turn any accepted form of tabular data into the names of
+  its columns and a list of rows, and `parse_per_column` spread a setting given
+  for the table, per column, or by column name over one entry per column.
 * `parse_range`: Fill in missing axis limits from the data.
 
 For turning 3d data into positions on a camera's film, see
@@ -36,7 +41,7 @@ from __future__ import annotations
 import dataclasses
 import datetime
 from collections.abc import Mapping
-from typing import Sequence, cast
+from typing import Any, Sequence, cast
 
 import numpy as np
 from numpy.typing import NDArray, ArrayLike
@@ -130,7 +135,30 @@ is unknown, as distinct from one whose value is zero.
 """
 
 
-# # # 
+type TableData = (
+    Sequence[Mapping[Any, Any]]         # a row a mapping, keyed by column
+    | Mapping[Any, Sequence[Any]]       # a column a sequence, keyed by column
+    | Sequence[Sequence[Any]]           # a row a sequence of values
+    | NDArray                           # or a 2d array of them
+)
+"""
+The accepted shapes for a grid of values to tabulate.
+
+Any of the following:
+
+* A sequence of mappings, one per row. The columns are the keys, in the order
+  they are first seen, and a row missing one of them leaves that cell blank.
+* A mapping from column to the values down it. A column shorter than the
+  longest is blank where it runs out.
+* A sequence of sequences, or a 2d array, one row of values each. These name
+  no columns of their own.
+
+The first two name their columns and the last does not, which is what decides
+whether a `headers` argument picks columns out or names them.
+"""
+
+
+# # #
 # Parsers
 
 
@@ -234,6 +262,125 @@ def _is_date(spec: object) -> bool:
     """Whether a single date is spelled here, rather than a sequence of them."""
     return isinstance(spec, (datetime.date, np.datetime64, str))
 
+
+def _select_columns(
+    available: list[Any],
+    headers: Sequence[Any] | Mapping[Any, str] | None,
+) -> tuple[list[Any], list[str]]:
+    """
+    Choose which of the keys carried by the data become columns, and what each
+    one is called. A mapping renames as it selects; a sequence takes the keys
+    as they are.
+    """
+    if headers is None:
+        return list(available), [str(key) for key in available]
+    if isinstance(headers, Mapping):
+        keys = list(headers.keys())
+        names = [str(name) for name in headers.values()]
+    else:
+        keys = list(headers)
+        names = [str(key) for key in keys]
+    for key in keys:
+        if key not in available:
+            raise ValueError(f"no column {key!r} in the data")
+    return keys, names
+
+
+def parse_table_data(
+    data: TableData,
+    headers: Sequence[Any] | Mapping[Any, str] | None,
+) -> tuple[list[str] | None, list[list[Any]]]:
+    """
+    Standardise the accepted spellings of tabular data into the names of the
+    columns, or None where the data carries none, and a list of rows.
+    """
+    # a mapping of columns to their values
+    if isinstance(data, Mapping):
+        keys, names = _select_columns(list(data.keys()), headers)
+        columns = [list(data[key]) for key in keys]
+        num_rows = max((len(column) for column in columns), default=0)
+        rows = [
+            [column[i] if i < len(column) else None for column in columns]
+            for i in range(num_rows)
+        ]
+        return names, rows
+
+    try:
+        records = list(data)
+    except TypeError:
+        raise ValueError(
+            "a table takes a list of dicts, a dict of lists, or a 2d array"
+        )
+
+    # a sequence of mappings, one per row, not necessarily sharing their keys
+    if records and isinstance(records[0], Mapping):
+        available: list[Any] = []
+        for record in records:
+            for key in record:
+                if key not in available:
+                    available.append(key)
+        keys, names = _select_columns(available, headers)
+        return names, [[record.get(key) for key in keys] for record in records]
+
+    # a sequence of rows of values, which name no columns of their own
+    if isinstance(headers, Mapping):
+        raise ValueError(
+            "headers renames columns the data names, but a 2d table names "
+            "none: pass a list of names instead"
+        )
+    rows = []
+    for i, record in enumerate(records):
+        if isinstance(record, str) or not hasattr(record, "__iter__"):
+            raise ValueError(f"row {i} of the table is not a row of values")
+        rows.append(list(record))
+    num_columns = len(rows[0]) if rows else 0
+    for i, row in enumerate(rows):
+        if len(row) != num_columns:
+            raise ValueError(
+                f"row {i} has {len(row)} values, but row 0 has {num_columns}"
+            )
+    if headers is None:
+        return None, rows
+    names = [str(name) for name in headers]
+    if rows and len(names) != num_columns:
+        raise ValueError(
+            f"got {len(names)} headers for {num_columns} columns"
+        )
+    return names, rows
+
+
+def parse_per_column(
+    spec: Any,
+    names: list[str] | None,
+    num_columns: int,
+    what: str,
+) -> list[Any]:
+    """
+    Spread a specification given for the whole table, for each column in turn,
+    or for columns picked out by name, into one entry per column.
+    """
+    if spec is None:
+        return [None] * num_columns
+    if isinstance(spec, Mapping):
+        if names is None:
+            raise ValueError(
+                f"{what} was given per column name, but the table has no "
+                "headers"
+            )
+        for name in spec:
+            if name not in names:
+                raise ValueError(
+                    f"{what} was given for {name!r}, which is not a column"
+                )
+        return [spec.get(name) for name in names]
+    if isinstance(spec, str) or callable(spec):
+        return [spec] * num_columns
+    entries = list(spec)
+    if len(entries) != num_columns:
+        raise ValueError(
+            f"{what} has {len(entries)} entries for {num_columns} columns"
+        )
+    return entries
 
 def parse_series(
     series: Series, # Series<n>

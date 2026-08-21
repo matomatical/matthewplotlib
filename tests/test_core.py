@@ -19,6 +19,7 @@ from matthewplotlib.core import (
     unicode_braille_array,
     unicode_image,
     unicode_boxes,
+    unicode_text,
     disc_offsets,
     rasterise_points,
     rasterise_segments,
@@ -103,6 +104,91 @@ class TestCharArrayPad:
         assert padded.height == 2
         assert padded.width == 3
         assert padded.codes[0, 0] == ord("A")
+
+
+# # #
+# CharArray.crop
+
+
+class TestCharArrayCrop:
+    def test_crop_reduces_size(self):
+        ca = CharArray.from_size(4, 7)
+        cropped = ca.crop(above=1, below=1, left=2, right=2)
+        assert cropped.height == 2
+        assert cropped.width == 3
+
+    def test_crop_undoes_pad(self):
+        ca = CharArray.from_size(1, 1)
+        ca.codes[0, 0] = ord("X")
+        there_and_back = ca.pad(above=1, below=2, left=3, right=4).crop(
+            above=1, below=2, left=3, right=4,
+        )
+        assert there_and_back.height == 1
+        assert there_and_back.width == 1
+        assert there_and_back.codes[0, 0] == ord("X")
+
+    def test_crop_zero_is_identity(self):
+        ca = CharArray.from_size(2, 3)
+        ca.codes[0, 0] = ord("A")
+        cropped = ca.crop()
+        assert cropped.height == 2
+        assert cropped.width == 3
+        assert cropped.codes[0, 0] == ord("A")
+
+    def test_cropping_everything_away_is_refused(self):
+        ca = CharArray.from_size(2, 3)
+        with pytest.raises(ValueError, match="leaves nothing"):
+            ca.crop(above=1, below=1)
+
+    def test_crop_carries_the_colours_with_it(self):
+        ca = CharArray.from_size(2, 2, fgcolor="red", bgcolor="blue")
+        cropped = ca.crop(above=1, right=1)
+        assert cropped.fg.all()
+        assert cropped.bg.all()
+        assert (cropped.fg_rgb == ca.fg_rgb[1:, :1]).all()
+
+
+# # #
+# unicode_text
+
+
+class TestUnicodeText:
+    def test_lines_are_written_one_to_a_row(self):
+        chars = unicode_text(["ab", "cde"])
+        assert chars.to_plain_str() == "ab \ncde"
+
+    def test_it_takes_at_least_the_size_asked_for(self):
+        chars = unicode_text(["ab"], height=3, width=5)
+        assert (chars.height, chars.width) == (3, 5)
+
+    def test_it_grows_past_the_size_asked_for_to_fit_the_text(self):
+        """The size is a minimum: content is never cut here, since where a line
+        may be broken or cut depends on what the text is for."""
+        chars = unicode_text(["abcdef", "gh"], height=1, width=2)
+        assert (chars.height, chars.width) == (2, 6)
+
+    @pytest.mark.parametrize("align, drawn", [
+        ("left", "ab   "),
+        ("center", " ab  "),
+        ("right", "   ab"),
+    ])
+    def test_a_line_sits_where_the_alignment_says(self, align, drawn):
+        chars = unicode_text(["ab"], width=5, align=align)
+        assert chars.to_plain_str() == drawn
+
+    def test_no_lines_is_an_array_of_no_rows(self):
+        chars = unicode_text([])
+        assert (chars.height, chars.width) == (0, 0)
+
+    def test_one_empty_line_is_a_row(self):
+        chars = unicode_text([""])
+        assert (chars.height, chars.width) == (1, 0)
+
+    def test_a_line_break_in_a_line_is_refused(self):
+        """Splitting the text into lines is the caller's job, so a line that
+        still has a break in it is a mistake rather than two lines."""
+        with pytest.raises(ValueError):
+            unicode_text(["a\nb"])
 
 
 # # #
@@ -937,8 +1023,8 @@ ALLOWED_FINALS = {
 }
 
 # Retired by the escape-sequence audit, and not to be reintroduced without a
-# corresponding row on the compatibility page. See the reasoning in
-# notes/closed/escape-vocabulary.md.
+# corresponding row on the compatibility page. See the reasoning in the
+# `escape-vocabulary` note.
 RETIRED_FINALS = {
     "E": "CNL, cursor next line (now a carriage return and a cursor down)",
     "G": "CHA, absolute column (now a carriage return and a cursor forward)",

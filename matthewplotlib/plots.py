@@ -10,7 +10,6 @@ Base class:
 Data plots:
 
 * `scatter`
-* `function`
 * `scatter3`
 * `line`
 * `line3`
@@ -45,18 +44,29 @@ Arrangement plots:
 * `hstack`
 * `vstack`
 * `dstack`
+* `dstack2`
 * `wrap`
 * `center`
+
+Types:
+
+* `Side`: What an `axes` draws along one of its four sides.
+* `Direction`: Which way along the screen a `colorbar` runs.
+* `Rule` and `Align`: What a `table` draws between its cells, and where a
+  value sits within one.
 
 The third stacking operation, `tstack`, arranges plots in time rather than
 across the screen, and lives with the rest of the animation machinery in
 `matthewplotlib.animations`.
+
+The forms the data itself may arrive in are named in `matthewplotlib.data`;
+`Orientation`, which the plots drawn either way about take, in
+`matthewplotlib.core` with the drawing routine that reads it.
 """
 from __future__ import annotations
 
 import calendar as _calendar
 import datetime
-import enum
 import shutil
 import numpy as np
 import einops
@@ -76,8 +86,11 @@ from matthewplotlib.data import (
     Series3,
     DateLike,
     DateSeries,
+    TableData,
     parse_date,
     parse_date_series,
+    parse_table_data,
+    parse_per_column,
     parse_range,
     parse_segments,
     parse_segments3,
@@ -93,9 +106,12 @@ from matthewplotlib.core import (
     CharArray,
     ords,
     _validate_text,
+    Align,
     BoxStyle,
     LineStyle,
+    Orientation,
     unicode_box,
+    unicode_text,
     unicode_frame,
     unicode_braille_array,
     unicode_bar,
@@ -183,7 +199,7 @@ class plot:
         Rows, though, and not columns: each row is erased margin to margin, so
         anything sitting to the right of the plot goes with it. A differential
         redraw (`plot - prev`) is careful about that boundary where this is not.
-        See `notes/erase-granularity.md`.
+        See the `erase-granularity` note.
         """
         H = self.height
         if H == 0:
@@ -805,24 +821,40 @@ def _value_range(
     vrange: tuple[number, number] | None,
     values: NDArray,
     what: str,
-) -> tuple[number, number]:
+    from_zero: bool = False,
+    allow_flat: bool = True,
+) -> tuple[float, float]:
     """
-    The interval of values a colour scale covers.
+    The interval of values a scale covers.
 
-    Given, it is taken as it stands, and one covering no interval is an error.
-    Omitted, it runs from the lowest to the highest finite value there is, so
-    that the colours span the data, and falls back to the unit interval where
-    there are no finite values at all. `what` names the caller in the error.
+    Given, it is taken as it stands. Omitted, it is inferred from the finite
+    values there are: from the lowest of them to the highest, so that the scale
+    spans the data, or from zero to the highest if `from_zero`, for a scale
+    whose bottom end is a baseline rather than the smallest value measured.
+    With no finite values at all it falls back to the unit interval.
+
+    An interval covering nothing is an error where the caller wrote it, since
+    there is no reading of it to act on. Inferred, over values that are all the
+    same, it is returned as it stands unless `allow_flat` is false, for a plot
+    that draws positions along the interval and so has nowhere to put them.
+    `what` names the caller in either error.
     """
     if vrange is not None:
-        vmin, vmax = vrange
+        vmin, vmax = float(vrange[0]), float(vrange[1])
         if vmin == vmax:
             raise ValueError(f"{what} vrange covers no interval: {vrange!r}")
         return (vmin, vmax)
     finite = values[np.isfinite(values)]
     if finite.size == 0:
         return (0.0, 1.0)
-    return (finite.min(), finite.max())
+    vmin = 0.0 if from_zero else float(finite.min())
+    vmax = float(finite.max())
+    if vmin == vmax and not allow_flat:
+        raise ValueError(
+            f"every value in the {what} sits at {vmin}; give a vrange "
+            "spanning an interval to plot them in"
+        )
+    return (vmin, vmax)
 
 
 def _normalise(
@@ -922,34 +954,6 @@ class heatmap(image):
         return f"heatmap({self.window!r}, vrange=[{vmin:.2f},{vmax:.2f}])"
 
 
-def _sample_points(
-    w: window,
-    endpoints: bool,
-) -> NDArray: # float[2 * height * width, 2]
-    """
-    The (x, y) coordinate that each pixel of a window stands for.
-
-    Pixels are listed top row first, so that reshaping the result to
-    `[2 * height, width]` puts them back where they came from.
-
-    By default the pixels tile the window's ranges exactly and each one is
-    represented by its own centre. If `endpoints` is true, the coordinates are
-    instead spread from one end of each range to the other, so that the four
-    corner pixels stand for the four corner combinations of the ranges and the
-    pixels reach half a pixel beyond them.
-    """
-    if w.xrange is None or w.yrange is None:
-        raise ValueError(f"{w!r} has no coordinates to sample")
-    if endpoints:
-        X, Y = np.meshgrid(
-            np.linspace(*w.xrange, num=w.width),
-            np.linspace(*w.yrange, num=2*w.height)[::-1],
-        ) # float[h, w] (x2)
-    else:
-        X, Y = w.pixel_centres()
-    return einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')
-
-
 class function2(heatmap):
     """
     Heatmap representing the image of a 2d function over a square.
@@ -959,9 +963,9 @@ class function2(heatmap):
     * F : float[batch, 2] -> number[batch].
         The (vectorised) function to plot. The input should be a batch of
         (x, y) vectors. The output should be a batch of scalars f(x, y).
-    * xrange : (float, float).
+    * xrange : (number, number).
         Lower and upper bounds on the x values to pass into the function.
-    * yrange : (float, float).
+    * yrange : (number, number).
         Lower and upper bounds on the y values to pass into the function.
     * width : int.
         The number of character columns in the plot. This will also become the
@@ -970,7 +974,7 @@ class function2(heatmap):
         The number of character rows in the plot. This will also be half of the
         number of grid squares, since the result is an image plot with two
         half-character-pixels per row.
-    * vrange : optional (float, float).
+    * vrange : optional (number, number).
         Expected lower and upper bounds on the f(x, y) values. Used for
         determining the bounds of the colour scale. By default, the minimum and
         maximum output over the grid are used. Values outside these bounds
@@ -992,17 +996,17 @@ class function2(heatmap):
     def __init__(
         self,
         F: Callable[[np.ndarray], np.ndarray],
-        xrange: tuple[float, float],
-        yrange: tuple[float, float],
+        xrange: tuple[number, number],
+        yrange: tuple[number, number],
         width: int,
         height: int,
-        vrange: tuple[float, float] | None = None,
+        vrange: tuple[number, number] | None = None,
         colormap: ColorMap | None = None,
         endpoints: bool = False,
     ):
         # the coordinates each grid square stands for, top row first
         w = window(xrange=xrange, yrange=yrange, width=width, height=height)
-        XY = _sample_points(w, endpoints=endpoints)
+        XY = w.sample_points(endpoints=endpoints)
 
         # sample the function
         Z = F(XY)
@@ -1038,9 +1042,9 @@ class vfunction2(image):
         The (vectorised) field to plot. The input is a batch of (x, y)
         positions. The output should be the batch of (u, v) vectors at those
         positions.
-    * xrange : (float, float).
+    * xrange : (number, number).
         Lower and upper bounds on the x values to pass into the function.
-    * yrange : (float, float).
+    * yrange : (number, number).
         Lower and upper bounds on the y values to pass into the function.
     * width : int.
         The number of character columns in the plot. This will also become the
@@ -1049,7 +1053,7 @@ class vfunction2(image):
         The number of character rows in the plot. This will also be half of the
         number of grid squares, since the result is an image plot with two
         half-character-pixels per row.
-    * vrange : optional (float, float).
+    * vrange : optional (number, number).
         Expected lower and upper bounds on the *magnitude* of the vectors, used
         to scale them into the unit disc for the colormap. By default the lower
         bound is zero and the upper bound is the largest magnitude over the
@@ -1075,17 +1079,17 @@ class vfunction2(image):
     def __init__(
         self,
         F: Callable[[np.ndarray], np.ndarray],
-        xrange: tuple[float, float],
-        yrange: tuple[float, float],
+        xrange: tuple[number, number],
+        yrange: tuple[number, number],
         width: int,
         height: int,
-        vrange: tuple[float, float] | None = None,
+        vrange: tuple[number, number] | None = None,
         colormap: ColorMap | None = None,
         endpoints: bool = False,
     ):
         # the coordinates each grid square stands for, top row first
         w = window(xrange=xrange, yrange=yrange, width=width, height=height)
-        XY = _sample_points(w, endpoints=endpoints)
+        XY = w.sample_points(endpoints=endpoints)
 
         # sample the field
         UV = np.asarray(F(XY), dtype=float)
@@ -1103,14 +1107,13 @@ class vfunction2(image):
 
         # scale the magnitudes into [0, 1], leaving the directions alone
         magnitude = np.hypot(vgrid[..., 0], vgrid[..., 1])
-        if vrange is None:
-            finite = magnitude[np.isfinite(magnitude)]
-            vrange = (0., float(finite.max()) if finite.size else 0.)
-        if vrange[0] == vrange[1]:
-            scaled = np.zeros_like(magnitude)
-        else:
-            scaled = (magnitude - vrange[0]) / (vrange[1] - vrange[0])
-            scaled = np.clip(scaled, 0., 1.)
+        vrange = _value_range(
+            vrange,
+            magnitude,
+            "vfunction2",
+            from_zero=True,
+        )
+        scaled = _normalise(magnitude, vrange)
         with np.errstate(divide="ignore", invalid="ignore"):
             direction = vgrid / magnitude[..., np.newaxis]
         direction = np.where(np.isfinite(direction), direction, 0.)
@@ -1144,9 +1147,9 @@ class cfunction2(image):
     * F : complex[batch] -> complex[batch].
         The (vectorised) function to plot. The input is a batch of points of
         the complex plane. The output should be the batch of values there.
-    * xrange : (float, float).
+    * xrange : (number, number).
         Lower and upper bounds on the real part of the input.
-    * yrange : (float, float).
+    * yrange : (number, number).
         Lower and upper bounds on the imaginary part of the input.
     * width : int.
         The number of character columns in the plot. This will also become the
@@ -1178,8 +1181,8 @@ class cfunction2(image):
     def __init__(
         self,
         F: Callable[[np.ndarray], np.ndarray],
-        xrange: tuple[float, float],
-        yrange: tuple[float, float],
+        xrange: tuple[number, number],
+        yrange: tuple[number, number],
         width: int,
         height: int,
         colormap: ColorMap | None = None,
@@ -1187,7 +1190,7 @@ class cfunction2(image):
     ):
         # the coordinates each grid square stands for, top row first
         w = window(xrange=xrange, yrange=yrange, width=width, height=height)
-        XY = _sample_points(w, endpoints=endpoints)
+        XY = w.sample_points(endpoints=endpoints)
 
         # sample the function over the plane
         Z = np.asarray(F(XY[:, 0] + 1j * XY[:, 1]))
@@ -1413,17 +1416,22 @@ class bars(plot):
         The number of rows comprising each bar.
     * bar_spacing: int (default: 0).
         The number of rows between each bar.
-    * vrange : optional (float, float).
+    * vrange : optional (number, number).
         The interval of values the bars measure: a bar at the first value or
         below has zero width and one at the second value or above occupies the
         whole width. By default the interval runs from zero to the largest
-        value, so that the largest bar or bars fill the width.
+        value, so that the largest bar or bars fill the width. Measuring from
+        zero rather than from the smallest value is what makes a bar's width
+        readable on its own, and a chart of equal values a row of full bars.
     * color : optional ColorLike.
         The color of the filled portion of the bars. Defaults to the terminal's
         default foreground color.
     * colors : optional ColorLike[n].
         The colours of the filled portion of each bar. Should be an array or
         list of the same length as `values`.
+
+    A value that is not a number is left out of an inferred interval, and its
+    bar has zero width.
 
     TODO:
 
@@ -1441,12 +1449,12 @@ class bars(plot):
         colors: list[ColorLike | None] | None = None,
     ):
         # standardise inputs
-        values = np.asarray(values)
-        vmin, vmax = (0.0, values.max()) if vrange is None else vrange
+        values = np.asarray(values, dtype=float)
+        vrange = _value_range(vrange, values, "bars", from_zero=True)
         num_bars = len(values)
 
         # compute the bar widths
-        norm_values = (values - vmin) / (vmax - vmin + 1e-15)
+        norm_values = _normalise(values, vrange)
 
         # determine the colors for each bar
         if colors is None:
@@ -1470,7 +1478,7 @@ class bars(plot):
             bars_chars,
         )
         super().__init__(chars=all_chars)
-        self.vrange = (vmin, vmax)
+        self.vrange = vrange
         self.num_bars = num_bars
 
     def __repr__(self):
@@ -1494,7 +1502,7 @@ class histogram(bars):
 
     * data : number[n].
         An array of values to count.
-    * xrange : optional (float, float).
+    * xrange : optional (number, number).
         If provided, bins range over this interval, and values outside the
         range are discarded. Same as np.histogram's range argument.
     * bins : int (default: 10).
@@ -1521,7 +1529,7 @@ class histogram(bars):
         self,
         data: ArrayLike, # number[n]
         bins: int = 10,
-        xrange: tuple[float, float] | None = None,
+        xrange: tuple[number, number] | None = None,
         weights: ArrayLike | None = None, # optional number[n]
         density: bool = False,
         max_count: number | None = None,
@@ -1536,7 +1544,9 @@ class histogram(bars):
         hist, bins_ = np.histogram(
             a=data,
             bins=bins,
-            range=xrange,
+            # numpy's stubs ask for concrete floats, where the rest of the
+            # library spells a range as a pair of any numbers
+            range=cast("tuple[float, float] | None", xrange),
             weights=weights_,
             density=cast(Literal[True, False], density),
         )
@@ -1582,13 +1592,19 @@ class columns(plot):
         The interval of values the columns measure: a column at the first value
         or below has zero height and one at the second value or above occupies
         the whole height. By default the interval runs from zero to the largest
-        value, so that the tallest column or columns fill the height.
+        value, so that the tallest column or columns fill the height. Measuring
+        from zero rather than from the smallest value is what makes a column's
+        height readable on its own, and a chart of equal values a row of full
+        columns.
     * color : optional ColorLike.
         The color of the filled portion of the columns. Defaults to the
         terminal's default foreground color.
     * colors : optional ColorLike[n].
         The colours of the filled portion of each column. Should be an array or
         list of the same length as `values`.
+
+    A value that is not a number is left out of an inferred interval, and its
+    column has zero height.
 
     TODO:
 
@@ -1606,12 +1622,12 @@ class columns(plot):
         colors: list[ColorLike | None] | None = None,
     ):
         # standardise inputs
-        values = np.asarray(values)
-        vmin, vmax = (0.0, values.max()) if vrange is None else vrange
+        values = np.asarray(values, dtype=float)
+        vrange = _value_range(vrange, values, "columns", from_zero=True)
         num_cols = len(values)
 
         # compute the column heights
-        norm_values = (values - vmin) / (vmax - vmin + 1e-15)
+        norm_values = _normalise(values, vrange)
 
         # determine the colours
         if colors is None:
@@ -1635,7 +1651,7 @@ class columns(plot):
             cols_chars,
         )
         super().__init__(chars=all_chars)
-        self.vrange = (vmin, vmax)
+        self.vrange = vrange
         self.num_cols = num_cols
 
     def __repr__(self):
@@ -1660,7 +1676,7 @@ class vistogram(columns):
 
     * data : number[n].
         An array of values to count.
-    * xrange : optional (float, float).
+    * xrange : optional (number, number).
         If provided, bins range over this interval, and values outside the
         range are discarded. Same as np.histogram's range argument.
     * bins : int (default: 10).
@@ -1687,7 +1703,7 @@ class vistogram(columns):
         self,
         data: ArrayLike, # number[n]
         bins: int = 10,
-        xrange: tuple[float, float] | None = None,
+        xrange: tuple[number, number] | None = None,
         weights: ArrayLike | None = None, # optional number[n]
         density: bool = False,
         max_count: None | number = None,
@@ -1702,7 +1718,9 @@ class vistogram(columns):
         hist, bins_ = np.histogram(
             a=data,
             bins=bins,
-            range=xrange,
+            # numpy's stubs ask for concrete floats, where the rest of the
+            # library spells a range as a pair of any numbers
+            range=cast("tuple[float, float] | None", xrange),
             weights=weights_,
             density=cast(Literal[True, False], density),
         )
@@ -1742,7 +1760,9 @@ class candles(plot):
     * opens, highs, lows, closes : number[n].
         The four values of each period. Each high must be at least as large as
         the opening and closing values of its period, and each low at most as
-        small, as the wick reaches out of the body rather than into it.
+        small, as the wick reaches out of the body rather than into it. Every
+        value must be a number: a period one of whose four is unknown has no
+        candle to draw.
     * length : int (default: 12).
         The number of character cells along the value axis.
     * body_thickness : int (default 1).
@@ -1750,7 +1770,7 @@ class candles(plot):
         one, so an even thickness leaves it off centre.
     * spacing : int (default 0).
         The number of blank cells between one candle and the next.
-    * candle_direction : "vertical" | "horizontal" (default: "vertical").
+    * candle_direction : Orientation (default: "vertical").
         Which way one candle lies. Vertical candles stand up and march across
         the screen, which is the way a price series is usually read and so the
         default; horizontal candles lie flat and stack up it.
@@ -1786,7 +1806,7 @@ class candles(plot):
 
     A candle and a box are one mark with different switches thrown, so this is
     `boxes` with its caps, its median and its outlying points switched off, and
-    the two share their drawing. See `notes/box-plots.md`.
+    the two share their drawing. See the `box-plots` note.
     """
     def __init__(
         self,
@@ -1797,7 +1817,7 @@ class candles(plot):
         length: int = 12,
         body_thickness: int = 1,
         spacing: int = 0,
-        candle_direction: Literal["vertical", "horizontal"] = "vertical",
+        candle_direction: Orientation = "vertical",
         vrange: tuple[number, number] | None = None,
         rising: ColorLike = (0.30, 0.78, 0.45),
         falling: ColorLike = (0.90, 0.32, 0.36),
@@ -1806,7 +1826,10 @@ class candles(plot):
         style: LineStyle = LineStyle.LIGHT,
     ):
         # standardise inputs
-        values = [np.asarray(v, dtype=float) for v in (opens, highs, lows, closes)]
+        values = [
+            np.asarray(v, dtype=float)
+            for v in (opens, highs, lows, closes)
+        ]
         for name, value in zip(("opens", "highs", "lows", "closes"), values):
             if value.ndim != 1:
                 raise ValueError(
@@ -1821,6 +1844,19 @@ class candles(plot):
                 f"but they are {', '.join(str(v.shape[0]) for v in values)}"
             )
         num_candles = opens_.shape[0]
+
+        # a period with a value that is not a number has no candle to draw: it
+        # passes the ordering check below silently, every comparison against it
+        # being false, and then lands at the bottom of the scale claiming a
+        # value it does not have
+        for name, value in zip(("opens", "highs", "lows", "closes"), values):
+            unknown = np.flatnonzero(~np.isfinite(value))
+            if len(unknown):
+                i = unknown[0]
+                raise ValueError(
+                    f"candle {i} has a {name[:-1]} of {value[i]}, which is "
+                    "not a number"
+                )
 
         # a high below the body, or a low above it, would leave the wick inside
         # the body; usually it means the four series arrived out of order
@@ -1837,18 +1873,15 @@ class candles(plot):
                 )
 
         # determine the value range, and where each value sits within it
-        if vrange is None:
-            if num_candles == 0:
-                raise ValueError("cannot infer a value range with no candles")
-            vmin, vmax = float(lows_.min()), float(highs_.max())
-        else:
-            vmin, vmax = float(vrange[0]), float(vrange[1])
-        if vmin == vmax:
-            raise ValueError(
-                f"the candles all sit at the same value, {vmin}; give a vrange "
-                "spanning an interval to plot them in"
-            )
-        proportions = [(v - vmin) / (vmax - vmin) for v in values]
+        if vrange is None and num_candles == 0:
+            raise ValueError("cannot infer a value range with no candles")
+        vrange = _value_range(
+            vrange,
+            np.concatenate(values),
+            "candles",
+            allow_flat=False,
+        )
+        proportions = [_normalise(v, vrange) for v in values]
 
         # determine the colours
         rose = closes_ >= opens_
@@ -1889,21 +1922,17 @@ class candles(plot):
         super().__init__(chars)
         standing = candle_direction == "vertical"
         self.window = window(
-            xrange=None if standing else (vmin, vmax),
-            yrange=(vmin, vmax) if standing else None,
+            xrange=None if standing else vrange,
+            yrange=vrange if standing else None,
             width=chars.width,
             height=chars.height,
         )
         self.num_candles = num_candles
-        self.vmin = vmin
-        self.vmax = vmax
+        self.vrange = vrange
 
     def __repr__(self):
-        return (
-            f"candles(height={self.height}, width={self.width}, "
-            f"values=<{self.num_candles} candles on "
-            f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
-        )
+        return f"candles(<{self.num_candles} candles>, {self.window!r})"
+
 
 class boxes(plot):
     """
@@ -1917,7 +1946,10 @@ class boxes(plot):
 
     * data : sequence of number[k].
         The samples in each group. The groups need not be the same length. A 2d
-        array works, one group per row.
+        array works, one group per row. A sample that is not finite is a
+        measurement that was not made: it is left out of the summary rather
+        than shifting the quartiles or counting as a point beyond the whiskers,
+        and a group with no finite samples at all is an error.
     * length : int (default: 30).
         The number of character cells along the value axis.
     * box_thickness : int (default: 3).
@@ -1926,7 +1958,7 @@ class boxes(plot):
         at least 1 for a filled one.
     * box_spacing : int (default: 1).
         The number of blank cells between one box and the next.
-    * box_direction : "horizontal" | "vertical" (default: "horizontal").
+    * box_direction : Orientation (default: "horizontal").
         Which way one box lies. Horizontal boxes lie flat and stack up the
         screen; vertical boxes stand up and march across it. Horizontal is the
         default because it gives the value axis both more cells and finer ones:
@@ -1983,7 +2015,7 @@ class boxes(plot):
         length: int = 30,
         box_thickness: int = 3,
         box_spacing: int = 1,
-        box_direction: Literal["horizontal", "vertical"] = "horizontal",
+        box_direction: Orientation = "horizontal",
         filled: bool = False,
         caps: bool = True,
         median: bool = True,
@@ -2005,9 +2037,18 @@ class boxes(plot):
                     "sequence of samples for each group, so one group of "
                     "samples is [samples] rather than samples"
                 )
+            samples = samples.reshape(-1)
             if samples.size == 0:
                 raise ValueError(f"group {i} has no samples to summarise")
-            groups.append(samples.reshape(-1))
+            # a sample that is not finite is a measurement that was not made,
+            # as it is for the plots that colour dated values, so it is left
+            # out of the summary rather than poisoning it
+            finite = samples[np.isfinite(samples)]
+            if finite.size == 0:
+                raise ValueError(
+                    f"group {i} has no finite samples to summarise"
+                )
+            groups.append(finite)
         if not groups:
             raise ValueError("boxes needs at least one group of samples")
         num_boxes = len(groups)
@@ -2046,21 +2087,17 @@ class boxes(plot):
             )
 
         # determine the value range, and where each value sits within it
-        if vrange is None:
-            vmin = min(group.min() for group in groups)
-            vmax = max(group.max() for group in groups)
-        else:
-            vmin, vmax = float(vrange[0]), float(vrange[1])
-        if vmin == vmax:
-            raise ValueError(
-                f"every sample sits at the same value, {vmin}; give a vrange "
-                "spanning an interval to plot them in"
-            )
-        def proportion(values: NDArray) -> NDArray:
-            return (values - vmin) / (vmax - vmin)
+        vrange = _value_range(
+            vrange,
+            np.concatenate(groups),
+            "boxes",
+            allow_flat=False,
+        )
         # a point outside the range is dropped rather than clipped, since a
-        # point drawn at the end of the axis claims a value it does not have
-        outlying_proportions = proportion(beyond)
+        # point drawn at the end of the axis claims a value it does not have,
+        # so these are placed without the saturation the extents get
+        vmin, vmax = vrange
+        outlying_proportions = (beyond - vmin) / (vmax - vmin)
         inside = (outlying_proportions >= 0) & (outlying_proportions <= 1)
 
         # determine the colours
@@ -2092,11 +2129,11 @@ class boxes(plot):
 
         # construct the boxes
         chars = unicode_boxes(
-            outer_los=proportion(whisker_los),
-            outer_his=proportion(whisker_his),
-            inner_los=proportion(first),
-            inner_his=proportion(third),
-            interiors=proportion(medians) if median else None,
+            outer_los=_normalise(whisker_los, vrange),
+            outer_his=_normalise(whisker_his, vrange),
+            inner_los=_normalise(first, vrange),
+            inner_his=_normalise(third, vrange),
+            interiors=_normalise(medians, vrange) if median else None,
             outliers=outlying_proportions[inside],
             outlier_boxes=beyond_boxes[inside],
             length=length,
@@ -2115,21 +2152,16 @@ class boxes(plot):
         super().__init__(chars)
         horizontal = box_direction == "horizontal"
         self.window = window(
-            xrange=(vmin, vmax) if horizontal else None,
-            yrange=None if horizontal else (vmin, vmax),
+            xrange=vrange if horizontal else None,
+            yrange=None if horizontal else vrange,
             width=chars.width,
             height=chars.height,
         )
         self.num_boxes = num_boxes
-        self.vmin = vmin
-        self.vmax = vmax
+        self.vrange = vrange
 
     def __repr__(self):
-        return (
-            f"boxes(height={self.height}, width={self.width}, "
-            f"data=<{self.num_boxes} groups on "
-            f"[{self.vmin:.2f},{self.vmax:.2f}]>)"
-        )
+        return f"boxes(<{self.num_boxes} groups>, {self.window!r})"
 
 
 class hilbert(plot):
@@ -2189,7 +2221,7 @@ class hilbert(plot):
         return (
             f"hilbert(height={self.height}, width={self.width}, "
             f"data=<{self.num_points} points out of {self.all_points} "
-            f"on a {2**self.n} x {2**self.n} grid>"
+            f"on a {2**self.n} x {2**self.n} grid>)"
         )
 
 
@@ -2486,14 +2518,10 @@ class calendar(plot):
         # again, since with no `cols` it was the terminal's width that decided.
         cell_width = width + month_spacing * day_width
         filled = min(grid.width // cell_width, len(months))
-        rows = grid.height - month_spacing
         columns = filled * cell_width - month_spacing * day_width
-        super().__init__(CharArray(
-            codes=grid.codes[:rows, :columns],
-            fg=grid.fg[:rows, :columns],
-            fg_rgb=grid.fg_rgb[:rows, :columns],
-            bg=grid.bg[:rows, :columns],
-            bg_rgb=grid.bg_rgb[:rows, :columns],
+        super().__init__(grid.crop(
+            below=month_spacing,
+            right=grid.width - columns,
         ))
         self.vrange = dated.vrange
         self.daterange = (first, last)
@@ -2656,15 +2684,19 @@ class weeks(plot):
                 if year_labels and year not in named:
                     named.add(year)
                     _write_caption(
-                        chars, 0, column, f"{year:4d}", band_width,
+                        chars=chars,
+                        row=0,
+                        column=column,
+                        caption=f"{year:4d}",
+                        width=band_width,
                     )
                 if month_labels:
                     _write_caption(
-                        chars,
-                        int(year_labels),
-                        column,
-                        month_caption,
-                        band_width,
+                        chars=chars,
+                        row=int(year_labels),
+                        column=column,
+                        caption=month_caption,
+                        width=band_width,
                     )
 
             # the days
@@ -2704,132 +2736,25 @@ class weeks(plot):
         )
 
 
-_RULE_WEIGHTS: dict[str, tuple[bool, LineStyle | None]] = {
+type Rule = Literal["skip", "blank", "single", "double"]
+"""
+What is drawn along one of a `table`'s rules, in increasing order of what it
+costs and what it shows.
+
+* `"skip"`: nothing at all, taking no row or column.
+* `"blank"`: a row or column of space, which any rule crossing it still runs
+  through.
+* `"single"`: a light line.
+* `"double"`: a double line.
+"""
+
+
+_RULE_WEIGHTS: dict[Rule, tuple[bool, LineStyle | None]] = {
     "skip":   (False, None),
     "blank":  (True,  None),
     "single": (True,  LineStyle.LIGHT),
     "double": (True,  LineStyle.DOUBLE),
 }
-
-
-def _select_columns(
-    available: list[Any],
-    headers: Sequence[Any] | Mapping[Any, str] | None,
-) -> tuple[list[Any], list[str]]:
-    """
-    Choose which of the keys carried by the data become columns, and what each
-    one is called. A mapping renames as it selects; a sequence takes the keys
-    as they are.
-    """
-    if headers is None:
-        return list(available), [str(key) for key in available]
-    if isinstance(headers, Mapping):
-        keys = list(headers.keys())
-        names = [str(name) for name in headers.values()]
-    else:
-        keys = list(headers)
-        names = [str(key) for key in keys]
-    for key in keys:
-        if key not in available:
-            raise ValueError(f"no column {key!r} in the data")
-    return keys, names
-
-
-def _parse_table_data(
-    data: Any,
-    headers: Sequence[Any] | Mapping[Any, str] | None,
-) -> tuple[list[str] | None, list[list[Any]]]:
-    """
-    Standardise the accepted spellings of tabular data into the names of the
-    columns, or None where the data carries none, and a list of rows.
-    """
-    # a mapping of columns to their values
-    if isinstance(data, Mapping):
-        keys, names = _select_columns(list(data.keys()), headers)
-        columns = [list(data[key]) for key in keys]
-        num_rows = max((len(column) for column in columns), default=0)
-        rows = [
-            [column[i] if i < len(column) else None for column in columns]
-            for i in range(num_rows)
-        ]
-        return names, rows
-
-    try:
-        records = list(data)
-    except TypeError:
-        raise ValueError(
-            "a table takes a list of dicts, a dict of lists, or a 2d array"
-        )
-
-    # a sequence of mappings, one per row, not necessarily sharing their keys
-    if records and isinstance(records[0], Mapping):
-        available: list[Any] = []
-        for record in records:
-            for key in record:
-                if key not in available:
-                    available.append(key)
-        keys, names = _select_columns(available, headers)
-        return names, [[record.get(key) for key in keys] for record in records]
-
-    # a sequence of rows of values, which name no columns of their own
-    if isinstance(headers, Mapping):
-        raise ValueError(
-            "headers renames columns the data names, but a 2d table names "
-            "none: pass a list of names instead"
-        )
-    rows = []
-    for i, record in enumerate(records):
-        if isinstance(record, str) or not hasattr(record, "__iter__"):
-            raise ValueError(f"row {i} of the table is not a row of values")
-        rows.append(list(record))
-    num_columns = len(rows[0]) if rows else 0
-    for i, row in enumerate(rows):
-        if len(row) != num_columns:
-            raise ValueError(
-                f"row {i} has {len(row)} values, but row 0 has {num_columns}"
-            )
-    if headers is None:
-        return None, rows
-    names = [str(name) for name in headers]
-    if rows and len(names) != num_columns:
-        raise ValueError(
-            f"got {len(names)} headers for {num_columns} columns"
-        )
-    return names, rows
-
-
-def _per_column(
-    spec: Any,
-    names: list[str] | None,
-    num_columns: int,
-    what: str,
-) -> list[Any]:
-    """
-    Spread a specification given for the whole table, for each column in turn,
-    or for columns picked out by name, into one entry per column.
-    """
-    if spec is None:
-        return [None] * num_columns
-    if isinstance(spec, Mapping):
-        if names is None:
-            raise ValueError(
-                f"{what} was given per column name, but the table has no "
-                "headers"
-            )
-        for name in spec:
-            if name not in names:
-                raise ValueError(
-                    f"{what} was given for {name!r}, which is not a column"
-                )
-        return [spec.get(name) for name in names]
-    if isinstance(spec, str) or callable(spec):
-        return [spec] * num_columns
-    entries = list(spec)
-    if len(entries) != num_columns:
-        raise ValueError(
-            f"{what} has {len(entries)} entries for {num_columns} columns"
-        )
-    return entries
 
 
 def _format_cell(value: Any, spec: str | Callable[[Any], str] | None) -> str:
@@ -2850,7 +2775,7 @@ def _format_cell(value: Any, spec: str | Callable[[Any], str] | None) -> str:
     return format(value, spec)
 
 
-def _auto_align(values: list[Any]) -> str:
+def _auto_align(values: list[Any]) -> Align:
     """
     Right-align a column of numbers, so that its digits line up, and anything
     else to the left. A column of nothing but blanks aligns left.
@@ -2880,36 +2805,6 @@ def _cell_lines(text: str, max_width: int | None) -> list[str]:
         line if len(line) <= max_width else line[:max_width - 1] + "…"
         for line in lines
     ]
-
-
-def _table_cell(
-    lines: list[str],
-    height: int,
-    width: int,
-    align: str,
-    pad_left: int,
-    pad_right: int,
-    fgcolor: ColorLike | None,
-    bgcolor: ColorLike | None,
-) -> CharArray:
-    """
-    Draw the text of one cell into an array the size of its row and column.
-    """
-    chars = CharArray.from_size(
-        height=height,
-        width=pad_left + width + pad_right,
-        fgcolor=fgcolor,
-        bgcolor=bgcolor,
-    )
-    for i, line in enumerate(lines):
-        if align == "right":
-            start = pad_left + width - len(line)
-        elif align == "center":
-            start = pad_left + (width - len(line)) // 2
-        else:
-            start = pad_left
-        chars.codes[i, start:start + len(line)] = ords(line)
-    return chars
 
 
 class table(plot):
@@ -2950,32 +2845,28 @@ class table(plot):
 
         By default a float is shown to four significant figures, and anything
         else as `str` shows it. A value of None is blank whatever the format.
-    * aligns : optional str | list | dict.
-        Where to put a value in its cell: `"left"`, `"center"` or `"right"`.
-        One for the whole table, a list with one per column, or a mapping from
-        a column's header. By default a column holding nothing but numbers is
-        aligned right, so that its digits line up, and every other column
-        left. A header follows its column.
-    * toprule : optional str.
-        The rule above the header, `"single"` by default. Every rule takes
-        `"skip"` to leave it out entirely, `"blank"` to leave a row or column
-        of space where it would go, `"single"` for a light line or `"double"`
-        for a double one.
-    * midrule : optional str.
+    * aligns : optional Align | list | dict.
+        Where to put a value in its cell. One for the whole table, a list with
+        one per column, or a mapping from a column's header. By default a
+        column holding nothing but numbers is aligned right, so that its digits
+        line up, and every other column left. A header follows its column.
+    * toprule : optional Rule.
+        The rule above the header, `"single"` by default.
+    * midrule : optional Rule.
         The rule between the header and the body, `"double"` by default. Only
         a table with a header row has one.
-    * rowrule : optional str.
+    * rowrule : optional Rule.
         The rule between one body row and the next, `"skip"` by default.
-    * bottomrule : optional str.
+    * bottomrule : optional Rule.
         The rule below the body, `"single"` by default.
-    * leftrule : optional str.
+    * leftrule : optional Rule.
         The rule down the left of the table, `"skip"` by default.
-    * indexrule : optional str.
+    * indexrule : optional Rule.
         The rule between the index column and the body, `"skip"` by default.
         Only a table with an index has one.
-    * colrule : optional str.
+    * colrule : optional Rule.
         The rule between one column and the next, `"skip"` by default.
-    * rightrule : optional str.
+    * rightrule : optional Rule.
         The rule down the right of the table, `"skip"` by default.
     * max_col_width : optional int.
         The widest a column of text may be. Anything longer is cut, with an
@@ -3012,12 +2903,7 @@ class table(plot):
     """
     def __init__(
         self,
-        data: (
-            Sequence[Mapping[Any, Any]]
-            | Mapping[Any, Sequence[Any]]
-            | Sequence[Sequence[Any]]
-            | NDArray
-        ),
+        data: TableData,
         headers: Sequence[Any] | Mapping[Any, str] | None = None,
         index: Sequence[str] | None = None,
         index_name: str = "",
@@ -3029,19 +2915,19 @@ class table(plot):
             | None
         ) = None,
         aligns: (
-            Literal["left", "center", "right"]
-            | Sequence[Literal["left", "center", "right"] | None]
-            | Mapping[str, Literal["left", "center", "right"]]
+            Align
+            | Sequence[Align | None]
+            | Mapping[str, Align]
             | None
         ) = None,
-        toprule:    Literal["skip", "blank", "single", "double"] | None = None,
-        midrule:    Literal["skip", "blank", "single", "double"] | None = None,
-        rowrule:    Literal["skip", "blank", "single", "double"] | None = None,
-        bottomrule: Literal["skip", "blank", "single", "double"] | None = None,
-        leftrule:   Literal["skip", "blank", "single", "double"] | None = None,
-        indexrule:  Literal["skip", "blank", "single", "double"] | None = None,
-        colrule:    Literal["skip", "blank", "single", "double"] | None = None,
-        rightrule:  Literal["skip", "blank", "single", "double"] | None = None,
+        toprule:    Rule | None = None,
+        midrule:    Rule | None = None,
+        rowrule:    Rule | None = None,
+        bottomrule: Rule | None = None,
+        leftrule:   Rule | None = None,
+        indexrule:  Rule | None = None,
+        colrule:    Rule | None = None,
+        rightrule:  Rule | None = None,
         max_col_width: int | None = None,
         cell_padding: int = 1,
         color: ColorLike | None = None,
@@ -3052,7 +2938,7 @@ class table(plot):
         bgcolors: ArrayLike | None = None,
         colormap: ColorMap | None = None,
     ):
-        names, body = _parse_table_data(data, headers)
+        names, body = parse_table_data(data, headers)
         num_rows = len(body)
         num_columns = len(body[0]) if body else len(names or ())
         if num_columns == 0:
@@ -3067,8 +2953,12 @@ class table(plot):
             raise ValueError(f"cannot pad a cell by {cell_padding} columns")
 
         # what fills each cell, and where in it
-        column_formats = _per_column(formats, names, num_columns, "formats")
-        column_aligns = _per_column(aligns, names, num_columns, "aligns")
+        column_formats = parse_per_column(
+            formats, names, num_columns, "formats",
+        )
+        column_aligns = parse_per_column(
+            aligns, names, num_columns, "aligns",
+        )
         for j, align in enumerate(column_aligns):
             if align is None:
                 column_aligns[j] = _auto_align([row[j] for row in body])
@@ -3081,7 +2971,10 @@ class table(plot):
             text.append([_cell_lines(name, max_col_width) for name in names])
         for row in body:
             text.append([
-                _cell_lines(_format_cell(value, column_formats[j]), max_col_width)
+                _cell_lines(
+                    _format_cell(value, column_formats[j]),
+                    max_col_width,
+                )
                 for j, value in enumerate(row)
             ])
         if index is not None:
@@ -3191,13 +3084,18 @@ class table(plot):
                         bgcolor if body_bgcolors is None
                         else body_bgcolors[body_row, body_column]
                     )
-                row_chars.append(_table_cell(
+                # the cell at the size its row and column settled on, then
+                # held away from the rule on each side of it
+                row_chars.append(unicode_text(
                     lines=lines,
                     height=heights[i],
                     width=widths[j],
                     align=column_aligns[j],
-                    pad_left=pads_left[j],
-                    pad_right=pads_right[j],
+                    fgcolor=fgcolor,
+                    bgcolor=cell_bgcolor,
+                ).pad(
+                    left=pads_left[j],
+                    right=pads_right[j],
                     fgcolor=fgcolor,
                     bgcolor=cell_bgcolor,
                 ))
@@ -3241,52 +3139,61 @@ class text(plot):
     * text : str.
         The text to be displayed. Newline characters will create separate lines
         in the plot.
+    * height : int (default: 0).
+        The least number of rows the plot takes. More are taken if the text has
+        more lines than this.
+    * width : int (default: 0).
+        The least number of columns the plot takes. More are taken if a line is
+        longer than this.
+    * align : Align (default: "left").
+        Where each line sits in the width. Only has room to act where a width
+        is given that is wider than the longest line.
     * fgcolor : optional ColorLike.
         The foreground color of the text. Defaults to the terminal's default
         foreground color.
     * bgcolor : optional ColorLike.
-        The background color for the text. Defaults to a transparent
-        background.
+        The background color for the text, the rows and columns no line reaches
+        included. Defaults to a transparent background.
 
     Carriage returns and newlines separate lines. Other C0 and C1 control
     characters are rejected, including the escapes used for raw ANSI
     formatting: styling has to be part of the plot so that composition and
     rendering know its size.
-    
+
+    The empty string has no lines in it, and so is a plot of no rows, which
+    stacks and composes as nothing. A single empty line is `"\\n"`.
+
     TODO:
 
-    * Allow alignment and resizing.
     * Account for non-printable and wide characters.
     """
     def __init__(
         self,
         text: str,
+        height: int = 0,
+        width: int = 0,
+        align: Align = "left",
         fgcolor: ColorLike | None = None,
         bgcolor: ColorLike | None = None,
     ):
         _validate_text(text, allow_line_breaks=True)
         lines = text.splitlines()
-        height = len(lines)
-        width = max(len(line) for line in lines)
-        
-        # blank canvas
-        chars = CharArray.from_size(
+        chars = unicode_text(
+            lines=lines,
             height=height,
             width=width,
+            align=align,
             fgcolor=fgcolor,
             bgcolor=bgcolor,
         )
 
-        # paint the text
-        for i, line in enumerate(lines):
-            chars.codes[i, :len(line)] = ords(line)
-        
         # initialise
         super().__init__(chars=chars)
-        if height > 1 or width > 8:
-            self.preview = lines[0][:5] + "..."
+        first = lines[0] if lines else ""
+        if chars.height > 1 or chars.width > 8:
+            self.preview = first[:5] + "..."
         else:
-            self.preview = lines[0][:8]
+            self.preview = first[:8]
 
     def __repr__(self):
         return (
@@ -3487,8 +3394,18 @@ class axes(plot):
         frame: Side = (
             "rule" if w.xrange is not None and w.yrange is not None else "crop"
         )
-        south, north = _infer_side_pair(w.xrange is not None, south, north, frame)
-        west, east = _infer_side_pair(w.yrange is not None, west, east, frame)
+        south, north = _infer_side_pair(
+            present=w.xrange is not None,
+            primary=south,
+            secondary=north,
+            frame=frame,
+        )
+        west, east = _infer_side_pair(
+            present=w.yrange is not None,
+            primary=west,
+            secondary=east,
+            frame=frame,
+        )
         for name, side, range in (
             ("north", north, w.xrange), ("south", south, w.xrange),
             ("east", east, w.yrange), ("west", west, w.yrange),
@@ -3556,12 +3473,13 @@ class axes(plot):
         crowded = first_row == last_row
         yhi_, ylo_ = ("#" * gutter, "") if crowded else (yhi, ylo)
         if west == "label":
-            chars.codes[first_row, left_gutter-len(yhi_):left_gutter] = ords(yhi_)
-            chars.codes[last_row, left_gutter-len(ylo_):left_gutter] = ords(ylo_)
+            west_edge = left_gutter
+            chars.codes[first_row, west_edge-len(yhi_):west_edge] = ords(yhi_)
+            chars.codes[last_row, west_edge-len(ylo_):west_edge] = ords(ylo_)
         if east == "label":
-            edge = chars.width - right_gutter
-            chars.codes[first_row, edge:edge+len(yhi_)] = ords(yhi_)
-            chars.codes[last_row, edge:edge+len(ylo_)] = ords(ylo_)
+            east_edge = chars.width - right_gutter
+            chars.codes[first_row, east_edge:east_edge+len(yhi_)] = ords(yhi_)
+            chars.codes[last_row, east_edge:east_edge+len(ylo_)] = ords(ylo_)
 
         # and its name, down whatever the limits leave between them
         room = last_row - first_row - 1
@@ -3578,7 +3496,12 @@ class axes(plot):
         for side, row in ((north, int(title_row)), (south, chars.height - 1)):
             if side != "label":
                 continue
-            (lo, lo_col), (hi, hi_col) = _end_labels(xlo, xhi, span, chars.width)
+            (lo, lo_col), (hi, hi_col) = _end_labels(
+                lo=xlo,
+                hi=xhi,
+                span=span,
+                room=chars.width,
+            )
             chars.codes[row, lo_col:lo_col+len(lo)] = ords(lo)
             chars.codes[row, hi_col:hi_col+len(hi)] = ords(hi)
             gap = hi_col - lo_col - len(lo)
@@ -3627,6 +3550,10 @@ class colorbar(heatmap):
         `bars`---so that the numbers on the bar cannot drift from the numbers
         in the picture. An interval on its own works too, for a scale assembled
         by hand.
+
+        A plot whose values are all the same settled on an interval covering
+        nothing, which is one colour and no axis to label it along, so there is
+        no bar to draw for it and it is refused.
     * colormap : optional ColorMap.
         Maps each position along the bar onto its colour. By default the bar
         runs black to white.
@@ -3670,6 +3597,15 @@ class colorbar(heatmap):
                 raise ValueError(
                     f"{type(source).__name__} carries no interval for a "
                     "colorbar to draw; pass one instead"
+                )
+            # a plot whose values are all the same settles on an interval
+            # covering nothing, which a bar cannot be a scale for: it has one
+            # colour and no axis to label it along
+            if vrange[0] == vrange[1]:
+                raise ValueError(
+                    f"every value in the {type(source).__name__} sits at "
+                    f"{vrange[0]}, so there is no scale to draw a colorbar "
+                    "for; pass an interval instead"
                 )
         else:
             vrange = source

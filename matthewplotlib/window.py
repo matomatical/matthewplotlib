@@ -6,7 +6,9 @@ rectangle of character cells. This module names that mapping, so that the
 plots can share it and the furnishings around them can read it.
 
 * `window`: The intervals, the rectangle, and the conversions between data
-  coordinates and the sub-cell grids the drawing routines work in.
+  coordinates and the sub-cell grids the drawing routines work in, in both
+  directions: where a point of the data lands, and what coordinate a given
+  part of the grid stands for.
 
 For the mapping from 3d data onto a plane, see `matthewplotlib.camera`.
 """
@@ -16,6 +18,7 @@ from __future__ import annotations
 import dataclasses
 
 import numpy as np
+import einops
 
 from numpy.typing import NDArray
 
@@ -157,3 +160,35 @@ class window:
         xs = (xedges[:-1] + xedges[1:]) / 2
         ys = (yedges[:-1] + yedges[1:]) / 2
         return np.meshgrid(xs, ys[::-1])
+
+    def sample_points(self, endpoints: bool = False) -> NDArray:
+        """
+        The (x, y) coordinate that each of the plot's pixels stands for, as a
+        list of points to hand to a function of the plane.
+
+        Inputs:
+
+        * endpoints : bool (default: False).
+            By default the pixels tile the window's ranges exactly and each one
+            is represented by its own centre. If true, the coordinates are
+            instead spread from one end of each range to the other, so that the
+            four corner pixels stand for the four corner combinations of the
+            ranges and the pixels reach half a pixel beyond them.
+
+        Returns:
+
+        * points : float[2 * height * width, 2].
+            The coordinates as (x, y) pairs, the top row of pixels first, so
+            that reshaping the values back to `[2 * height, width]` puts them
+            where they came from.
+        """
+        if self.xrange is None or self.yrange is None:
+            raise ValueError(f"{self!r} has no coordinates to sample")
+        if endpoints:
+            X, Y = np.meshgrid(
+                np.linspace(*self.xrange, num=self.width),
+                np.linspace(*self.yrange, num=2*self.height)[::-1],
+            ) # float[h, w] (x2)
+        else:
+            X, Y = self.pixel_centres()
+        return einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')

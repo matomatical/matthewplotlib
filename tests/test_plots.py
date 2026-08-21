@@ -82,6 +82,41 @@ class TestTextControls:
             axes(_narrow_ticks_scatter(), xlabel="\x1b]52;c;SGVsbG8=\x07")
 
 
+class TestTextSizeAndAlignment:
+    def test_by_default_it_is_the_size_of_its_text(self):
+        assert (text("ab\ncde").height, text("ab\ncde").width) == (2, 3)
+
+    def test_a_width_and_height_are_minimums(self):
+        assert (text("ab", height=3, width=6).height,
+                text("ab", height=3, width=6).width) == (3, 6)
+        assert (text("abcdef", height=1, width=2).height,
+                text("abcdef", height=1, width=2).width) == (1, 6)
+
+    @pytest.mark.parametrize("align, drawn", [
+        ("left", "ab    "),
+        ("center", "  ab  "),
+        ("right", "    ab"),
+    ])
+    def test_alignment_places_each_line_in_the_width(self, align, drawn):
+        assert text("ab", width=6, align=align).chars.to_plain_str() == drawn
+
+    def test_alignment_has_no_room_to_act_without_a_width(self):
+        for align in ("left", "center", "right"):
+            assert text("ab", align=align).chars.to_plain_str() == "ab"
+
+    def test_the_empty_string_is_a_plot_of_no_rows(self):
+        """It has no lines in it, where `"\\n"` has one empty line, and the two
+        stay distinct rather than both becoming one blank row."""
+        empty = text("")
+
+        assert (empty.height, empty.width) == (0, 0)
+        assert (text("\n").height, text("\n").width) == (1, 0)
+
+    def test_a_plot_of_no_rows_still_composes_and_renders(self):
+        assert str(text("")) == ""
+        assert (text("") + text("x")).chars.to_plain_str() == "x"
+
+
 # # #
 # wrap
 
@@ -453,6 +488,75 @@ class TestHeatmap:
         """Its data is already colours, or already scaled, so there is no
         interval to report and nothing for a colorbar to label."""
         assert not hasattr(image([[0.0, 1.0]]), "vrange")
+
+
+class TestValueRanges:
+    """Every plot that measures its values against an interval settles on that
+    interval the same way, whether the interval becomes a colour scale or a
+    length along the screen."""
+
+    FLAT = pytest.mark.parametrize("draw", [
+        pytest.param(lambda r: mp.bars([1.0, 2.0], vrange=r), id="bars"),
+        pytest.param(lambda r: mp.columns([1.0, 2.0], vrange=r), id="columns"),
+        pytest.param(lambda r: heatmap([[1.0, 2.0]], vrange=r), id="heatmap"),
+        pytest.param(lambda r: boxes([[1.0, 2.0]], vrange=r), id="boxes"),
+        pytest.param(
+            lambda r: candles([1.0], [2.0], [0.0], [1.5], vrange=r),
+            id="candles",
+        ),
+        pytest.param(
+            lambda r: vfunction2(
+                lambda xy: xy,
+                xrange=(-1.0, 1.0),
+                yrange=(-1.0, 1.0),
+                width=2,
+                height=1,
+                vrange=r,
+            ),
+            id="vfunction2",
+        ),
+    ])
+
+    @FLAT
+    def test_an_interval_the_caller_wrote_and_covering_nothing_is_refused(
+        self, draw,
+    ):
+        """There is no reading of it to act on: nothing can be measured
+        against an interval with no extent."""
+        with pytest.raises(ValueError, match="covers no interval"):
+            draw((2.0, 2.0))
+
+    @FLAT
+    def test_the_interval_it_settled_on_is_a_pair_of_floats(self, draw):
+        vmin, vmax = draw((0.0, 4.0)).vrange
+        assert (type(vmin), type(vmax)) == (float, float)
+
+    def test_a_value_that_is_not_a_number_is_left_out_of_a_bar_chart(self):
+        """It used to poison the largest value, and so every bar: one missing
+        measurement drew the whole chart full."""
+        chart = mp.bars([1.0, float("nan"), 3.0], width=6)
+
+        assert chart.vrange == (0.0, 3.0)
+        assert chart.chars.to_plain_str().split("\n") == [
+            "██    ",
+            "      ",
+            "██████",
+        ]
+
+    def test_bars_measure_from_zero_rather_than_the_lowest_value(self):
+        """A bar's length is read against a baseline, so a chart of equal
+        values is a row of full bars rather than a row of empty ones."""
+        assert mp.bars([5.0, 5.0]).vrange == (0.0, 5.0)
+        assert mp.columns([5.0, 5.0]).vrange == (0.0, 5.0)
+
+    def test_a_scale_covering_nothing_has_no_colorbar_to_draw(self):
+        """A plot whose values are all the same settles on an interval with no
+        extent, which is one colour and no axis to label it along."""
+        flat = heatmap([[5.0, 5.0]])
+
+        assert flat.vrange == (5.0, 5.0)
+        with pytest.raises(ValueError, match="no scale to draw a colorbar"):
+            colorbar(flat)
 
 
 class TestFunction2:
@@ -1509,12 +1613,23 @@ class TestCandles:
             )
 
     def test_candles_all_at_one_value_have_no_range_to_plot_in(self):
-        with pytest.raises(ValueError, match="same value"):
+        with pytest.raises(ValueError, match="every value in the candles"):
             candles(
                 opens=np.array([1.0]),
                 highs=np.array([1.0]),
                 lows=np.array([1.0]),
                 closes=np.array([1.0]),
+            )
+
+    def test_a_value_that_is_not_a_number_is_refused(self):
+        """A period with an unknown high has no candle to draw, and the
+        ordering check passes it silently, every comparison being false."""
+        with pytest.raises(ValueError, match="high of nan"):
+            candles(
+                opens=np.array([1.0]),
+                highs=np.array([float("nan")]),
+                lows=np.array([0.0]),
+                closes=np.array([1.5]),
             )
 
     def test_no_candles_and_no_range_to_infer_one_from(self):
@@ -1526,10 +1641,14 @@ class TestCandles:
                 closes=np.zeros(0),
             )
 
-    def test_a_repr_names_the_candles_and_their_range(self):
+    def test_a_repr_names_the_candles_and_their_window(self):
         assert repr(self.chart(length=4)) == (
-            "candles(height=4, width=4, values=<4 candles on [9.50,13.00]>)"
+            "candles(<4 candles>, window(y=[9.50,13.00], 4x4 cells))"
         )
+
+    def test_the_interval_it_settled_on_is_kept_as_one_pair(self):
+        assert self.chart().vrange == (9.5, 13.0)
+        assert self.chart(vrange=(0.0, 20.0)).vrange == (0.0, 20.0)
 
 # # #
 # boxes
@@ -1604,9 +1723,22 @@ class TestBoxesStatistics:
             boxes([])
 
     def test_samples_all_at_one_value_need_a_range(self):
-        with pytest.raises(ValueError, match="same value"):
+        with pytest.raises(ValueError, match="every value in the boxes"):
             boxes([[3.0, 3.0, 3.0]])
         assert boxes([[3.0, 3.0]], vrange=(0.0, 6.0)).num_boxes == 1
+
+    def test_a_sample_that_is_not_finite_is_left_out_of_the_summary(self):
+        """It is a measurement that was not made, so it neither shifts the
+        quartiles nor counts as a point beyond the whiskers."""
+        samples = [1.0, 2.0, 3.0, 4.0, 5.0]
+
+        assert boxes([samples]).vrange == boxes([[
+            *samples, float("nan"), float("inf"),
+        ]]).vrange
+
+    def test_a_group_of_nothing_finite_is_rejected(self):
+        with pytest.raises(ValueError, match="no finite samples"):
+            boxes([[float("nan"), float("nan")]])
 
 
 class TestBoxesLayout:
@@ -1654,10 +1786,14 @@ class TestBoxesLayout:
         inside = boxes(data, length=40, vrange=(1.0, 9.0))
         assert "·" not in inside.chars.to_plain_str()
 
-    def test_the_repr_names_the_groups_and_the_range(self):
+    def test_the_repr_names_the_groups_and_the_window(self):
         assert repr(boxes(self.DATA)) == (
-            "boxes(height=7, width=30, data=<2 groups on [0.00,19.00]>)"
+            "boxes(<2 groups>, window(x=[0.00,19.00], 30x7 cells))"
         )
+
+    def test_the_interval_it_settled_on_is_kept_as_one_pair(self):
+        assert boxes(self.DATA).vrange == (0.0, 19.0)
+        assert boxes(self.DATA, vrange=(0.0, 20.0)).vrange == (0.0, 20.0)
 
 
 class TestBoxesStyle:

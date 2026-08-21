@@ -14,7 +14,7 @@ New:
 * Finally, colour bars! Any way you want them!
   * `colorbar`: a gradient heatmap showing a range of colours.
   * `Direction`: which way along the screen a colorbar runs. See
-    `notes/closed/colorbars.md`.
+    the `colorbars` note.
 * Vector colormaps and the plots that use them:
   * `chroma`: a colormap over the plane, turning a vector's direction into hue
     and its magnitude into brightness. Vectors may be spelled as complex
@@ -47,12 +47,20 @@ New:
     right so its digits line up, until a format or an alignment says otherwise,
     given for the whole table, per column, or per column name.
   * Each of its eight rules---`toprule`, `midrule`, `rowrule` and `bottomrule`
-    across, `leftrule`, `indexrule`, `colrule` and `rightrule` down---takes
-    `"skip"`, `"blank"`, `"single"` or `"double"` of its own, defaulting to a
-    line above, a double line under the header and a line below.
+    across, `leftrule`, `indexrule`, `colrule` and `rightrule` down---takes a
+    `Rule` of its own, defaulting to a line above, a double line under the
+    header and a line below.
   * Cells take colours one at a time, so a table shaded by its own values reads
     as a heatmap whose numbers can still be read off exactly. See
-    `notes/tables.md`.
+    the `tables` note.
+  * `TableData`: the forms a grid of values arrives in, accepted by `table`. A
+    list of dicts, a dict of lists, or a sequence of rows or 2d array, the
+    first two naming their columns and the last not.
+  * `Rule`: what a table draws between its cells---`"skip"` for nothing at
+    all, `"blank"` for a row or column of space, `"single"` for a light line
+    or `"double"` for a double one.
+  * `Align`: where a value sits in its cell, `"left"`, `"center"` or
+    `"right"`.
 * Box plots and candle plots:
   * `boxes`: a box plot, one box per group of samples. The box spans the first
     and third quartiles and is divided at the median, whiskers reach the
@@ -67,6 +75,8 @@ New:
     the opening and closing values and its wick reaching out of the body to the
     high and the low. Bodies are coloured by whether the period closed above or
     below where it opened, and land on an eighth of a character cell.
+  * `Orientation`: which way a mark lies, and so which way its value axis
+    runs. Both take one, as `box_direction` and `candle_direction`.
 * `window`: the interval of data a plot covers on each axis, and the rectangle
   of character cells it covers them with. Every 2d plot carries one, and it
   provides the conversions from data coordinates to the grids of dots and
@@ -91,7 +101,7 @@ New examples:
   plane.
 * `phase_portrait.py`: six planar vector fields, as colour fields.
 * `tables.py`: a hyperparameter sweep reported in tables.
-* `globe.py`: a spinning Earth. See `notes/world-maps.md`.
+* `globe.py`: a spinning Earth. See the `world-maps` note.
 * `world_map.py`: great-circle flight routes in different projections.
 
 Changed:
@@ -123,21 +133,40 @@ Changed:
   its own now.
 * `function2` takes its colour scale as `vrange` rather than `zrange`, the name
   the rest of the library already gave the interval of values a plot covers.
-* A `vrange` is a pair of numbers or nothing at all. `bars`, `columns`,
-  `calendar` and `weeks` used to accept a single number too, meaning zero up to
-  it; write `(0, hi)` instead. `histogram`, `vistogram` and `histogram2` keep
-  their own `max_count`, which is that shorthand under a name that says what it
-  is counting.
-* A plot keeps the interval it settled on as `plot.vrange`, one pair, rather
-  than as `plot.vmin` and `plot.vmax`.
-* `image` keeps no interval, since its data is already colours or already
-  scaled, so a colorbar for one has to be told the interval outright.
-* A `vrange` the caller wrote that covers no interval is an error, rather than
-  quietly colouring everything at the bottom of the scale. One inferred from
-  values that are all the same still puts them all at the bottom, there being
-  nothing else it could mean.
-* A `heatmap` value that is not a number is left out of an inferred interval,
-  and comes out at the bottom of the colormap wherever it appears.
+* `vrange` unification and changes:
+  * A `vrange` is a pair of numbers or nothing at all. `bars`, `columns`,
+    `calendar` and `weeks` used to accept a single number too, meaning zero up
+    to it; write `(0, hi)` instead. `histogram`, `vistogram` and `histogram2`
+    keep their own `max_count`, which is that shorthand under a name that says
+    what it is counting.
+  * A plot keeps the interval it settled on as `plot.vrange`, one pair, rather
+    than as `plot.vmin` and `plot.vmax`.
+  * `image` keeps no interval, since its data is already colours or already
+    scaled, so a colorbar for one has to be told the interval outright.
+  * A `vrange` the caller wrote that covers no interval is an error, rather
+    than quietly colouring everything at the bottom of the scale or dividing by
+    something close enough to nothing. Every plot that measures its values
+    against an interval says so the same way, whether that interval becomes a
+    colour scale or a length along the screen: `heatmap` and the plots built on
+    one, `calendar`, `weeks`, `vfunction2`, `bars`, `columns`, `boxes` and
+    `candles`.
+  * An interval *inferred* from values that are all the same still puts them
+    all at the bottom of a colour scale, there being nothing else it could
+    mean. The plots that draw a position along the interval---`boxes` and
+    `candles`---have nowhere to put them instead, and say so.
+  * A value that is not a number is left out of an inferred interval, and comes
+    out at the bottom of the scale wherever it appears: at the bottom of the
+    colormap for a `heatmap`, and as a bar or column of zero width for `bars`
+    and `columns`.
+* A sample that is not finite is left out of a `boxes` summary, as a
+  measurement that was not made, rather than shifting the quartiles or
+  counting as a point beyond the whiskers. A group with no finite samples at
+  all is an error. `candles` instead refuses a value that is not a number
+  outright, a period with an unknown high having no candle to draw.
+* `text` takes a `width`, a `height` and an `align`. The width and the height
+  are the least it may take, so a text plot can be held to a size larger than
+  its text, and the alignment says where each line sits in the width---which
+  is what a `table` cell is, and what it now uses.
 * The examples that had values on a colour scale draw them with `heatmap`,
   rather than scaling them into the unit interval by hand first. The ones
   drawing colours, or palette indices for a discrete colormap, still use
@@ -149,6 +178,18 @@ Changed:
 Fixed:
 
 * `text` documented its foreground colour argument under the wrong name.
+* `text("")` is a plot of no rows rather than a `ValueError` from taking the
+  longest of no lines. `text("\n")`, which has one empty line, is still a plot
+  of one row.
+* `hilbert`'s repr closes its parenthesis.
+* One value that is not a number no longer draws every bar of a `bars` or
+  `columns` chart full. It poisoned the largest value, and so the interval, and
+  so every bar, which then saturated at the top of a scale that was itself not
+  a number.
+* `colorbar` says what is wrong with a plot whose values are all the same,
+  rather than reporting a `vrange` covering no interval against an argument the
+  caller never wrote. Such a plot has one colour and no axis to label it along,
+  so there is no bar to draw for it.
 * `plot.xrange` and `plot.yrange` have moved onto the window, as
   `plot.window.xrange` and `plot.window.yrange`.
 * `axes` and `dstack2` accept any plot carrying a window, rather than a listed
@@ -266,7 +307,7 @@ Changed:
   still content change colour from frame to frame. Animations with more colours
   than the budget are now reduced once for the whole animation instead.
   * Colourful gifs are larger as a result. `colors=32` asks for small files
-    back explicitly. See `notes/gif-size.md` for the measurements.
+    back explicitly. See the `gif-size` note for the measurements.
 
 Fixed:
 
@@ -375,7 +416,7 @@ Change:
   only the byte counts moved -- and the point is `CHA`, whose old use depended
   on it cancelling a deferred wrap, which is the thing terminals disagree about
   most. A full repaint now costs less rather than more; a sparse diff costs one
-  byte more. See `notes/closed/escape-vocabulary.md`.
+  byte more. See the `escape-vocabulary` note.
 
 Fix:
 
@@ -398,12 +439,12 @@ Dev:
 * Escape sequences are now tested against a real terminal (a tmux pane, see
   `tests/test_terminal.py` and `tests/tmux.py`) rather than a hand-written
   emulator, which retires the emulator and makes tmux a development dependency.
-  See `notes/terminal-test-backend.md`.
+  See the `terminal-test-backend` note.
 * The example smoke tests are replaced by snapshot tests. Every example is
   replayed into a real terminal print by print and compared against a golden in
   `tests/goldens/`, cell by cell in both glyph and colour, along with the byte
   cost of each print and a digest of the image it saved. Regenerate with `make
-  goldens`. See `notes/closed/example-snapshot-tests.md`.
+  goldens`. See the `example-snapshot-tests` note.
 * `life.py` seeds `np.random.seed` rather than `np.random.default_rng`, whose
   stream NumPy does not guarantee across releases. Its initial board, and
   `images/life.gif`, change accordingly.

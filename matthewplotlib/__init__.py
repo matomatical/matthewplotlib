@@ -67,6 +67,7 @@ from matthewplotlib.plots import (
     calendar,
     weeks,
     table,
+    Rule,
     text,
     border,
     axes,
@@ -96,8 +97,10 @@ from matthewplotlib.colors import (
 
 
 from matthewplotlib.core import (
+    Align,
     BoxStyle,
     LineStyle,
+    Orientation,
 )
 
 
@@ -111,6 +114,7 @@ from matthewplotlib.data import (
     Series3,
     DateLike,
     DateSeries,
+    TableData,
     xaxis,
     yaxis,
     zaxis,

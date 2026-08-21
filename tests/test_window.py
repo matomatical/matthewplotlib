@@ -87,6 +87,55 @@ class TestPixelGrid:
 
 
 # # #
+# sample points
+
+
+class TestSamplePoints:
+    def test_the_points_are_the_pixel_centres(self):
+        w = window(xrange=(0.0, 1.0), yrange=(0.0, 1.0), width=2, height=1)
+        X, Y = w.pixel_centres()
+
+        points = w.sample_points()
+
+        assert np.allclose(points[:, 0], X.ravel())
+        assert np.allclose(points[:, 1], Y.ravel())
+
+    def test_the_top_row_of_pixels_comes_first(self):
+        """So that reshaping the values back to [2 * height, width] puts them
+        where they came from."""
+        w = window(xrange=(0.0, 1.0), yrange=(0.0, 1.0), width=3, height=2)
+
+        points = w.sample_points()
+
+        assert points.shape == (2 * 2 * 3, 2)
+        assert points[0, 1] > points[-1, 1]
+
+    def test_endpoints_reach_the_ends_of_both_ranges(self):
+        """The four corner pixels then stand for the four corner combinations
+        of the ranges, so the pixels reach half a pixel outside them."""
+        w = window(xrange=(0.0, 1.0), yrange=(0.0, 1.0), width=3, height=1)
+
+        points = w.sample_points(endpoints=True)
+
+        assert np.allclose(points[0], [0.0, 1.0])
+        assert np.allclose(points[-1], [1.0, 0.0])
+
+    def test_without_endpoints_the_pixels_stay_inside_the_ranges(self):
+        w = window(xrange=(0.0, 1.0), yrange=(0.0, 1.0), width=3, height=1)
+
+        points = w.sample_points()
+
+        assert points[:, 0].min() > 0.0
+        assert points[:, 0].max() < 1.0
+
+    def test_sampling_needs_both_coordinates(self):
+        w = window(xrange=(0.0, 1.0), yrange=None, width=4, height=4)
+
+        with pytest.raises(ValueError, match="no coordinates"):
+            w.sample_points()
+
+
+# # #
 # the value itself
 
 

@@ -24,9 +24,9 @@ Drawing characters, each packing several data points into one character cell:
 * `unicode_bar` and `unicode_col`: Values to horizontal or vertical bars, using
   partial block characters for eighth-of-a-cell resolution.
 * `unicode_image`: Images to half-block characters, at 1 by 2 pixels per cell.
-* `unicode_boxes`: Two nested intervals a group, with optional caps, interior
-  mark and outlying points, lying either way and drawn filled or outlined. Both
-  box plots and candlesticks are settings of it.
+* `unicode_boxes`, with `Orientation`: Two nested intervals a group, with
+  optional caps, interior mark and outlying points, lying either way and drawn
+  filled or outlined. Both box plots and candlesticks are settings of it.
 * `unicode_box` and `BoxStyle`: Box-drawing borders, optionally titled.
 * `unicode_frame` and `unicode_grid`, with `LineStyle`: Rules along the sides
   of a plot, or between the cells of a grid, with the corners and junctions
@@ -41,7 +41,7 @@ import dataclasses
 import numpy as np
 import einops
 
-from typing import Self, Callable, Sequence
+from typing import Literal, Self, Callable, Sequence
 from numpy.typing import NDArray
 
 from matthewplotlib.unscii16 import bitmaps
@@ -172,7 +172,43 @@ class CharArray:
         padded.bg_rgb[above:height-below,left:width-right] = self.bg_rgb
         return padded
 
-    
+
+    def crop(
+        self: Self,
+        above: int = 0,
+        below: int = 0,
+        left: int = 0,
+        right: int = 0,
+    ) -> CharArray:
+        """
+        Take rows and columns off the edges of the array, the inverse of `pad`.
+
+        Inputs:
+
+        * above, below, left, right : int.
+            How many rows or columns to take off each edge.
+
+        Returns:
+
+        * cropped : CharArray.
+            What is left, which must be at least one row and one column.
+        """
+        rows = slice(above, self.height - below)
+        columns = slice(left, self.width - right)
+        if rows.stop <= rows.start or columns.stop <= columns.start:
+            raise ValueError(
+                f"cropping {self.height}x{self.width} by {above} above, "
+                f"{below} below, {left} left and {right} right leaves nothing"
+            )
+        return CharArray(
+            codes=self.codes[rows, columns],
+            fg=self.fg[rows, columns],
+            fg_rgb=self.fg_rgb[rows, columns],
+            bg=self.bg[rows, columns],
+            bg_rgb=self.bg_rgb[rows, columns],
+        )
+
+
     @staticmethod
     def map(
         f: Callable[[list[NDArray]], NDArray],
@@ -546,7 +582,81 @@ def ords(chrs: Sequence[str]) -> list[int]:
     return [ord(c) for c in chrs]
 
 
-# # # 
+# # #
+# UNICODE TEXT
+
+
+type Align = Literal["left", "center", "right"]
+"""
+Where a line of text sits in the width it is written into.
+
+Only has room to act where that width is wider than the line itself.
+"""
+
+
+def unicode_text(
+    lines: Sequence[str],
+    height: int = 0,
+    width: int = 0,
+    align: Align = "left",
+    fgcolor: ColorLike | None = None,
+    bgcolor: ColorLike | None = None,
+) -> CharArray:
+    """
+    Write lines of text into an array of characters, one line to a row.
+
+    Inputs:
+
+    * lines : sequence of str.
+        The lines to write, the first at the top. Each must be free of control
+        characters, line breaks included: splitting the text into lines is the
+        caller's, since where a line is allowed to be broken or cut depends on
+        what the text is for.
+    * height : int (default: 0).
+        The least number of rows to write into. More are taken if there are
+        more lines than this.
+    * width : int (default: 0).
+        The least number of columns to write into. More are taken if a line is
+        longer than this.
+    * align : Align (default: "left").
+        Where each line sits in the width, which only has room to act where
+        the width is wider than the line.
+    * fgcolor : optional ColorLike.
+        The colour of the text. Defaults to the terminal's foreground colour.
+    * bgcolor : optional ColorLike.
+        The colour behind it, the rows and columns no line reaches included.
+        Defaults to a transparent background.
+
+    Returns:
+
+    * chars : CharArray[max(height, len(lines)), max(width, longest line)].
+        The text, in an array at least the size asked for.
+
+    No lines at all gives an array of no rows, which is a plot of nothing
+    rather than an error, so that one empty line and no lines stay distinct.
+    """
+    for line in lines:
+        _validate_text(line)
+    rows = max(height, len(lines))
+    columns = max(width, max((len(line) for line in lines), default=0))
+    chars = CharArray.from_size(
+        height=rows,
+        width=columns,
+        fgcolor=fgcolor,
+        bgcolor=bgcolor,
+    )
+    for i, line in enumerate(lines):
+        if align == "right":
+            start = columns - len(line)
+        elif align == "center":
+            start = (columns - len(line)) // 2
+        else:
+            start = 0
+        chars.codes[i, start:start + len(line)] = ords(line)
+    return chars
+
+
+# # #
 # UNICODE BRAILLE DOT MATRIX
 
 
@@ -1727,12 +1837,26 @@ def unicode_image(
 # UNICODE BOX PLOTS
 
 
+type Orientation = Literal["horizontal", "vertical"]
+"""
+Which way a mark lies, and so which way its value axis runs.
+
+* `"horizontal"`: the mark lies flat, and its values are read across the
+  screen, left to right.
+* `"vertical"`: the mark stands up, and its values are read up the screen.
+
+The tables below are keyed by this, since which screen direction counts as
+along the value axis and which as across the mark's thickness is the whole of
+the difference between the two.
+"""
+
+
 # how each orientation maps a neighbouring cell onto the direction a character
 # reaches out in to meet it. Each entry names the direction towards the
 # previous and the next cell across the mark's thickness, then along the value
 # axis. Values increase upward on screen, so a mark standing up reaches up for
 # its next cell along where one lying flat reaches right.
-_ARMS_TOWARDS = {
+_ARMS_TOWARDS: dict[Orientation, tuple[int, int, int, int]] = {
     "horizontal": (_UP, _DOWN, _LEFT, _RIGHT),
     "vertical": (_LEFT, _RIGHT, _DOWN, _UP),
 }
@@ -1740,7 +1864,7 @@ _ARMS_TOWARDS = {
 # the blocks that fill part of a cell, anchored at the low end of the value
 # axis, so that an interval reaching a cell's low edge is one of these directly
 # and one reaching its high edge is the complement drawn as a negative
-_ANCHORED_BLOCKS = {
+_ANCHORED_BLOCKS: dict[Orientation, list[int]] = {
     "horizontal": PARTIAL_BLOCKS_ROW,
     "vertical": PARTIAL_BLOCKS_COL,
 }
@@ -1748,7 +1872,7 @@ _ANCHORED_BLOCKS = {
 # the two thin bands an interior mark can occupy at the edges of a cell, low
 # edge first. The third position, the middle of the cell, is a line glyph taken
 # from a LineStyle, so that its weight can be chosen to match these.
-_EDGE_BANDS = {
+_EDGE_BANDS: dict[Orientation, tuple[int, int]] = {
     "horizontal": (ord("▏"), ord("▕")),
     "vertical": (ord("▁"), ord("▔")),
 }
@@ -1758,7 +1882,7 @@ _BAND_OFFSETS = np.array([0.0625, 0.5, 0.9375])
 
 # the arms of the line glyph that draws the middle band: a mark lying flat is
 # crossed by a band standing up, and the other way about
-_BAND_ARMS = {
+_BAND_ARMS: dict[Orientation, int] = {
     "horizontal": _UP | _DOWN,
     "vertical": _LEFT | _RIGHT,
 }
@@ -1778,7 +1902,7 @@ def unicode_boxes(
     interiors: NDArray | None = None,       # float[n]
     outliers: NDArray | None = None,        # float[m]
     outlier_boxes: NDArray | None = None,   # int[m]
-    direction: str = "horizontal",
+    direction: Orientation = "horizontal",
     filled: bool = False,
     thickness: int = 3,
     spacing: int = 1,
@@ -1825,7 +1949,7 @@ def unicode_boxes(
         every mark's points together in one array.
     * outlier_boxes : optional int[m].
         Which mark each of those points belongs to.
-    * direction : "horizontal" | "vertical" (default: "horizontal").
+    * direction : Orientation (default: "horizontal").
         Which way one mark lies. Horizontal marks lie flat and stack up the
         screen; vertical marks stand up and march across it.
     * filled : bool (default: False).
@@ -1961,7 +2085,7 @@ def unicode_boxes(
 def _mark_cells(
     num_boxes: int,
     length: int,
-    direction: str,
+    direction: Orientation,
     thickness: int,
     spacing: int,
 ) -> tuple[NDArray, NDArray]: # int[n, thickness, length] twice
@@ -2066,7 +2190,7 @@ def _draw_outlined_marks(
     inner_his: NDArray,
     interiors: NDArray | None,
     length: int,
-    direction: str,
+    direction: Orientation,
     thickness: int,
     caps: bool,
     style: LineStyle,
@@ -2175,7 +2299,7 @@ def _draw_filled_marks(
     inner_his: NDArray,
     interiors: NDArray | None,
     length: int,
-    direction: str,
+    direction: Orientation,
     thickness: int,
     caps: bool,
     style: LineStyle,
