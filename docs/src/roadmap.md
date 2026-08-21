@@ -50,6 +50,10 @@ Specifying colors:
 * [ ] Configurable colour scales and normalisation. See `notes/scales.md`.
 * [x] Color bars, in any of the four directions. See
   `notes/closed/colorbars.md`.
+* [ ] Colorbars that take their colormap from the plot they describe, rather
+  than being told it. Needs continuous, discrete and vector colormaps to be
+  distinguishable at runtime, so that a bar can refuse a colormap no gradient
+  stands for. See `notes/scales.md`.
 
 Rendering:
 
