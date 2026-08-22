@@ -2822,17 +2822,21 @@ class table(plot):
           the longest is blank where it runs out.
         * A sequence of sequences, or a 2d array, one row of values each.
           These name no columns of their own.
+    
     * headers : optional list of str, or dict.
         The columns to show. Where the data names its columns, a list picks
         them out and orders them, and a mapping from key to name does that and
         renames them as well. Where the data names none, a list names them,
         and without one the table has no header row.
+    
     * index : optional list of str.
         Labels for the rows, drawn in a column of their own before the first.
         The columns everything else is specified per-column for do not count
         this one.
+    
     * index_name : str (default: "").
         The header over the index column.
+    
     * formats : optional str | callable | list | dict.
         How to turn a value into the text of its cell. One of:
         * A format spec, as `format` takes, like `".3f"`.
@@ -2845,61 +2849,81 @@ class table(plot):
 
         By default a float is shown to four significant figures, and anything
         else as `str` shows it. A value of None is blank whatever the format.
+
     * aligns : optional Align | list | dict.
         Where to put a value in its cell. One for the whole table, a list with
         one per column, or a mapping from a column's header. By default a
         column holding nothing but numbers is aligned right, so that its digits
         line up, and every other column left. A header follows its column.
+    
     * toprule : optional Rule.
         The rule above the header, `"single"` by default.
+    
     * midrule : optional Rule.
         The rule between the header and the body, `"double"` by default. Only
         a table with a header row has one.
+    
     * rowrule : optional Rule.
         The rule between one body row and the next, `"skip"` by default.
+    
     * bottomrule : optional Rule.
         The rule below the body, `"single"` by default.
+    
     * leftrule : optional Rule.
         The rule down the left of the table, `"skip"` by default.
+    
     * indexrule : optional Rule.
         The rule between the index column and the body, `"skip"` by default.
         Only a table with an index has one.
+    
     * colrule : optional Rule.
         The rule between one column and the next, `"skip"` by default.
+    
     * rightrule : optional Rule.
         The rule down the right of the table, `"skip"` by default.
+    
     * max_col_width : optional int.
         The widest a column of text may be. Anything longer is cut, with an
         ellipsis marking what was taken off. By default a column is as wide as
         the longest thing in it.
+    
     * cell_padding : int (default: 1).
         Columns of space between a value and the rule on each side of it. Two
         neighbouring cells give twice this much space between columns that
         have no rule between them. An outer edge with no rule on it is not
         padded, so that the table starts flush with its first column.
+    
     * color : optional ColorLike.
         The color of everything in the table that is not given a color of its
         own. Defaults to the terminal's default foreground color.
+    
     * bgcolor : optional ColorLike.
-        The color behind the whole table. Defaults to a transparent
-        background.
+        The color behind the whole table. Defaults to a transparent background.
+    
     * header_color : optional ColorLike.
         The color of the header row and the index column. Defaults to `color`.
+    
     * rule_color : optional ColorLike.
         The color of the rules. Defaults to `color`.
+    
     * colors : optional ColorLike[nrows, ncols].
         The color of the text in each body cell, not counting the header row
         or the index column.
+    
     * bgcolors : optional ColorLike[nrows, ncols].
         The color behind each body cell. Together with a colormap this shades
         a table by its values, so that it reads as a heatmap that can still be
         read off exactly.
+    
     * colormap : optional ColorMap.
         Applied to `colors` and `bgcolors` before either is read as colors, so
         that they can be given as the data the table is showing.
 
-    A cell whose text has newlines in it takes as many lines as it needs, and
-    every other cell in its row grows to match.
+
+    Notes:
+
+    * A cell whose text has newlines in it takes as many lines as it needs.
+      Every other cell in its row grows to match.
     """
     def __init__(
         self,
