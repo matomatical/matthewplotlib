@@ -3996,3 +3996,78 @@ class center(plot):
             f"center(height={self.height}, width={self.width}, "
             f"plot={self.plot!r})"
         )
+
+
+class crop(plot):
+    """
+    Limit a plot's extent to a particular size. If the plot is cropped in
+    either direction, the last row/col is replaced with a visible crop marker.
+
+    If the specified `height` or `width` is larger than the plot's dimensions,
+    the smaller dimension is used, these are therefore maximum sizes.
+
+    Inputs:
+
+    * plot : plot.
+        The plot object to be cropped.
+    * height : optional int (>0).
+        The maximum height of the cropped plot. If not provided, it defaults to
+        the terminal height (minus 1) to facilitate animation.
+    * width : optional int (>0).
+        The maximum width of the cropped plot. If not provided, it defaults to
+        the terminal width to avoid line wrapping.
+
+    TODO:
+
+    * Configurable crop markers fgcolor, glyph, bgcolor, including disabling it
+      entirely.
+    * Configurable crop direction, one of nine. For now default to keep
+      top-left rectangle.
+    * TODO: Slightly unhappy with fallback values in the case of a
+    non-terminal, should maybe be an error?
+    """
+    def __init__(
+        self,
+        plot: plot,
+        height: int | None = None,
+        width: int | None = None,
+    ):
+        # decide max width/height
+        if height is None or width is None:
+            ts = shutil.get_terminal_size(fallback=(80, 24))
+            if height is None:
+                height = ts.lines
+            if width is None:
+                width = ts.columns
+        if width <= 0:
+            raise ValueError("crop width must be positive.")
+        if height <= 0:
+            raise ValueError("crop height must be positive.")
+
+        # crop the char array
+        chars = plot.chars
+        if width < plot.width:
+            chars = chars.crop(right=plot.width - width + 1)
+            chars = chars.pad(right=1)
+            chars.codes[:,-1] = ord("#")
+            chars.fg[:,-1] = 0
+            chars.fg_rgb[:,-1] = 0
+            chars.bg[:,-1] = 0
+            chars.bg_rgb[:,-1] = 0
+        if height < plot.height:
+            chars = chars.crop(below=plot.height - height + 1)
+            chars = chars.pad(below=1)
+            chars.codes[-1,:] = ord("#")
+            chars.fg[-1,:] = 0
+            chars.fg_rgb[-1,:] = 0
+            chars.bg[-1,:] = 0
+            chars.bg_rgb[-1,:] = 0
+
+        super().__init__(chars)
+        self.plot = plot
+    
+    def __repr__(self):
+        return (
+            f"crop(height={self.height}, width={self.width}, "
+            f"plot={self.plot!r})"
+        )

@@ -81,6 +81,7 @@ from matthewplotlib.plots import (
     dstack2,
     wrap,
     center,
+    crop,
 )
 
 
