@@ -65,15 +65,18 @@ class TestTerminalSize:
 
     def test_the_size_is_read_fresh_on_every_call(self, monkeypatch):
         # so that a caller polling it follows a resize rather than caching the
-        # size the session started at
-        sizes = iter([os.terminal_size((80, 24)), os.terminal_size((40, 12))])
-        monkeypatch.setattr(os, "get_terminal_size", lambda _fd: next(sizes))
+        # size the session started at. The terminal resizes between the two
+        # calls rather than the fake counting them, because pytest asks the
+        # same patched function how wide to draw its own output.
+        resized = [os.terminal_size((80, 24))]
+        monkeypatch.setattr(os, "get_terminal_size", lambda _fd: resized[0])
 
-        first = terminal_size()
-        second = terminal_size()
+        before = terminal_size()
+        resized[0] = os.terminal_size((40, 12))
+        after = terminal_size()
 
-        assert first is not None and (first.columns, first.lines) == (80, 24)
-        assert second is not None and (second.columns, second.lines) == (40, 12)
+        assert before is not None and (before.columns, before.lines) == (80, 24)
+        assert after is not None and (after.columns, after.lines) == (40, 12)
 
 
 # # #
