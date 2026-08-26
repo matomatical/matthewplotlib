@@ -113,8 +113,49 @@ the error above rather than a special case.
   is, never where on it the plot lands, which is why it could be built at all
   while the questions above about `clearstr` and pre-scrolling stay unanswered.
 * Cropping from any of the nine directions. The top left rectangle is kept
-  today.
+  today, which is also why `crop` has no example of its own yet: the example
+  that would sell it is a viewport moving over something far bigger than the
+  screen, and that cannot be written. Keeping the top left rectangle means no
+  crop can show a region that excludes row 0 and column 0, and padding on the
+  left with `blank` pushes content right, showing more of the left rather than
+  less. A data plot pans by changing its `xrange` instead, so this bites the
+  images, text and tables, which is where a viewport would be worth the most.
 * `animate` doing this itself, and following a resize while it runs. This is
   where the remaining questions live: an animation context manager owns the
   terminal for the duration of its block, so it is the one caller that could
   legitimately query it.
+
+## When animation cropping opens
+
+Scoped 2026-08-26 but not built, so that the next attempt starts here. `animate`
+warns today and no more: `_check_fits` fires once a session, on height only,
+and says nothing about width.
+
+The mechanism is ready. `update` calls `_check_fits(plot)` immediately before
+`plot.updatestr(self._prev)`, which is where a cropped plot would be
+substituted; `updatestr` already contracts to handle a frame of a different
+size from the one before it, painting or erasing the rows and columns only one
+of them covers; and `terminal_size` reads the size fresh on every call, so
+measuring per frame follows a resize without any further machinery. What is
+left is three decisions, none of them mechanical:
+
+* **Does `record=True` keep the cropped frames or the ones it was given?** The
+  point of recording is `frames.savegif`, and a GIF cropped to whatever window
+  the session happened to have is a strange artefact. Recording the plot as
+  given makes `anim.frames` something other than what was watched. Unresolved,
+  with a lean towards recording as given.
+* **What happens with cropping asked for and no terminal to measure?** Making
+  it a no-op means the frames written down a pipe differ from the frames
+  written to a screen, which is the one thing the `terminal` module exists to
+  prevent. `animate` is the caller with the best claim to an exception, since
+  it owns the terminal for its block, but the exception has to be written down
+  rather than assumed. Unresolved, with a lean towards the no-op.
+* **What the parameter is called.** `crop=True` matches the primitive and is
+  what a reader would search for, but collides with the `crop` class inside
+  `animations.py`. `fit=True` reads better and names the intent. Unresolved.
+
+Resizing is still not solved by any of this. Measuring per frame means the
+frame *after* a resize is the right size; the frame *during* one may be in the
+wrong place, because where the plot has landed after a reflow is exactly the
+position question above, and only a cursor report answers it. Worth claiming
+the size half and saying plainly that the position half is unhandled.

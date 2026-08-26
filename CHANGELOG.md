@@ -6,19 +6,15 @@ In development
 
 New:
 
-* `crop`: limit a plot's extent to a given height and width, keeping the top
-  left rectangle. Wherever content is cut off, the last row or column of the
-  result is given over to a marker character (`#` by default, configurable,
-  and `None` for a plain slice), so a truncated plot cannot pass for a whole
-  one. The maximum sizes default to the attached terminal's, a row short of
-  its height so that the result can still animate in it. Without a terminal to
-  measure they are an error rather than a fallback size, which would truncate
-  a plot on its way into a file or a pipe. See the `terminal-aware-printing`
-  note.
-* `terminal`: a new module for what can be known about the screen a plot is
-  printed to, and how much that is worth. `terminal_size` measures the attached
-  terminal, or reports that there is none to measure. Both the plots and the
-  animations ask it, and neither owns it.
+* `crop`: limit a plot to a maximum height and width, keeping the top left
+  rectangle and marking whatever it cut off, so a truncated plot cannot pass
+  for a whole one. The sizes default to what the attached terminal can show.
+  See the `terminal-aware-printing` note.
+
+Internal:
+
+* New `terminal` module, measuring the attached terminal on behalf of the plots
+  and the animations that had been duplicating it between them.
 
 Version 0.7.0
 -------------
