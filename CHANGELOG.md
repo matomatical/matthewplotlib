@@ -7,9 +7,7 @@ In development
 New:
 
 * `crop`: limit a plot to a maximum height and width, keeping the top left
-  rectangle and marking whatever it cut off, so a truncated plot cannot pass
-  for a whole one. The sizes default to what the attached terminal can show.
-  See the `terminal-aware-printing` note.
+  rectangle. The sizes default to what the attached terminal can show.
 
 Internal:
 
