@@ -23,28 +23,12 @@ terminal, its version, and `echo $TERM`.
 By Claude Opus 5.
 """
 
-import os
-import sys
-
 import tyro
 import numpy as np
 
 import matthewplotlib as mp
 
-
-def terminal_width() -> int | None:
-    """How many columns the attached terminal has, or None if there isn't one.
-
-    `shutil.get_terminal_size` is the wrong tool here, for the same reason
-    `matthewplotlib.animations` avoids it: its job is to paper over the absence
-    of a terminal by returning a fallback, and a fallback quietly mistaken for a
-    measurement is exactly what would make stage 4 test nothing while looking
-    like it had. Asking the file descriptor directly tells the two apart.
-    """
-    try:
-        return os.get_terminal_size(sys.stdout.fileno()).columns
-    except (AttributeError, OSError, ValueError):
-        return None
+from matthewplotlib.terminal import terminal_size
 
 
 def banner(n: int, title: str, expect: str) -> None:
@@ -135,7 +119,10 @@ def main(
         "matthewplotlib terminal test", fgcolor="white",
     )))
     if width is None:
-        width = terminal_width()
+        # a measurement, not a fallback: a guessed width would leave stage 4
+        # testing nothing while looking like it had
+        size = terminal_size()
+        width = None if size is None else size.columns
         if width is None:
             width = 64
             print(str(mp.text(
