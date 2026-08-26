@@ -1,8 +1,8 @@
 Changelog
 =========
 
-In development
---------------
+Version 0.7.1
+-------------
 
 New:
 
