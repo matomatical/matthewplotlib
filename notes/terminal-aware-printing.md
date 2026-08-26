@@ -93,9 +93,9 @@ a file, `crop(plot)` would silently truncate to 80x24. The invariant recorded
 at `_terminal_rows` -- nothing in this library changes *what* it writes based
 on whether a terminal is attached -- is worth more than the convenience, so a
 measurement is required and `os.get_terminal_size` is what takes it, since a
-`shutil` fallback cannot be told apart from a real answer. `_terminal_size` in
-`plots.py` is now the single place that reads it, and `_terminal_rows` defers
-to it.
+`shutil` fallback cannot be told apart from a real answer. The measurement and
+the reasoning for it are now a module of their own, `terminal`, since both the
+plots and the animations need them and neither owns them.
 
 **Of the three thresholds, the default is R-1.** The differential animation
 case, the one `animate` drives. R is offered by passing it, and R-2 for

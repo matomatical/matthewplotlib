@@ -15,6 +15,10 @@ New:
   measure they are an error rather than a fallback size, which would truncate
   a plot on its way into a file or a pipe. See the `terminal-aware-printing`
   note.
+* `terminal`: a new module for what can be known about the screen a plot is
+  printed to, and how much that is worth. `terminal_size` measures the attached
+  terminal, or reports that there is none to measure. Both the plots and the
+  animations ask it, and neither owns it.
 
 Version 0.7.0
 -------------

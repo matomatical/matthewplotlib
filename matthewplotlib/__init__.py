@@ -32,6 +32,8 @@ What draws them:
 
 * [`core`][matthewplotlib.core]: The grid of coloured characters every plot is
   ultimately drawn on, and the glyphs dense enough to draw with.
+* [`terminal`][matthewplotlib.terminal]: What can be known about the screen a
+  plot is printed to, and how much that is worth.
 * [`window`][matthewplotlib.window]: The interval of data a plot covers on
   each axis, and how that lands on the grid it is drawn in.
 * [`camera`][matthewplotlib.camera]: Projecting points and lines in space onto

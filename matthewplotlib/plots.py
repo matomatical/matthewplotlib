@@ -67,9 +67,7 @@ from __future__ import annotations
 
 import calendar as _calendar
 import datetime
-import os
 import shutil
-import sys
 import numpy as np
 import einops
 import hilbert as _hilbert
@@ -103,6 +101,7 @@ from matthewplotlib.camera import (
     project3,
     project3_segments,
 )
+from matthewplotlib.terminal import terminal_size
 from matthewplotlib.window import window
 from matthewplotlib.core import (
     CharArray,
@@ -126,29 +125,6 @@ from matthewplotlib.core import (
 )
 
 
-
-
-# # #
-# TERMINAL MEASUREMENT
-
-
-def _terminal_size() -> os.terminal_size | None:
-    """
-    The size of the attached terminal, or None if stdout is not one.
-
-    `shutil.get_terminal_size` is the wrong tool for this: its job is to paper
-    over the absence of a terminal by returning a fallback size, and a fallback
-    is exactly what must not be mistaken for a measurement. Asking the file
-    descriptor directly tells the two apart.
-
-    Nothing in this library changes *what* it writes based on whether a
-    terminal is attached. A size that is measured here can therefore only
-    decide a default the caller left open, never override one they gave.
-    """
-    try:
-        return os.get_terminal_size(sys.stdout.fileno())
-    except (AttributeError, OSError, ValueError):
-        return None
 
 
 # # # 
@@ -4083,7 +4059,7 @@ class crop(plot):
     ):
         # decide the maximum size
         if height is None or width is None:
-            size = _terminal_size()
+            size = terminal_size()
             if size is None:
                 raise ValueError(
                     "crop has no terminal to measure, so its height and width "

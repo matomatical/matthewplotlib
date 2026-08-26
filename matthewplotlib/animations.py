@@ -50,7 +50,8 @@ from numpy.typing import ArrayLike
 
 from matthewplotlib.colormaps import ColorMap
 from matthewplotlib.colors import ColorLike, parse_colors
-from matthewplotlib.plots import image, plot, _terminal_size
+from matthewplotlib.plots import image, plot
+from matthewplotlib.terminal import terminal_size
 
 
 
@@ -708,7 +709,7 @@ def _terminal_rows() -> int | None:
     Used only to decide whether a warning is warranted: an animation writes
     the same frames either way.
     """
-    size = _terminal_size()
+    size = terminal_size()
     return None if size is None else size.lines
 
 

@@ -39,6 +39,8 @@ MODULE_ORDER = [
     "colors",
     "colormaps",
     "core",
+    "terminal",
+    "window",
     "camera",
     "unscii16",
 ]

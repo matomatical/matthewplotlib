@@ -1,16 +1,19 @@
 """
-What the escape sequences we emit do to a real terminal.
+What the escape sequences we emit do to a real terminal, and what we can find
+out about one.
 
-Everything here drives an actual terminal -- a tmux pane, see `tests/tmux.py`,
+Most of this drives an actual terminal -- a tmux pane, see `tests/tmux.py`,
 which needs tmux installed. What is asserted is the screen: which glyph and
 which 24-bit colour ended up in each cell, where the cursor was left, and how
-many lines scrolled away.
+many lines scrolled away. The exception is the measurement at the top, which is
+about telling a terminal from a pipe and so needs neither.
 
 The string-level claims about the same sequences, which need no terminal, are in
 `test_core.py`.
 """
 
 import io
+import os
 import contextlib
 
 import numpy as np
@@ -18,7 +21,59 @@ import pytest
 
 import matthewplotlib as mp
 from matthewplotlib.core import CharArray, unicode_image
+from matthewplotlib.terminal import terminal_size
 from tests.tmux import BLANK, Row, Screen, Terminal
+
+
+# # #
+# MEASURING THE TERMINAL
+
+
+class TestTerminalSize:
+    def test_reads_both_dimensions_off_the_descriptor(self, monkeypatch):
+        monkeypatch.setattr(
+            os,
+            "get_terminal_size",
+            lambda _fd: os.terminal_size((80, 24)),
+        )
+
+        size = terminal_size()
+
+        assert size is not None
+        assert (size.columns, size.lines) == (80, 24)
+
+    def test_a_stream_with_no_descriptor_has_no_size(self):
+        with contextlib.redirect_stdout(io.StringIO()):
+            assert terminal_size() is None
+
+    def test_a_descriptor_that_is_not_a_terminal_has_no_size(self, monkeypatch):
+        def not_a_terminal(_fd):
+            raise OSError("not a terminal")
+
+        monkeypatch.setattr(os, "get_terminal_size", not_a_terminal)
+
+        assert terminal_size() is None
+
+    def test_no_fallback_stands_in_for_a_missing_terminal(self, monkeypatch):
+        # `shutil.get_terminal_size` would answer 80x24 here, and a fallback
+        # must not be mistaken for a measurement
+        monkeypatch.setenv("COLUMNS", "80")
+        monkeypatch.setenv("LINES", "24")
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            assert terminal_size() is None
+
+    def test_the_size_is_read_fresh_on_every_call(self, monkeypatch):
+        # so that a caller polling it follows a resize rather than caching the
+        # size the session started at
+        sizes = iter([os.terminal_size((80, 24)), os.terminal_size((40, 12))])
+        monkeypatch.setattr(os, "get_terminal_size", lambda _fd: next(sizes))
+
+        first = terminal_size()
+        second = terminal_size()
+
+        assert first is not None and (first.columns, first.lines) == (80, 24)
+        assert second is not None and (second.columns, second.lines) == (40, 12)
 
 
 # # #
