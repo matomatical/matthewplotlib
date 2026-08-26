@@ -35,7 +35,6 @@ about terminals rather than about plots.
 from __future__ import annotations
 
 import io
-import os
 import sys
 import time
 import warnings
@@ -51,7 +50,7 @@ from numpy.typing import ArrayLike
 
 from matthewplotlib.colormaps import ColorMap
 from matthewplotlib.colors import ColorLike, parse_colors
-from matthewplotlib.plots import image, plot
+from matthewplotlib.plots import image, plot, _terminal_size
 
 
 
@@ -706,18 +705,11 @@ def _terminal_rows() -> int | None:
     """
     How many rows the attached terminal has, or None if stdout is not one.
 
-    `shutil.get_terminal_size` is the wrong tool for this: its job is to paper
-    over the absence of a terminal by returning a fallback size, and a fallback
-    is exactly what must not be mistaken for a measurement. Asking the file
-    descriptor directly tells the two apart.
-
-    Used only to decide whether a warning is warranted. Nothing in this library
-    changes *what* it writes based on whether a terminal is attached.
+    Used only to decide whether a warning is warranted: an animation writes
+    the same frames either way.
     """
-    try:
-        return os.get_terminal_size(sys.stdout.fileno()).lines
-    except (AttributeError, OSError, ValueError):
-        return None
+    size = _terminal_size()
+    return None if size is None else size.lines
 
 
 class animate:

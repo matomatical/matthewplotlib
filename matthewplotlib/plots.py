@@ -67,7 +67,9 @@ from __future__ import annotations
 
 import calendar as _calendar
 import datetime
+import os
 import shutil
+import sys
 import numpy as np
 import einops
 import hilbert as _hilbert
@@ -124,6 +126,29 @@ from matthewplotlib.core import (
 )
 
 
+
+
+# # #
+# TERMINAL MEASUREMENT
+
+
+def _terminal_size() -> os.terminal_size | None:
+    """
+    The size of the attached terminal, or None if stdout is not one.
+
+    `shutil.get_terminal_size` is the wrong tool for this: its job is to paper
+    over the absence of a terminal by returning a fallback size, and a fallback
+    is exactly what must not be mistaken for a measurement. Asking the file
+    descriptor directly tells the two apart.
+
+    Nothing in this library changes *what* it writes based on whether a
+    terminal is attached. A size that is measured here can therefore only
+    decide a default the caller left open, never override one they gave.
+    """
+    try:
+        return os.get_terminal_size(sys.stdout.fileno())
+    except (AttributeError, OSError, ValueError):
+        return None
 
 
 # # # 
@@ -3990,7 +4015,7 @@ class center(plot):
         )
         super().__init__(padded_chars)
         self.plot = plot
-    
+
     def __repr__(self):
         return (
             f"center(height={self.height}, width={self.width}, "
@@ -4000,74 +4025,142 @@ class center(plot):
 
 class crop(plot):
     """
-    Limit a plot's extent to a particular size. If the plot is cropped in
-    either direction, the last row/col is replaced with a visible crop marker.
+    Limit a plot's extent to a given size, marking the edges it cut off.
 
-    If the specified `height` or `width` is larger than the plot's dimensions,
-    the smaller dimension is used, these are therefore maximum sizes.
+    The top left rectangle of the given size is kept. Wherever content was cut
+    off, the last row or column of the result is given over to a marker
+    character, so that a truncated plot cannot be mistaken for a whole one.
+    That row or column costs content: cropping a 10 row plot to 8 rows shows 7
+    of them and a row of markers.
+
+    A `height` or `width` that the plot already fits within leaves that
+    direction alone. These are maximum sizes, not target sizes; `center` is the
+    tool for the other direction.
 
     Inputs:
 
     * plot : plot.
         The plot object to be cropped.
     * height : optional int (>0).
-        The maximum height of the cropped plot. If not provided, it defaults to
-        the terminal height (minus 1) to facilitate animation.
+        The maximum height of the result. Defaults to one row less than the
+        attached terminal's, the tallest plot it can animate: printing H rows
+        plus the newline `print` appends takes H+1 rows.
     * width : optional int (>0).
-        The maximum width of the cropped plot. If not provided, it defaults to
-        the terminal width to avoid line wrapping.
+        The maximum width of the result. Defaults to the attached terminal's
+        width, the widest plot that does not wrap.
+    * marker : optional str (default: `"#"`).
+        The single character marking each cut edge. `None` marks nothing and
+        keeps the full rectangle of content instead, a plain slice that leaves
+        no sign anything was cut.
+    * fgcolor : optional ColorLike.
+        The color of the markers. Defaults to the terminal's default foreground
+        color.
+    * bgcolor : optional ColorLike.
+        The background color behind the markers. Defaults to a transparent
+        background.
+
+    A defaulted `height` or `width` has to measure the terminal, and is an
+    error without one attached. A fallback size would quietly truncate a plot
+    on its way into a file or a pipe, which is worse than being told to say
+    what size was meant.
+
+    Where there is no room for content at all -- a `height` or `width` of one
+    in a direction that is cropped -- the result is the marker alone.
 
     TODO:
 
-    * Configurable crop markers fgcolor, glyph, bgcolor, including disabling it
-      entirely.
     * Configurable crop direction, one of nine. For now default to keep
       top-left rectangle.
-    * TODO: Slightly unhappy with fallback values in the case of a
-    non-terminal, should maybe be an error?
     """
     def __init__(
         self,
         plot: plot,
         height: int | None = None,
         width: int | None = None,
+        marker: str | None = "#",
+        fgcolor: ColorLike | None = None,
+        bgcolor: ColorLike | None = None,
     ):
-        # decide max width/height
+        # decide the maximum size
         if height is None or width is None:
-            ts = shutil.get_terminal_size(fallback=(80, 24))
+            size = _terminal_size()
+            if size is None:
+                raise ValueError(
+                    "crop has no terminal to measure, so its height and width "
+                    "cannot be defaulted: pass them explicitly"
+                )
             if height is None:
-                height = ts.lines
+                # a plot of the terminal's full height cannot animate in it
+                height = max(1, size.lines - 1)
             if width is None:
-                width = ts.columns
-        if width <= 0:
-            raise ValueError("crop width must be positive.")
+                width = size.columns
         if height <= 0:
-            raise ValueError("crop height must be positive.")
+            raise ValueError(f"crop height must be positive, not {height}")
+        if width <= 0:
+            raise ValueError(f"crop width must be positive, not {width}")
 
-        # crop the char array
-        chars = plot.chars
-        if width < plot.width:
-            chars = chars.crop(right=plot.width - width + 1)
-            chars = chars.pad(right=1)
-            chars.codes[:,-1] = ord("#")
-            chars.fg[:,-1] = 0
-            chars.fg_rgb[:,-1] = 0
-            chars.bg[:,-1] = 0
-            chars.bg_rgb[:,-1] = 0
-        if height < plot.height:
-            chars = chars.crop(below=plot.height - height + 1)
-            chars = chars.pad(below=1)
-            chars.codes[-1,:] = ord("#")
-            chars.fg[-1,:] = 0
-            chars.fg_rgb[-1,:] = 0
-            chars.bg[-1,:] = 0
-            chars.bg_rgb[-1,:] = 0
+        # validate the marker, and reduce it to the codepoint to be written
+        if marker is None:
+            marker_code = None
+        else:
+            _validate_text(marker)
+            if len(marker) != 1:
+                raise ValueError(
+                    f"crop marker must be a single character, not {marker!r}"
+                )
+            marker_code = ord(marker)
+
+        # decide the size of the result, and of the content inside it: each
+        # direction that is cut gives its last row or column to the marker
+        out_height = min(height, plot.height)
+        out_width = min(width, plot.width)
+        mark_below = marker_code is not None and plot.height > height
+        mark_right = marker_code is not None and plot.width > width
+        content_height = out_height - mark_below
+        content_width = out_width - mark_right
+
+        if content_height <= 0 or content_width <= 0:
+            # no room for content, so the result is marker all the way across
+            chars = CharArray.from_size(
+                height=out_height,
+                width=out_width,
+                fgcolor=fgcolor,
+                bgcolor=bgcolor,
+            )
+            if marker_code is not None:
+                chars.codes[:,:] = marker_code
+        else:
+            below = plot.height - content_height
+            right = plot.width - content_width
+            content = (
+                plot.chars.crop(below=below, right=right)
+                if below or right
+                else plot.chars
+            )
+            if mark_below or mark_right:
+                # padding the content back out to size is what copies it, and
+                # a copy is what the markers need: a crop is a view of the
+                # array it came from, and writing into that would reach back
+                # into the plot being cropped
+                chars = content.pad(
+                    below=mark_below,
+                    right=mark_right,
+                    fgcolor=fgcolor,
+                    bgcolor=bgcolor,
+                )
+                if mark_right:
+                    chars.codes[:,-1] = marker_code
+                if mark_below:
+                    chars.codes[-1,:] = marker_code
+            else:
+                chars = content
 
         super().__init__(chars)
         self.plot = plot
-    
+        self.marker = marker
+
     def __repr__(self):
         return (
             f"crop(height={self.height}, width={self.width}, "
-            f"plot={self.plot!r})"
+            f"marker={self.marker!r}, plot={self.plot!r})"
         )

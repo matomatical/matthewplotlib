@@ -162,9 +162,11 @@ Advanced plot arrangement:
 * [ ] Mapping over the other composites, `hstack` and friends. See
   the `mapping-over-composites` note.
 * [ ] Indexing and slicing of plots.
-* [ ] Crop plot composition primitive. See the `terminal-aware-printing` note.
-  * [ ] Clip plots to terminal width and (almost) height (see
+* [x] Crop plot composition primitive. See the `terminal-aware-printing` note.
+  * [x] Clip plots to terminal width and (almost) height (see
     `docs/src/compatibility.md`).
+  * [ ] Crop from any of the nine directions, rather than always keeping the
+    top left rectangle.
   * [ ] `animate` context manager should handle this, and window resizes.
 
 Advanced furnishings:

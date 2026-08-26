@@ -246,10 +246,15 @@ sequences. Specifically:
   needs H+1 rows, so an animation in an R-row terminal wants a plot of at most
   R-1 rows; clear-and-redraw wants R-2, since it steps a row above the plot.
 
+`crop` puts a plot inside both of these bounds, and defaults to exactly them:
+`mp.crop(plot)` is at most as wide as the screen and one row shorter, which is
+the animating case. Whatever it cuts off it marks, so a plot that did not fit
+says so rather than tearing.
+
 On the roadmap:
 
-* Plot primitives that allow automatically cropping a plot so that it will fit
-  on the screen.
+* Cropping from any of the nine directions, rather than always keeping the top
+  left rectangle.
 * Managed animations automatically cropping including when the screen resizes?
 
 Supported terminals

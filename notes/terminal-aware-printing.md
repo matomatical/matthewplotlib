@@ -1,8 +1,10 @@
 # Terminal-aware printing / clipping — framing notes
 
-Raised 2026-07-25 (Matthew's wishlist). Not designed; this note only records
-what the differential rendering work established about the constraints, so the
-design does not start from scratch.
+Raised 2026-07-25 (Matthew's wishlist). What follows down to "Questions to
+answer first" is the framing written before anything was designed: what the
+differential rendering work had established about the constraints, so that the
+design would not start from scratch. `crop` was built against it on 2026-08-26,
+and the sections after that record what it decided and what it left alone.
 
 ## The ask
 
@@ -60,3 +62,59 @@ of a `with` block; `str(plot)` could not.
   afternoon.
 * Interaction with image export: `saveimg`/`tstack.savegif` have no terminal,
   so clipping must not apply there.
+
+## What `crop` settled
+
+Built 2026-08-26. The draft and the decisions are MFR's, the write-up and the
+review that prompted them Claude's (Opus 5). `crop` answers the size half of
+the ask and leaves the position half alone.
+
+**It truncates the character grid.** The easy and ugly option, not the layout
+pass: a cropped `axes` loses its east and south edges rather than redrawing
+itself smaller. Pushing the constraint into the leaf plots is still available
+later, and would not change this API.
+
+**It is opt-in.** An explicit `crop(plot)`, so no existing program prints
+anything different. Nothing became automatic.
+
+**It marks instead of warning.** The last row or column of a cut direction is
+given over to a marker character, `#` by default. A warning can be filtered,
+missed, or arrive after the plot has already scrolled past; a marker is in the
+output, next to the thing it is about. `marker=None` opts out and takes the
+full rectangle of content instead. The marker costs a row: cropping ten rows
+to eight shows seven of them.
+
+**A defaulted size errors without a terminal, rather than falling back.** This
+is the one place the design had a choice with teeth. `wrap` already takes
+`shutil.get_terminal_size(fallback=(80, 24))` for its column count, so there
+was precedent for a fallback -- but `wrap` only picks a layout with it, and a
+wrong guess costs a line break. Here a fallback would delete content: piped to
+a file, `crop(plot)` would silently truncate to 80x24. The invariant recorded
+at `_terminal_rows` -- nothing in this library changes *what* it writes based
+on whether a terminal is attached -- is worth more than the convenience, so a
+measurement is required and `os.get_terminal_size` is what takes it, since a
+`shutil` fallback cannot be told apart from a real answer. `_terminal_size` in
+`plots.py` is now the single place that reads it, and `_terminal_rows` defers
+to it.
+
+**Of the three thresholds, the default is R-1.** The differential animation
+case, the one `animate` drives. R is offered by passing it, and R-2 for
+clear-and-redraw likewise; neither is the default, because a plot that only
+just fits is the case that goes wrong silently.
+
+**Image export is unaffected.** `crop` produces a plot like any other, so
+`saveimg` and `savegif` see whatever it produced and never consult a terminal
+themselves. A `crop` with defaulted sizes cannot run headless at all, which is
+the error above rather than a special case.
+
+## Still open
+
+* Position on screen, unchanged. `crop` needs to know only how big the screen
+  is, never where on it the plot lands, which is why it could be built at all
+  while the questions above about `clearstr` and pre-scrolling stay unanswered.
+* Cropping from any of the nine directions. The top left rectangle is kept
+  today.
+* `animate` doing this itself, and following a resize while it runs. This is
+  where the remaining questions live: an animation context manager owns the
+  terminal for the duration of its block, so it is the one caller that could
+  legitimately query it.
