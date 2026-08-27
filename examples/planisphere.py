@@ -697,7 +697,12 @@ def caption(
     sun_alt: float,
     width: int,
 ) -> mp.plot:
-    """The line under the disc: clock time, sidereal time, and the light."""
+    """The lines under the disc: the times, and then the light.
+
+    The light gets a line of its own because its words vary in length, and a
+    centred line shifts when its length does: sharing a line with the clock
+    would nudge the times sideways every time twilight turned to night.
+    """
     if sun_alt >= SUNRISE_ALTITUDE:
         light = "day"
     elif sun_alt >= -6.0:
@@ -709,11 +714,14 @@ def caption(
     else:
         light = "night"
     sidereal = (gmst_degrees(jd) + longitude) % 360.0 / 15.0
-    text = (
+    times = (
         f"{when:%d %b %H:%M %Z} · lst"
-        f" {int(sidereal):02d}:{int(sidereal % 1.0 * 60):02d} · {light}"
+        f" {int(sidereal):02d}:{int(sidereal % 1.0 * 60):02d}"
     )
-    return mp.center(mp.text(text), width=width)
+    return (
+        mp.center(mp.text(times), width=width)
+        / mp.center(mp.text(light), width=width)
+    )
 
 
 def scribe(
