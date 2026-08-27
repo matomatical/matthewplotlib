@@ -32,9 +32,7 @@ nav:
     - matthewplotlib: api.md
     - plots:
       # The entry titled "Index" is what makes the plots section header
-      # itself a link (the theme's navigation.side.indexes feature); the
-      # sibling pages are reached through that page, since the side nav
-      # shows two levels and these sit at a third.
+      # itself a link (the theme's navigation.side.indexes feature).
       - Index: api/plots/index.md
       - base: api/plots/base.md
       - points: api/plots/points.md

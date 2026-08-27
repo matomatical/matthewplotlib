@@ -1,0 +1,34 @@
+{#- One nav entry and, recursively, everything beneath it.
+
+    The stock theme draws two levels and stops. This override renders any
+    depth, keeping the stock classes and the navigation.side.indexes
+    behaviour at every level: a child page titled "Index" turns its
+    section's header into a link to it, and gets no row of its own.
+-#}
+{%- set features = config.theme.features or [] -%}
+{%- import 'macros/side-nav/side-nav-item-class.j2' as class_helper with context -%}
+{%- import 'macros/side-nav/side-nav-item.j2' as item_helper with context -%}
+{%- import 'macros/side-nav/section-index-page-title.j2' as index_helper with context -%}
+
+{%- macro nav_entry(nav_item) -%}
+    {%- if nav_item.children -%}
+        {%- set index_matches = (nav_item.children
+            | selectattr("title", "eq", index_helper.get_section_index_page_title())
+            | list) if "navigation.side.indexes" in features else [] -%}
+        {%- set index_child = index_matches[0] if index_matches else none -%}
+        {%- if index_child -%}
+            {{ item_helper.index_item(index_child, class_helper.get_class(index_child)) }}
+        {%- else -%}
+            {{ item_helper.non_index_item(nav_item, class_helper.get_class(nav_item)) }}
+        {%- endif %}
+        <ul class="terminal-mkdocs-side-nav-li-ul">
+        {%- for child in nav_item.children if child is not sameas index_child %}
+            <li class="terminal-mkdocs-side-nav-li-ul-li">{{ nav_entry(child) }}</li>
+        {%- endfor %}
+        </ul>
+    {%- else -%}
+        {{ item_helper.non_index_item(nav_item, class_helper.get_class(nav_item)) }}
+    {%- endif -%}
+{%- endmacro -%}
+
+        <li class="terminal-mkdocs-side-nav-li">{{ nav_entry(nav_item) }}</li>
