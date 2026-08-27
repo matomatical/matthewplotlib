@@ -1,12 +1,45 @@
-/* Make sidebar sticky and independently scrollable on desktop */
+/* Make sidebar sticky and independently scrollable on desktop, and lay its
+   two sections out side by side -- the site contents in a column sized to
+   its longest entry, the page contents in what remains of the panel -- so
+   that neither pushes the other off the bottom of the screen. The page
+   grows by about what the second column costs, so the main content keeps
+   its width, and stays centered since the container's automatic margins do
+   the centering whatever its width. */
 @media only screen and (min-width: 70em) {
+    :root {
+        --page-width: 72em;
+    }
+
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
     #terminal-mkdocs-side-panel {
         position: sticky;
         top: 20px;
         max-height: calc(100vh - 40px);
         overflow-y: auto;
+        display: flex;
+        gap: 3ch;
+        align-items: flex-start;
+        width: 48ch;
     }
-    
+
+    #terminal-mkdocs-side-panel > nav:first-child {
+        flex: 0 0 17ch;
+    }
+
+    #terminal-mkdocs-side-toc {
+        flex: 1 1 0;
+        min-width: 0;
+        overflow-wrap: break-word;
+    }
+
+    /* The rule that separates the sections when they stack. */
+    #terminal-mkdocs-side-toc > hr {
+        display: none;
+    }
+
     /* Hide scrollbar for a cleaner look in the sidebar */
     #terminal-mkdocs-side-panel::-webkit-scrollbar {
         width: 8px;
