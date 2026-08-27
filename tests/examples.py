@@ -134,6 +134,13 @@ EXAMPLES: tuple[Example, ...] = (
     Example("mandelbrot.py",            43, 80, saves="gif",
             args=("--num-frames", "5")),
     Example("phase_portrait.py",        30, 78, saves="png"),
+    # --when is pinned with an explicit UTC offset, so that the frames and
+    # their captions do not depend on the clock or on the host's timezone.
+    # Six frames over the default sidereal day cover night, both twilights
+    # with their horizon glow, and full day with the sun up.
+    Example("planisphere.py",           35, 64, saves="gif",
+            args=("--when", "2026-08-28T00:00+01:00", "--num-frames", "6",
+                  "--labels", "--no-loop")),
     Example("quickstart1.py",           14, 81, saves="png"),
     Example("quickstart2.py",           14, 81, saves="gif",
             args=("--num-frames", "5")),

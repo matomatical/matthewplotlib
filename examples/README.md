@@ -387,6 +387,20 @@ Maps
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/world_map.py">Source</a></p>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/planisphere.gif" width="100%">
+    </td>
+    <td>
+      <p><strong>Planisphere</strong></p>
+      <p>The whole sky over Oxford, wheeling through one sidereal day: a
+      thousand and forty-one stars tinted by temperature, the IAU
+      constellation figures, and a computed sun whose twilights wash the
+      stars out and hand them back.</p>
+      <p><em>By Claude Fable 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/planisphere.py">Source</a></p>
+    </td>
+  </tr>
 </tbody>
 </table>
 

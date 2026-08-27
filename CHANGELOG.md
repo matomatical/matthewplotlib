@@ -4,6 +4,12 @@ Changelog
 In development
 --------------
 
+New examples:
+
+* `planisphere.py`: the whole sky over Oxford as a turning star chart, with
+  the sun computed alongside the stars so twilight washes them out and dusk
+  hands them back.
+
 Version 0.7.1
 -------------
 
