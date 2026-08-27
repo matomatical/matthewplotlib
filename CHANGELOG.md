@@ -4,7 +4,35 @@ Changelog
 In development
 --------------
 
+New:
+
+* Nonlinear colour scales. The `vrange` of a `heatmap` (and so a `function2`
+  or `histogram2`), a `vfunction2`, a `calendar`, a `weeks`, a `bars` or a
+  `columns` now also accepts a scale saying how the values are spaced within
+  the interval, where a plain pair spaces them linearly:
+  * `scale`: the linear case, and the base class a custom spacing subclasses.
+  * `logscale`: values spaced logarithmically.
+  * `symlogscale`: logarithmic away from zero, linear near it, spans zero.
+  * `powscale`: values spaced by a power, such as a square root.
+  * A scale's endpoints may each be left out, to be completed from the data:
+    `vrange=mp.logscale()` is "logarithmic, over the inferred interval".
+* `colorbar` also takes a scale as its `source`, and borrows the whole scale
+  off a plot that carries one. The bar itself sweeps the colormap evenly
+  whatever the spacing, so a log bar and a linear bar over the same interval
+  draw identically.
+
+Changed:
+
+* The `vrange` a plot keeps is now the completed scale rather than a plain
+  pair. It still unpacks as `vmin, vmax = plot.vrange`, and compares equal to
+  another scale rather than to a tuple. `candles` and `boxes`, whose ranges
+  are coordinate intervals rather than colour or length scales, keep plain
+  pairs and refuse nonlinear scales.
+
 New examples:
+
+* `scales.py`: two Gaussian sources, one a hundred times fainter, on a linear
+  and a logarithmic colour scale.
 
 * `planisphere.py`: the whole sky over Oxford as a turning star chart, with
   the sun computed alongside the stars so twilight washes them out and dusk

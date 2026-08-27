@@ -186,6 +186,13 @@ class TestCandles:
         assert self.chart().vrange == (9.5, 13.0)
         assert self.chart(vrange=(0.0, 20.0)).vrange == (0.0, 20.0)
 
+    def test_the_value_axis_is_a_coordinate_so_a_scale_is_refused(self):
+        """The range is handed to the window that the axes are labelled from,
+        and a window places coordinates linearly: a scale that moved the
+        candles would part them from the labels on their axis."""
+        with pytest.raises(TypeError, match="coordinate axis"):
+            self.chart(vrange=mp.logscale(1.0, 20.0))
+
 
 # # #
 # boxes
@@ -331,6 +338,13 @@ class TestBoxesLayout:
     def test_the_interval_it_settled_on_is_kept_as_one_pair(self):
         assert boxes(self.DATA).vrange == (0.0, 19.0)
         assert boxes(self.DATA, vrange=(0.0, 20.0)).vrange == (0.0, 20.0)
+
+    def test_the_value_axis_is_a_coordinate_so_a_scale_is_refused(self):
+        """The range is handed to the window that the axes are labelled from,
+        and a window places coordinates linearly: a scale that moved the
+        boxes would part them from the labels on their axis."""
+        with pytest.raises(TypeError, match="coordinate axis"):
+            boxes(self.DATA, vrange=mp.logscale(1.0, 20.0))
 
 
 class TestBoxesStyle:

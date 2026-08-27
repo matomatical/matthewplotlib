@@ -28,6 +28,7 @@ from matthewplotlib.core import (
 )
 from matthewplotlib.plots.base import plot
 from matthewplotlib.plots.grids import heatmap
+from matthewplotlib.scales import scale
 
 
 class text(plot):
@@ -448,16 +449,22 @@ class colorbar(heatmap):
 
     Inputs:
 
-    * source : plot | (number, number).
+    * source : plot | (number, number) | scale.
         The interval the bar covers. Any plot that kept one lends it---a
         `heatmap` and everything built on one, a `calendar`, a `weeks`, a
         `bars`---so that the numbers on the bar cannot drift from the numbers
-        in the picture. An interval on its own works too, for a scale assembled
-        by hand.
+        in the picture. An interval or a `scale` on its own works too, for a
+        bar assembled by hand.
 
         A plot whose values are all the same settled on an interval covering
         nothing, which is one colour and no axis to label it along, so there is
         no bar to draw for it and it is refused.
+
+        Whatever the spacing of the source's scale, the bar itself draws the
+        colormap swept evenly from one end to the other, with the interval's
+        limits at the ends: a bar for a `logscale` and a bar for a plain
+        interval draw identically. Where the values in between fall is the
+        scale's business, not the bar's, until there are ticks to mark them.
     * colormap : optional ColorMap.
         Maps each position along the bar onto its colour. By default the bar
         runs black to white.
@@ -489,30 +496,51 @@ class colorbar(heatmap):
     """
     def __init__(
         self,
-        source: plot | tuple[number, number],
+        source: plot | tuple[number, number] | scale,
         colormap: ColorMap | None = None,
         direction: Direction = "up",
         length: int = 12,
         thickness: int = 1,
     ):
         if isinstance(source, plot):
-            vrange = getattr(source, "vrange", None)
-            if vrange is None:
+            vscale = getattr(source, "vrange", None)
+            if vscale is None:
                 raise ValueError(
                     f"{type(source).__name__} carries no interval for a "
                     "colorbar to draw; pass one instead"
                 )
+            # the plots that lay values along a coordinate axis lend a plain
+            # pair, which stands for a linear scale
+            if not isinstance(vscale, scale):
+                vscale = scale(vscale[0], vscale[1])
             # a plot whose values are all the same settles on an interval
             # covering nothing, which a bar cannot be a scale for: it has one
             # colour and no axis to label it along
-            if vrange[0] == vrange[1]:
+            if vscale.lo == vscale.hi:
                 raise ValueError(
                     f"every value in the {type(source).__name__} sits at "
-                    f"{vrange[0]}, so there is no scale to draw a colorbar "
+                    f"{vscale.lo}, so there is no scale to draw a colorbar "
                     "for; pass an interval instead"
                 )
+        elif isinstance(source, scale):
+            vscale = source
+            if vscale.lo is None or vscale.hi is None:
+                raise ValueError(
+                    f"{vscale!r} has a missing endpoint, and a colorbar has "
+                    "no data to complete it from; give both ends"
+                )
+            if vscale.lo == vscale.hi:
+                raise ValueError(
+                    f"{vscale!r} covers no interval, so there is no scale to "
+                    "draw a colorbar for"
+                )
         else:
-            vrange = source
+            vscale = scale(source[0], source[1])
+            if vscale.lo == vscale.hi:
+                raise ValueError(
+                    f"{source!r} covers no interval, so there is no scale to "
+                    "draw a colorbar for"
+                )
         if direction not in ("up", "down", "left", "right"):
             raise ValueError(
                 f"direction must be up, down, left or right, not {direction!r}"
@@ -526,7 +554,7 @@ class colorbar(heatmap):
         # the ramp, in screen order: the top row or the leftmost column first.
         # A vertical cell holds two pixels and a horizontal one holds one, so
         # the length counts cells and the pixels follow from the direction.
-        first, second = vrange
+        first, second = vscale.interval
         vertical = direction in ("up", "down")
         steps = 2 * length if vertical else length
         ramp = (
@@ -546,13 +574,20 @@ class colorbar(heatmap):
             if direction in ("down", "left")
             else (first, second)
         )
+        # the ramp is normalised over the plain interval rather than through
+        # the source's scale, so that the bar sweeps the colormap evenly
+        # whatever the spacing: where the values in between fall is the
+        # scale's business, not the bar's
         super().__init__(
             values=values,
             colormap=colormap,
-            vrange=vrange,
+            vrange=(first, second),
             xrange=None if vertical else span,
             yrange=span if vertical else None,
         )
+        # the bar stands for the source's scale, not the linear one its ramp
+        # was drawn through
+        self.vrange = vscale
         self.direction = direction
 
     def __repr__(self):

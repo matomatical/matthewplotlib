@@ -6,6 +6,8 @@ import pytest
 
 from matthewplotlib.plots import calendar, weeks
 
+from matthewplotlib.scales import scale
+
 from tests.plots_common import drawn_cells
 
 
@@ -100,16 +102,16 @@ class TestCalendar:
 
     def test_the_value_scale_spans_the_data_by_default(self):
         plot = calendar({"2025-01-01": 3.0, "2025-01-02": 9.0}, cols=1)
-        assert plot.vrange == (3.0, 9.0)
+        assert plot.vrange == scale(3.0, 9.0)
 
     def test_a_given_value_scale_is_kept_as_it_stands(self):
         plot = calendar({"2025-01-01": 3.0}, vrange=(0.0, 10.0), cols=1)
-        assert plot.vrange == (0.0, 10.0)
+        assert plot.vrange == scale(0.0, 10.0)
 
     def test_the_value_scale_ignores_the_days_with_no_value(self):
         days = {"2025-01-01": 3.0, "2025-01-02": float("nan")}
         plot = calendar(days, cols=1)
-        assert plot.vrange == (3.0, 3.0)
+        assert plot.vrange == scale(3.0, 3.0)
 
     def test_the_first_weekday_shifts_the_columns(self):
         """The 1st of January 2025 is a Wednesday, so it lands in the third
@@ -307,7 +309,7 @@ class TestWeeks:
 
     def test_the_value_scale_spans_the_data_by_default(self):
         plot = weeks({"2025-01-01": 3.0, "2025-01-02": 9.0})
-        assert plot.vrange == (3.0, 9.0)
+        assert plot.vrange == scale(3.0, 9.0)
 
     def test_it_draws_the_same_days_as_a_calendar_would(self):
         """The two share the front end that decides which days get a colour."""

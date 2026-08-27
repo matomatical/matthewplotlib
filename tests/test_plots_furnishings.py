@@ -16,6 +16,8 @@ from matthewplotlib.plots import (
     text,
 )
 
+from matthewplotlib.scales import scale
+
 from tests.plots_common import RecordingColormap
 
 
@@ -268,13 +270,44 @@ class TestColorbar:
 
         bar = colorbar(heat, colormap=mp.viridis)
 
-        assert bar.vrange == (0.0, 20.0)
+        assert bar.vrange == scale(0.0, 20.0)
         assert bar.window.yrange == (0.0, 20.0)
 
     def test_an_interval_needs_no_plot(self):
         bar = colorbar((-2.0, 2.0), colormap=mp.viridis)
 
-        assert bar.vrange == (-2.0, 2.0)
+        assert bar.vrange == scale(-2.0, 2.0)
+
+    def test_a_scale_needs_no_plot_either(self):
+        bar = colorbar(mp.logscale(1.0, 1000.0), colormap=mp.viridis)
+
+        assert bar.vrange == mp.logscale(1.0, 1000.0)
+        assert bar.window.yrange == (1.0, 1000.0)
+
+    def test_a_plot_drawn_on_a_scale_lends_the_whole_scale(self):
+        heat = mp.heatmap(
+            [[1.0, 1000.0]],
+            colormap=mp.viridis,
+            vrange=mp.logscale(),
+        )
+
+        bar = colorbar(heat, colormap=mp.viridis)
+
+        assert bar.vrange == mp.logscale(1.0, 1000.0)
+
+    def test_the_bar_sweeps_the_colormap_evenly_whatever_the_spacing(self):
+        """A log bar and a linear bar over the same interval draw identically,
+        character for character: where the values in between fall is the
+        scale's business, not the bar's, until there are ticks to mark
+        them."""
+        linear = colorbar(scale(1.0, 1000.0), colormap=mp.viridis)
+        logged = colorbar(mp.logscale(1.0, 1000.0), colormap=mp.viridis)
+
+        assert str(linear) == str(logged)
+
+    def test_a_partial_scale_has_no_data_to_complete_it_from(self):
+        with pytest.raises(ValueError, match="missing endpoint"):
+            colorbar(mp.logscale(), colormap=mp.viridis)
 
     def test_the_colormap_is_never_read_off_the_plot(self):
         """Naming it at the bar is the whole of the contract, so that a plot's
@@ -356,7 +389,7 @@ class TestColorbar:
         )
 
         assert colorbar(field, colormap=mp.reds).vrange == field.vrange
-        assert colorbar(mp.bars([1.0, 2.0])).vrange == (0.0, 2.0)
+        assert colorbar(mp.bars([1.0, 2.0])).vrange == scale(0.0, 2.0)
 
     def test_an_unknown_direction_is_refused(self):
         with pytest.raises(ValueError, match="up, down, left or right"):

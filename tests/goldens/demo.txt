@@ -15,17 +15,17 @@ text:
   text(height=1, width=20, text="G'day..."))), hstack(height=10, width=48, plots=(
   hstack(height=10, width=32, plots=(border(style='┐', plot=vstack(height=8, width
   =14, plots=(text(height=1, width=8, text='uniform:'), heatmap(window(14x7 cells)
-  , vrange=[0.00,1.00])))), border(style='┓', plot=vstack(height=8, width=14, plot
+  , vrange=scale(0, 1))))), border(style='┓', plot=vstack(height=8, width=14, plot
   s=(text(height=1, width=9, text='ident...'), heatmap(window(14x7 cells), vrange=
-  [0.00,1.00])))))), border(style='╗', plot=vstack(height=8, width=14, plots=(text
-  (height=1, width=9, text='gauss...'), heatmap(window(14x7 cells), vrange=[0.00,6
-  .00])))))))), hstack(height=10, width=48, plots=(hstack(height=10, width=32, plo
+  scale(0, 1))))))), border(style='╗', plot=vstack(height=8, width=14, plots=(text
+  (height=1, width=9, text='gauss...'), heatmap(window(14x7 cells), vrange=scale(0
+  , 6))))))))), hstack(height=10, width=48, plots=(hstack(height=10, width=32, plo
   ts=(border(style='╮', plot=vstack(height=8, width=14, plots=(text(height=1, widt
-  h=8, text='uniform:'), heatmap(window(14x7 cells), vrange=[0.00,1.00])))), borde
+  h=8, text='uniform:'), heatmap(window(14x7 cells), vrange=scale(0, 1))))), borde
   r(style=' ', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text
-  ='ident...'), heatmap(window(14x7 cells), vrange=[0.00,1.00])))))), border(style
+  ='ident...'), heatmap(window(14x7 cells), vrange=scale(0, 1))))))), border(style
   ='▜', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text='gauss
-  ...'), heatmap(window(14x7 cells), vrange=[0.00,6.00])))))))), border(style='╮',
+  ...'), heatmap(window(14x7 cells), vrange=scale(0, 6))))))))), border(style='╮',
    plot=scatter(<300 points>, window(x=[-5.00,5.00], y=[-4.00,4.00], 46x18 cells))
   )))
 colour:
@@ -456,17 +456,17 @@ text:
   text(height=1, width=20, text="G'day..."))), hstack(height=10, width=48, plots=(
   hstack(height=10, width=32, plots=(border(style='┐', plot=vstack(height=8, width
   =14, plots=(text(height=1, width=8, text='uniform:'), heatmap(window(14x7 cells)
-  , vrange=[0.00,1.00])))), border(style='┓', plot=vstack(height=8, width=14, plot
+  , vrange=scale(0, 1))))), border(style='┓', plot=vstack(height=8, width=14, plot
   s=(text(height=1, width=9, text='ident...'), heatmap(window(14x7 cells), vrange=
-  [0.00,1.00])))))), border(style='╗', plot=vstack(height=8, width=14, plots=(text
-  (height=1, width=9, text='gauss...'), heatmap(window(14x7 cells), vrange=[0.00,6
-  .00])))))))), hstack(height=10, width=48, plots=(hstack(height=10, width=32, plo
+  scale(0, 1))))))), border(style='╗', plot=vstack(height=8, width=14, plots=(text
+  (height=1, width=9, text='gauss...'), heatmap(window(14x7 cells), vrange=scale(0
+  , 6))))))))), hstack(height=10, width=48, plots=(hstack(height=10, width=32, plo
   ts=(border(style='╮', plot=vstack(height=8, width=14, plots=(text(height=1, widt
-  h=8, text='uniform:'), heatmap(window(14x7 cells), vrange=[0.00,1.00])))), borde
+  h=8, text='uniform:'), heatmap(window(14x7 cells), vrange=scale(0, 1))))), borde
   r(style=' ', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text
-  ='ident...'), heatmap(window(14x7 cells), vrange=[0.00,1.00])))))), border(style
+  ='ident...'), heatmap(window(14x7 cells), vrange=scale(0, 1))))))), border(style
   ='▜', plot=vstack(height=8, width=14, plots=(text(height=1, width=9, text='gauss
-  ...'), heatmap(window(14x7 cells), vrange=[0.00,6.00])))))))), border(style='╮',
+  ...'), heatmap(window(14x7 cells), vrange=scale(0, 6))))))))), border(style='╮',
    plot=scatter(<300 points>, window(x=[-5.00,5.00], y=[-4.00,4.00], 46x18 cells))
   )))
   ╔══════════════════════════════════════════════╗

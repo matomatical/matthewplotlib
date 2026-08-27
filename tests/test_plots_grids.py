@@ -15,6 +15,8 @@ from matthewplotlib.plots import (
     vfunction2,
 )
 
+from matthewplotlib.scales import scale
+
 from tests.plots_common import RecordingColormap, RecordingVectorColormap
 
 
@@ -45,7 +47,7 @@ class TestHeatmap:
 
         plot = heatmap([[0.0, 5.0], [10.0, 20.0]], colormap=colormap)
 
-        assert plot.vrange == (0.0, 20.0)
+        assert plot.vrange == scale(0.0, 20.0)
         assert np.array_equal(colormap.input, [[0.0, 0.25], [0.5, 1.0]])
 
     def test_values_outside_a_given_interval_saturate(self):
@@ -57,7 +59,7 @@ class TestHeatmap:
             vrange=(0.0, 1.0),
         )
 
-        assert plot.vrange == (0.0, 1.0)
+        assert plot.vrange == scale(0.0, 1.0)
         assert np.array_equal(colormap.input, [[0.0, 0.5], [1.0, 1.0]])
 
     def test_a_descending_interval_turns_the_scale_around(self):
@@ -74,7 +76,7 @@ class TestHeatmap:
 
         plot = heatmap([[7.0, 7.0]], colormap=colormap)
 
-        assert plot.vrange == (7.0, 7.0)
+        assert plot.vrange == scale(7.0, 7.0)
         assert np.array_equal(colormap.input, [[0.0, 0.0]])
 
     def test_a_value_that_is_not_a_number_comes_out_at_the_bottom(self):
@@ -82,12 +84,40 @@ class TestHeatmap:
 
         plot = heatmap([[1.0, float("nan"), 3.0]], colormap=colormap)
 
-        assert plot.vrange == (1.0, 3.0)
+        assert plot.vrange == scale(1.0, 3.0)
         assert np.array_equal(colormap.input, [[0.0, 0.0, 1.0]])
 
     def test_an_interval_covering_nothing_is_refused(self):
         with pytest.raises(ValueError, match="covers no interval"):
             heatmap([[0.0, 1.0]], vrange=(5.0, 5.0))
+
+    def test_a_scale_spaces_the_colours_within_the_interval(self):
+        colormap = RecordingColormap()
+
+        plot = heatmap(
+            [[1.0, 10.0, 100.0]],
+            colormap=colormap,
+            vrange=mp.logscale(1, 100),
+        )
+
+        assert plot.vrange == mp.logscale(1.0, 100.0)
+        assert np.allclose(colormap.input, [[0.0, 0.5, 1.0]])
+
+    def test_a_partial_scale_is_completed_from_the_data(self):
+        colormap = RecordingColormap()
+
+        plot = heatmap(
+            [[1.0, 10.0, 100.0]],
+            colormap=colormap,
+            vrange=mp.logscale(),
+        )
+
+        assert plot.vrange == mp.logscale(1.0, 100.0)
+        assert np.allclose(colormap.input, [[0.0, 0.5, 1.0]])
+
+    def test_a_scale_completed_outside_its_domain_says_to_give_an_end(self):
+        with pytest.raises(ValueError, match="give one explicitly"):
+            heatmap([[0.0, 100.0]], vrange=mp.logscale())
 
     def test_it_needs_a_grid_of_values(self):
         with pytest.raises(ValueError, match="2d grid"):
@@ -96,7 +126,7 @@ class TestHeatmap:
     def test_it_keeps_the_interval_it_was_given(self):
         plot = heatmap([[0.0, 1.0]], colormap=mp.viridis, vrange=(0.0, 4.0))
 
-        assert plot.vrange == (0.0, 4.0)
+        assert plot.vrange == scale(0.0, 4.0)
 
     def test_an_image_keeps_no_interval(self):
         """Its data is already colours, or already scaled, so there is no

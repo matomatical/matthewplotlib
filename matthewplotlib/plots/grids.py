@@ -20,7 +20,7 @@ from numpy.typing import ArrayLike
 from matthewplotlib.colormaps import ColorMap, chroma, domain
 from matthewplotlib.colors import parse_colors
 from matthewplotlib.data import number
-from matthewplotlib.scales import _value_range, _normalise
+from matthewplotlib.scales import scale, _resolve_vrange
 from matthewplotlib.window import window
 from matthewplotlib.core import unicode_image
 from matthewplotlib.plots.base import plot
@@ -118,8 +118,8 @@ class heatmap(image):
 
     The values are normalised onto the range 0.0 to 1.0 and handed to a
     colormap, so that the caller does not scale them by hand and the colours
-    mean the same thing from one plot to the next. The interval is kept as
-    `vrange`, so that a `colorbar` can be drawn over the same numbers.
+    mean the same thing from one plot to the next. The scale it settled on is
+    kept as `vrange`, so that a `colorbar` can be drawn over the same numbers.
 
     Inputs:
 
@@ -129,13 +129,18 @@ class heatmap(image):
         Maps each normalised value onto its colour. By default the values come
         out as shades of grey, black at the bottom of the interval and white
         at the top.
-    * vrange : optional (number, number).
+    * vrange : optional (number, number) | scale.
         The interval of values the colormap covers. Values outside it saturate
         at the nearest end. By default the interval runs from the lowest to the
         highest value in the grid, so that the colours span the data.
 
         Given descending, the scale turns around: `vrange=(1, 0)` colours the
         low values the way the high values would have been coloured.
+
+        A `scale` says how the colours are spaced within the interval, where
+        a plain pair spaces them linearly: `vrange=mp.logscale(1, 255)`
+        spends them evenly over the orders of magnitude, and
+        `vrange=mp.logscale()` does the same over an inferred interval.
     * xrange : optional (number, number).
         The data coordinates at the left and the right edges of the grid. By
         default the heatmap carries no horizontal coordinate, and so cannot be
@@ -164,7 +169,7 @@ class heatmap(image):
         self,
         values: ArrayLike, # number[h, w]
         colormap: ColorMap | None = None,
-        vrange: tuple[number, number] | None = None,
+        vrange: tuple[number, number] | scale | None = None,
         xrange: tuple[number, number] | None = None,
         yrange: tuple[number, number] | None = None,
     ):
@@ -174,19 +179,18 @@ class heatmap(image):
                 "heatmap needs a 2d grid of values, not an array of shape "
                 f"{grid.shape}"
             )
-        vrange = _value_range(vrange, grid, "heatmap")
+        vscale = _resolve_vrange(vrange, grid, "heatmap")
 
         super().__init__(
-            im=_normalise(grid, vrange),
+            im=vscale(grid),
             colormap=colormap,
             xrange=xrange,
             yrange=yrange,
         )
-        self.vrange = vrange
+        self.vrange = vscale
 
     def __repr__(self):
-        vmin, vmax = self.vrange
-        return f"heatmap({self.window!r}, vrange=[{vmin:.2f},{vmax:.2f}])"
+        return f"heatmap({self.window!r}, vrange={self.vrange!r})"
 
 
 class function2(heatmap):
@@ -209,11 +213,12 @@ class function2(heatmap):
         The number of character rows in the plot. This will also be half of the
         number of grid squares, since the result is an image plot with two
         half-character-pixels per row.
-    * vrange : optional (number, number).
+    * vrange : optional (number, number) | scale.
         Expected lower and upper bounds on the f(x, y) values. Used for
         determining the bounds of the colour scale. By default, the minimum and
         maximum output over the grid are used. Values outside these bounds
-        saturate at the nearest end of the colour scale.
+        saturate at the nearest end of the colour scale. A `scale` says how
+        the colours are spaced within the bounds, as for `heatmap`.
     * colormap : optional colormap (e.g. mp.viridis).
         By default, the output will be in greyscale, with black corresponding
         to vrange[0] and white corresponding to vrange[1]. You can choose a
@@ -235,7 +240,7 @@ class function2(heatmap):
         yrange: tuple[number, number],
         width: int,
         height: int,
-        vrange: tuple[number, number] | None = None,
+        vrange: tuple[number, number] | scale | None = None,
         colormap: ColorMap | None = None,
         endpoints: bool = False,
     ):
@@ -288,12 +293,13 @@ class vfunction2(image):
         The number of character rows in the plot. This will also be half of the
         number of grid squares, since the result is an image plot with two
         half-character-pixels per row.
-    * vrange : optional (number, number).
+    * vrange : optional (number, number) | scale.
         Expected lower and upper bounds on the *magnitude* of the vectors, used
         to scale them into the unit disc for the colormap. By default the lower
         bound is zero and the upper bound is the largest magnitude over the
         grid, so that the fastest part of the field is at full brightness.
-        Magnitudes outside these bounds saturate at the nearest end.
+        Magnitudes outside these bounds saturate at the nearest end. A `scale`
+        says how the brightness is spaced within the bounds, as for `heatmap`.
 
         The lower bound is zero by default rather than the smallest magnitude,
         because a vector field's zeros are where its structure is, and they
@@ -318,7 +324,7 @@ class vfunction2(image):
         yrange: tuple[number, number],
         width: int,
         height: int,
-        vrange: tuple[number, number] | None = None,
+        vrange: tuple[number, number] | scale | None = None,
         colormap: ColorMap | None = None,
         endpoints: bool = False,
     ):
@@ -342,13 +348,13 @@ class vfunction2(image):
 
         # scale the magnitudes into [0, 1], leaving the directions alone
         magnitude = np.hypot(vgrid[..., 0], vgrid[..., 1])
-        vrange = _value_range(
+        vscale = _resolve_vrange(
             vrange,
             magnitude,
             "vfunction2",
             from_zero=True,
         )
-        scaled = _normalise(magnitude, vrange)
+        scaled = vscale(magnitude)
         with np.errstate(divide="ignore", invalid="ignore"):
             direction = vgrid / magnitude[..., np.newaxis]
         direction = np.where(np.isfinite(direction), direction, 0.)
@@ -361,7 +367,7 @@ class vfunction2(image):
             yrange=yrange,
         )
         self.name = getattr(F, '__name__', '?')
-        self.vrange = vrange
+        self.vrange = vscale
 
     def __repr__(self):
         return f"vfunction2(f={self.name}, {self.window!r})"

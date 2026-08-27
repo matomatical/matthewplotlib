@@ -20,7 +20,11 @@ from collections.abc import Sequence
 from numpy.typing import ArrayLike, NDArray
 from matthewplotlib.colors import ColorLike, parse_color, parse_colors
 from matthewplotlib.data import number
-from matthewplotlib.scales import _value_range, _normalise
+from matthewplotlib.scales import (
+    scale,
+    _resolve_vrange,
+    _resolve_linear_vrange,
+)
 from matthewplotlib.window import window
 from matthewplotlib.core import (
     CharArray,
@@ -112,13 +116,18 @@ class bars(plot):
         The number of rows comprising each bar.
     * bar_spacing: int (default: 0).
         The number of rows between each bar.
-    * vrange : optional (number, number).
+    * vrange : optional (number, number) | scale.
         The interval of values the bars measure: a bar at the first value or
         below has zero width and one at the second value or above occupies the
         whole width. By default the interval runs from zero to the largest
         value, so that the largest bar or bars fill the width. Measuring from
         zero rather than from the smallest value is what makes a bar's width
         readable on its own, and a chart of equal values a row of full bars.
+
+        A `scale` says how the widths are spaced within the interval, where a
+        plain pair spaces them linearly. An inferred interval still starts at
+        zero, so a `logscale` here needs its own lower end:
+        `vrange=mp.logscale(1, 1000)`.
     * color : optional ColorLike.
         The color of the filled portion of the bars. Defaults to the terminal's
         default foreground color.
@@ -140,17 +149,17 @@ class bars(plot):
         width: int = 30,
         bar_height: int = 1,
         bar_spacing: int = 0,
-        vrange: tuple[number, number] | None = None,
+        vrange: tuple[number, number] | scale | None = None,
         color: ColorLike | None = None,
         colors: list[ColorLike | None] | None = None,
     ):
         # standardise inputs
         values = np.asarray(values, dtype=float)
-        vrange = _value_range(vrange, values, "bars", from_zero=True)
+        vscale = _resolve_vrange(vrange, values, "bars", from_zero=True)
         num_bars = len(values)
 
         # compute the bar widths
-        norm_values = _normalise(values, vrange)
+        norm_values = vscale(values)
 
         # determine the colors for each bar
         if colors is None:
@@ -174,15 +183,13 @@ class bars(plot):
             bars_chars,
         )
         super().__init__(chars=all_chars)
-        self.vrange = vrange
+        self.vrange = vscale
         self.num_bars = num_bars
 
     def __repr__(self):
-        vmin, vmax = self.vrange
         return (
             f"bars(height={self.height}, width={self.width}, "
-            f"values=<{self.num_bars} bars on "
-            f"[{vmin:.2f},{vmax:.2f}]>)"
+            f"values=<{self.num_bars} bars on {self.vrange!r}>)"
         )
 
 
@@ -284,7 +291,7 @@ class columns(plot):
         The total width of full columns.
     * column_width: int (default 1).
     * column_spacing: int (default 0).
-    * vrange : optional (number, number).
+    * vrange : optional (number, number) | scale.
         The interval of values the columns measure: a column at the first value
         or below has zero height and one at the second value or above occupies
         the whole height. By default the interval runs from zero to the largest
@@ -292,6 +299,11 @@ class columns(plot):
         from zero rather than from the smallest value is what makes a column's
         height readable on its own, and a chart of equal values a row of full
         columns.
+
+        A `scale` says how the heights are spaced within the interval, where a
+        plain pair spaces them linearly. An inferred interval still starts at
+        zero, so a `logscale` here needs its own lower end:
+        `vrange=mp.logscale(1, 1000)`.
     * color : optional ColorLike.
         The color of the filled portion of the columns. Defaults to the
         terminal's default foreground color.
@@ -313,17 +325,17 @@ class columns(plot):
         height: int = 10,
         column_width: int = 1,
         column_spacing: int = 0,
-        vrange: tuple[number, number] | None = None,
+        vrange: tuple[number, number] | scale | None = None,
         color: ColorLike | None = None,
         colors: list[ColorLike | None] | None = None,
     ):
         # standardise inputs
         values = np.asarray(values, dtype=float)
-        vrange = _value_range(vrange, values, "columns", from_zero=True)
+        vscale = _resolve_vrange(vrange, values, "columns", from_zero=True)
         num_cols = len(values)
 
         # compute the column heights
-        norm_values = _normalise(values, vrange)
+        norm_values = vscale(values)
 
         # determine the colours
         if colors is None:
@@ -347,15 +359,13 @@ class columns(plot):
             cols_chars,
         )
         super().__init__(chars=all_chars)
-        self.vrange = vrange
+        self.vrange = vscale
         self.num_cols = num_cols
 
     def __repr__(self):
-        vmin, vmax = self.vrange
         return (
             f"columns(height={self.height}, width={self.width}, "
-            f"values=<{self.num_cols} columns on "
-            f"[{vmin:.2f},{vmax:.2f}]>)"
+            f"values=<{self.num_cols} columns on {self.vrange!r}>)"
         )
 
 
@@ -568,16 +578,20 @@ class candles(plot):
                     "arguments are opens, highs, lows, closes"
                 )
 
-        # determine the value range, and where each value sits within it
+        # determine the value range, and where each value sits within it. The
+        # range is a coordinate interval, handed to the window below, so it is
+        # a plain pair: a scale that moved the candles would part them from
+        # the labels on their axis
         if vrange is None and num_candles == 0:
             raise ValueError("cannot infer a value range with no candles")
-        vrange = _value_range(
+        vscale = _resolve_linear_vrange(
             vrange,
             np.concatenate(values),
             "candles",
             allow_flat=False,
         )
-        proportions = [_normalise(v, vrange) for v in values]
+        vrange = vscale.interval
+        proportions = [vscale(v) for v in values]
 
         # determine the colours
         rose = closes_ >= opens_
@@ -782,13 +796,17 @@ class boxes(plot):
                 [len(samples) for samples in outlying],
             )
 
-        # determine the value range, and where each value sits within it
-        vrange = _value_range(
+        # determine the value range, and where each value sits within it. The
+        # range is a coordinate interval, handed to the window below, so it is
+        # a plain pair: a scale that moved the boxes would part them from the
+        # labels on their axis
+        vscale = _resolve_linear_vrange(
             vrange,
             np.concatenate(groups),
             "boxes",
             allow_flat=False,
         )
+        vrange = vscale.interval
         # a point outside the range is dropped rather than clipped, since a
         # point drawn at the end of the axis claims a value it does not have,
         # so these are placed without the saturation the extents get
@@ -825,11 +843,11 @@ class boxes(plot):
 
         # construct the boxes
         chars = unicode_boxes(
-            outer_los=_normalise(whisker_los, vrange),
-            outer_his=_normalise(whisker_his, vrange),
-            inner_los=_normalise(first, vrange),
-            inner_his=_normalise(third, vrange),
-            interiors=_normalise(medians, vrange) if median else None,
+            outer_los=vscale(whisker_los),
+            outer_his=vscale(whisker_his),
+            inner_los=vscale(first),
+            inner_his=vscale(third),
+            interiors=vscale(medians) if median else None,
             outliers=outlying_proportions[inside],
             outlier_boxes=beyond_boxes[inside],
             length=length,

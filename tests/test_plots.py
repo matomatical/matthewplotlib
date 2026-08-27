@@ -151,7 +151,7 @@ class TestValueRanges:
             draw((2.0, 2.0))
 
     @FLAT
-    def test_the_interval_it_settled_on_is_a_pair_of_floats(self, draw):
+    def test_the_scale_it_settled_on_unpacks_as_a_pair_of_floats(self, draw):
         vmin, vmax = draw((0.0, 4.0)).vrange
         assert (type(vmin), type(vmax)) == (float, float)
 
@@ -160,7 +160,7 @@ class TestValueRanges:
         measurement drew the whole chart full."""
         chart = mp.bars([1.0, float("nan"), 3.0], width=6)
 
-        assert chart.vrange == (0.0, 3.0)
+        assert chart.vrange == mp.scale(0.0, 3.0)
         assert chart.chars.to_plain_str().split("\n") == [
             "██    ",
             "      ",
@@ -170,14 +170,34 @@ class TestValueRanges:
     def test_bars_measure_from_zero_rather_than_the_lowest_value(self):
         """A bar's length is read against a baseline, so a chart of equal
         values is a row of full bars rather than a row of empty ones."""
-        assert mp.bars([5.0, 5.0]).vrange == (0.0, 5.0)
-        assert mp.columns([5.0, 5.0]).vrange == (0.0, 5.0)
+        assert mp.bars([5.0, 5.0]).vrange == mp.scale(0.0, 5.0)
+        assert mp.columns([5.0, 5.0]).vrange == mp.scale(0.0, 5.0)
+
+    def test_a_scale_spaces_the_bar_lengths_within_the_interval(self):
+        chart = mp.bars(
+            [1.0, 4.0],
+            width=4,
+            vrange=mp.powscale(0.0, 4.0, exponent=0.5),
+        )
+
+        assert chart.vrange == mp.powscale(0.0, 4.0, exponent=0.5)
+        assert chart.chars.to_plain_str().split("\n") == [
+            "██  ",
+            "████",
+        ]
+
+    def test_an_inferred_bar_interval_starts_at_zero_which_log_cannot(self):
+        """Measuring from zero is what makes a bar's length readable on its
+        own, so the inference is kept even for a scale that cannot cover
+        zero, and the error says to give the endpoint instead."""
+        with pytest.raises(ValueError, match="give one explicitly"):
+            mp.bars([1.0, 1000.0], vrange=mp.logscale())
 
     def test_a_scale_covering_nothing_has_no_colorbar_to_draw(self):
         """A plot whose values are all the same settles on an interval with no
         extent, which is one colour and no axis to label it along."""
         flat = heatmap([[5.0, 5.0]])
 
-        assert flat.vrange == (5.0, 5.0)
+        assert flat.vrange == mp.scale(5.0, 5.0)
         with pytest.raises(ValueError, match="no scale to draw a colorbar"):
             colorbar(flat)

@@ -23,7 +23,7 @@ from matthewplotlib.data import (
     parse_date,
     parse_date_series,
 )
-from matthewplotlib.scales import _value_range, _normalise
+from matthewplotlib.scales import scale, _resolve_vrange
 from matthewplotlib.core import CharArray, ords
 from matthewplotlib.plots.base import plot, wrap
 
@@ -47,12 +47,12 @@ class _ColoredDays(NamedTuple):
     colors: dict[datetime.date, NDArray]    # uint8[3] per day
     first: datetime.date
     last: datetime.date
-    vrange: tuple[number, number]
+    vrange: scale
 
 
 def _color_days(
     data: DateSeries,
-    vrange: tuple[number, number] | None,
+    vrange: tuple[number, number] | scale | None,
     colormap: ColorMap | None,
     daterange: tuple[DateLike, DateLike] | None,
     what: str,
@@ -87,9 +87,9 @@ def _color_days(
 
     # determine the value scale over those days, and colour them by it
     levels = np.array([value for _, value in drawn], dtype=float)
-    vrange = _value_range(vrange, levels, what)
+    vscale = _resolve_vrange(vrange, levels, what)
     rgb = parse_colors(
-        _normalise(levels, vrange),
+        vscale(levels),
         n=len(levels),
         colormap=colormap,
     )
@@ -97,7 +97,7 @@ def _color_days(
         colors={date: color for (date, _), color in zip(drawn, rgb)},
         first=first,
         last=last,
-        vrange=vrange,
+        vrange=vscale,
     )
 
 
@@ -190,12 +190,13 @@ class calendar(plot):
         The dated values to colour: a mapping from dates to values, a pair of
         sequences of dates and values, or one date and the values on the days
         running from it. See `DateSeries` for the full list of forms.
-    * vrange : optional (number, number).
+    * vrange : optional (number, number) | scale.
         The interval of values the colormap covers: values at the first limit
         or below come out at the bottom of the colormap and values at the
         second or above come out at the top. By default the interval runs from
         the lowest to the highest value among the days drawn, so that the
-        colours span the data.
+        colours span the data. A `scale` says how the colours are spaced
+        within the interval, where a plain pair spaces them linearly.
     * colormap : optional ColorMap.
         Maps each day's value, normalised to the range 0.0 to 1.0, onto its
         colour. By default the days are shades of grey, black for the bottom of
@@ -232,7 +233,7 @@ class calendar(plot):
     def __init__(
         self,
         data: DateSeries,
-        vrange: tuple[number, number] | None = None,
+        vrange: tuple[number, number] | scale | None = None,
         colormap: ColorMap | None = None,
         daterange: tuple[DateLike, DateLike] | None = None,
         cols: int | None = 4,
@@ -332,11 +333,10 @@ class calendar(plot):
 
     def __repr__(self):
         first, last = self.daterange
-        vmin, vmax = self.vrange
         return (
             f"calendar(height={self.height}, width={self.width}, "
             f"data=<{self.num_days} days from {first} to {last} on "
-            f"[{vmin:.2f},{vmax:.2f}]>)"
+            f"{self.vrange!r}>)"
         )
 
 
@@ -355,12 +355,13 @@ class weeks(plot):
         The dated values to colour: a mapping from dates to values, a pair of
         sequences of dates and values, or one date and the values on the days
         running from it. See `DateSeries` for the full list of forms.
-    * vrange : optional (number, number).
+    * vrange : optional (number, number) | scale.
         The interval of values the colormap covers: values at the first limit
         or below come out at the bottom of the colormap and values at the
         second or above come out at the top. By default the interval runs from
         the lowest to the highest value among the days drawn, so that the
-        colours span the data.
+        colours span the data. A `scale` says how the colours are spaced
+        within the interval, where a plain pair spaces them linearly.
     * colormap : optional ColorMap.
         Maps each day's value, normalised to the range 0.0 to 1.0, onto its
         colour. By default the days are shades of grey, black for the bottom of
@@ -401,7 +402,7 @@ class weeks(plot):
     def __init__(
         self,
         data: DateSeries,
-        vrange: tuple[number, number] | None = None,
+        vrange: tuple[number, number] | scale | None = None,
         colormap: ColorMap | None = None,
         daterange: tuple[DateLike, DateLike] | None = None,
         width: int | None = None,
@@ -531,9 +532,8 @@ class weeks(plot):
 
     def __repr__(self):
         first, last = self.daterange
-        vmin, vmax = self.vrange
         return (
             f"weeks(height={self.height}, width={self.width}, "
             f"data=<{self.num_days} days over {self.num_weeks} weeks from "
-            f"{first} to {last} on [{vmin:.2f},{vmax:.2f}]>)"
+            f"{first} to {last} on {self.vrange!r}>)"
         )

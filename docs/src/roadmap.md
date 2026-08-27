@@ -47,7 +47,7 @@ Styling plots with colors:
 Specifying colors:
 
 * [ ] Consistent API for color specification. See the `color-specs` note.
-* [ ] Configurable colour scales and normalisation. See the `scales` note.
+* [x] Configurable colour scales and normalisation. See the `scales` note.
 
 Rendering:
 
@@ -139,7 +139,7 @@ Advancements of basic plot types:
 * [ ] Advanced image options:
   * [ ] Integer-factor down- and upsampling.
   * [x] A plot that normalises values onto the colormap itself (`heatmap`).
-  * [ ] Nonlinear normalisation. See the `scales` note.
+  * [x] Nonlinear normalisation. See the `scales` note.
 * [ ] Advanced text formatting parser (`rich=True` or something):
   * [ ] Bold, italic, underline, based on markdown?
   * [ ] Some way of specifying colors, html-style tags?
@@ -171,7 +171,8 @@ Advanced plot arrangement:
 
 Advanced furnishings:
 
-* [ ] Axis transformations (e.g. logarithmic scale).
+* [ ] Axis transformations (e.g. logarithmic scale). The `scales` note works
+  through how the colour scales extend to coordinate axes.
 * [ ] Axis segments (see the `axis-series` note).
 * [x] Axes on any subset of the four sides, each blank, ruled, or ruled with
   ticks and labels, so that a colorbar can be labelled without a full border.

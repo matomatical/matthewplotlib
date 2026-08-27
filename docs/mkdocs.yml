@@ -45,6 +45,7 @@ nav:
     - data: api/data.md
     - colors: api/colors.md
     - colormaps: api/colormaps.md
+    - scales: api/scales.md
     - core: api/core.md
     - terminal: api/terminal.md
     - window: api/window.md
