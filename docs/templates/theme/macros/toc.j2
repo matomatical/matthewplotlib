@@ -1,5 +1,5 @@
 {% macro render_toc_item(toc_item, indent=0) -%}
-<li style="margin-left: {{ indent }}em;"><a href="{{ toc_item.url }}">{{ toc_item.title }}</a></li>
+<li style="margin-left: {{ indent }}ch;"><a href="{{ toc_item.url }}">{{ toc_item.title }}</a></li>
 {% for child in toc_item.children -%}
     {{ render_toc_item(child, indent + 1) }}
 {%- endfor %}

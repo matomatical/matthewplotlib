@@ -171,6 +171,14 @@ code.doc-symbol {
     border-left-color: var(--sweetie-red);
 }
 
+/* Each level of the site contents steps in by one character, matching the
+   page contents below it. The framework would give nested list items two
+   spaces' worth; the rule here outranks it (a class beats three elements)
+   without touching the lists in the page body. */
+.terminal-mkdocs-side-nav-li-ul > li {
+    padding-left: 1ch;
+}
+
 /* The version menu sits in the top nav, so it is sized to its contents
    rather than filling the width a form would. */
 #version-menu:not([hidden]) {
