@@ -33,14 +33,24 @@ FULLY_PUBLIC = ("plots", "colormaps", "animations")
 
 
 def defined_in(module_name: str) -> list[str]:
-    """The public names a module defines itself, ignoring what it imports."""
+    """The public names a module defines itself, ignoring what it imports.
+
+    A package defines a name when one of its own submodules does: `plots`
+    re-exports whatever its family modules define, and those all belong in
+    the top-level namespace too.
+    """
     module = importlib.import_module(f"matthewplotlib.{module_name}")
     return sorted(
         name
         for name, value in vars(module).items()
         if not name.startswith("_")
         and not isinstance(value, types.ModuleType)
-        and getattr(value, "__module__", None) == module.__name__
+        and (
+            getattr(value, "__module__", None) == module.__name__
+            or str(getattr(value, "__module__", "")).startswith(
+                module.__name__ + "."
+            )
+        )
     )
 
 

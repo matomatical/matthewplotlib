@@ -10,6 +10,16 @@ New examples:
   the sun computed alongside the stars so twilight washes them out and dusk
   hands them back.
 
+Internal:
+
+* The `plots` module is now a package with one module per plot family:
+  `points`, `grids`, `barcharts`, `calendars`, `tables`, `furnishings`, and
+  `base`, which holds the base class together with the arrangement plots its
+  operators are shortcuts for. Everything is still importable from
+  `matthewplotlib.plots` and from the package root.
+* New `scales` module, holding the value-interval helpers that the grid, bar,
+  and calendar families share.
+
 Version 0.7.1
 -------------
 

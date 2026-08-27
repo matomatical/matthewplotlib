@@ -30,7 +30,15 @@ nav:
   - Examples: examples.md
   - API Reference:
     - matthewplotlib: api.md
-    - plots: api/plots.md
+    - plots:
+      - plots: api/plots/index.md
+      - base: api/plots/base.md
+      - points: api/plots/points.md
+      - grids: api/plots/grids.md
+      - barcharts: api/plots/barcharts.md
+      - calendars: api/plots/calendars.md
+      - tables: api/plots/tables.md
+      - furnishings: api/plots/furnishings.md
     - animations: api/animations.md
     - data: api/data.md
     - colors: api/colors.md

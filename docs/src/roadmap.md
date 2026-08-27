@@ -199,7 +199,7 @@ Backend improvements:
 
 Code organisation:
 
-* [ ] Split up plotting module with one file per plot family.
+* [x] Split up plotting module with one file per plot family.
 
 Advanced testing:
 
