@@ -118,6 +118,13 @@ img {
     margin-left: -1ch;
 }
 
+/* The page title starts flush with the top of the side panel, so that it
+   lines up with the Site contents and Page contents titles beside it. Only
+   the title loses its padding; every later h1 keeps the theme's spacing. */
+#mkdocs-terminal-content > h1:first-child {
+    padding-top: 0;
+}
+
 /* The theme draws a rule under the page title, but every palette it ships
    turns it off. Section headings get one too, so that both echo the way the
    markdown sources underline their headings. */

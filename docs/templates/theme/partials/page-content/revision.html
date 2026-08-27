@@ -11,15 +11,13 @@
 <br>
 <aside>
     <p>
-        <small>
-            <i>
-            {%- if not (page.meta and page.meta.source) and page.meta and page.meta.revision_date -%}
-            Page last updated {{ page.meta.revision_date }}.
-            {% endif -%}
-            Built from
-            <a href="{{ config.repo_url }}/blob/{{ config.extra.source_ref | default('main') }}/{{ source }}">{{ source }}</a>.
-            </i>
-        </small>
+        <i>
+        {%- if not (page.meta and page.meta.source) and page.meta and page.meta.revision_date -%}
+        Page last updated {{ page.meta.revision_date }}.
+        {% endif -%}
+        Built from
+        <a href="{{ config.repo_url }}/blob/{{ config.extra.source_ref | default('main') }}/{{ source }}">{{ source }}</a>.
+        </i>
     </p>
 </aside>
 </section>
