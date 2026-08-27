@@ -635,6 +635,18 @@ Utilities
   </tr>
   <tr>
     <td align="center">
+      <img src="../images/scales.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Scales</strong></p>
+      <p>A Gaussian peak on a linear and a logarithmic colour scale: the
+      log scale finds the tails the linear scale loses to black.</p>
+      <p><em>By Claude Fable 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/scales.py">Source</a></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       Run <code>python examples/terminal_test.py</code>
     </td>
     <td>

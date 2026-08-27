@@ -146,6 +146,7 @@ EXAMPLES: tuple[Example, ...] = (
             args=("--num-frames", "5")),
     Example("quickstart3.py",           14, 81, saves="gif",
             args=("--num-frames", "5")),
+    Example("scales.py",                17, 70, saves="png"),
     Example("scatter.py",               24, 46, saves="png"),
     Example("sorting.py",               39, 100, saves="gif",
             args=("--num-frames", "5")),
