@@ -38,6 +38,17 @@ New:
   considers values the scale can place: a zero among the data no longer stops
   `vrange=mp.logscale()`, it just comes out at the bottom of the colormap (or
   off the plot, on a coordinate axis).
+* A frame rate counter for animations, as a video game renderer would draw
+  it: `mp.animate(show_fps=True)` (and `tstack.play(show_fps=True)`) writes
+  each frame with white text in a translucent grey box in its top right
+  corner, showing the rate actually delivered over the last couple of
+  seconds. The box has no alpha to spend, so it fakes its translucency:
+  each cell keeps a share of the colour it covers, blended towards grey.
+  * The counter is display chrome, so a recording keeps the clean frames;
+    `record_fps=True` stamps it on the recorded frames instead, for the gif
+    that wants to show off its frame rate.
+  * The windowed rate is also readable directly as `animate.recent_fps`,
+    beside the whole-run `achieved_fps`.
 
 Changed:
 

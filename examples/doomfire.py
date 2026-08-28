@@ -50,6 +50,7 @@ def main(
     height: int = 50,
     save: str | None = None,
     downscale: int = 1,
+    show_fps: bool = False,
 ):
     """Animate the classic Doom Fire effect."""
     np.random.seed(42)
@@ -65,6 +66,8 @@ def main(
         fps=fps,
         record=save is not None,
         stop_on_interrupt=True,
+        show_fps=show_fps,
+        record_fps=show_fps and save is not None,
     )
     
     with animation as anim:

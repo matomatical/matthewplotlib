@@ -16,7 +16,9 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from matthewplotlib.animations import animate, animation, tstack, _terminal_rows
+from matthewplotlib.animations import (
+    animate, animation, tstack, _terminal_rows, _fps_label, _fps_overlay,
+)
 from matthewplotlib.colormaps import viridis
 from matthewplotlib.plots import blank, border, image, plot, text
 
@@ -980,6 +982,170 @@ class TestAchievedFps:
                 anim.update(frames(1)[0])
 
         assert anim.achieved_fps == pytest.approx(5.0)
+
+
+class TestRecentFps:
+    def test_unknown_before_the_second_frame(self):
+        with capture(), animate() as anim:
+            assert anim.recent_fps is None
+            anim.update(frames(1)[0])
+            assert anim.recent_fps is None
+
+    def test_measured_from_the_gaps_between_writes(self, clock):
+        with capture(), animate() as anim:
+            anim.update(frames(1)[0])
+            clock.work(0.100)
+            anim.update(frames(1)[0])
+            clock.work(0.100)
+            anim.update(frames(1)[0])
+
+        assert anim.recent_fps == pytest.approx(10.0)
+
+    def test_forgets_rates_older_than_the_window(self, clock):
+        # a slow start, then a fast stretch longer than the window: the recent
+        # rate is the fast one, where the whole-run average remembers the start
+        with capture(), animate() as anim:
+            for _ in range(5):
+                anim.update(frames(1)[0])
+                clock.work(1.0)         # 1 fps
+            for _ in range(60):
+                anim.update(frames(1)[0])
+                clock.work(0.05)        # 20 fps
+
+        assert anim.recent_fps == pytest.approx(20.0)
+        assert anim.achieved_fps == pytest.approx(65 / 8, abs=1.0)
+
+    def test_slower_than_the_window_still_measures_the_last_gap(self, clock):
+        with capture(), animate() as anim:
+            anim.update(frames(1)[0])
+            clock.work(5.0)
+            anim.update(frames(1)[0])
+            clock.work(5.0)
+            anim.update(frames(1)[0])
+
+        assert anim.recent_fps == pytest.approx(0.2)
+
+
+# # #
+# animate: THE FPS COUNTER
+
+
+def toprow(p: plot) -> str:
+    """The characters of a plot's first row, colours dropped."""
+    return "".join(chr(c) for c in p.chars.codes[0])
+
+
+def widescreen() -> plot:
+    """A frame with room for the counter and a known background colour."""
+    return text("x" * 16 + "\n" + "y" * 16, bgcolor=(200, 100, 50))
+
+
+class TestShowFps:
+    def test_off_by_default(self):
+        p = widescreen()
+        with capture() as out, animate() as anim:
+            anim.update(p)
+
+        assert out.prints[0] == p.renderstr()
+
+    def test_the_first_frame_shows_a_placeholder(self):
+        with capture(), animate(show_fps=True) as anim:
+            anim.update(widescreen())
+
+        assert toprow(anim._prev).endswith(" fps:  -- ")
+
+    def test_the_counter_shows_the_recent_rate(self, clock):
+        with capture(), animate(show_fps=True) as anim:
+            anim.update(widescreen())
+            clock.work(0.100)
+            anim.update(widescreen())
+
+        assert toprow(anim._prev).endswith(" fps:  10 ")
+
+    def test_the_rest_of_the_frame_is_untouched(self):
+        with capture(), animate(show_fps=True) as anim:
+            anim.update(widescreen())
+
+        assert toprow(anim._prev).startswith("xxxxxx")
+        assert "".join(chr(c) for c in anim._prev.chars.codes[1]) == "y" * 16
+
+    def test_the_frame_keeps_its_size(self):
+        p = widescreen()
+        with capture(), animate(show_fps=True) as anim:
+            anim.update(p)
+
+        assert anim._prev.height == p.height
+        assert anim._prev.width == p.width
+
+    def test_the_box_is_tinted_by_what_it_covers(self):
+        with capture(), animate(show_fps=True) as anim:
+            anim.update(widescreen())
+
+        # each channel is pulled most of the way to the box's grey, keeping a
+        # share of the (200, 100, 50) underneath
+        box = anim._prev.chars.bg_rgb[0, -10:]
+        assert np.all(anim._prev.chars.bg[0, -10:])
+        expected = np.rint(0.7 * 80 + 0.3 * np.array([200, 100, 50]))
+        assert np.all(box == expected)
+
+    def test_a_cell_with_no_background_is_treated_as_black(self):
+        p = text("z" * 16)      # no background colour of its own
+        with capture(), animate(show_fps=True) as anim:
+            anim.update(p)
+
+        box = anim._prev.chars.bg_rgb[0, -10:]
+        assert np.all(box == np.rint(0.7 * 80))
+
+    def test_the_text_is_white(self):
+        with capture(), animate(show_fps=True) as anim:
+            anim.update(widescreen())
+
+        assert np.all(anim._prev.chars.fg[0, -10:])
+        assert np.all(anim._prev.chars.fg_rgb[0, -10:] == 255)
+
+    def test_a_frame_narrower_than_the_label_keeps_the_number(self):
+        p = frames(1)[0]        # 4 columns; the label is cropped from the left
+        with capture(), animate(show_fps=True) as anim:
+            anim.update(p)
+
+        assert anim._prev.width == 4
+        assert toprow(anim._prev) == " -- "
+
+    def test_the_recording_stays_clean(self):
+        p = widescreen()
+        with capture(), animate(record=True, show_fps=True) as anim:
+            anim.update(p)
+
+        assert anim.frames[0] is p
+
+    def test_play_can_show_the_counter(self):
+        p = widescreen()
+        with capture() as out:
+            tstack(p).play(show_fps=True)
+
+        assert out.prints[0] == _fps_overlay(p, _fps_label(None)).renderstr()
+
+
+class TestRecordFps:
+    def test_needs_a_recording(self):
+        with pytest.raises(ValueError, match="record"):
+            animate(record_fps=True)
+
+    def test_stamps_the_recording(self, clock):
+        with capture(), animate(record=True, record_fps=True) as anim:
+            anim.update(widescreen())
+            clock.work(0.100)
+            anim.update(widescreen())
+
+        assert toprow(anim.frames[0]).endswith(" fps:  -- ")
+        assert toprow(anim.frames[1]).endswith(" fps:  10 ")
+
+    def test_does_not_itself_put_the_counter_on_screen(self):
+        p = widescreen()
+        with capture() as out, animate(record=True, record_fps=True) as anim:
+            anim.update(p)
+
+        assert out.prints[0] == p.renderstr()
 
 
 # # #

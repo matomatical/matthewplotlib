@@ -34,6 +34,7 @@ about terminals rather than about plots.
 """
 from __future__ import annotations
 
+import collections
 import io
 import sys
 import time
@@ -50,6 +51,7 @@ from numpy.typing import ArrayLike
 
 from matthewplotlib.colormaps import ColorMap
 from matthewplotlib.colors import ColorLike, parse_colors
+from matthewplotlib.core import CharArray
 from matthewplotlib.plots import image, plot
 from matthewplotlib.terminal import terminal_size
 
@@ -410,6 +412,7 @@ class tstack:
         fps: float | None = None,
         loop: bool = False,
         stop_on_interrupt: bool = True,
+        show_fps: bool = False,
     ) -> None:
         """
         Print the frames to the terminal, in order, one frame at a time.
@@ -430,12 +433,17 @@ class tstack:
             `KeyboardInterrupt`. Unlike `animate`, this defaults to true: there
             is no caller loop here whose control flow could be taken over, and
             interrupting playback is the only way to end `loop=True`.
+        * show_fps : bool (default False).
+            If true, play with a frame rate counter in the top right corner,
+            showing the rate actually delivered rather than the one asked
+            for. See `animate`.
         """
         if not self.plots:
             return
         with animate(
             fps=self.fps if fps is None else fps,
             stop_on_interrupt=stop_on_interrupt,
+            show_fps=show_fps,
         ) as anim:
             while True:
                 for p in self.plots:
@@ -668,6 +676,84 @@ class animation(tstack):
 # ANIMATIONS AS TERMINAL SESSIONS
 
 
+# The fps counter reports the rate over roughly this many seconds of recent
+# frames: long enough to hold still while it is read, short enough that a
+# slowdown shows up while it is happening rather than diluted into the average
+# since the animation began.
+_FPS_WINDOW_SECONDS = 2.0
+
+
+# The counter's box, as the colour it pulls each cell towards and how hard it
+# pulls. The box is grey, but not one grey: each cell keeps a share of the
+# colour underneath it, which is what makes a box read as translucent on a
+# terminal with no alpha to spend.
+_FPS_BOX_RGB = (80, 80, 80)
+_FPS_BOX_OPACITY = 0.7
+
+
+_FPS_TEXT_RGB = (255, 255, 255)
+
+
+def _fps_label(fps: float | None) -> str:
+    """
+    The text of the fps counter, at the fixed width that stops the box from
+    changing size as the number changes digits. None, the rate before there
+    are two frames to measure between, shows as a placeholder rather than
+    popping the box in a frame late.
+    """
+    if fps is None:
+        return f" fps: {'--':>3} "
+    return f" fps: {fps:3.0f} "
+
+
+def _fps_overlay(frame: plot, label: str) -> plot:
+    """
+    Compose the fps counter onto the top right corner of a frame.
+
+    The label's cells take a grey background blended with the colour they
+    cover, white text over it. A covered cell with no background colour of its
+    own is showing the terminal's default, whatever that is; the blend treats
+    it as black, so on the many dark terminals the box sits as a dark grey,
+    and on a light one it comes out darker than truly translucent would --
+    a fair price for not being able to ask.
+    """
+    chars = frame.chars
+    width = min(len(label), chars.width)
+    if width == 0 or chars.height == 0:
+        return frame
+
+    codes = chars.codes.copy()
+    fg = chars.fg.copy()
+    fg_rgb = chars.fg_rgb.copy()
+    bg = chars.bg.copy()
+    bg_rgb = chars.bg_rgb.copy()
+
+    under = np.where(
+        bg[0, -width:, np.newaxis],
+        bg_rgb[0, -width:],
+        0,
+    )
+    blended = np.rint(
+        _FPS_BOX_OPACITY * np.array(_FPS_BOX_RGB)
+        + (1 - _FPS_BOX_OPACITY) * under
+    ).astype(np.uint8)
+
+    # a frame narrower than the label crops it from the left, keeping the number
+    codes[0, -width:] = [ord(c) for c in label[-width:]]
+    fg[0, -width:] = True
+    fg_rgb[0, -width:] = _FPS_TEXT_RGB
+    bg[0, -width:] = True
+    bg_rgb[0, -width:] = blended
+
+    return plot(CharArray(
+        codes=codes,
+        fg=fg,
+        fg_rgb=fg_rgb,
+        bg=bg,
+        bg_rgb=bg_rgb,
+    ))
+
+
 class _Out(io.TextIOBase):
     """
     The file-like half of `animate.print`, as `anim.out`.
@@ -752,6 +838,19 @@ class animate:
         the statements after it still run, so a recording survives to be saved.
         Off by default because swallowing `KeyboardInterrupt` is precisely the
         kind of control flow a library should not take without being asked.
+    * show_fps : bool (default False).
+        If true, each frame is written with a counter in its top right corner
+        showing the frame rate actually being delivered, as a video game
+        renderer would draw it: white text in a translucent grey box, tinted
+        by whatever it covers. The rate shown is `recent_fps`, measured over
+        the last couple of seconds, so a slowdown shows while it is happening.
+        Display chrome only: a recording keeps the clean frames unless
+        `record_fps` says otherwise.
+    * record_fps : bool (default False).
+        If true, the counter is stamped on the recorded frames too, so it
+        survives into `anim.frames` and a gif saved from it -- the benchmark
+        showcase use. Requires `record=True`, and does not itself put the
+        counter on screen: that remains `show_fps`.
 
     Attributes, readable during the block and after it:
 
@@ -762,6 +861,12 @@ class animate:
         The frame rate actually managed so far, or None before the second
         frame. Worth printing after a run that felt sluggish: asking for 20 and
         getting 6 is not otherwise visible.
+    * recent_fps : float | None.
+        The frame rate actually managed over the last couple of seconds, or
+        None before the second frame. What the `show_fps` counter displays:
+        where `achieved_fps` averages over the whole run and soon stops
+        moving, this one follows the animation as it speeds up and slows
+        down.
     * out : a writable text stream.
         `anim.print` as a file, for the things that want somewhere to write
         rather than something to call:
@@ -796,14 +901,24 @@ class animate:
         fps: float | None = None,
         record: bool = False,
         stop_on_interrupt: bool = False,
+        show_fps: bool = False,
+        record_fps: bool = False,
     ):
         if fps is not None and fps <= 0:
             raise ValueError(f"fps must be positive, not {fps!r}")
+        if record_fps and not record:
+            raise ValueError(
+                "record_fps=True stamps the fps counter on the recorded "
+                "frames, so it needs record=True for there to be a recording"
+            )
         self.fps = fps
         self.stop_on_interrupt = stop_on_interrupt
+        self.show_fps = show_fps
+        self.record_fps = record_fps
 
         self._recording: list[plot] | None = [] if record else None
         self._times: list[float] = []       # write times, seconds, if recording
+        self._recent: collections.deque[float] = collections.deque()
         self._prev: plot | None = None
         self._deadline: float | None = None
         self._count = 0
@@ -865,7 +980,10 @@ class animate:
 
         The return value is the frame's exact bytes, which is what makes the
         cost of differential rendering measurable from user code -- see
-        `examples/life.py`, which plots it.
+        `examples/life.py`, which plots it. With `show_fps`, those are the
+        bytes of the frame as displayed, counter included -- and the counter
+        diffs like everything else, so while the number holds still it costs
+        nothing to redraw.
         """
         # pace: sleep off the remainder of the previous frame's budget
         if self._deadline is not None:
@@ -879,10 +997,27 @@ class animate:
 
         self._check_fits(plot)
 
+        # the counter's window of recent write times ends at this frame, and
+        # reaches back a couple of seconds -- but never fewer than two writes,
+        # so an animation slower than the window still measures its last gap
+        self._recent.append(due)
+        while len(self._recent) > 2 and self._recent[0] <= due - _FPS_WINDOW_SECONDS:
+            self._recent.popleft()
+
+        # compose the fps counter onto the displayed and/or recorded frame
+        shown = plot
+        kept = plot
+        if self.show_fps or self.record_fps:
+            counted = _fps_overlay(plot, _fps_label(self.recent_fps))
+            if self.show_fps:
+                shown = counted
+            if self.record_fps:
+                kept = counted
+
         # write, in exactly one print
-        update = plot.updatestr(self._prev)
+        update = shown.updatestr(self._prev)
         print(update, file=self._stdout())
-        self._prev = plot
+        self._prev = shown
 
         # book-keeping: timings, recording, and the next deadline
         self._count += 1
@@ -890,7 +1025,7 @@ class animate:
             self._first = due
         self._last = due
         if self._recording is not None:
-            self._recording.append(plot)
+            self._recording.append(kept)
             self._times.append(due)
         if self.fps is not None:
             period = 1 / self.fps
@@ -962,6 +1097,24 @@ class animate:
 
 
     @property
+    def recent_fps(self) -> float | None:
+        """
+        Frames per second over the last couple of seconds of writes, or None
+        before frame two.
+
+        What the `show_fps` counter displays. `achieved_fps` is the average
+        over the whole run, which after a minute has stopped moving; this one
+        forgets, so it reads as the rate the animation is running at *now*.
+        """
+        if len(self._recent) < 2:
+            return None
+        span = self._recent[-1] - self._recent[0]
+        if span <= 0:
+            return None
+        return (len(self._recent) - 1) / span
+
+
+    @property
     def frames(self) -> tstack:
         """
         The recorded frames, as a `tstack`, with their measured durations.
@@ -1022,5 +1175,6 @@ class animate:
     def __repr__(self):
         return (
             f"animate(fps={self.fps}, record={self._recording is not None}, "
-            f"stop_on_interrupt={self.stop_on_interrupt})"
+            f"stop_on_interrupt={self.stop_on_interrupt}, "
+            f"show_fps={self.show_fps}, record_fps={self.record_fps})"
         )
