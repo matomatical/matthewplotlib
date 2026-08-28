@@ -691,7 +691,7 @@ _FPS_BOX_RGB = (80, 80, 80)
 _FPS_BOX_OPACITY = 0.7
 
 
-_FPS_TEXT_RGB = (255, 255, 255)
+_FPS_TEXT_RGB = (0, 255, 0)
 
 
 def _fps_label(fps: float | None) -> str:
