@@ -245,6 +245,19 @@ Bars and Columns
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/sorting.py">Source</a></p>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../images/zipf.png" width="100%">
+    </td>
+    <td>
+      <p><strong>Zipf's law</strong></p>
+      <p>A Zipfian sample's power law, hidden and found: linear column
+      heights and axes hide the tail, log scales turn it into a straight
+      line.</p>
+      <p><em>By Claude Fable 5.</em></p>
+      <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/zipf.py">Source</a></p>
+    </td>
+  </tr>
 </tbody>
 </table>
 

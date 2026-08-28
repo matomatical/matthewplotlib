@@ -171,8 +171,9 @@ Advanced plot arrangement:
 
 Advanced furnishings:
 
-* [ ] Axis transformations (e.g. logarithmic scale). The `scales` note works
-  through how the colour scales extend to coordinate axes.
+* [x] Axis transformations (e.g. logarithmic scale). Every coordinate range
+  takes a `scale`; the `scales` note works through how the colour scales
+  extended to coordinate axes.
 * [ ] Axis segments (see the `axis-series` note).
 * [x] Axes on any subset of the four sides, each blank, ruled, or ruled with
   ticks and labels, so that a colorbar can be labelled without a full border.
