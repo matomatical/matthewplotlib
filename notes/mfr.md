@@ -50,3 +50,13 @@ Issues encountered building scheduling app:
 * Blank should maybe get a bgcolor param so we can make coloured patches, atm I
   am using text with blank spaces.
 * Why didn't mp.text("", width=5, bgcolor="cyan") work?
+
+Other notes for later:
+
+* We should revisit the policy of using `_names` to indicate 'not part of the
+  public `mp.*` api' for export testing purposes, but allowing these to be
+  exported/imported within mp internals.
+* Think more carefully about global policy for erroring or silently ignoring
+  values outside of scale bounds for colours and data axes. Currently
+  inconsistent, need to make sure it's principled and predictable, or change
+  the policy.
