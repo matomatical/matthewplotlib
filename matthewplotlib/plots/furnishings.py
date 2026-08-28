@@ -10,6 +10,8 @@ Plots that dress other plots: text labels, borders, axes, and colorbars.
 """
 from __future__ import annotations
 
+import dataclasses
+
 import numpy as np
 
 from typing import Literal
@@ -321,15 +323,18 @@ class axes(plot):
                     f"{'x' if name in ('north', 'south') else 'y'} coordinate"
                 )
 
-        # the numbers each labelled side carries
-        xlo, xhi = (
-            (xfmt.format(x=w.xrange[0]), xfmt.format(x=w.xrange[1]))
-            if w.xrange is not None else ("", "")
-        )
-        ylo, yhi = (
-            (yfmt.format(y=w.yrange[0]), yfmt.format(y=w.yrange[1]))
-            if w.yrange is not None else ("", "")
-        )
+        # the numbers each labelled side carries: the ends of each range,
+        # which sit at the edges of the window whatever its scales
+        if w.xrange is not None:
+            xmin, xmax = w.xrange
+            xlo, xhi = xfmt.format(x=xmin), xfmt.format(x=xmax)
+        else:
+            xlo, xhi = "", ""
+        if w.yrange is not None:
+            ymin, ymax = w.yrange
+            ylo, yhi = yfmt.format(y=ymin), yfmt.format(y=ymax)
+        else:
+            ylo, yhi = "", ""
         gutter = max(len(ylo), len(yhi))
         if ylabel:
             gutter = max(gutter, ypad + 1)
@@ -452,9 +457,9 @@ class colorbar(heatmap):
     * source : plot | (number, number) | scale.
         The interval the bar covers. Any plot that kept one lends it---a
         `heatmap` and everything built on one, a `calendar`, a `weeks`, a
-        `bars`---so that the numbers on the bar cannot drift from the numbers
-        in the picture. An interval or a `scale` on its own works too, for a
-        bar assembled by hand.
+        `bars`, a `candles`, a `boxes`---so that the numbers on the bar
+        cannot drift from the numbers in the picture. An interval or a
+        `scale` on its own works too, for a bar assembled by hand.
 
         A plot whose values are all the same settled on an interval covering
         nothing, which is one colour and no axis to label it along, so there is
@@ -509,10 +514,6 @@ class colorbar(heatmap):
                     f"{type(source).__name__} carries no interval for a "
                     "colorbar to draw; pass one instead"
                 )
-            # the plots that lay values along a coordinate axis lend a plain
-            # pair, which stands for a linear scale
-            if not isinstance(vscale, scale):
-                vscale = scale(vscale[0], vscale[1])
             # a plot whose values are all the same settles on an interval
             # covering nothing, which a bar cannot be a scale for: it has one
             # colour and no axis to label it along
@@ -568,11 +569,14 @@ class colorbar(heatmap):
             else ramp[None, :].repeat(2 * thickness, axis=0)
         )
 
-        # the coordinate, from the low end of the screen axis to the high end
+        # the coordinate, from the low end of the screen axis to the high
+        # end: the source's scale itself, turned around where the direction
+        # runs down the screen axis, so that the window carries the spacing
+        # the bar stands for
         span = (
-            (second, first)
+            dataclasses.replace(vscale, lo=second, hi=first)
             if direction in ("down", "left")
-            else (first, second)
+            else vscale
         )
         # the ramp is normalised over the plain interval rather than through
         # the source's scale, so that the bar sweeps the colormap evenly

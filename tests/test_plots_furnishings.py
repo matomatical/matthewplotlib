@@ -271,7 +271,7 @@ class TestColorbar:
         bar = colorbar(heat, colormap=mp.viridis)
 
         assert bar.vrange == scale(0.0, 20.0)
-        assert bar.window.yrange == (0.0, 20.0)
+        assert bar.window.yrange == scale(0.0, 20.0)
 
     def test_an_interval_needs_no_plot(self):
         bar = colorbar((-2.0, 2.0), colormap=mp.viridis)
@@ -279,10 +279,13 @@ class TestColorbar:
         assert bar.vrange == scale(-2.0, 2.0)
 
     def test_a_scale_needs_no_plot_either(self):
+        """The bar's own window carries the scale, not just its interval, so
+        whatever later reads the window sees the spacing the bar stands
+        for."""
         bar = colorbar(mp.logscale(1.0, 1000.0), colormap=mp.viridis)
 
         assert bar.vrange == mp.logscale(1.0, 1000.0)
-        assert bar.window.yrange == (1.0, 1000.0)
+        assert bar.window.yrange == mp.logscale(1.0, 1000.0)
 
     def test_a_plot_drawn_on_a_scale_lends_the_whole_scale(self):
         heat = mp.heatmap(
@@ -345,7 +348,11 @@ class TestColorbar:
             length=3,
         )
 
-        assert (bar.window.xrange, bar.window.yrange) == (xrange, yrange)
+        expected = tuple(
+            None if range is None else scale(*range)
+            for range in (xrange, yrange)
+        )
+        assert (bar.window.xrange, bar.window.yrange) == expected
         ramp = colormap.input.reshape(-1) if xrange is None \
           else colormap.input[0]
         assert (ramp[0], ramp[-1]) == (first, last)

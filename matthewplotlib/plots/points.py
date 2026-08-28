@@ -19,12 +19,12 @@ from matthewplotlib.data import (
     number,
     Series,
     Series3,
-    parse_range,
     parse_segments,
     parse_segments3,
     parse_multiple_series,
     parse_multiple_series3,
 )
+from matthewplotlib.scales import scale, _resolve_coordinate_range
 from matthewplotlib.camera import (
     project3,
     project3_segments,
@@ -53,12 +53,15 @@ class scatter(plot):
          examples.
     * *etc.
         Further series.
-    * xrange : optional (number, number).
+    * xrange : optional (number, number) | scale.
         The x-axis limits `(xmin, xmax)`. If not provided, the limits are
-        inferred from the min and max x-values in the data.
-    * yrange : optional (number, number).
-        The y-axis limits `(ymin, ymax)`. If not provided, the limits are
-        inferred from the min and max y-values in the data.
+        inferred from the min and max x-values in the data. A `scale` spaces
+        the axis nonlinearly between the limits: `xrange=mp.logscale()` is a
+        logarithmic axis over an inferred interval. A point with a value the
+        scale is not defined over falls off the plot, as a point outside the
+        limits does.
+    * yrange : optional (number, number) | scale.
+        The y-axis limits `(ymin, ymax)`, as for `xrange`.
     * width : int (default: 30).
         The width of the plot in characters. The effective pixel width will be
         2 * width.
@@ -70,8 +73,8 @@ class scatter(plot):
         self,
         series: Series,
         *etc: Series,
-        xrange: tuple[number | None, number | None] | None = None,
-        yrange: tuple[number | None, number | None] | None = None,
+        xrange: tuple[number | None, number | None] | scale | None = None,
+        yrange: tuple[number | None, number | None] | scale | None = None,
         width: int = 30,
         height: int = 10,
     ):
@@ -79,8 +82,8 @@ class scatter(plot):
         xs, ys, cs = parse_multiple_series(series, *etc)
         n, = xs.shape
         w = window(
-            xrange=parse_range(xs, xrange),
-            yrange=parse_range(ys, yrange),
+            xrange=_resolve_coordinate_range(xrange, xs, "scatter", "xrange"),
+            yrange=_resolve_coordinate_range(yrange, ys, "scatter", "yrange"),
             width=width,
             height=height,
         )
@@ -205,12 +208,15 @@ class line(plot):
     * *etc.
         Further series. Each is a separate line: the end of one is not joined
         to the start of the next.
-    * xrange : optional (number, number).
+    * xrange : optional (number, number) | scale.
         The x-axis limits `(xmin, xmax)`. If not provided, the limits are
-        inferred from the min and max x-values in the data.
-    * yrange : optional (number, number).
-        The y-axis limits `(ymin, ymax)`. If not provided, the limits are
-        inferred from the min and max y-values in the data.
+        inferred from the min and max x-values in the data. A `scale` spaces
+        the axis nonlinearly between the limits: `xrange=mp.logscale()` is a
+        logarithmic axis over an inferred interval. A point with a value the
+        scale is not defined over breaks the line the way a non-finite
+        coordinate does.
+    * yrange : optional (number, number) | scale.
+        The y-axis limits `(ymin, ymax)`, as for `xrange`.
     * width : int (default: 30).
         The width of the plot in characters. The effective pixel width will be
         2 * width.
@@ -230,8 +236,8 @@ class line(plot):
         self,
         series: Series,
         *etc: Series,
-        xrange: tuple[number | None, number | None] | None = None,
-        yrange: tuple[number | None, number | None] | None = None,
+        xrange: tuple[number | None, number | None] | scale | None = None,
+        yrange: tuple[number | None, number | None] | scale | None = None,
         width: int = 30,
         height: int = 10,
         thickness: float = 1.0,
@@ -240,8 +246,12 @@ class line(plot):
         starts, ends, start_colors, end_colors = parse_segments(series, *etc)
         points = np.concatenate([starts, ends])
         w = window(
-            xrange=parse_range(points[:, 0], xrange),
-            yrange=parse_range(points[:, 1], yrange),
+            xrange=_resolve_coordinate_range(
+                xrange, points[:, 0], "line", "xrange",
+            ),
+            yrange=_resolve_coordinate_range(
+                yrange, points[:, 1], "line", "yrange",
+            ),
             width=width,
             height=height,
         )

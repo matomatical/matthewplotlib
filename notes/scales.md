@@ -6,9 +6,10 @@ discussion with MFR, replacing the earlier sketch with a settled design ---
 named scale classes --- and a checked account of how the same type later
 serves coordinate axes. The first phase, scales for the colour and length
 channels, was built the same day, answering the roadmap entries "Configurable
-colour scales and normalisation" and "Nonlinear normalisation"; scales on
-coordinate axes remain future work, and the general-case section below is the
-design waiting for them.
+colour scales and normalisation" and "Nonlinear normalisation". Revised again
+2026-08-28 by Claude (Fable 5) after the second phase --- scales on
+coordinate axes --- was built to the general-case design below; the section
+"What the second phase settled" records the decisions the build added.
 
 ## Where the library stands
 
@@ -158,8 +159,9 @@ A scale never needs its inverse for anything a colour axis does.
 
 ## The general case: scales on coordinate axes
 
-Worked through in discussion so that nothing built now forecloses it; this is
-a later phase, not part of the build. The observation that makes it cohere:
+Worked through in discussion ahead of the first build so that nothing in it
+foreclosed this, and built as the second phase on 2026-08-28. The observation
+that makes it cohere:
 `window` already *is* two linear scales plus a raster. `window.dots` inlines
 two affine maps, and `pixel_edges` inlines their inverses as `linspace`. So
 `scale` is the one-axis atom, `window` is two of them plus the placement
@@ -190,13 +192,56 @@ intersection. Walking every consumer of a window axis:
   whatever the transform --- the same argument as the colorbar. Marking
   log-ness on the axis line, and intermediate ticks, are future work (the
   `axis-series` note's territory), already served by the forward map.
-* **The microcosm resolves.** Today `colorbar` puts a plain pair in its
-  window; in the general phase it puts the scale there, and when `axes`
-  grows intermediate ticks, a log colorbar gets log-spaced ticks with no
+* **The microcosm resolves.** The first phase had `colorbar` put a plain
+  pair in its window; the second puts the scale there, so when `axes` grows
+  intermediate ticks, a log colorbar gets log-spaced ticks with no
   colorbar-specific code. Likewise `candles` and `boxes`, whose `vrange`
   becomes a window coordinate and so is *this* problem rather than the
   colour-channel one: excluded from the first phase, dissolved by the
   second.
+
+## What the second phase settled
+
+Decisions the build added to the design above, each discussed with MFR at the
+level of policy (the widening, the inference domain, the stored types) with
+the mechanics left to the build.
+
+* **The window stores promoted scales.** `window.xrange` and `yrange` accept
+  a pair or a scale and keep a completed scale either way, so there is one
+  stored type, both spellings build equal windows, and `dstack2` compares
+  spacing for free. The visible change: `plot.window.xrange` still unpacks
+  as a pair but compares equal to `mp.scale(lo, hi)` rather than `(lo, hi)`.
+  Teaching `scale.__eq__` to match tuples was considered and rejected: it
+  would break the equality/hash contract for a cosmetic convenience.
+* **The window works in transformed space, in the old expressions.** `dots`,
+  `pixel_edges`, `pixel_centres` and `sample_points` apply the transform,
+  run the affine arithmetic they always ran, and invert where they used to
+  read data coordinates directly. With the identity transform this is
+  operation-for-operation the previous floating point, so every golden
+  stood, the same argument that kept the colorbar's ramp in data space in
+  the first phase.
+* **Edges are pinned, not round-tripped.** The outermost pixel edges are
+  assigned the interval's own ends rather than `inverse(transform(end))`,
+  which floating point can land a whisker away --- enough to drop a sample
+  sitting exactly at the limit of a log `histogram2` out of its own bin.
+* **A flat inferred coordinate interval widens along the scale.** Half a
+  unit each way in transformed space, which is the old `lo - 0.5, hi + 0.5`
+  exactly for linear axes and a factor of sqrt(e) each way for log. Only
+  endpoints that were left to inference move: one the caller wrote stays
+  written. An *explicit* flat coordinate range is now an error, as it always
+  was for `vrange` (previously `parse_range` silently widened it), and
+  `parse_range` itself dissolved into the scales module's coordinate
+  resolver.
+* **Inference sees only the scale's domain.** Completing a partial scale
+  infers over the values it could place, so a zero in the data no longer
+  makes `logscale()` an error; on a coordinate axis the zeros were culled
+  anyway, and on a colour axis they saturate at the bottom. This applies to
+  the colour channel too, reversing the first phase's error --- flagged
+  under "Left open" as policy to revisit before v1.0.
+* **An unwritten `inverse` is refused, not inherited.** A subclass
+  overriding `transform` alone would silently inherit the base identity
+  `inverse`, so the sampling paths check for exactly that shape and raise,
+  which is what makes the docstring's "may leave it unwritten" true.
 
 ## What the first phase reaches
 
@@ -231,6 +276,11 @@ bit for bit, which kept every golden snapshot standing.
 
 ## Left open, unchanged by this design
 
+* The global inference-domain policy, before v1.0 (MFR, 2026-08-28): the
+  second phase settled on filtering inference to the scale's domain
+  uniformly, for coordinates and colour alike, but whether out-of-domain
+  data should infer silently, warn, or error deserves one deliberate pass
+  across the library before the interface freezes.
 * Intermediate ticks, and how a bar or axis marks its spacing visually.
 * Discrete colour scales: a scale for `pico8` or `sweetie16` is a column of
   swatches with a label beside each --- a different plot type, probably the

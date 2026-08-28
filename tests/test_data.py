@@ -6,7 +6,6 @@ import pytest
 from matthewplotlib.data import (
     parse_date,
     parse_date_series,
-    parse_range,
     parse_series,
     parse_multiple_series,
     parse_series3,
@@ -15,59 +14,6 @@ from matthewplotlib.data import (
     yaxis,
     zaxis,
 )
-
-
-# # #
-# parse_range
-
-
-class TestParseRange:
-    def test_none_range_infers_from_data(self):
-        data = np.array([1.0, 5.0, 3.0])
-        lo, hi = parse_range(data, None)
-        assert lo == 1.0
-        assert hi == 5.0
-
-    def test_explicit_range(self):
-        data = np.array([1.0, 5.0, 3.0])
-        lo, hi = parse_range(data, (0.0, 10.0))
-        assert lo == 0.0
-        assert hi == 10.0
-
-    def test_partial_range_lo_only(self):
-        data = np.array([1.0, 5.0, 3.0])
-        lo, hi = parse_range(data, (0.0, None))
-        assert lo == 0.0
-        assert hi == 5.0
-
-    def test_partial_range_hi_only(self):
-        data = np.array([1.0, 5.0, 3.0])
-        lo, hi = parse_range(data, (None, 10.0))
-        assert lo == 1.0
-        assert hi == 10.0
-
-    def test_single_element(self):
-        """One point reaches no distance, so it is given room around itself
-        rather than a range of zero width to be divided by. `np.histogram2d`
-        already expanded such a range by the same half either side, so what a
-        scatter draws is unchanged; what it reports as its range is now what it
-        drew."""
-        data = np.array([3.0])
-        lo, hi = parse_range(data, None)
-        assert lo == 2.5
-        assert hi == 3.5
-
-    def test_a_constant_series_is_given_room(self):
-        lo, hi = parse_range(np.full(10, 4.0), None)
-        assert (lo, hi) == (3.5, 4.5)
-
-    def test_gaps_do_not_describe_how_far_the_data_reaches(self):
-        data = np.array([1.0, np.nan, 3.0, np.inf])
-        assert parse_range(data, None) == (1.0, 3.0)
-
-    def test_no_data_at_all(self):
-        lo, hi = parse_range(np.array([]), None)
-        assert lo < hi
 
 
 # # #

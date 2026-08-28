@@ -28,9 +28,13 @@ class TestLine:
         assert plot.height == 5
 
     def test_range_from_the_data(self):
+        """A window keeps each range as a scale, which is what a plain pair
+        promotes to, so the ranges compare equal to scales and unpack as
+        pairs."""
         plot = line((np.array([1.0, 3.0]), np.array([-2.0, 6.0])))
-        assert plot.window.xrange == (1.0, 3.0)
-        assert plot.window.yrange == (-2.0, 6.0)
+        assert plot.window.xrange == mp.scale(1.0, 3.0)
+        assert plot.window.yrange == mp.scale(-2.0, 6.0)
+        assert tuple(plot.window.xrange) == (1.0, 3.0)
 
     def test_explicit_range_is_kept(self):
         plot = line(
@@ -38,14 +42,14 @@ class TestLine:
             xrange=(0.0, 10.0),
             yrange=(-5.0, 5.0),
         )
-        assert plot.window.xrange == (0.0, 10.0)
-        assert plot.window.yrange == (-5.0, 5.0)
+        assert plot.window.xrange == mp.scale(0.0, 10.0)
+        assert plot.window.yrange == mp.scale(-5.0, 5.0)
 
     def test_a_range_is_found_for_a_constant_series(self):
         """A constant series reaches no distance, so it is given room around
         itself rather than dividing by a zero-width range."""
         plot = line((np.arange(10), np.ones(10)), width=10, height=3)
-        assert plot.window.yrange == (0.5, 1.5)
+        assert plot.window.yrange == mp.scale(0.5, 1.5)
         assert drawn_cells(plot).any()
 
     def test_the_ends_of_the_data_reach_the_ends_of_the_plot(self):
@@ -89,8 +93,8 @@ class TestLine:
             (np.array([0.0, 1.0]), np.array([0.0, 1.0])),
             (np.array([2.0, 3.0]), np.array([2.0, 3.0])),
         )
-        assert plot.window.xrange == (0.0, 3.0)
-        assert plot.window.yrange == (0.0, 3.0)
+        assert plot.window.xrange == mp.scale(0.0, 3.0)
+        assert plot.window.yrange == mp.scale(0.0, 3.0)
         assert plot.num_strokes == 2
 
     def test_thickness_widens_the_line(self):
@@ -163,7 +167,7 @@ class TestLine:
             scatter(data, width=10, height=3),
             line(data, width=10, height=3),
         )
-        assert plot.window.xrange == (0, 4)
+        assert plot.window.xrange == mp.scale(0, 4)
         assert drawn_cells(plot).any()
 
     def test_layers_must_cover_the_same_data(self):
@@ -191,6 +195,83 @@ class TestLine:
     def test_there_must_be_something_to_overlay(self):
         with pytest.raises(ValueError, match="no plots"):
             dstack2()
+
+
+# # #
+# scales on coordinate axes
+
+
+class TestCoordinateScales:
+    def test_a_scale_reaches_the_window(self):
+        plot = scatter(
+            (np.array([1.0, 100.0]), np.array([0.0, 1.0])),
+            xrange=mp.logscale(),
+        )
+        assert plot.window.xrange == mp.logscale(1.0, 100.0)
+
+    def test_a_log_axis_infers_its_interval_over_the_placeable_values(self):
+        plot = scatter(
+            (np.array([-5.0, 0.0, 1.0, 100.0]), np.arange(4.0)),
+            xrange=mp.logscale(),
+        )
+        assert plot.window.xrange == mp.logscale(1.0, 100.0)
+
+    def test_a_log_axis_spreads_the_decades_evenly(self):
+        """[1, 10, 100] on a log axis draws where [0, 1, 2] draws on a linear
+        one."""
+        logged = scatter(
+            (np.array([1.0, 10.0, 100.0]), np.zeros(3)),
+            xrange=mp.logscale(),
+            yrange=(0.0, 1.0),
+            width=21,
+            height=1,
+        )
+        linear = scatter(
+            (np.array([0.0, 1.0, 2.0]), np.zeros(3)),
+            yrange=(0.0, 1.0),
+            width=21,
+            height=1,
+        )
+        assert np.array_equal(drawn_cells(logged), drawn_cells(linear))
+
+    def test_a_point_a_log_axis_cannot_place_falls_off_the_plot(self):
+        data = (np.array([1.0, 10.0, 100.0]), np.zeros(3))
+        with_stray = (np.array([1.0, 10.0, 100.0, -5.0]), np.zeros(4))
+        kwargs = dict(
+            xrange=mp.logscale(1.0, 100.0),
+            yrange=(0.0, 1.0),
+            width=21,
+            height=1,
+        )
+        assert np.array_equal(
+            drawn_cells(scatter(data, **kwargs)),
+            drawn_cells(scatter(with_stray, **kwargs)),
+        )
+
+    def test_plots_on_one_scale_overlay_and_on_two_scales_do_not(self):
+        data = (np.array([1.0, 100.0]), np.array([0.0, 1.0]))
+        logged = dict(xrange=mp.logscale(1.0, 100.0), width=10, height=3)
+        linear = dict(xrange=(1.0, 100.0), width=10, height=3)
+
+        overlaid = dstack2(scatter(data, **logged), line(data, **logged))
+        assert overlaid.window.xrange == mp.logscale(1.0, 100.0)
+
+        with pytest.raises(ValueError, match="cannot overlay"):
+            dstack2(scatter(data, **logged), line(data, **linear))
+
+    def test_axes_labels_the_ends_in_data_space(self):
+        """The interval's ends sit at the edges of the window whatever the
+        spacing, so a log axis is labelled with the same numbers a linear one
+        over the same interval would be."""
+        plot = scatter(
+            (np.array([1.0, 100.0]), np.array([0.0, 1.0])),
+            xrange=mp.logscale(),
+            width=12,
+            height=3,
+        )
+        bottom = axes(plot).chars.to_plain_str().splitlines()[-1]
+        assert "1.0" in bottom
+        assert "100.0" in bottom
 
 
 # # #

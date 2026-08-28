@@ -20,14 +20,46 @@ New:
   off a plot that carries one. The bar itself sweeps the colormap evenly
   whatever the spacing, so a log bar and a linear bar over the same interval
   draw identically.
+* Nonlinear coordinate axes. Every range that names a coordinate also accepts
+  a scale now: `xrange` and `yrange` on `scatter`, `line`, `image`, `heatmap`,
+  `function2`, `vfunction2`, `cfunction2` and `histogram2`, and the `vrange`
+  of `candles` and `boxes`, which is the interval their value axis covers.
+  The interval's ends stay at the edges of the plot and the scale decides
+  where the values between them land, so `axes` labels are unchanged.
+  * `scatter` and `line` place points along the scale, and a point with a
+    value the scale is not defined over---a negative value on a log axis---
+    falls off the plot the way a point outside the limits does.
+  * `function2` (and relatives) sample the axis along its scale, so a log
+    axis is sampled at log-spaced points, and `histogram2` bins on log-spaced
+    edges.
+  * `dstack2` refuses to overlay plots whose axes disagree about spacing,
+    exactly as it refuses intervals that disagree.
+* When a partial scale is completed from the data, the inference only
+  considers values the scale can place: a zero among the data no longer stops
+  `vrange=mp.logscale()`, it just comes out at the bottom of the colormap (or
+  off the plot, on a coordinate axis).
 
 Changed:
 
 * The `vrange` a plot keeps is now the completed scale rather than a plain
   pair. It still unpacks as `vmin, vmax = plot.vrange`, and compares equal to
-  another scale rather than to a tuple. `candles` and `boxes`, whose ranges
-  are coordinate intervals rather than colour or length scales, keep plain
-  pairs and refuse nonlinear scales.
+  another scale rather than to a tuple. This now includes `candles` and
+  `boxes`, whose value axis is a window coordinate and takes a scale like any
+  other.
+* A `window` likewise keeps each of its ranges as a scale: a plain pair
+  promotes to a linear `scale` on construction, so `plot.window.xrange`
+  unpacks as before but compares equal to `mp.scale(lo, hi)` rather than to
+  `(lo, hi)`.
+* An explicit coordinate range covering no interval, such as `xrange=(5, 5)`,
+  is now an error, as it always was for `vrange`; previously it was silently
+  widened. An *inferred* flat interval still widens to give the points room,
+  now by half a unit each way in the scale's transformed space (unchanged for
+  linear axes; a log axis widens by a factor of sqrt(e) each way), and an
+  endpoint the caller gave stays exactly where it was written.
+* `scatter` and `line` with no finite data at all now fall back to the
+  scale's own interval (the unit interval for a linear axis) rather than
+  `(-0.5, 0.5)`; `candles` and `boxes` given constant values now widen the
+  same way every other coordinate plot does rather than refusing.
 
 New examples:
 
@@ -45,8 +77,8 @@ Internal:
   `base`, which holds the base class together with the arrangement plots its
   operators are shortcuts for. Everything is still importable from
   `matthewplotlib.plots` and from the package root.
-* New `scales` module, holding the value-interval helpers that the grid, bar,
-  and calendar families share.
+* New `scales` module, holding the value-interval helpers that the plot
+  families share and the axes that `window` measures coordinates along.
 
 Version 0.7.1
 -------------

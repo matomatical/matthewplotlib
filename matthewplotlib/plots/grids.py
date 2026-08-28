@@ -20,7 +20,11 @@ from numpy.typing import ArrayLike
 from matthewplotlib.colormaps import ColorMap, chroma, domain
 from matthewplotlib.colors import parse_colors
 from matthewplotlib.data import number
-from matthewplotlib.scales import scale, _resolve_vrange
+from matthewplotlib.scales import (
+    scale,
+    _resolve_vrange,
+    _resolve_coordinate_range,
+)
 from matthewplotlib.window import window
 from matthewplotlib.core import unicode_image
 from matthewplotlib.plots.base import plot
@@ -60,11 +64,13 @@ class image(plot):
         A custom colormap may consume any array data but must return an RGB
         image of shape [h,w,3].
 
-    * xrange : optional (number, number).
-        The data coordinates at the left and the right edges of the image. By
-        default the image carries no horizontal coordinate, and so cannot be
-        given an axis or overlaid on another plot.
-    * yrange : optional (number, number).
+    * xrange : optional (number, number) | scale.
+        The data coordinates at the left and the right edges of the image,
+        or a complete `scale` over them, spacing the coordinates nonlinearly
+        between the same edges. By default the image carries no horizontal
+        coordinate, and so cannot be given an axis or overlaid on another
+        plot.
+    * yrange : optional (number, number) | scale.
         The data coordinates at the bottom and the top edges of the image. By
         default the image carries no vertical coordinate.
 
@@ -81,8 +87,8 @@ class image(plot):
         self,
         im: ArrayLike, # float[h,w] | float[h,w,rgb] | int[h,w] | int[h,w,rgb]
         colormap: ColorMap | None = None,
-        xrange: tuple[number, number] | None = None,
-        yrange: tuple[number, number] | None = None,
+        xrange: tuple[number, number] | scale | None = None,
+        yrange: tuple[number, number] | scale | None = None,
     ):
         # preprocessing: all inputs become uint8[h, w, rgb]
         arr = parse_colors(
@@ -141,11 +147,13 @@ class heatmap(image):
         a plain pair spaces them linearly: `vrange=mp.logscale(1, 255)`
         spends them evenly over the orders of magnitude, and
         `vrange=mp.logscale()` does the same over an inferred interval.
-    * xrange : optional (number, number).
-        The data coordinates at the left and the right edges of the grid. By
-        default the heatmap carries no horizontal coordinate, and so cannot be
-        given an axis or overlaid on another plot.
-    * yrange : optional (number, number).
+    * xrange : optional (number, number) | scale.
+        The data coordinates at the left and the right edges of the grid,
+        or a complete `scale` over them, spacing the coordinates nonlinearly
+        between the same edges. By default the heatmap carries no horizontal
+        coordinate, and so cannot be given an axis or overlaid on another
+        plot.
+    * yrange : optional (number, number) | scale.
         The data coordinates at the bottom and the top edges of the grid. By
         default the heatmap carries no vertical coordinate.
 
@@ -170,8 +178,8 @@ class heatmap(image):
         values: ArrayLike, # number[h, w]
         colormap: ColorMap | None = None,
         vrange: tuple[number, number] | scale | None = None,
-        xrange: tuple[number, number] | None = None,
-        yrange: tuple[number, number] | None = None,
+        xrange: tuple[number, number] | scale | None = None,
+        yrange: tuple[number, number] | scale | None = None,
     ):
         grid = np.asarray(values, dtype=float)
         if grid.ndim != 2:
@@ -202,10 +210,13 @@ class function2(heatmap):
     * F : float[batch, 2] -> number[batch].
         The (vectorised) function to plot. The input should be a batch of
         (x, y) vectors. The output should be a batch of scalars f(x, y).
-    * xrange : (number, number).
-        Lower and upper bounds on the x values to pass into the function.
-    * yrange : (number, number).
-        Lower and upper bounds on the y values to pass into the function.
+    * xrange : (number, number) | scale.
+        Lower and upper bounds on the x values to pass into the function. A
+        complete `scale` spaces the samples along the axis nonlinearly:
+        `xrange=mp.logscale(0.01, 100)` samples x at log-spaced points.
+    * yrange : (number, number) | scale.
+        Lower and upper bounds on the y values to pass into the function, as
+        for `xrange`.
     * width : int.
         The number of character columns in the plot. This will also become the
         number of grid squares along the x axis.
@@ -236,8 +247,8 @@ class function2(heatmap):
     def __init__(
         self,
         F: Callable[[np.ndarray], np.ndarray],
-        xrange: tuple[number, number],
-        yrange: tuple[number, number],
+        xrange: tuple[number, number] | scale,
+        yrange: tuple[number, number] | scale,
         width: int,
         height: int,
         vrange: tuple[number, number] | scale | None = None,
@@ -282,10 +293,13 @@ class vfunction2(image):
         The (vectorised) field to plot. The input is a batch of (x, y)
         positions. The output should be the batch of (u, v) vectors at those
         positions.
-    * xrange : (number, number).
-        Lower and upper bounds on the x values to pass into the function.
-    * yrange : (number, number).
-        Lower and upper bounds on the y values to pass into the function.
+    * xrange : (number, number) | scale.
+        Lower and upper bounds on the x values to pass into the function. A
+        complete `scale` spaces the samples along the axis nonlinearly, as
+        for `function2`.
+    * yrange : (number, number) | scale.
+        Lower and upper bounds on the y values to pass into the function, as
+        for `xrange`.
     * width : int.
         The number of character columns in the plot. This will also become the
         number of grid squares along the x axis.
@@ -320,8 +334,8 @@ class vfunction2(image):
     def __init__(
         self,
         F: Callable[[np.ndarray], np.ndarray],
-        xrange: tuple[number, number],
-        yrange: tuple[number, number],
+        xrange: tuple[number, number] | scale,
+        yrange: tuple[number, number] | scale,
         width: int,
         height: int,
         vrange: tuple[number, number] | scale | None = None,
@@ -388,10 +402,13 @@ class cfunction2(image):
     * F : complex[batch] -> complex[batch].
         The (vectorised) function to plot. The input is a batch of points of
         the complex plane. The output should be the batch of values there.
-    * xrange : (number, number).
-        Lower and upper bounds on the real part of the input.
-    * yrange : (number, number).
-        Lower and upper bounds on the imaginary part of the input.
+    * xrange : (number, number) | scale.
+        Lower and upper bounds on the real part of the input. A complete
+        `scale` spaces the samples along the axis nonlinearly, as for
+        `function2`.
+    * yrange : (number, number) | scale.
+        Lower and upper bounds on the imaginary part of the input, as for
+        `xrange`.
     * width : int.
         The number of character columns in the plot. This will also become the
         number of grid squares along the real axis.
@@ -422,8 +439,8 @@ class cfunction2(image):
     def __init__(
         self,
         F: Callable[[np.ndarray], np.ndarray],
-        xrange: tuple[number, number],
-        yrange: tuple[number, number],
+        xrange: tuple[number, number] | scale,
+        yrange: tuple[number, number] | scale,
         width: int,
         height: int,
         colormap: ColorMap | None = None,
@@ -470,12 +487,14 @@ class histogram2(heatmap):
     * height : int (default 12).
         Specifies the height of the plot in characters. This is also half the
         number of bins in the y direction.
-    * xrange : optional (number, number).
+    * xrange : optional (number, number) | scale.
         The x-axis limits `(xmin, xmax)`. If not provided, the limits are
-        inferred from the min and max x-values in the data.
-    * yrange : optional (number, number).
-        The y-axis limits `(ymin, ymax)`. If not provided, the limits are
-        inferred from the min and max y-values in the data.
+        inferred from the min and max x-values in the data. A `scale` spaces
+        the bins along the axis nonlinearly: `xrange=mp.logscale()` bins x
+        on log-spaced edges over an inferred interval, and a point with a
+        value the scale is not defined over falls outside every bin.
+    * yrange : optional (number, number) | scale.
+        The y-axis limits `(ymin, ymax)`, as for `xrange`.
     * weights : optional number[n].
         If provided, each 2d point in data contributes this amount to the count
         for its bin (rather than the default 1). See np.histogram2d's weights
@@ -500,8 +519,8 @@ class histogram2(heatmap):
         y: ArrayLike, # number[n]
         width: int = 24,
         height: int = 12,
-        xrange: tuple[number, number] | None = None,
-        yrange: tuple[number, number] | None = None,
+        xrange: tuple[number, number] | scale | None = None,
+        yrange: tuple[number, number] | scale | None = None,
         weights = None, # see np.histogram2d
         density = False, # see np.histogram2d
         max_count: None | number = None,
@@ -510,25 +529,15 @@ class histogram2(heatmap):
         # prepare data
         x = np.asarray(x)
         y = np.asarray(y)
-        
-        # determine data bounds
-        xmin, ymin = x.min(), y.min()
-        xmax, ymax = x.max(), y.max()
-        if xrange is None:
-            xrange = (xmin, xmax)
-        else:
-            xmin, xmax = xrange
-        if yrange is None:
-            yrange = (ymin, ymax)
-        else:
-            ymin, ymax = yrange
-        
+
         # bin data. the squares tile the window, and numpy needs their edges
         # ascending, so bin in that order and turn the counts back around
         # afterwards wherever the range runs the other way
+        xscale = _resolve_coordinate_range(xrange, x, "histogram2", "xrange")
+        yscale = _resolve_coordinate_range(yrange, y, "histogram2", "yrange")
         w = window(
-            xrange=xrange,
-            yrange=yrange,
+            xrange=xscale,
+            yrange=yscale,
             width=width,
             height=height,
         )
@@ -567,8 +576,8 @@ class histogram2(heatmap):
             values=hist,
             colormap=colormap,
             vrange=(0, max_count),
-            xrange=xrange,
-            yrange=yrange,
+            xrange=xscale,
+            yrange=yscale,
         )
         self.xbins = xedges
         self.ybins = yedges

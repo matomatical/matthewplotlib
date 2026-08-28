@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 
+from matthewplotlib.scales import scale, logscale
 from matthewplotlib.window import window
 
 
@@ -166,3 +167,145 @@ class TestWindow:
 
         assert one == same
         assert one != wider
+
+
+# # #
+# scales on the axes
+
+
+class TestScaledAxes:
+    def test_a_plain_pair_is_kept_as_a_linear_scale(self):
+        w = window(xrange=(0.0, 1.0), yrange=(0.0, 1.0), width=4, height=4)
+
+        assert w.xrange == scale(0.0, 1.0)
+        assert tuple(w.xrange) == (0.0, 1.0)
+
+    def test_both_spellings_build_equal_windows(self):
+        from_pair = window(
+            xrange=(0.0, 1.0), yrange=(0.0, 1.0), width=4, height=4,
+        )
+        from_scale = window(
+            xrange=scale(0.0, 1.0), yrange=(0.0, 1.0), width=4, height=4,
+        )
+
+        assert from_pair == from_scale
+
+    def test_windows_differing_only_in_spacing_are_not_equal(self):
+        """Which is what lets `dstack2` refuse to overlay a log plot on a
+        linear one covering the same interval."""
+        linear = window(
+            xrange=(1.0, 100.0), yrange=(0.0, 1.0), width=4, height=4,
+        )
+        logged = window(
+            xrange=logscale(1.0, 100.0), yrange=(0.0, 1.0), width=4, height=4,
+        )
+
+        assert linear != logged
+
+    def test_a_partial_scale_is_refused(self):
+        with pytest.raises(ValueError, match="missing endpoint"):
+            window(
+                xrange=logscale(), yrange=(0.0, 1.0), width=4, height=4,
+            )
+
+    def test_the_repr_names_a_nonlinear_spacing(self):
+        w = window(
+            xrange=logscale(1.0, 100.0),
+            yrange=(0.0, 1.0),
+            width=7,
+            height=5,
+        )
+
+        assert repr(w) \
+            == "window(x=logscale[1.00,100.00], y=[0.00,1.00], 7x5 cells)"
+
+    def test_dots_place_equal_factors_at_equal_steps(self):
+        """A log axis is linear in the transformed coordinate, so the dots of
+        [1, 10, 100] on a log axis are the dots of [0, 1, 2] on a linear
+        one."""
+        logged = window(
+            xrange=logscale(1.0, 100.0), yrange=(0.0, 1.0), width=7, height=5,
+        )
+        linear = window(
+            xrange=(0.0, 2.0), yrange=(0.0, 1.0), width=7, height=5,
+        )
+        factors = np.array([[1.0, 0.5], [10.0, 0.5], [100.0, 0.5]])
+        steps = np.array([[0.0, 0.5], [1.0, 0.5], [2.0, 0.5]])
+
+        assert np.allclose(logged.dots(factors), linear.dots(steps))
+
+    def test_a_point_the_scale_cannot_place_is_not_a_number(self):
+        """A negative value has no position on a log axis, so the point comes
+        out unplaceable---the drawing routines cull it---rather than raising
+        or warning."""
+        w = window(
+            xrange=logscale(1.0, 100.0), yrange=(0.0, 1.0), width=7, height=5,
+        )
+
+        dots = w.dots(np.array([[-5.0, 0.5], [10.0, 0.5]]))
+
+        assert np.isnan(dots[0, 1])
+        assert np.isfinite(dots[1]).all()
+
+    def test_the_edges_tile_the_scale(self):
+        w = window(
+            xrange=logscale(1.0, 16.0), yrange=(0.0, 1.0), width=4, height=1,
+        )
+        xedges, _yedges = w.pixel_edges()
+
+        assert np.allclose(xedges, [1.0, 2.0, 4.0, 8.0, 16.0])
+
+    def test_the_outermost_edges_are_the_limits_exactly(self):
+        """Not the transform round trip of them, which floating point can
+        land a whisker away, putting a data point at the limit outside its
+        own bin."""
+        w = window(
+            xrange=logscale(0.1, 10.0), yrange=(0.0, 1.0), width=4, height=1,
+        )
+        xedges, _yedges = w.pixel_edges()
+
+        assert xedges[0] == 0.1
+        assert xedges[-1] == 10.0
+
+    def test_the_centres_are_the_midpoints_along_the_scale(self):
+        """On a log axis, the geometric rather than arithmetic mean of the
+        pixel's edges: the centre of the pixel on the screen."""
+        w = window(
+            xrange=logscale(1.0, 16.0), yrange=(0.0, 1.0), width=4, height=1,
+        )
+        X, _Y = w.pixel_centres()
+
+        assert np.allclose(X[0], [2 ** 0.5, 2 ** 1.5, 2 ** 2.5, 2 ** 3.5])
+
+    def test_endpoint_samples_reach_the_ends_of_the_scale_exactly(self):
+        w = window(
+            xrange=logscale(0.1, 10.0),
+            yrange=logscale(0.1, 10.0),
+            width=3,
+            height=1,
+        )
+
+        points = w.sample_points(endpoints=True)
+
+        assert points[0].tolist() == [0.1, 10.0]
+        assert points[-1].tolist() == [10.0, 0.1]
+
+    def test_a_scale_without_an_inverse_can_place_but_not_sample(self):
+        """Only the sampling methods ask what value a position stands for, so
+        a custom scale that left `inverse` unwritten works everywhere else
+        and is refused there, rather than silently sampling wrong points
+        through the base class's identity."""
+        class forwardscale(scale):
+            def transform(self, values):
+                return np.exp(np.asarray(values, dtype=float))
+
+        w = window(
+            xrange=forwardscale(0.0, 1.0),
+            yrange=(0.0, 1.0),
+            width=4,
+            height=1,
+        )
+
+        assert np.isfinite(w.dots(np.array([[0.5, 0.5]]))).all()
+        with pytest.raises(NotImplementedError, match="override inverse"):
+            w.pixel_edges()

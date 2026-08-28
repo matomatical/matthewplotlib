@@ -27,9 +27,9 @@ What a plot accepts:
   for a whole series or one per point.
 * [`colormaps`][matthewplotlib.colormaps]: Ready-made continuous and discrete
   colormaps to map data onto colors.
-* [`scales`][matthewplotlib.scales]: The interval of values a plot's colours
-  or lengths cover, and how values are spaced within it: linearly, or on a
-  log, symlog, or power scale.
+* [`scales`][matthewplotlib.scales]: The interval of values a plot's colours,
+  lengths, or coordinate axes cover, and how values are spaced within it:
+  linearly, or on a log, symlog, or power scale.
 
 What draws them:
 

@@ -115,9 +115,20 @@ class TestHeatmap:
         assert plot.vrange == mp.logscale(1.0, 100.0)
         assert np.allclose(colormap.input, [[0.0, 0.5, 1.0]])
 
-    def test_a_scale_completed_outside_its_domain_says_to_give_an_end(self):
-        with pytest.raises(ValueError, match="give one explicitly"):
-            heatmap([[0.0, 100.0]], vrange=mp.logscale())
+    def test_completion_infers_over_the_values_in_the_scales_domain(self):
+        """A zero among the data cannot end a logscale's interval, so it is
+        left out of the inference and comes out at the bottom of the colormap
+        like any other value below the interval."""
+        colormap = RecordingColormap()
+
+        plot = heatmap(
+            [[0.0, 1.0, 10.0, 100.0]],
+            colormap=colormap,
+            vrange=mp.logscale(),
+        )
+
+        assert plot.vrange == mp.logscale(1.0, 100.0)
+        assert np.allclose(colormap.input, [[0.0, 0.0, 0.5, 1.0]])
 
     def test_it_needs_a_grid_of_values(self):
         with pytest.raises(ValueError, match="2d grid"):
@@ -183,6 +194,51 @@ class TestFunction2:
 
         assert np.allclose(np.unique(sampled[0][:, 0]), [0.0, 1 / 3, 2 / 3, 1.0])
         assert np.allclose(np.unique(sampled[0][:, 1]), [0.0, 2.0])
+
+    def test_a_log_axis_is_sampled_at_log_spaced_points(self):
+        """The samples are evenly spaced along the scale, so each grid square
+        still shows the value at its own centre---which on a log axis is the
+        geometric midpoint of the square's edges."""
+        sampled = []
+
+        def record(xy):
+            sampled.append(xy)
+            return xy[:, 0]
+
+        function2(
+            record,
+            xrange=mp.logscale(1.0, 16.0),
+            yrange=(0.0, 2.0),
+            width=4,
+            height=1,
+        )
+
+        assert np.allclose(
+            np.unique(sampled[0][:, 0]),
+            [2 ** 0.5, 2 ** 1.5, 2 ** 2.5, 2 ** 3.5],
+        )
+
+    def test_a_log_axis_reaches_its_window(self):
+        plot = function2(
+            lambda xy: xy[:, 0],
+            xrange=mp.logscale(1.0, 16.0),
+            yrange=(0.0, 2.0),
+            width=4,
+            height=1,
+        )
+        assert plot.window.xrange == mp.logscale(1.0, 16.0)
+
+    def test_a_partial_scale_has_no_data_to_complete_it_from(self):
+        """The function is sampled on the window, so there are no values yet
+        to infer an interval from."""
+        with pytest.raises(ValueError, match="missing endpoint"):
+            function2(
+                lambda xy: xy[:, 0],
+                xrange=mp.logscale(),
+                yrange=(0.0, 2.0),
+                width=4,
+                height=1,
+            )
 
 
 class TestVFunction2:
@@ -335,6 +391,44 @@ class TestHistogram2:
         )
 
         assert np.array_equal(colormap.input, np.zeros((2, 1)))
+
+    def test_a_log_axis_bins_on_log_spaced_edges(self):
+        """One sample per octave lands one count in every bin, where linear
+        edges over the same interval would crowd the low octaves into the
+        first bin."""
+        colormap = RecordingColormap()
+
+        plot = histogram2(
+            x=[1.5, 3.0, 6.0, 12.0],
+            y=[0.5] * 4,
+            width=4,
+            height=1,
+            xrange=mp.logscale(1.0, 16.0),
+            yrange=(0.0, 1.0),
+            colormap=colormap,
+        )
+
+        assert np.allclose(plot.xbins, [1.0, 2.0, 4.0, 8.0, 16.0])
+        assert np.array_equal(colormap.input.sum(axis=0), [1.0] * 4)
+        assert plot.window.xrange == mp.logscale(1.0, 16.0)
+
+    def test_a_sample_at_the_limit_of_a_log_axis_is_counted(self):
+        """The outermost bin edges are the interval's own ends exactly, not
+        the transform round trip of them, so a sample at the limit cannot
+        fall a whisker outside its own bin."""
+        colormap = RecordingColormap()
+
+        histogram2(
+            x=[10.0],
+            y=[0.5],
+            width=2,
+            height=1,
+            xrange=mp.logscale(0.1, 10.0),
+            yrange=(0.0, 1.0),
+            colormap=colormap,
+        )
+
+        assert colormap.input.sum() == 1.0
 
     @pytest.mark.parametrize("max_count", [0, -1])
     def test_an_explicit_maximum_must_be_positive(self, max_count):

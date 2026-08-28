@@ -5,10 +5,10 @@ A 2d plot covers an interval of data on each axis and draws it into a
 rectangle of character cells. This module names that mapping, so that the
 plots can share it and the furnishings around them can read it.
 
-* `window`: The intervals, the rectangle, and the conversions between data
-  coordinates and the sub-cell grids the drawing routines work in, in both
-  directions: where a point of the data lands, and what coordinate a given
-  part of the grid stands for.
+* `window`: The scale on each axis, the rectangle, and the conversions
+  between data coordinates and the sub-cell grids the drawing routines work
+  in, in both directions: where a point of the data lands, and what
+  coordinate a given part of the grid stands for.
 
 For the mapping from 3d data onto a plane, see `matthewplotlib.camera`.
 """
@@ -20,9 +20,11 @@ import dataclasses
 import numpy as np
 import einops
 
+from typing import cast
 from numpy.typing import NDArray
 
 from matthewplotlib.data import number
+from matthewplotlib.scales import scale
 
 
 # # #
@@ -37,12 +39,12 @@ class window:
 
     Inputs:
 
-    * xrange : optional (number, number).
-        The data coordinates at the left and the right edges of the rectangle.
-        None if the horizontal axis carries no coordinate.
-    * yrange : optional (number, number).
-        The data coordinates at the bottom and the top edges of the rectangle.
-        None if the vertical axis carries no coordinate.
+    * xrange : optional (number, number) | scale.
+        The data coordinates at the left and the right edges of the
+        rectangle. None if the horizontal axis carries no coordinate.
+    * yrange : optional (number, number) | scale.
+        The data coordinates at the bottom and the top edges of the
+        rectangle. None if the vertical axis carries no coordinate.
     * width : int.
         The width of the rectangle, in character cells.
     * height : int.
@@ -52,6 +54,13 @@ class window:
     at the high end: `xrange` from the left edge to the right, `yrange` from
     the bottom edge to the top. Giving one descending inverts that axis, which
     mirrors the picture and changes nothing else.
+
+    A range given as a `scale` spaces coordinates nonlinearly between the
+    same two edges: the interval's ends still sit at the edges, and the scale
+    decides where the values between them land. A plain pair is kept as a
+    linear `scale`, so both spellings compare equal and either unpacks as
+    `lo, hi = w.xrange`. Either way the scale must have both ends: a window
+    covers a definite interval.
 
     Plots divide the rectangle in one of two ways, and a range means the same
     thing for both---the interval the plot covers---but the two place the
@@ -67,8 +76,8 @@ class window:
     The difference is under half a cell, and invisible to labels drawn at the
     edges of the rectangle.
     """
-    xrange: tuple[number, number] | None
-    yrange: tuple[number, number] | None
+    xrange: tuple[number, number] | scale | None
+    yrange: tuple[number, number] | scale | None
     width: int
     height: int
 
@@ -78,16 +87,29 @@ class window:
                 "window must be at least one cell in each direction, not "
                 f"{self.width}x{self.height}"
             )
-        for name, range in (("xrange", self.xrange), ("yrange", self.yrange)):
-            if range is not None and range[0] == range[1]:
-                raise ValueError(f"{name} covers no interval: {range!r}")
+        for name, given in (("xrange", self.xrange), ("yrange", self.yrange)):
+            if given is None:
+                continue
+            axis = given if isinstance(given, scale) else scale(*given)
+            if axis.lo is None or axis.hi is None:
+                raise ValueError(
+                    f"{name} has a missing endpoint: {axis!r}; a window "
+                    "covers a definite interval, so give both ends"
+                )
+            if axis.lo == axis.hi:
+                raise ValueError(f"{name} covers no interval: {given!r}")
+            object.__setattr__(self, name, axis)
 
     def __repr__(self) -> str:
-        coordinates = [
-            f"{name}=[{range[0]:.2f},{range[1]:.2f}]"
-            for name, range in (("x", self.xrange), ("y", self.yrange))
-            if range is not None
-        ]
+        coordinates = []
+        for name, axis in (("x", self.xrange), ("y", self.yrange)):
+            if axis is None:
+                continue
+            axis = cast(scale, axis)
+            spacing = "" if type(axis) is scale else type(axis).__name__
+            coordinates.append(
+                f"{name}={spacing}[{axis.lo:.2f},{axis.hi:.2f}]"
+            )
         extent = f"{self.width}x{self.height} cells"
         return f"window({', '.join([*coordinates, extent])})"
 
@@ -98,7 +120,13 @@ class window:
         The dot grid has two columns and four rows of dots per character cell.
         A dot coordinate is a position in that grid, so that its integer part
         selects a dot and its fractional part places the point within that
-        dot. The data's limits land on the centres of the outermost dots.
+        dot. The data's limits land on the centres of the outermost dots, and
+        an axis's scale decides where the values between them land.
+
+        A point with a coordinate its axis's scale is not defined over---a
+        negative value on a `logscale` axis---gets a dot coordinate that is
+        not a number, marking a point that cannot be placed; the drawing
+        routines leave such points out, as they do points beyond the limits.
 
         Inputs:
 
@@ -113,9 +141,15 @@ class window:
         """
         if self.xrange is None or self.yrange is None:
             raise ValueError(f"{self!r} has no coordinates to place points in")
-        (xmin, xmax), (ymin, ymax) = self.xrange, self.yrange
-        cols = (points[:, 0] - xmin) / (xmax - xmin) * (2 * self.width - 1)
-        rows = (ymax - points[:, 1]) / (ymax - ymin) * (4 * self.height - 1)
+        xaxis = cast(scale, self.xrange)
+        yaxis = cast(scale, self.yrange)
+        txlo, txhi = xaxis._transformed_ends()
+        tylo, tyhi = yaxis._transformed_ends()
+        with np.errstate(divide="ignore", invalid="ignore"):
+            tx = np.asarray(xaxis.transform(points[:, 0]), dtype=float)
+            ty = np.asarray(yaxis.transform(points[:, 1]), dtype=float)
+        cols = (tx - txlo) / (txhi - txlo) * (2 * self.width - 1)
+        rows = (tyhi - ty) / (tyhi - tylo) * (4 * self.height - 1)
         return np.stack([rows + 0.5, cols + 0.5], axis=1)
 
     def pixel_edges(self) -> tuple[NDArray, NDArray]:
@@ -123,7 +157,11 @@ class window:
         The data coordinates of the boundaries between the plot's pixels.
 
         The pixel grid has one column and two rows of pixels per character
-        cell, and the pixels tile the window's intervals exactly.
+        cell, and the pixels tile the window's intervals exactly. The
+        boundaries are evenly spaced along each axis's scale, so on a
+        nonlinear axis every pixel covers an equal share of the scale rather
+        than of the interval; the outermost boundaries are the interval's own
+        ends exactly.
 
         Returns:
 
@@ -138,8 +176,8 @@ class window:
         if self.xrange is None or self.yrange is None:
             raise ValueError(f"{self!r} has no coordinates to lay out a grid")
         return (
-            np.linspace(self.xrange[0], self.xrange[1], num=self.width + 1),
-            np.linspace(self.yrange[0], self.yrange[1], num=2 * self.height+1),
+            _edges(cast(scale, self.xrange), num=self.width + 1),
+            _edges(cast(scale, self.yrange), num=2 * self.height + 1),
         )
 
     def pixel_centres(self) -> tuple[NDArray, NDArray]:
@@ -147,7 +185,9 @@ class window:
         The data coordinates at the centre of each of the plot's pixels.
 
         Each pixel stands for the square of the plane it covers, so the
-        coordinate that represents it is the one at its centre.
+        coordinate that represents it is the one at its centre---the centre
+        of the square on the screen, which on a nonlinear axis is the
+        midpoint along the scale rather than the midpoint of the values.
 
         Returns:
 
@@ -156,9 +196,10 @@ class window:
             The x and the y coordinate of each pixel's centre, with row zero
             at the top of the window.
         """
-        xedges, yedges = self.pixel_edges()
-        xs = (xedges[:-1] + xedges[1:]) / 2
-        ys = (yedges[:-1] + yedges[1:]) / 2
+        if self.xrange is None or self.yrange is None:
+            raise ValueError(f"{self!r} has no coordinates to lay out a grid")
+        xs = _centres(cast(scale, self.xrange), num=self.width)
+        ys = _centres(cast(scale, self.yrange), num=2 * self.height)
         return np.meshgrid(xs, ys[::-1])
 
     def sample_points(self, endpoints: bool = False) -> NDArray:
@@ -175,6 +216,10 @@ class window:
             four corner pixels stand for the four corner combinations of the
             ranges and the pixels reach half a pixel beyond them.
 
+        Either way the coordinates are evenly spaced along each axis's scale,
+        so a nonlinear axis is sampled with its spacing: a `logscale` axis at
+        log-spaced points.
+
         Returns:
 
         * points : float[2 * height * width, 2].
@@ -186,9 +231,45 @@ class window:
             raise ValueError(f"{self!r} has no coordinates to sample")
         if endpoints:
             X, Y = np.meshgrid(
-                np.linspace(*self.xrange, num=self.width),
-                np.linspace(*self.yrange, num=2*self.height)[::-1],
+                _edges(cast(scale, self.xrange), num=self.width),
+                _edges(cast(scale, self.yrange), num=2 * self.height)[::-1],
             ) # float[h, w] (x2)
         else:
             X, Y = self.pixel_centres()
         return einops.rearrange(np.dstack((X, Y)), 'h w xy -> (h w) xy')
+
+
+# # #
+# SPACING POINTS ALONG ONE AXIS
+
+
+def _edges(axis: scale, num: int) -> NDArray:
+    """
+    `num` data coordinates evenly spaced along the axis's scale, the ends of
+    its interval at the outside exactly rather than through the round trip of
+    the transform and its inverse.
+    """
+    tlo, thi = axis._transformed_ends()
+    edges = np.asarray(
+        axis._checked_inverse(np.linspace(tlo, thi, num=num)),
+        dtype=float,
+    )
+    lo, hi = axis.interval
+    edges[0] = lo
+    if num >= 2:
+        edges[-1] = hi
+    return edges
+
+
+def _centres(axis: scale, num: int) -> NDArray:
+    """
+    The data coordinates at the midpoints between `num + 1` boundaries evenly
+    spaced along the axis's scale: where each of `num` pixels tiling the axis
+    has its centre.
+    """
+    tlo, thi = axis._transformed_ends()
+    tedges = np.linspace(tlo, thi, num=num + 1)
+    return np.asarray(
+        axis._checked_inverse((tedges[:-1] + tedges[1:]) / 2),
+        dtype=float,
+    )

@@ -22,7 +22,7 @@ import matthewplotlib as mp
 # Modules whose entire public surface belongs in the top-level namespace.
 #
 # The others cannot be covered this way, and it is not an oversight: `data`
-# keeps its parsers back (`parse_range`, `parse_multiple_series`, ...), `colors`
+# keeps its parsers back (`parse_series`, `parse_multiple_series`, ...), `colors`
 # keeps `Color` and `parse_color`, `camera` keeps its projections, and `core` is
 # the character-array backend, where only `BoxStyle` is meant to be reached
 # for. Covering those needs an

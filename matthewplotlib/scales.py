@@ -1,9 +1,10 @@
 """
 How values are measured against an interval. A scale carries the interval of
 values a plot's visual channel covers---the colours of a heatmap, the lengths
-of a bar chart---and answers how far along it each value lies. The named
-scales space values nonlinearly within the interval; a plain `(lo, hi)` pair
-means a linear `scale` wherever one is accepted.
+of a bar chart, the coordinates along a scatter's axes---and answers how far
+along it each value lies. The named scales space values nonlinearly within
+the interval; a plain `(lo, hi)` pair means a linear `scale` wherever one is
+accepted.
 
 * `scale`: values spaced linearly, and the base class the others extend.
 * `logscale`: values spaced logarithmically, for data that ranges over
@@ -57,9 +58,11 @@ class scale:
 
     * `transform`, a vectorised function applied to the values, strictly
       monotonic on any interval the scale will be given.
-    * `inverse`, the function undoing it. Nothing that measures values
-      against the scale consults it, so a subclass that is never asked for
-      it back may leave it unwritten.
+    * `inverse`, the function undoing it. Consulted only when a plot asks
+      what value a position along the scale stands for---sampling a
+      `function2`'s pixels, binning a `histogram2`---so a subclass never
+      given to such a plot may leave it unwritten, and given to one, it is
+      refused with a clear error rather than sampling wrong points.
 
     The affine step from transformed values onto the range 0.0 to 1.0 is the
     scale's own, so a transform is free of bookkeeping---and any two
@@ -129,18 +132,31 @@ class scale:
         array = np.asarray(values, dtype=float)
         if lo == hi:
             return np.zeros(array.shape, dtype=float)
-        tlo = float(self.transform(lo))
-        thi = float(self.transform(hi))
-        if not (math.isfinite(tlo) and math.isfinite(thi)) or tlo == thi:
-            raise ValueError(
-                f"{self!r} sends its own endpoints to {tlo:g} and {thi:g}, "
-                "leaving values no scale to lie along; the transform must be "
-                "finite and strictly monotonic over the interval"
-            )
         clipped = np.clip(array, min(lo, hi), max(lo, hi))
-        scaled = (np.asarray(self.transform(clipped)) - tlo) / (thi - tlo)
-        scaled = np.clip(scaled, 0.0, 1.0)
+        scaled = np.clip(self.position(clipped), 0.0, 1.0)
         return np.where(np.isnan(scaled), 0.0, scaled)
+
+    def position(
+        self,
+        values: ArrayLike,  # number[...]
+    ) -> NDArray:           # -> float[...]
+        """
+        How far along the interval each value lies, without saturating.
+
+        Runs 0.0 to 1.0 from `lo` to `hi` like calling the scale, but a
+        value beyond the interval keeps going rather than stopping at the
+        ends: a coordinate past the edge of a plot should fall off it, not
+        smear onto its border. A value that is not a number, or one the
+        spacing is not defined over---a negative value on a `logscale`---
+        comes out as not a number: an unplaceable point, not an error.
+        """
+        tlo, thi = self._transformed_ends()
+        with np.errstate(divide="ignore", invalid="ignore"):
+            transformed = np.asarray(
+                self.transform(np.asarray(values, dtype=float)),
+                dtype=float,
+            )
+        return (transformed - tlo) / (thi - tlo)
 
     @property
     def interval(self) -> tuple[float, float]:
@@ -168,6 +184,59 @@ class scale:
             for field in dataclasses.fields(self)[2:]
         ]
         return f"{type(self).__name__}({', '.join(ends + extras)})"
+
+    def _transformed_ends(self) -> tuple[float, float]:
+        """
+        The endpoints in transformed space: the interval values are measured
+        against once the transform has been applied. Validates that the scale
+        is complete and that the transform gives its interval somewhere to
+        lie.
+        """
+        if self.lo is None or self.hi is None:
+            raise ValueError(
+                f"{self!r} has a missing endpoint, so there is nothing to "
+                "measure values against; give both ends, or give the scale "
+                "to a plot, which completes it from the data"
+            )
+        tlo = float(self.transform(self.lo))
+        thi = float(self.transform(self.hi))
+        if not (math.isfinite(tlo) and math.isfinite(thi)) or tlo == thi:
+            raise ValueError(
+                f"{self!r} sends its own endpoints to {tlo:g} and {thi:g}, "
+                "leaving values no scale to lie along; the transform must be "
+                "finite and strictly monotonic over the interval"
+            )
+        return tlo, thi
+
+    def _checked_inverse(
+        self,
+        values: ArrayLike,  # float[...]
+    ) -> NDArray:           # -> float[...]
+        """
+        `inverse`, refusing the base class's identity where `transform` was
+        overridden: a subclass that left `inverse` unwritten would otherwise
+        silently hand transformed values back as data.
+        """
+        cls = type(self)
+        if (
+            cls.transform is not scale.transform
+            and cls.inverse is scale.inverse
+        ):
+            raise NotImplementedError(
+                f"{cls.__name__} overrides transform but not inverse, so it "
+                "cannot say what value a position along the scale stands "
+                "for; override inverse to use this scale on a sampled axis"
+            )
+        return self.inverse(values)
+
+    def _admissible(self, values: NDArray) -> NDArray:
+        """
+        Which of the values could set an endpoint of this scale: finite, and
+        within the values the spacing is defined over. Inference consults
+        this, so that a value the scale could never place---a zero among the
+        data under a `logscale`---does not decide its interval.
+        """
+        return np.isfinite(values)
 
     def _check_endpoint(self, value: float) -> None:
         """
@@ -219,6 +288,9 @@ class logscale(scale):
                 "logscale covers values above zero, and this interval "
                 f"reaches {value:g}"
             )
+
+    def _admissible(self, values: NDArray) -> NDArray:
+        return np.isfinite(values) & (values > 0)
 
     def _fallback_interval(self) -> tuple[float, float]:
         return (1.0, 10.0)
@@ -299,6 +371,9 @@ class powscale(scale):
                 f"reaches {value:g}"
             )
 
+    def _admissible(self, values: NDArray) -> NDArray:
+        return np.isfinite(values) & (values >= 0)
+
     def _check_parameters(self) -> None:
         value = float(self.exponent)
         if not math.isfinite(value) or value <= 0:
@@ -312,85 +387,119 @@ class powscale(scale):
 # COMPLETING A SCALE AGAINST DATA
 
 
+def _as_scale(
+    range: tuple[number | None, number | None] | scale | None,
+) -> scale:
+    """
+    The scale a range argument stands for: a pair becomes a linear `scale`,
+    `None` an empty one, and a scale is already its own.
+    """
+    if range is None:
+        return scale()
+    if isinstance(range, scale):
+        return range
+    return scale(range[0], range[1])
+
+
 def _resolve_vrange(
-    vrange: tuple[number, number] | scale | None,
+    vrange: tuple[number | None, number | None] | scale | None,
     values: NDArray,
     what: str,
     from_zero: bool = False,
-    allow_flat: bool = True,
+    channel: str = "vrange",
 ) -> scale:
     """
     The scale a plot measures its values against, completed and validated.
 
     A pair becomes a linear `scale` and `None` an empty one. A missing
-    endpoint is inferred from the finite values there are: the lowest of them
-    for `lo`---or zero if `from_zero`, for a scale whose bottom end is a
-    baseline rather than the smallest value measured---and the highest for
-    `hi`, so that the scale spans the data. With no finite values at all, a
-    given endpoint stands in for the missing one, and a scale missing both
-    falls back to an interval of its own choosing.
+    endpoint is inferred from the values the scale could place---the finite
+    ones within its spacing's domain: the lowest of them for `lo`---or zero
+    if `from_zero`, for a scale whose bottom end is a baseline rather than
+    the smallest value measured---and the highest for `hi`, so that the
+    scale spans the data. With no placeable values at all, a given endpoint
+    stands in for the missing one, and a scale missing both falls back to an
+    interval of its own choosing.
 
     An interval covering nothing is an error where the caller wrote it, since
     there is no reading of it to act on. Inferred, over values that are all
-    the same, it is returned as it stands unless `allow_flat` is false, for a
-    plot that draws positions along the interval and so has nowhere to put
-    them. `what` names the caller in the errors.
+    the same, it is returned as it stands: one point of the scale, with
+    everything measured to the bottom. `what` and `channel` name the caller
+    in the errors.
     """
-    if vrange is None:
-        given = scale()
-    elif isinstance(vrange, scale):
-        given = vrange
-    else:
-        given = scale(vrange[0], vrange[1])
+    given = _as_scale(vrange)
 
     if given.lo is not None and given.hi is not None:
         if given.lo == given.hi:
-            raise ValueError(f"{what} vrange covers no interval: {vrange!r}")
+            raise ValueError(
+                f"{what} {channel} covers no interval: {vrange!r}"
+            )
         return given
 
     lo, hi = given.lo, given.hi
-    finite = values[np.isfinite(values)]
-    if finite.size == 0:
+    admissible = values[given._admissible(values)]
+    if admissible.size == 0:
         if lo is None and hi is None:
             lo, hi = given._fallback_interval()
         else:
             lo = hi = lo if lo is not None else hi
     else:
         if lo is None:
-            lo = 0.0 if from_zero else float(finite.min())
+            lo = 0.0 if from_zero else float(admissible.min())
         if hi is None:
-            hi = float(finite.max())
-    if lo == hi and not allow_flat:
-        raise ValueError(
-            f"every value in the {what} sits at {lo}; give a vrange "
-            "spanning an interval to plot them in"
-        )
+            hi = float(admissible.max())
     try:
         return dataclasses.replace(given, lo=lo, hi=hi)
     except ValueError as e:
         raise ValueError(
-            f"{what}: {e}; the missing endpoint was inferred from the data, "
-            "so give one explicitly"
+            f"{what} {channel}: {e}; the missing endpoint was inferred from "
+            "the data, so give one explicitly"
         ) from None
 
 
-def _resolve_linear_vrange(
-    vrange: tuple[number, number] | scale | None,
+def _resolve_coordinate_range(
+    range: tuple[number | None, number | None] | scale | None,
     values: NDArray,
     what: str,
-    allow_flat: bool = True,
+    channel: str,
 ) -> scale:
     """
-    The scale for a plot that lays values out along a coordinate axis.
+    The scale a plot lays coordinates out along, completed and validated.
 
-    Such a plot hands its interval to the window that its axes are labelled
-    from, and a window places coordinates linearly, so a scale that moves the
-    marks would part them from their labels. A plain interval is accepted and
-    completed as usual; a scale that spaces values nonlinearly is refused.
+    Completion works as for a value range, with one more step: an interval
+    that came out covering nothing---inferred over values that are all the
+    same, or a lone given endpoint standing in where there are none---is
+    widened around its value, since coordinates need an interval to sit in,
+    not only to be measured against. Each endpoint that was left to
+    inference moves half a unit outward in transformed space, so the
+    widening respects the spacing: a linear scale widens to the value plus
+    and minus a half, a `logscale` to the value divided and multiplied by
+    the square root of e. An endpoint the caller gave stays exactly where it
+    was written.
     """
-    if isinstance(vrange, scale) and type(vrange) is not scale:
-        raise TypeError(
-            f"{what} lays values out along a coordinate axis, which "
-            f"{vrange!r} does not reach; give a plain (lo, hi) interval"
-        )
-    return _resolve_vrange(vrange, values, what, allow_flat=allow_flat)
+    given = _as_scale(range)
+    lo_missing = given.lo is None
+    hi_missing = given.hi is None
+    resolved = _resolve_vrange(given, values, what, channel=channel)
+    lo, hi = resolved.lo, resolved.hi
+    if lo is None or hi is None or lo != hi:
+        return resolved
+
+    flat = float(lo)
+    tflat = float(resolved.transform(flat))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        if lo_missing:
+            lo = float(np.asarray(resolved.inverse(tflat - 0.5), dtype=float))
+        if hi_missing:
+            hi = float(np.asarray(resolved.inverse(tflat + 0.5), dtype=float))
+    try:
+        widened = dataclasses.replace(resolved, lo=lo, hi=hi)
+        widened._transformed_ends()
+        if not lo <= flat <= hi:
+            raise ValueError("the widening leapt past the value")
+    except ValueError:
+        raise ValueError(
+            f"every value in the {what} sits at {flat:g}, where "
+            f"{type(resolved).__name__} has no room to widen an interval; "
+            f"give {channel} explicitly"
+        ) from None
+    return widened

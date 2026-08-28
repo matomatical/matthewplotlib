@@ -23,7 +23,7 @@ from matthewplotlib.data import number
 from matthewplotlib.scales import (
     scale,
     _resolve_vrange,
-    _resolve_linear_vrange,
+    _resolve_coordinate_range,
 )
 from matthewplotlib.window import window
 from matthewplotlib.core import (
@@ -480,10 +480,12 @@ class candles(plot):
         Which way one candle lies. Vertical candles stand up and march across
         the screen, which is the way a price series is usually read and so the
         default; horizontal candles lie flat and stack up it.
-    * vrange : optional (number, number).
+    * vrange : optional (number, number) | scale.
         The values at the ends of the value axis. By default, the lowest low
         and the highest high, so that every candle fits. Given a narrower
-        interval, the candles outside it are clipped to it.
+        interval, the candles outside it are clipped to it. A `scale` spaces
+        values nonlinearly along the axis: `vrange=mp.logscale()` is a
+        logarithmic value axis over an inferred interval.
     * rising : ColorLike (default: a green).
         The color of a candle that closed at or above its opening value.
     * falling : ColorLike (default: a red).
@@ -524,7 +526,7 @@ class candles(plot):
         body_thickness: int = 1,
         spacing: int = 0,
         candle_direction: Orientation = "vertical",
-        vrange: tuple[number, number] | None = None,
+        vrange: tuple[number, number] | scale | None = None,
         rising: ColorLike = (0.30, 0.78, 0.45),
         falling: ColorLike = (0.90, 0.32, 0.36),
         wick: ColorLike | None = None,
@@ -578,19 +580,15 @@ class candles(plot):
                     "arguments are opens, highs, lows, closes"
                 )
 
-        # determine the value range, and where each value sits within it. The
-        # range is a coordinate interval, handed to the window below, so it is
-        # a plain pair: a scale that moved the candles would part them from
-        # the labels on their axis
+        # determine the value range, and where each value sits within it
         if vrange is None and num_candles == 0:
             raise ValueError("cannot infer a value range with no candles")
-        vscale = _resolve_linear_vrange(
+        vscale = _resolve_coordinate_range(
             vrange,
             np.concatenate(values),
             "candles",
-            allow_flat=False,
+            "vrange",
         )
-        vrange = vscale.interval
         proportions = [vscale(v) for v in values]
 
         # determine the colours
@@ -632,13 +630,13 @@ class candles(plot):
         super().__init__(chars)
         standing = candle_direction == "vertical"
         self.window = window(
-            xrange=None if standing else vrange,
-            yrange=vrange if standing else None,
+            xrange=None if standing else vscale,
+            yrange=vscale if standing else None,
             width=chars.width,
             height=chars.height,
         )
         self.num_candles = num_candles
-        self.vrange = vrange
+        self.vrange = vscale
 
     def __repr__(self):
         return f"candles(<{self.num_candles} candles>, {self.window!r})"
@@ -689,11 +687,14 @@ class boxes(plot):
         that reach, and every sample beyond it is drawn as a point: the default
         is Tukey's rule. Given None, the whiskers reach the smallest and
         largest samples instead and no points are drawn.
-    * vrange : optional (number, number).
+    * vrange : optional (number, number) | scale.
         The values at the ends of the value axis. By default, the smallest and
         largest samples, so that every group fits. Given a narrower interval,
         the boxes outside it are clipped to it and the points outside it are
-        dropped.
+        dropped. A `scale` spaces values nonlinearly along the axis:
+        `vrange=mp.logscale()` is a logarithmic value axis over an inferred
+        interval, and a point with a value the scale is not defined over is
+        dropped the way a point outside the interval is.
     * color : optional ColorLike.
         The color of every box. Defaults to the terminal's foreground color,
         or to white for a filled box, whose color has to be named for the
@@ -730,7 +731,7 @@ class boxes(plot):
         caps: bool = True,
         median: bool = True,
         whisker_iqrs: number | None = 1.5,
-        vrange: tuple[number, number] | None = None,
+        vrange: tuple[number, number] | scale | None = None,
         color: ColorLike | None = None,
         colors: Sequence[ColorLike] | None = None,
         background: ColorLike | None = None,
@@ -796,22 +797,19 @@ class boxes(plot):
                 [len(samples) for samples in outlying],
             )
 
-        # determine the value range, and where each value sits within it. The
-        # range is a coordinate interval, handed to the window below, so it is
-        # a plain pair: a scale that moved the boxes would part them from the
-        # labels on their axis
-        vscale = _resolve_linear_vrange(
+        # determine the value range, and where each value sits within it
+        vscale = _resolve_coordinate_range(
             vrange,
             np.concatenate(groups),
             "boxes",
-            allow_flat=False,
+            "vrange",
         )
-        vrange = vscale.interval
         # a point outside the range is dropped rather than clipped, since a
         # point drawn at the end of the axis claims a value it does not have,
-        # so these are placed without the saturation the extents get
-        vmin, vmax = vrange
-        outlying_proportions = (beyond - vmin) / (vmax - vmin)
+        # so these are placed without the saturation the extents get; a point
+        # the scale is not defined over comes out unplaceable and is dropped
+        # the same way
+        outlying_proportions = vscale.position(beyond)
         inside = (outlying_proportions >= 0) & (outlying_proportions <= 1)
 
         # determine the colours
@@ -866,13 +864,13 @@ class boxes(plot):
         super().__init__(chars)
         horizontal = box_direction == "horizontal"
         self.window = window(
-            xrange=vrange if horizontal else None,
-            yrange=None if horizontal else vrange,
+            xrange=vscale if horizontal else None,
+            yrange=None if horizontal else vscale,
             width=chars.width,
             height=chars.height,
         )
         self.num_boxes = num_boxes
-        self.vrange = vrange
+        self.vrange = vscale
 
     def __repr__(self):
         return f"boxes(<{self.num_boxes} groups>, {self.window!r})"

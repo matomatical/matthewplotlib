@@ -39,7 +39,7 @@ class TestCandles:
 
     def test_the_value_range_covers_every_candle(self):
         plot = self.chart()
-        assert plot.window.yrange == (9.5, 13.0)
+        assert plot.window.yrange == mp.scale(9.5, 13.0)
 
     def test_there_is_no_horizontal_coordinate(self):
         assert self.chart().window.xrange is None
@@ -106,7 +106,7 @@ class TestCandles:
 
     def test_a_narrower_vrange_clips_the_candles_into_it(self):
         plot = self.chart(length=4, vrange=(12.0, 13.0))
-        assert plot.window.yrange == (12.0, 13.0)
+        assert plot.window.yrange == mp.scale(12.0, 13.0)
         # the first candle traded entirely below the range, so all four of its
         # values clip to the bottom and it is drawn in the bottom row alone
         assert not plot.chars.fg[:-1, 0].any()
@@ -148,14 +148,16 @@ class TestCandles:
                 closes=np.array([1.2]),
             )
 
-    def test_candles_all_at_one_value_have_no_range_to_plot_in(self):
-        with pytest.raises(ValueError, match="every value in the candles"):
-            candles(
-                opens=np.array([1.0]),
-                highs=np.array([1.0]),
-                lows=np.array([1.0]),
-                closes=np.array([1.0]),
-            )
+    def test_candles_all_at_one_value_are_given_room(self):
+        """A flat inferred interval widens around its value, as it does for
+        the other coordinate plots, so the hairline candle sits mid-plot."""
+        plot = candles(
+            opens=np.array([1.0]),
+            highs=np.array([1.0]),
+            lows=np.array([1.0]),
+            closes=np.array([1.0]),
+        )
+        assert plot.window.yrange == mp.scale(0.5, 1.5)
 
     def test_a_value_that_is_not_a_number_is_refused(self):
         """A period with an unknown high has no candle to draw, and the
@@ -182,16 +184,16 @@ class TestCandles:
             "candles(<4 candles>, window(y=[9.50,13.00], 4x4 cells))"
         )
 
-    def test_the_interval_it_settled_on_is_kept_as_one_pair(self):
-        assert self.chart().vrange == (9.5, 13.0)
-        assert self.chart(vrange=(0.0, 20.0)).vrange == (0.0, 20.0)
+    def test_the_scale_it_settled_on_is_kept_and_unpacks_as_a_pair(self):
+        assert self.chart().vrange == mp.scale(9.5, 13.0)
+        assert self.chart(vrange=(0.0, 20.0)).vrange == mp.scale(0.0, 20.0)
+        vmin, vmax = self.chart().vrange
+        assert (vmin, vmax) == (9.5, 13.0)
 
-    def test_the_value_axis_is_a_coordinate_so_a_scale_is_refused(self):
-        """The range is handed to the window that the axes are labelled from,
-        and a window places coordinates linearly: a scale that moved the
-        candles would part them from the labels on their axis."""
-        with pytest.raises(TypeError, match="coordinate axis"):
-            self.chart(vrange=mp.logscale(1.0, 20.0))
+    def test_the_value_axis_takes_a_scale_into_its_window(self):
+        plot = self.chart(vrange=mp.logscale(1.0, 20.0))
+        assert plot.window.yrange == mp.logscale(1.0, 20.0)
+        assert plot.vrange == mp.logscale(1.0, 20.0)
 
 
 # # #
@@ -208,7 +210,7 @@ class TestBoxesStatistics:
 
     def test_the_value_range_covers_every_sample(self):
         plot = boxes([self.PLAIN])
-        assert plot.window.xrange == (1, 9)
+        assert plot.window.xrange == mp.scale(1, 9)
 
     def test_a_sample_beyond_the_fence_is_an_outlier(self):
         # quartiles 3 and 7, so the fence reaches 3 - 6 to 7 + 6
@@ -266,9 +268,11 @@ class TestBoxesStatistics:
         with pytest.raises(ValueError, match="at least one group"):
             boxes([])
 
-    def test_samples_all_at_one_value_need_a_range(self):
-        with pytest.raises(ValueError, match="every value in the boxes"):
-            boxes([[3.0, 3.0, 3.0]])
+    def test_samples_all_at_one_value_are_given_room(self):
+        """A flat inferred interval widens around its value, as it does for
+        the other coordinate plots, so the collapsed box sits mid-plot."""
+        plot = boxes([[3.0, 3.0, 3.0]])
+        assert plot.window.xrange == mp.scale(2.5, 3.5)
         assert boxes([[3.0, 3.0]], vrange=(0.0, 6.0)).num_boxes == 1
 
     def test_a_sample_that_is_not_finite_is_left_out_of_the_summary(self):
@@ -305,12 +309,12 @@ class TestBoxesLayout:
 
     def test_a_flat_plot_carries_its_range_horizontally(self):
         plot = boxes(self.DATA)
-        assert plot.window.xrange == (0, 19)
+        assert plot.window.xrange == mp.scale(0, 19)
         assert plot.window.yrange is None
 
     def test_a_standing_plot_carries_its_range_vertically(self):
         plot = boxes(self.DATA, box_direction="vertical")
-        assert plot.window.yrange == (0, 19)
+        assert plot.window.yrange == mp.scale(0, 19)
         assert plot.window.xrange is None
 
     def test_axes_labels_the_value_axis_and_leaves_the_rest_alone(self):
@@ -321,7 +325,7 @@ class TestBoxesLayout:
 
     def test_a_narrower_range_clips_the_boxes_into_it(self):
         plot = boxes(self.DATA, vrange=(5.0, 10.0), length=20)
-        assert plot.window.xrange == (5.0, 10.0)
+        assert plot.window.xrange == mp.scale(5.0, 10.0)
 
     def test_a_point_outside_the_range_is_dropped(self):
         # one far outlier, and a range that excludes it
@@ -335,16 +339,25 @@ class TestBoxesLayout:
             "boxes(<2 groups>, window(x=[0.00,19.00], 30x7 cells))"
         )
 
-    def test_the_interval_it_settled_on_is_kept_as_one_pair(self):
-        assert boxes(self.DATA).vrange == (0.0, 19.0)
-        assert boxes(self.DATA, vrange=(0.0, 20.0)).vrange == (0.0, 20.0)
+    def test_the_scale_it_settled_on_is_kept_and_unpacks_as_a_pair(self):
+        assert boxes(self.DATA).vrange == mp.scale(0.0, 19.0)
+        assert boxes(self.DATA, vrange=(0.0, 20.0)).vrange \
+            == mp.scale(0.0, 20.0)
+        vmin, vmax = boxes(self.DATA).vrange
+        assert (vmin, vmax) == (0.0, 19.0)
 
-    def test_the_value_axis_is_a_coordinate_so_a_scale_is_refused(self):
-        """The range is handed to the window that the axes are labelled from,
-        and a window places coordinates linearly: a scale that moved the
-        boxes would part them from the labels on their axis."""
-        with pytest.raises(TypeError, match="coordinate axis"):
-            boxes(self.DATA, vrange=mp.logscale(1.0, 20.0))
+    def test_the_value_axis_takes_a_scale_into_its_window(self):
+        plot = boxes([[1.0, 2.0, 4.0, 8.0]], vrange=mp.logscale())
+        assert plot.window.xrange == mp.logscale(1.0, 8.0)
+        assert plot.vrange == mp.logscale(1.0, 8.0)
+
+    def test_an_outlier_the_scale_cannot_place_is_dropped(self):
+        """On a log axis a negative sample has no position at all, so a
+        negative outlier is dropped the way one outside the interval is,
+        rather than being an error."""
+        data = [[*range(1, 10), -20.0]]
+        plot = boxes(data, length=40, vrange=mp.logscale(1.0, 9.0))
+        assert "·" not in plot.chars.to_plain_str()
 
 
 class TestBoxesStyle:

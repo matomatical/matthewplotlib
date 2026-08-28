@@ -30,7 +30,6 @@ Parsers:
 * `parse_table_data`: Turn any accepted form of tabular data into the names of
   its columns and a list of rows, and `parse_per_column` spread a setting given
   for the table, per column, or by column name over one entry per column.
-* `parse_range`: Fill in missing axis limits from the data.
 
 For turning 3d data into positions on a camera's film, see
 `matthewplotlib.camera`.
@@ -160,32 +159,6 @@ whether a `headers` argument picks columns out or names them.
 
 # # #
 # Parsers
-
-
-def parse_range(
-    data: NDArray,
-    range: tuple[number | None, number | None] | None,
-) -> tuple[number, number]:
-    """
-    Fill in missing axis limits from the data.
-
-    Limits come from the data's extremes, ignoring non-finite values, since
-    those mark gaps in it rather than describing how far it reaches. Data that
-    reaches no distance at all, a constant series or an empty one, is given a
-    range around itself to be drawn in the middle of.
-    """
-    if range is None:
-        range = (None, None)
-    lo, hi = range
-    if lo is None or hi is None:
-        finite = data[np.isfinite(data)]
-        if not finite.size:
-            finite = np.zeros(1)
-        lo = finite.min() if lo is None else lo
-        hi = finite.max() if hi is None else hi
-    if lo == hi:
-        lo, hi = lo - 0.5, hi + 0.5
-    return lo, hi
 
 
 def parse_date(
