@@ -6,90 +6,76 @@ In development
 
 New:
 
-* Nonlinear colour scales. The `vrange` of a `heatmap` (and so a `function2`
-  or `histogram2`), a `vfunction2`, a `calendar`, a `weeks`, a `bars` or a
-  `columns` now also accepts a scale saying how the values are spaced within
-  the interval, where a plain pair spaces them linearly:
-  * `scale`: the linear case, and the base class a custom spacing subclasses.
-  * `logscale`: values spaced logarithmically.
-  * `symlogscale`: logarithmic away from zero, linear near it, spans zero.
-  * `powscale`: values spaced by a power, such as a square root.
-  * A scale's endpoints may each be left out, to be completed from the data:
-    `vrange=mp.logscale()` is "logarithmic, over the inferred interval".
-* `colorbar` also takes a scale as its `source`, and borrows the whole scale
-  off a plot that carries one. The bar itself sweeps the colormap evenly
-  whatever the spacing, so a log bar and a linear bar over the same interval
-  draw identically.
-* Nonlinear coordinate axes. Every range that names a coordinate also accepts
-  a scale now: `xrange` and `yrange` on `scatter`, `line`, `image`, `heatmap`,
-  `function2`, `vfunction2`, `cfunction2` and `histogram2`, and the `vrange`
-  of `candles` and `boxes`, which is the interval their value axis covers.
-  The interval's ends stay at the edges of the plot and the scale decides
-  where the values between them land, so `axes` labels are unchanged.
-  * `scatter` and `line` place points along the scale, and a point with a
-    value the scale is not defined over---a negative value on a log axis---
-    falls off the plot the way a point outside the limits does.
-  * `function2` (and relatives) sample the axis along its scale, so a log
-    axis is sampled at log-spaced points, and `histogram2` bins on log-spaced
-    edges.
-  * `dstack2` refuses to overlay plots whose axes disagree about spacing,
-    exactly as it refuses intervals that disagree.
-* When a partial scale is completed from the data, the inference only
-  considers values the scale can place: a zero among the data no longer stops
-  `vrange=mp.logscale()`, it just comes out at the bottom of the colormap (or
-  off the plot, on a coordinate axis).
-* A frame rate counter for animations, as a video game renderer would draw
-  it: `mp.animate(show_fps=True)` (and `tstack.play(show_fps=True)`) writes
-  each frame with white text in a translucent grey box in its top right
-  corner, showing the rate actually delivered over the last couple of
-  seconds. The box has no alpha to spend, so it fakes its translucency:
-  each cell keeps a share of the colour it covers, blended towards grey.
-  * The counter is display chrome, so a recording keeps the clean frames;
-    `record_fps=True` stamps it on the recorded frames instead, for the gif
-    that wants to show off its frame rate.
-  * The windowed rate is also readable directly as `animate.recent_fps`,
-    beside the whole-run `achieved_fps`.
+* Data and colour scales:
+  * Packaged a number of handy scale constructors:
+    * `scale`: linear case, base class for custom scales to subclass.
+    * `logscale`: values spaced logarithmically.
+    * `symlogscale`: logarithmic away from zero, linear near it, spans zero.
+    * `powscale`: values spaced by a power, such as a square root.
+  * Wherever a scale is required, an interval tuple is still OK, still
+    resulting in a linear scale.
+  * The above constructors either use the supplied endpoints, or infer
+    endpoints from data.
+    * When a partial scale is completed from the data, the inference only
+      considers values the scale can place: a zero among the data is ignored by
+      `logscale`.
+  * These are used for data axes: `xrange` and `yrange` on `scatter`, `line`,
+    `image`, `heatmap`, `function2`, `vfunction2`, `cfunction2`, and
+    `histogram2`, and the `vrange` of `bars`, `columns`, `candles`, and
+    `boxes`.
+    * The interval's ends stay at the edges of the plot and the scale decides
+      where the values between them land, so `axes` labels are unchanged.
+      We don't currently have a way of visually distinguishing these axes, so
+      suggest you do so yourself with axis titles.
+    * `dstack2` refuses to overlay plots whose axes disagree about spacing,
+      exactly as it refuses intervals that disagree.
+  * They are also used for colour axes: the `vrange` of a `heatmap`,
+    `function2`, `histogram2`, `vfunction2`, `calendar`, and `weeks`.
+  * `colorbar` also takes a scale as its `source` or borrows the whole scale
+    off a plot that carries one. This becomes effectively a data axis, as
+    above, and the same caveat applies re: interior points.
+* Recent frame rate tracking for animations.
+  * Tracking 2-second sliding window fps, reported as `animate.recent_fps`.
+  * Display the recent fps on printed animations: `mp.animate(show_fps=True)`
+    or `tstack.play(show_fps=True)`.
+  * Imprint the same chrome onto recorded frames for e.g. gif export with
+    `record_fps=True`.
 
 Changed:
 
-* The `vrange` a plot keeps is now the completed scale rather than a plain
-  pair. It still unpacks as `vmin, vmax = plot.vrange`, and compares equal to
-  another scale rather than to a tuple. This now includes `candles` and
-  `boxes`, whose value axis is a window coordinate and takes a scale like any
-  other.
-* A `window` likewise keeps each of its ranges as a scale: a plain pair
-  promotes to a linear `scale` on construction, so `plot.window.xrange`
-  unpacks as before but compares equal to `mp.scale(lo, hi)` rather than to
-  `(lo, hi)`.
+* The `plots` module is now a package with one module per plot family.
+  Everything is still importable from `matthewplotlib.plots` and from the
+  package root, but the internal code and documentation is organised into the
+  following categories:
+  * `base`, for the base plot class together with the arrangement plots its
+    operators are shortcuts for;
+  * `points` for scatter and line plots;
+  * `grids` for images, heatmaps, function2 and etc.;
+  * `barcharts` for progress, bars/columns, histrograms, boxes/candles.
+  * `calendars` for calendar and weeks.
+  * `tables` for table.
+  * `furnishings` for text, axes, and colorbars.
+* A `window` keeps its ranges as completed (inferred) scales rather than plain
+  pairs. These still unpacks as `vmin, vmax = plot.vrange`, but no longer
+  compare equal to tuples.
+* `candles` and `boxes` now use windows rather than raw vranges.
 * An explicit coordinate range covering no interval, such as `xrange=(5, 5)`,
-  is now an error, as it always was for `vrange`; previously it was silently
-  widened. An *inferred* flat interval still widens to give the points room,
-  now by half a unit each way in the scale's transformed space (unchanged for
-  linear axes; a log axis widens by a factor of sqrt(e) each way), and an
-  endpoint the caller gave stays exactly where it was written.
-* `scatter` and `line` with no finite data at all now fall back to the
-  scale's own interval (the unit interval for a linear axis) rather than
-  `(-0.5, 0.5)`; `candles` and `boxes` given constant values now widen the
-  same way every other coordinate plot does rather than refusing.
+  is now an error. Previously it was silently widened.
+  * An inferred empty interval still widens to give the points room, now by
+    half a unit each way in the scale's transformed space. 
+* `scatter` and `line` with no finite data at all now fall back to the scale's
+  own interval (the unit interval for a linear axis) rather than `(-0.5, 0.5)`;
+* `candles` and `boxes` given constant values now widen the same way every
+  other coordinate plot does rather than refusing.
 
 New examples:
 
+* `zipf.py`, power laws in data, showing off data axis scales.
 * `scales.py`: two Gaussian sources, one a hundred times fainter, on a linear
   and a logarithmic colour scale.
-
-* `planisphere.py`: the whole sky over Oxford as a turning star chart, with
-  the sun computed alongside the stars so twilight washes them out and dusk
-  hands them back.
-
-Internal:
-
-* The `plots` module is now a package with one module per plot family:
-  `points`, `grids`, `barcharts`, `calendars`, `tables`, `furnishings`, and
-  `base`, which holds the base class together with the arrangement plots its
-  operators are shortcuts for. Everything is still importable from
-  `matthewplotlib.plots` and from the package root.
-* New `scales` module, holding the value-interval helpers that the plot
-  families share and the axes that `window` measures coordinates along.
+* `planisphere.py`: the whole sky over Oxford as a turning star chart, with the
+  sun computed alongside the stars so twilight washes them out and dusk hands
+  them back. Thanks, Fable!
 
 Version 0.7.1
 -------------

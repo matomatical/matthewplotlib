@@ -13,11 +13,8 @@ Basic plot types:
 * [x] Progress bars.
 * [x] Basic bar charts and column charts.
 * [x] Histograms.
-* [x] Box plots, filled or outlined, lying either way (`boxes`). Designed in
-  the `box-plots` note.
-* [x] Candlestick plots. See the `candlesticks` note.
-* [x] `candles` moved onto what it shares with `boxes`, gaining a horizontal
-  form as it went. See the `box-plots` note.
+* [x] Box plots.
+* [x] Candlestick plots.
 
 Basic plot furnishings:
 
@@ -25,8 +22,8 @@ Basic plot furnishings:
 * [x] Borders.
 * [x] Axis ticks and tick labels for scatter plots.
 * [x] Axis labels and titles.
-* [ ] Labels and ticks for bar/column charts, histograms, candlesticks, box
-  plots. See the `categorical-axes` note, `notes/reference/myplot.py`.
+* [ ] Axes for bar/column charts, histograms, candlesticks, box plots.
+      See the `categorical-axes` note and `notes/reference/myplot.py`.
 * [x] Color bars.
 
 Basic plot arrangement:
@@ -46,8 +43,8 @@ Styling plots with colors:
 
 Specifying colors:
 
-* [ ] Consistent API for color specification. See the `color-specs` note.
 * [x] Configurable colour scales and normalisation. See the `scales` note.
+* [ ] Consistent API for color specification. See the `color-specs` note.
 
 Rendering:
 
@@ -58,13 +55,13 @@ Basic code improvements:
 
 * [x] Split up monolithic file into a small number of modules.
 * [x] A window value type for the mapping from data coordinates onto the grid,
-  used by axes. See the `plot-windows` note.
+      used by axes. See the `plot-windows` note.
 * [x] Comprehensive type annotations, static type checking with mypy.
 * [ ] Basic input validation and error handling.
 
 Testing:
 
-* [x] Unit tests for core modules (colors, colormaps, data, core).
+* [x] Unit tests for core modules.
 * [x] Integration tests (all examples run).
   
 Documentation:
@@ -98,25 +95,26 @@ More exotic plot types:
   * [x] Dictionary of lists.
   * [x] 2d list with/without header.
   * [x] Configurable format strings.
+  * [ ] Richer color specification.
 * [ ] Vector field plots:
-  * [x] color (`vfunction2`), including domain colouring of complex functions
-    (`cfunction2`).
-  * [ ] line (see boids example). See the `quiver-plots` note.
+  * [x] Signaling directions as colors (`vfunction2`)
+  * [x] Domain colouring of complex functions (`cfunction2`).
+  * [ ] Quiver plots or streamlines (see boids example, `quiver-plots` note).
 * [ ] Hilbert curves (see the `hilbert-curves` note):
   * [x] Basic Hilbert curves.
   * [ ] Non-square Hilbert curves.
   * [ ] 3d Hilbert curves.
 * [ ] World maps (see the `world-maps` note; `examples/world_map.py` and
-  `examples/globe.py` prototype the design, carrying their own coarse
-  coastlines):
-  * [ ] Some 2d projections.
-  * [ ] 3d globe projection.
-  * [ ] Whether to bundle coastline vectors, and at what resolution.
+      `examples/globe.py` prototypes):
+  * [ ] Bundle some 2d projections.
+  * [ ] Decide whether to bundle coastline vectors, and at what resolution.
+  * [ ] Also 3d globe plots.
 * [ ] Dashboard meters (similar to `progress`):
-  * [ ] circular
-  * [ ] vertical
-  * [ ] ticking-number
-  * [ ] Scrolling text marquees
+  * [ ] Circular progress bars somehow?
+  * [ ] Vertical progress bars.
+  * [ ] Ticking-numbers somehow?
+  * [ ] LCD-style numbers?
+  * [ ] Scrolling text marquees.
 
 Advancements of basic plot types:
 
@@ -130,12 +128,13 @@ Advancements of basic plot types:
   * [x] 3d line plots / wireframes.
 * [ ] Advanced bar charts:
   * [x] Bar/column charts with configurable sizes and spacing.
-  * [ ] Bar/column charts with other alignments.
   * [x] Bar/column charts with individual colours.
+  * [ ] Bar/colum charts with background colours.
+  * [ ] Bar/column charts with other alignments.
   * [ ] Negative values in bar/column charts.
 * [ ] Advanced heatmaps:
   * [ ] RGB-channel 2d histograms (see `hist2d_rgb` in
-    `notes/reference/myplot.py`).
+        `notes/reference/myplot.py`).
 * [ ] Advanced image options:
   * [ ] Integer-factor down- and upsampling.
   * [x] A plot that normalises values onto the colormap itself (`heatmap`).
@@ -153,6 +152,7 @@ Advanced plot arrangement:
   * [x] Opt-in frame collection, reporting the achieved frame rate.
   * [x] A way to print from inside a running animation without corrupting it,
     as a method (`anim.print`) and as a stream (`anim.out`).
+  * [x] Opt-in display the achieved frame rate along with the frame, fun!
 * [x] Temporal stacking (`tstack`): animations as first-class values.
   * [x] Indexing, slicing and mapping over frames.
   * [x] Padding frames to a common size, so an animation cannot jitter.
@@ -160,24 +160,20 @@ Advanced plot arrangement:
   * [ ] Operator for temporal stacking.
   * [ ] Per-frame durations.
 * [ ] Mapping over the other composites, `hstack` and friends. See
-  the `mapping-over-composites` note.
-* [ ] Indexing and slicing of plots.
+      the `mapping-over-composites` note.
+* [ ] Indexing and slicing of plots. (What should this mean?)
 * [x] Crop plot composition primitive. See the `terminal-aware-printing` note.
   * [x] Clip plots to terminal width and (almost) height (see
-    `docs/src/compatibility.md`).
+        `docs/src/compatibility.md`).
   * [ ] Crop from any of the nine directions, rather than always keeping the
-    top left rectangle.
+        top left rectangle.
   * [ ] `animate` context manager should handle this, and window resizes.
 
 Advanced furnishings:
 
-* [x] Axis transformations (e.g. logarithmic scale). Every coordinate range
-  takes a `scale`; the `scales` note works through how the colour scales
-  extended to coordinate axes.
+* [x] Axis transformations (e.g. logarithmic scale).
 * [ ] Axis segments (see the `axis-series` note).
-* [x] Axes on any subset of the four sides, each blank, ruled, or ruled with
-  ticks and labels, so that a colorbar can be labelled without a full border.
-  See the `axes-sides` note.
+* [x] Configure which sides of plot get axes, with intelligent defaults.
 * [x] Text embedded in borders.
 * [ ] Colorbars automatically derive colormap. See the `scales` note.
 
@@ -186,7 +182,7 @@ Advanced rendering:
 * [x] Export animations to gifs, at the requested or the achieved frame rate.
   * [x] Control over the palette sharing and size. See the `gif-size` note.
   * [x] Automatically optimise saved gifs (lossless compression). See
-    the `gif-size` note.
+        the `gif-size` note.
 
 Backend improvements:
 
@@ -194,10 +190,10 @@ Backend improvements:
   * [x] Vectorised composition operations.
   * [x] Vectorised bitmap rendering.
 * [x] Intelligent ANSI rendering (only include necessary control codes and
-  resets, e.g., if several characters in a row use the same colours).
+      resets, e.g., if several characters in a row use the same colours).
 * [x] Differential rendering with shortcut `plot_new - plot_old`.
 * [ ] Vectorised animations (3-D `CharArray`, `codes[T,H,W]`). See
-  the `animations` note.
+      the `animations` note.
 
 Code organisation:
 
@@ -229,7 +225,7 @@ More elaborate documentation:
 
 * [x] Links to source code from within documentation.
 * [ ] Links to mentioned functions/classes/methods/types within documentation
-  (automatically linked to relevant release).
+      (automatically linked to relevant release).
 * [x] Documentation search.
 * [x] Versioned documentation.
 * [ ] Logo and favicon.
@@ -240,7 +236,7 @@ Advanced examples:
 
 * [x] Sort by feature or maybe style.
 * [ ] Systematically ensure there is at least one example per major plot type
-  or feature.
+      or feature.
   * [ ] Need more dashboard and progress bar demos.
 * [ ] Advanced example categories:
   * [ ] Real-time signal processing (music visualiser, webcam with filters?)
@@ -251,7 +247,7 @@ Advanced examples:
   * [ ] Playable super hexagon.
   * [ ] Lightbike game, AI bots vs 0,1,2 players.
   * [ ] Enhance vaporwave with procgen city skyline, motorway, light cycle;
-    plus special edition red/white/black color scheme?
+        plus special edition red/white/black color scheme?
   * [ ] Blowup kinda like https://far.in.net/blowing-up
   * [ ] 3b1b fourier analysis video plots.
   * [ ] Markdown renderer.
@@ -265,12 +261,12 @@ Further plot enhancements:
   * [ ] Error bars on line plots.
   * [ ] Fill plots.
   * [ ] Dashed/dotted strokes (allows animated lines if we advance the start
-    index)
+        index)
 * [ ] Advanced wireframes:
   * [ ] An explicit edge list, so a mesh with shared vertices is projected once
-    per vertex rather than once per wire through it.
+        per vertex rather than once per wire through it.
   * [ ] Hidden line removal, or some depth ordering. Colouring by depth is the
-    stand-in for now.
+        stand-in for now.
 * [ ] Legend construction (API needs thought).
 * [ ] Better and more flexible border parameterisation.
 
@@ -283,8 +279,9 @@ More rendering formats:
 Advanced glyphs and fonts:
 
 * [ ] Fallback for terminals whose font lacks braille.
+* [ ] Extend bundled unscii with missing unicode glyphs?
 * [ ] Opt-in octants (Symbols for Legacy Computing Supplement, U+1CC00–U+1CEBF,
-  new in Unicode 16.0) as an alternative to braille.
+      new in Unicode 16.0) as an alternative to braille.
   * [ ] Instructions for installing or patching a font that has them.
 * [ ] Other font extensions, creating new density and shape possibilities?
 
