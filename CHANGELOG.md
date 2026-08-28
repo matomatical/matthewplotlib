@@ -7,7 +7,7 @@ In development
 New:
 
 * Data and colour scales:
-  * Packaged a number of handy scale constructors:
+  * Packaged a number of handy axis constructors:
     * `scale`: linear case, base class for custom scales to subclass.
     * `logscale`: values spaced logarithmically.
     * `symlogscale`: logarithmic away from zero, linear near it, spans zero.

@@ -49,7 +49,8 @@ Issues encountered building scheduling app:
   if we split the file.
 * Blank should maybe get a bgcolor param so we can make coloured patches, atm I
   am using text with blank spaces.
-* Why didn't mp.text("", width=5, bgcolor="cyan") work?
+* Why didn't mp.text("", width=5, bgcolor="cyan") work? Zero lines, zero
+  height.
 
 Other notes for later:
 
@@ -60,3 +61,36 @@ Other notes for later:
   values outside of scale bounds for colours and data axes. Currently
   inconsistent, need to make sure it's principled and predictable, or change
   the policy.
+
+Notes on axes:
+
+* The realisation that these scales are actually the things window should store
+  as an axis makes sense, I guess it would be even more discoverable if we
+  renamed the xrange, yrange, vrange etc. args to xaxis, yaxis, vaxis, caxis
+  etc.? Maybe this is something I want to consider before v1. I know it would
+  be a breaking change, but it's one I'm certainly comfortable making before
+  v1.
+
+Plans for the next release:
+
+* We've added a bunch of features mainly around data and colour scales.
+  Also made a few minor changes like how axes are interpreted. I think this
+  might be worth bumping to v0.8.0, but then I want to wait to bundle a few
+  more axis-related things:
+  * Make value-axes on bar charts and etc.
+  * Histogram category axis is a value axis or a categorical axis? Maybe
+    neither?
+  * Design plumbing for coordinate axes, and, harder, rendering. Rendering is
+    kinda easy for vertical categorical axes since we have one line per
+    category. Harder for horizontal, but we can think of something, and OK if
+    it's a compromise?
+  * While we're there, backgrounds, alignment, and negative values for
+    bar/column charts please. We learned some relevant lessons for this when
+    doing candlestick plots.
+* Check: Did we lift types to the top of each file during the plot split? Check
+  docs for each module read well.
+* Miscellaneous blank bgcolor and empty-string rethink may as well.
+* Deeper colour specification refactor and the table colour specification
+  enhancements I enumerated above need careful design, unsure if I want them in
+  this release, see how we feel after we finish the axes and bar charts
+  sidequest.
