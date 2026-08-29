@@ -413,12 +413,17 @@ def _resolve_vrange(
 
     A pair becomes a linear `scale` and `None` an empty one. A missing
     endpoint is inferred from the values the scale could place---the finite
-    ones within its spacing's domain: the lowest of them for `lo`---or zero
-    if `from_zero`, for a scale whose bottom end is a baseline rather than
-    the smallest value measured---and the highest for `hi`, so that the
-    scale spans the data. With no placeable values at all, a given endpoint
-    stands in for the missing one, and a scale missing both falls back to an
-    interval of its own choosing.
+    ones within its spacing's domain: the lowest of them for `lo` and the
+    highest for `hi`, so that the scale spans the data. With no placeable
+    values at all, a given endpoint stands in for the missing one, and a
+    scale missing both falls back to an interval of its own choosing.
+
+    `from_zero` widens an inferred endpoint to take in zero, for a scale
+    measured from a baseline rather than across the values alone. Data that
+    is all positive then starts at zero, which is what makes a bar's length
+    readable on its own; data that reaches below zero keeps its lowest value
+    and gains a baseline somewhere inside the interval. An endpoint that was
+    given is left where the caller put it.
 
     An interval covering nothing is an error where the caller wrote it, since
     there is no reading of it to act on. Inferred, over values that are all
@@ -444,9 +449,13 @@ def _resolve_vrange(
             lo = hi = lo if lo is not None else hi
     else:
         if lo is None:
-            lo = 0.0 if from_zero else float(admissible.min())
+            lo = float(admissible.min())
+            if from_zero:
+                lo = min(0.0, lo)
         if hi is None:
             hi = float(admissible.max())
+            if from_zero:
+                hi = max(0.0, hi)
     try:
         return dataclasses.replace(given, lo=lo, hi=hi)
     except ValueError as e:

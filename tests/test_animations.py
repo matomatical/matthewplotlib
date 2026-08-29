@@ -1096,12 +1096,12 @@ class TestShowFps:
         box = anim._prev.chars.bg_rgb[0, -10:]
         assert np.all(box == np.rint(0.7 * 80))
 
-    def test_the_text_is_white(self):
+    def test_the_text_is_green(self):
         with capture(), animate(show_fps=True) as anim:
             anim.update(widescreen())
 
         assert np.all(anim._prev.chars.fg[0, -10:])
-        assert np.all(anim._prev.chars.fg_rgb[0, -10:] == 255)
+        assert np.all(anim._prev.chars.fg_rgb[0, -10:] == (0, 255, 0))
 
     def test_a_frame_narrower_than_the_label_keeps_the_number(self):
         p = frames(1)[0]        # 4 columns; the label is cropped from the left

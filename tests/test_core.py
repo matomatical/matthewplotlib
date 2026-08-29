@@ -512,6 +512,75 @@ class TestUnicodeCol:
         result = unicode_col(0.75, 4).to_plain_str()
         assert result == " \n█\n█\n█"
 
+
+# # #
+# bars and columns anchored at the high end of their axis
+
+
+class TestAnchoredAtTheHighEnd:
+    """A bar anchored at the high end of its axis grows the other way, and
+    reaches the eighths its glyphs cannot by drawing one cell as a negative:
+    its own color behind a glyph in the background color."""
+
+    def test_a_bar_grows_leftwards_from_the_right_edge(self):
+        assert unicode_bar(0.5, 10, anchor="high").to_plain_str() == (
+            "     █████"
+        )
+
+    def test_a_column_hangs_downwards_from_the_top_edge(self):
+        assert unicode_col(0.5, 4, anchor="high").to_plain_str() == (
+            "█\n█\n \n "
+        )
+
+    def test_a_full_bar_fills_either_way(self):
+        assert unicode_bar(1.0, 4, anchor="high").to_plain_str() == "████"
+
+    def test_an_empty_bar_draws_nothing_either_way(self):
+        assert unicode_bar(0.0, 4, anchor="high").to_plain_str() == "    "
+
+    def test_the_far_end_is_the_negative_of_the_rest_of_its_cell(self):
+        """Two eighths of a cell filled from its right edge is six eighths
+        filled from its left, drawn the other way up."""
+        chars = unicode_bar(
+            0.625, 10, anchor="high", fgcolor="red", bgcolor="black",
+        )
+
+        assert chars.to_plain_str() == "   ▊██████"
+        assert chars.fg_rgb[0, 3].tolist() == [0, 0, 0]
+        assert chars.bg_rgb[0, 3].tolist() == [255, 0, 0]
+
+    def test_a_cell_the_fill_covers_is_not_a_negative(self):
+        chars = unicode_bar(
+            0.625, 10, anchor="high", fgcolor="red", bgcolor="black",
+        )
+
+        assert chars.fg_rgb[0, 5].tolist() == [255, 0, 0]
+        assert chars.bg_rgb[0, 5].tolist() == [0, 0, 0]
+
+    def test_a_column_negative_lands_on_the_row_holding_its_far_end(self):
+        chars = unicode_col(
+            0.5, 3, anchor="high", fgcolor="red", bgcolor="black",
+        )
+
+        assert chars.to_plain_str() == "█\n▄\n "
+        assert chars.bg_rgb[1, 0].tolist() == [255, 0, 0]
+        assert chars.fg_rgb[1, 0].tolist() == [0, 0, 0]
+
+    def test_a_negative_needs_both_colors_named(self):
+        with pytest.raises(ValueError, match="needs both a color of its own"):
+            unicode_bar(0.625, 10, anchor="high")
+
+    def test_a_negative_needs_a_background_as_well_as_a_color(self):
+        with pytest.raises(ValueError, match="a background color"):
+            unicode_bar(0.625, 10, anchor="high", fgcolor="red")
+
+    def test_no_negative_is_needed_where_the_far_end_is_on_a_boundary(self):
+        """Falling on the edge between two cells, the fill is whole blocks and
+        needs no colors of its own."""
+        assert unicode_bar(0.5, 10, anchor="high").to_plain_str() == (
+            "     █████"
+        )
+
     def test_partial_at_top_of_filled_region(self):
         """3/8 of height 4 = 12 eighths = 1 full + 4/8 partial."""
         result = unicode_col(3/8, 4).to_plain_str()

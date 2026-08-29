@@ -228,9 +228,10 @@ Bars and Columns
     </td>
     <td>
       <p><strong>Joint distribution</strong></p>
-      <p>Joint distribution with marginal histograms, demonstrating plot
-      composition with hstack and vstack.</p>
-      <p><em>By Claude Opus 4.6.</em></p>
+      <p>Joint distribution with marginal distributions above and to the left,
+      one of them mirrored, and the conditional means below and to the right
+      as diverging bar charts measured from zero.</p>
+      <p><em>By Claude Opus 4.6, reworked by Claude Opus 5.</em></p>
       <p><a href="https://github.com/matomatical/matthewplotlib/blob/main/examples/jointplot.py">Source</a></p>
     </td>
   </tr>

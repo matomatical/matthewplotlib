@@ -1,5 +1,5 @@
-"""Unit tests for the plots that draw values as marks with length:
-candlesticks and box plots."""
+"""Unit tests for the plots that draw values as marks with length: bar and
+column charts, candlesticks and box plots."""
 
 import numpy as np
 import pytest
@@ -8,8 +8,10 @@ import matthewplotlib as mp
 
 from matthewplotlib.plots import (
     axes,
+    bars,
     boxes,
     candles,
+    columns,
 )
 
 
@@ -438,3 +440,261 @@ class TestBoxesStyle:
     def test_a_filled_box_can_be_one_cell_across(self):
         plot = boxes(self.DATA, filled=True, box_thickness=1, box_spacing=0)
         assert plot.height == 2
+
+
+# # #
+# bars and columns
+
+
+class TestBarsBaseline:
+    """Bars are measured from a baseline, and reach to whichever side of it
+    their value falls. The baseline sits at the edge between two cells, so the
+    chart covers its interval in two pieces meeting there."""
+
+    def test_a_chart_of_positive_values_grows_rightwards_as_it_always_has(
+        self,
+    ):
+        assert bars([1.0, 2.0, 3.0], width=12).chars.to_plain_str() == (
+            "████        \n"
+            "████████    \n"
+            "████████████"
+        )
+
+    def test_an_inferred_interval_reaches_down_to_take_in_a_negative_value(
+        self,
+    ):
+        assert bars([-1.0, 2.0]).vrange == mp.scale(-1.0, 2.0)
+
+    def test_an_inferred_interval_still_starts_at_zero_above_it(self):
+        assert bars([1.0, 2.0]).vrange == mp.scale(0.0, 2.0)
+
+    def test_an_inferred_interval_reaches_up_to_zero_below_it(self):
+        """Every value negative still leaves the baseline on the chart, at its
+        right edge, with the bars reaching left from it."""
+        assert bars([-3.0, -1.0]).vrange == mp.scale(-3.0, 0.0)
+
+    def test_a_value_below_the_baseline_reaches_to_the_left(self):
+        assert bars([-2.0, 3.0], width=10).chars.to_plain_str() == (
+            "████      \n"
+            "    ██████"
+        )
+
+    def test_the_ends_of_the_interval_land_at_the_ends_of_the_chart(self):
+        """The two pieces meet at the baseline, so the value at each end of
+        the interval still fills its side of the chart exactly."""
+        chart = bars([-2.0, 3.0], width=10)
+        filled = chart.chars.codes == ord("\u2588")
+
+        assert filled[0, :4].all() and not filled[0, 4:].any()
+        assert filled[1, 4:].all() and not filled[1, :4].any()
+
+    def test_a_baseline_of_its_own_moves_where_the_bars_start(self):
+        chart = bars([0.0, 1.0, 3.0], width=12, baseline=1.0, vrange=(0.0, 3.0))
+
+        assert chart.chars.to_plain_str() == (
+            "████        \n"
+            "            \n"
+            "    ████████"
+        )
+
+    def test_a_value_at_the_baseline_draws_nothing(self):
+        chart = bars([0.0, 2.0], width=8)
+
+        assert not chart.chars.isnonblank()[0].any()
+
+    def test_a_value_that_is_not_a_number_draws_nothing_either_side(self):
+        """It comes off the scale at the bottom, which would be a full bar
+        reaching left of a baseline that is not at the bottom."""
+        chart = bars([-1.0, float("nan"), 3.0], width=8)
+
+        assert (chart.chars.codes[1] == ord(" ")).all()
+
+    def test_the_baseline_is_kept(self):
+        assert bars([1.0], baseline=2.0).baseline == 2.0
+
+    def test_columns_measure_from_a_baseline_the_same_way(self):
+        chart = columns([-2.0, 3.0], height=10)
+        filled = chart.chars.codes == ord("\u2588")
+
+        assert chart.vrange == mp.scale(-2.0, 3.0)
+        assert filled[6:, 0].all() and not filled[:6, 0].any()
+        assert filled[:6, 1].all() and not filled[6:, 1].any()
+
+
+class TestBarsMirror:
+    """Mirroring turns the value axis around, so the bars grow the other way.
+    It reverses whatever interval the chart settled on, and nothing else."""
+
+    def test_mirrored_bars_are_the_picture_reversed(self):
+        forward = bars([1.0, 2.0, 3.0], width=12)
+        mirrored = bars([1.0, 2.0, 3.0], width=12, mirror=True)
+
+        assert np.array_equal(
+            mirrored.chars.codes, forward.chars.codes[:, ::-1]
+        )
+
+    def test_mirrored_columns_are_the_picture_turned_over(self):
+        forward = columns([1.0, 2.0, 3.0], height=6)
+        mirrored = columns([1.0, 2.0, 3.0], height=6, mirror=True)
+
+        assert np.array_equal(
+            mirrored.chars.codes, forward.chars.codes[::-1, :]
+        )
+
+    def test_mirroring_reverses_the_interval_it_settled_on(self):
+        assert bars([1.0, 3.0], mirror=True).vrange == mp.scale(3.0, 0.0)
+
+    def test_mirroring_a_descending_interval_gives_an_ascending_one(self):
+        chart = bars([1.0, 3.0], vrange=(3.0, 0.0), mirror=True)
+
+        assert chart.vrange == mp.scale(0.0, 3.0)
+
+    def test_a_histogram_can_hang_the_other_way(self):
+        # counts of 4 and 2, so each column lands on a whole number of cells
+        # and the two pictures are glyph for glyph the same turned over
+        data = [0.0, 0.0, 0.0, 0.0, 1.0, 1.0]
+        forward = mp.vistogram(data, bins=2, height=4)
+        hanging = mp.vistogram(data, bins=2, height=4, mirror=True)
+
+        assert np.array_equal(
+            hanging.chars.codes, forward.chars.codes[::-1, :]
+        )
+
+
+class TestBarsBackground:
+    """A bar growing towards the low end of its axis draws one cell as a
+    negative, which needs both a color of its own and a ground to draw it
+    against, so a chart with one names both."""
+
+    def test_a_chart_growing_rightwards_leaves_the_background_showing(self):
+        assert not bars([1.0, 2.0]).chars.bg.any()
+
+    def test_a_chart_growing_rightwards_takes_the_terminal_foreground(self):
+        assert not bars([1.0, 2.0]).chars.fg.any()
+
+    def test_a_diverging_chart_paints_its_whole_rectangle(self):
+        assert bars([-1.0, 2.0]).chars.bg.all()
+
+    def test_a_mirrored_chart_paints_its_whole_rectangle(self):
+        assert bars([1.0, 2.0], mirror=True).chars.bg.all()
+
+    def test_the_rows_between_the_bars_are_painted_too(self):
+        chart = bars([-1.0, 2.0], width=12, bar_spacing=1)
+
+        assert chart.height == 3
+        assert chart.chars.bg.all()
+
+    def test_a_background_of_its_own_is_kept(self):
+        """Read off a cell no bar reaches, since the cell holding the end of a
+        bar carries the bar's own colour as its background."""
+        chart = bars([-1.0, 2.0], width=30, background="blue")
+        empty = chart.chars.codes == ord(" ")
+
+        assert empty.any()
+        assert (chart.chars.bg_rgb[empty] == np.array([0, 0, 255])).all()
+
+    def test_a_background_can_be_given_to_a_chart_that_does_not_need_one(self):
+        chart = bars([1.0, 2.0], background="blue")
+
+        assert (chart.chars.bg_rgb == np.array([0, 0, 255])).all()
+
+    def test_a_diverging_chart_names_a_colour_for_the_bars(self):
+        assert bars([-1.0, 2.0]).chars.fg.any()
+
+    def test_a_colour_of_its_own_is_kept(self):
+        """Read off the filled cells, since the cell holding the end of a bar
+        is drawn as a negative and carries the background colour instead."""
+        chart = bars([-1.0, 2.0], width=30, color="red")
+        filled = chart.chars.codes == ord("\u2588")
+
+        assert filled.any()
+        assert (chart.chars.fg_rgb[filled] == np.array([255, 0, 0])).all()
+
+    def test_a_colour_for_each_bar_is_kept(self):
+        chart = bars([-1.0, 2.0], width=4, colors=["red", "blue"])
+
+        assert chart.chars.fg_rgb[0, 0].tolist() == [255, 0, 0]
+        assert chart.chars.fg_rgb[1, -1].tolist() == [0, 0, 255]
+
+    def test_columns_paint_the_columns_between_them_too(self):
+        chart = columns([-1.0, 2.0], height=6, column_spacing=1)
+
+        assert chart.width == 3
+        assert chart.chars.bg.all()
+
+
+class TestBarsAxisWidening:
+    """The baseline has to fall on the edge between two cells, so the cells are
+    made as narrow as they can be while still covering the interval, and the
+    axis reaches past whichever end that leaves short."""
+
+    def test_a_baseline_at_an_end_covers_exactly_what_it_was_given(self):
+        """Which is every chart measured from zero over values on one side of
+        it, so nothing that has a baseline at an end of its interval moves."""
+        assert bars([1.0, 2.0, 3.0], width=13).vrange == mp.scale(0.0, 3.0)
+        assert bars([-3.0, -1.0], width=13).vrange == mp.scale(-3.0, 0.0)
+
+    def test_an_interval_that_divides_into_whole_cells_is_left_alone(self):
+        """Ten cells below the baseline and twenty above, each a thirtieth of
+        the interval: the baseline already lands on an edge."""
+        assert bars([-1.0, 2.0], width=30).vrange == mp.scale(-1.0, 2.0)
+
+    def test_an_interval_that_does_not_is_widened_until_it_does(self):
+        chart = bars([-3.0, 10.0], width=30)
+        lo, hi = chart.vrange
+
+        assert hi == 10.0
+        assert lo == pytest.approx(-3.0434782608)
+
+    def test_the_widening_is_less_than_one_cell(self):
+        chart = bars([-3.0, 10.0], width=30)
+        lo, hi = chart.vrange
+
+        assert lo < -3.0
+        assert -3.0 - lo < (hi - lo) / 30
+
+    def test_a_narrow_chart_widens_a_long_way_rather_than_lying(self):
+        """Two cells cannot show a sliver below the baseline and a full bar
+        above it at the same scale, so the axis grows until they can: the two
+        bars then differ in length as their values do."""
+        chart = bars([-0.34, 1.0], width=2, vrange=(-0.34, 1.0))
+        filled = chart.chars.codes == ord("\u2588")
+
+        assert chart.vrange == mp.scale(-1.0, 1.0)
+        assert not filled[0].any()      # -0.34 is a third of one cell
+        assert filled[1, 1]             # 1.0 fills its cell
+
+    def test_the_baseline_lands_on_a_cell_edge_exactly(self):
+        for width, values in ((30, [-3.0, 10.0]), (6, [-0.2, 9.8]), (2, [-1.0, 3.0])):
+            chart = bars(values, width=width)
+            cells = float(chart.vrange.position(0.0)) * width
+
+            assert cells == pytest.approx(round(cells), abs=1e-9)
+
+    def test_the_axis_stays_uniform_across_the_baseline(self):
+        """Every cell covers the same interval, so a value is where the axis
+        says it is rather than being stretched to fit its own side."""
+        chart = bars([-3.0, 10.0], width=30)
+        lo, hi = chart.vrange
+        cells = np.array(chart.vrange.position(np.linspace(lo, hi, 9))) * 30
+
+        assert np.allclose(np.diff(cells), np.diff(cells)[0])
+
+    def test_columns_widen_their_axis_the_same_way(self):
+        chart = columns([-3.0, 10.0], height=30)
+        lo, hi = chart.vrange
+
+        assert hi == 10.0
+        assert lo == pytest.approx(-3.0434782608)
+
+    def test_an_axis_with_no_cells_still_has_a_bar_per_value(self):
+        """Degenerate, but it was drawable before there was a baseline to
+        place and it stays drawable now."""
+        assert bars([1.0, 2.0], width=0).chars.codes.shape == (2, 0)
+        assert columns([1.0, 2.0], height=0).chars.codes.shape == (0, 2)
+
+    def test_one_cell_gives_it_to_the_side_that_reaches_further(self):
+        """One cell cannot hold a baseline with room either side of it, so the
+        baseline goes to an end and the shorter side is left with nothing."""
+        assert bars([-1.0, 3.0], width=1).vrange == mp.scale(-1.0, 3.0)
+        assert bars([-1.0, 3.0], width=1).chars.codes.shape == (2, 1)

@@ -129,9 +129,10 @@ Advancements of basic plot types:
 * [ ] Advanced bar charts:
   * [x] Bar/column charts with configurable sizes and spacing.
   * [x] Bar/column charts with individual colours.
-  * [ ] Bar/colum charts with background colours.
-  * [ ] Bar/column charts with other alignments.
-  * [ ] Negative values in bar/column charts.
+  * [x] Bar/colum charts with background colours.
+    * [ ] A background colour per bar, as there is a colour per bar.
+  * [x] Bar/column charts with other alignments (`mirror`).
+  * [x] Negative values in bar/column charts, diverging from a `baseline`.
 * [ ] Advanced heatmaps:
   * [ ] RGB-channel 2d histograms (see `hist2d_rgb` in
         `notes/reference/myplot.py`).

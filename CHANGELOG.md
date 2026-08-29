@@ -34,6 +34,40 @@ New:
   * `colorbar` also takes a scale as its `source` or borrows the whole scale
     off a plot that carries one. This becomes effectively a data axis, as
     above, and the same caveat applies re: interior points.
+* Bar and column charts measure from a baseline, and reach either way from it.
+  * A value below the baseline draws its bar leftwards, or its column
+    downwards, so a chart of signed values diverges around zero.
+  * The inferred interval takes in the baseline rather than starting there, so
+    data reaching below zero keeps its lowest value and data above zero is
+    unchanged.
+  * `baseline` measures the bars from a value of your choosing, for a chart of
+    deviations from a target.
+  * `mirror=True` turns the value axis around, so the bars grow leftwards from
+    the right edge, or the columns downwards from the top. It reverses whatever
+    interval the chart settled on, which a descending `vrange` did already; the
+    parameter is the spelling that composes with an inferred interval.
+  * `background` paints the rectangle behind the bars, the space between them
+    included.
+    * A chart with bars growing towards the low end of its axis names one for
+      itself, a near-black, along with a colour for the bars: such a bar
+      reaches every eighth of a cell only by drawing one cell as a negative,
+      which needs both colours. A chart whose bars all grow the other way is
+      unpainted as before.
+  * The baseline sits at the edge between two character cells, so that every
+    bar starts where a glyph can start and a short bar keeps its true length
+    rather than shifting to a cell it does not reach.
+    * Where the interval does not divide into whole cells that way, the chart
+      widens it until it does, keeping the cells all one width so that the
+      axis stays uniform: the cells are made as narrow as they can be while
+      still covering the interval, which leaves one end exactly where it was
+      asked to be and the other reaching past its end by less than one cell.
+    * The interval the chart settled on is its `vrange`, so `bars` may now
+      report a slightly wider interval than it was given. Only a chart with a
+      baseline strictly inside its interval widens at all: one measured from
+      zero over values on one side of zero, which is every bar chart that was
+      possible before, covers exactly what it was given.
+  * `histogram` and `vistogram` take `mirror` and `background` too, for a
+    histogram that hangs from the top or runs to the left.
 * Recent frame rate tracking for animations.
   * Tracking 2-second sliding window fps, reported as `animate.recent_fps`.
   * Display the recent fps on printed animations: `mp.animate(show_fps=True)`
@@ -67,6 +101,9 @@ Changed:
   own interval (the unit interval for a linear axis) rather than `(-0.5, 0.5)`;
 * `candles` and `boxes` given constant values now widen the same way every
   other coordinate plot does rather than refusing.
+* `bars` and `columns` given values below zero now draw them, reaching the
+  other way from the baseline. Previously such a value was clipped to the
+  bottom of an interval that started at zero, and drew nothing.
 
 New examples:
 
@@ -76,6 +113,12 @@ New examples:
 * `planisphere.py`: the whole sky over Oxford as a turning star chart, with the
   sun computed alongside the stars so twilight washes them out and dusk hands
   them back. Thanks, Fable!
+
+Reworked examples:
+
+* `jointplot.py`: the marginal distributions now hug the scatter, the left one
+  mirrored, and the conditional means below and to the right are diverging
+  charts measured from zero rather than shifted to fake a baseline.
 
 Version 0.7.1
 -------------

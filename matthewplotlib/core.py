@@ -1116,7 +1116,80 @@ def unicode_braille_segments(
 # UNICODE PARTIAL BLOCKS
 
 
+type Anchor = Literal["low", "high"]
+
+
 PARTIAL_BLOCKS_ROW = ords([" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"])
+
+
+PARTIAL_BLOCKS_COL = ords([" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"])
+
+
+def _anchored_bar_codes(
+    proportion: float,
+    length: int,
+    anchor: Anchor,
+    blocks: Sequence[int],  # int[9]
+) -> tuple[NDArray, int]:   # uint32[length], int
+    """
+    The glyphs along one bar, counting from the low end of its axis, together
+    with which of its cells is drawn as a negative.
+
+    Each glyph in `blocks` fills its cell from the low edge, so a bar anchored
+    there is those glyphs as they stand. One anchored at the high end has to
+    fill the cell holding its far end from the high edge instead, which no
+    glyph does beyond an eighth and a half, so that cell is drawn as the
+    negative of the glyph covering the rest of it. Its index comes back
+    alongside, or -1 where the bar is drawn from its glyphs alone.
+    """
+    proportion = max(0.0, min(1.0, proportion))
+    full_blocks, remainder = divmod(int(proportion * length * 8), 8)
+
+    codes = np.full(length, ord(" "), dtype=np.uint32)
+    if anchor == "low":
+        codes[:full_blocks] = blocks[8]
+        if remainder > 0:
+            codes[full_blocks] = blocks[remainder]
+        return codes, -1
+
+    codes[length-full_blocks:] = blocks[8]
+    if remainder == 0:
+        return codes, -1
+    negative = length - full_blocks - 1
+    codes[negative] = blocks[8-remainder]
+    return codes, negative
+
+
+def _bar_chars(
+    codes: NDArray,     # uint32[h, w]
+    negative: tuple,
+    inverted: bool,
+    fgcolor: ColorLike | None,
+    bgcolor: ColorLike | None,
+) -> CharArray:
+    """
+    A bar's glyphs as a character array, with one cell drawn as a negative.
+
+    The negative cell takes the bar's color as its background and the
+    background color as its foreground, so that what shows as the bar is what
+    the glyph leaves unfilled.
+    """
+    chars = CharArray.from_codes(np.array(codes), fgcolor, bgcolor)
+    if not inverted:
+        return chars
+    fill = parse_color(fgcolor)
+    ground = parse_color(bgcolor)
+    if fill is None or ground is None:
+        raise ValueError(
+            "a bar anchored at the high end of its axis reaches an eighth of "
+            "a cell by drawing one cell as a negative, so it needs both a "
+            "color of its own and a background color to draw that against"
+        )
+    chars.fg[negative] = True
+    chars.fg_rgb[negative] = ground
+    chars.bg[negative] = True
+    chars.bg_rgb[negative] = fill
+    return chars
 
 
 def unicode_bar(
@@ -1125,13 +1198,13 @@ def unicode_bar(
     height: int = 1,
     fgcolor: ColorLike | None = None,
     bgcolor: ColorLike | None = None,
+    anchor: Anchor = "low",
 ) -> CharArray:
     """
     Generates a Unicode progress bar as a list of characters.
 
-    This function creates a fixed-width left-to-right bar using Unicode block
-    elements to represent the proportion rounded down to nearest 1/8th of a
-    block.
+    This function creates a fixed-width bar using Unicode block elements to
+    represent the proportion rounded down to nearest 1/8th of a block.
 
     Inputs:
 
@@ -1146,11 +1219,18 @@ def unicode_bar(
         Foreground color used for the progress bar characters.
     * bgcolor: optional ColorLike.
         Background color used for the progress bar remainder.
+    * anchor: Anchor (default "low").
+        Which end of the bar the fill grows from: `"low"` fills rightwards
+        from the left edge, `"high"` leftwards from the right edge.
 
     Returns:
 
     * chars: CharArray
         A character array representing the bar.
+
+    A bar anchored at the high end reaches an eighth of a cell only by drawing
+    the cell holding its far end as a negative, its own color behind a glyph in
+    the background color, so both colors have to be named for it.
 
     Examples:
 
@@ -1159,29 +1239,24 @@ def unicode_bar(
     '█████     '
     >>> unicode_bar(0.625, 10).to_plain_str()
     '██████▎   '
+    >>> unicode_bar(0.5, 10, anchor="high").to_plain_str()
+    '     █████'
 
     ```
     """
-    # clip inputs to valid range
-    proportion = max(0.0, min(1.0, proportion))
-
-    # calculate number of filled 'eighths'
-    full_eighths = int(proportion * width * 8)
-    full_blocks, remainder = divmod(full_eighths, 8)
-
-    # construct bar
-    codes = np.zeros((height, width), dtype=np.uint32)
-    codes[:, :full_blocks] = PARTIAL_BLOCKS_ROW[-1]
-    if remainder > 0:
-        codes[:, full_blocks] = PARTIAL_BLOCKS_ROW[remainder]
-        codes[:, full_blocks+1:] = ord(" ")
-    else:
-        codes[:, full_blocks:] = ord(" ")
-
-    return CharArray.from_codes(codes, fgcolor, bgcolor)
-
-
-PARTIAL_BLOCKS_COL = ords([" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"])
+    codes, negative = _anchored_bar_codes(
+        proportion=proportion,
+        length=width,
+        anchor=anchor,
+        blocks=PARTIAL_BLOCKS_ROW,
+    )
+    return _bar_chars(
+        codes=np.broadcast_to(codes, (height, width)),
+        negative=(slice(None), negative),
+        inverted=negative >= 0,
+        fgcolor=fgcolor,
+        bgcolor=bgcolor,
+    )
 
 
 def unicode_col(
@@ -1190,6 +1265,7 @@ def unicode_col(
     width: int = 1,
     fgcolor: ColorLike | None = None,
     bgcolor: ColorLike | None = None,
+    anchor: Anchor = "low",
 ) -> CharArray:
     """
     Generates a Unicode progress column as a list of characters.
@@ -1212,39 +1288,43 @@ def unicode_col(
         Foreground color used for the progress bar characters.
     * bgcolor: optional ColorLike.
         Background color used for the progress bar remainder.
+    * anchor: Anchor (default "low").
+        Which end of the column the fill grows from: `"low"` fills upwards
+        from the bottom edge, `"high"` downwards from the top edge.
 
     Returns:
 
     * chars: CharArray
         A char array representing the column.
 
+    A column anchored at the high end reaches an eighth of a cell only by
+    drawing the cell holding its far end as a negative, its own color behind a
+    glyph in the background color, so both colors have to be named for it.
+
     Examples:
 
     ```pycon
     >>> unicode_col(0.5, 3).to_plain_str()
     ' \\n▄\\n█'
-    
+    >>> unicode_col(0.5, 4, anchor="high").to_plain_str()
+    '█\\n█\\n \\n '
+
     ```
     """
-    # clip inputs to valid range
-    proportion = max(0.0, min(1.0, proportion))
-
-    # calculate number of filled 'eighths'
-    full_eighths = int(proportion * height * 8)
-    full_blocks, remainder = divmod(full_eighths, 8)
-
-    # construct column (upside down)
-    codes = np.zeros((height, width), dtype=np.uint32)
-    codes[:full_blocks, :] = PARTIAL_BLOCKS_COL[-1]
-    if remainder > 0:
-        codes[full_blocks, :] = PARTIAL_BLOCKS_COL[remainder]
-        codes[full_blocks+1:, :] = ord(" ")
-    else:
-        codes[full_blocks:, :] = ord(" ")
-    # (flip)
-    codes = codes[::-1]
-
-    return CharArray.from_codes(codes, fgcolor, bgcolor)
+    codes, negative = _anchored_bar_codes(
+        proportion=proportion,
+        length=height,
+        anchor=anchor,
+        blocks=PARTIAL_BLOCKS_COL,
+    )
+    # the codes count from the low end of the axis, which is the bottom row
+    return _bar_chars(
+        codes=np.broadcast_to(codes[::-1, None], (height, width)),
+        negative=(height - 1 - negative, slice(None)),
+        inverted=negative >= 0,
+        fgcolor=fgcolor,
+        bgcolor=bgcolor,
+    )
 
 
 # # # 

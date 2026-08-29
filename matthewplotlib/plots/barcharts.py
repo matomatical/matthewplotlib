@@ -13,6 +13,9 @@ plots.
 """
 from __future__ import annotations
 
+import math
+import dataclasses
+
 import numpy as np
 
 from typing import Literal, cast
@@ -36,6 +39,162 @@ from matthewplotlib.core import (
     unicode_boxes,
 )
 from matthewplotlib.plots.base import plot
+
+
+# # #
+# MARKS DRAWN AS FILLS
+
+# A fill whose end lands part way into a cell it does not fill from the low
+# edge is drawn as a negative, and a negative needs a color at each end of it:
+# the mark's own, which goes to the cell's background, and the ground it is
+# drawn against. These stand in where the caller named neither.
+_FILL_BACKGROUND = (0.08, 0.09, 0.11)
+_FILL_COLOR = (1.0, 1.0, 1.0)
+
+# How far past an end of its interval an axis has to reach before it counts as
+# having widened at all, as a fraction of the interval. An interval a baseline
+# already divides into whole cells wants to be left exactly as it is, and the
+# arithmetic that finds the cells lands a rounding error away from saying so.
+# Well below an eighth of the narrowest cell any chart has.
+_WIDENING_FLOOR = 1e-9
+
+
+def _split_cells(
+    below: float,
+    above: float,
+    length: int,
+) -> tuple[int, int]:
+    """
+    Share `length` cells between the two sides of a baseline, so that the
+    widest cell either side needs is as narrow as it can be.
+
+    `below` and `above` are how far the axis reaches each way from the
+    baseline. A side needing `d` of them across `n` cells needs cells of width
+    `d/n`, so the cells are `max(below/n_below, above/n_above)` wide and the
+    best split is the one where the two sides come closest to needing the same
+    width. That is where the falling `below/n_below` crosses the rising
+    `above/n_above`, so it is one of the two whole numbers either side of the
+    crossing.
+
+    A side the axis does not reach takes no cells at all. Where there is only
+    one cell to share and the axis reaches both ways, it goes to the side that
+    reaches further, and the other side is left with the baseline at the edge
+    of the chart.
+    """
+    if below <= 0:
+        return 0, length
+    if above <= 0:
+        return length, 0
+    if length < 2:
+        return (length, 0) if below >= above else (0, length)
+    crossing = length * below / (below + above)
+    candidates = {
+        max(1, math.floor(crossing)),
+        min(length - 1, math.ceil(crossing)),
+    }
+    best = min(candidates, key=lambda n: max(below / n, above / (length - n)))
+    return best, length - best
+
+
+def _align_to_baseline(
+    vscale: scale,
+    baseline: number,
+    length: int,
+) -> tuple[scale, int]:
+    """
+    Widen a value axis until its baseline sits on the edge between two cells.
+
+    A bar grows out of the baseline, so the baseline has to lie where a glyph
+    can start: on the edge between two character cells, never part way into
+    one. That fixes a whole number of cells on each side of it. The cells are
+    all one width, so an interval whose baseline does not already divide it
+    into whole cells is covered by reaching a little past one of its ends.
+
+    The cells are made as narrow as they can be while still covering the
+    interval. That leaves the side needing the wider cells ending exactly
+    where it was asked to and the other reaching past its end by less than one
+    cell. Where the baseline is already at an end of the interval---which is
+    every chart measured from zero over values on one side of it---one side
+    takes no cells and the axis is exactly the interval it was given.
+
+    Returns the axis it settled on, and the number of cells below the
+    baseline.
+    """
+    # measure from the baseline in the axis's own units, where the interval
+    # runs from 0.0 to 1.0 whichever way round its ends are
+    base = float(np.clip(vscale.position(baseline), 0.0, 1.0))
+    cells_below, cells_above = _split_cells(
+        below=base,
+        above=1.0 - base,
+        length=length,
+    )
+    if cells_below == 0 or cells_above == 0:
+        return vscale, cells_below
+
+    # widen to the whole cells either side, in the space the scale spaces its
+    # values in, so that a nonlinear axis grows by a cell of its own kind. The
+    # side needing the wider cells is covered exactly and stays where it is;
+    # only the other one reaches past its end, and neither does where the
+    # baseline already divides the interval into whole cells.
+    cell = max(base / cells_below, (1.0 - base) / cells_above)
+    tlo, thi = vscale._transformed_ends()
+    span = thi - tlo
+    ends = []
+    for end, reach, beyond in (
+        (vscale.lo, base - cells_below * cell, 0.0),
+        (vscale.hi, base + cells_above * cell, 1.0),
+    ):
+        if abs(reach - beyond) < _WIDENING_FLOOR:
+            ends.append(float(cast(number, end)))
+        else:
+            ends.append(float(np.asarray(
+                vscale._checked_inverse(tlo + reach * span), dtype=float,
+            )))
+    try:
+        return dataclasses.replace(vscale, lo=ends[0], hi=ends[1]), cells_below
+    except ValueError as e:
+        raise ValueError(
+            f"a baseline of {float(baseline):g} falls inside {vscale!r}, "
+            f"which has to widen to {ends[0]:g} to {ends[1]:g} to put the "
+            f"baseline on the edge between two of its {length} cells, and "
+            f"{e}"
+        ) from None
+
+
+def _baseline_reaches(
+    vscale: scale,
+    values: NDArray,            # float[n]
+    cells_below: int,
+    length: int,
+) -> tuple[NDArray, NDArray]:   # float[n], float[n]
+    """
+    How far each value reaches from the baseline, towards the low end of the
+    axis and towards the high end, each as a proportion of that side.
+
+    Only one of the two is ever more than zero. A value that is not a number
+    reaches neither way, having no length to draw, and neither does any value
+    at all along an axis with no cells to draw in.
+    """
+    if length < 1:
+        return np.zeros(values.shape), np.zeros(values.shape)
+    base = cells_below / length
+    proportions = np.asarray(vscale(values), dtype=float)
+    if base > 0:
+        towards_low = np.clip((base - proportions) / base, 0.0, 1.0)
+    else:
+        towards_low = np.zeros(proportions.shape)
+    if base < 1:
+        towards_high = np.clip((proportions - base) / (1.0 - base), 0.0, 1.0)
+    else:
+        towards_high = np.zeros(proportions.shape)
+
+    # a value that is not a number comes off the scale at its bottom, which is
+    # a mark of full length where the baseline is not there
+    drawn = np.isfinite(values)
+    return (
+        np.where(drawn, towards_low, 0.0),
+        np.where(drawn, towards_high, 0.0),
+    )
 
 
 class progress(plot):
@@ -109,7 +268,7 @@ class bars(plot):
     Inputs:
 
     * values : float[n].
-        An array of non-negative values to display.
+        An array of values to display.
     * width : int (default: 30).
         The total width of full bars.
     * bar_height: int (default: 1).
@@ -119,29 +278,55 @@ class bars(plot):
     * vrange : optional (number, number) | scale.
         The interval of values the bars measure: a bar at the first value or
         below has zero width and one at the second value or above occupies the
-        whole width. By default the interval runs from zero to the largest
-        value, so that the largest bar or bars fill the width. Measuring from
-        zero rather than from the smallest value is what makes a bar's width
-        readable on its own, and a chart of equal values a row of full bars.
+        whole width. By default the interval runs from the baseline to the
+        largest value, reaching down to the smallest where that falls below
+        the baseline, so that the longest bar or bars fill the width.
+        Measuring from a baseline rather than from the smallest value is what
+        makes a bar's width readable on its own, and a chart of equal values a
+        row of full bars.
 
         A `scale` says how the widths are spaced within the interval, where a
-        plain pair spaces them linearly. An inferred interval still starts at
-        zero, so a `logscale` here needs its own lower end:
+        plain pair spaces them linearly. An inferred interval still takes in
+        the baseline, so a `logscale` here needs its own lower end:
         `vrange=mp.logscale(1, 1000)`.
+    * baseline : number (default: 0).
+        The value the bars are measured from. Where it falls inside the
+        interval the chart diverges: the bar for a value below it reaches to
+        the left and the bar for a value above it to the right.
+    * mirror : bool (default: False).
+        Turn the value axis around, so that the bars grow leftwards from the
+        right edge. This reverses whatever interval the chart settled on, so
+        mirroring a descending `vrange` gives an ascending one.
     * color : optional ColorLike.
         The color of the filled portion of the bars. Defaults to the terminal's
-        default foreground color.
+        default foreground color, or to white where the chart has bars growing
+        leftwards, whose color has to be named for their negatives to be drawn
+        against the background.
     * colors : optional ColorLike[n].
         The colours of the filled portion of each bar. Should be an array or
         list of the same length as `values`.
+    * background : optional ColorLike.
+        The color behind the bars, painting the whole rectangle, the rows
+        between the bars included. A chart with bars growing leftwards
+        defaults to a near-black, because such a bar reaches every eighth of a
+        cell only by drawing one cell as a negative, which needs the
+        background named. A chart whose bars all grow rightwards leaves the
+        terminal's own background showing unless one is given.
 
     A value that is not a number is left out of an inferred interval, and its
     bar has zero width.
 
-    TODO:
-
-    * Make it possible to draw bars to the left for values below 0.
-    * Make it possible to align all bars to the right rather than left.
+    The baseline sits on the edge between two character cells, so that every
+    bar starts where a glyph can start and a short bar keeps its true length
+    rather than shifting to a cell it does not reach. Where the interval does
+    not already divide into whole cells that way, the chart widens it to the
+    nearest interval that does: the cells are made as narrow as they can be
+    while still covering the interval, leaving one end exactly where it was
+    asked to be and the other reaching past its end by less than one cell. The
+    interval the chart settled on is its `vrange`. A baseline at an end of the
+    interval divides it into whole cells to begin with, so a chart measured
+    from zero over values on one side of zero covers exactly what it was
+    given.
     """
     def __init__(
         self,
@@ -150,40 +335,76 @@ class bars(plot):
         bar_height: int = 1,
         bar_spacing: int = 0,
         vrange: tuple[number, number] | scale | None = None,
+        baseline: number = 0,
+        mirror: bool = False,
         color: ColorLike | None = None,
         colors: list[ColorLike | None] | None = None,
+        background: ColorLike | None = None,
     ):
         # standardise inputs
         values = np.asarray(values, dtype=float)
         vscale = _resolve_vrange(vrange, values, "bars", from_zero=True)
+        if mirror:
+            vscale = dataclasses.replace(vscale, lo=vscale.hi, hi=vscale.lo)
         num_bars = len(values)
 
-        # compute the bar widths
-        norm_values = vscale(values)
+        # put the baseline on the edge between two cells, and measure every
+        # bar from it
+        vscale, left_width = _align_to_baseline(vscale, baseline, width)
+        right_width = width - left_width
+        leftwards, rightwards = _baseline_reaches(
+            vscale=vscale,
+            values=values,
+            cells_below=left_width,
+            length=width,
+        )
 
-        # determine the colors for each bar
+        # determine the colors
         if colors is None:
-            colors = [color for _ in range(len(values))]
-        
+            colors = [color for _ in range(num_bars)]
+        if left_width:
+            # a bar growing leftwards draws one cell as a negative, which
+            # needs a color of its own and a background to draw it against
+            background = _FILL_BACKGROUND if background is None else background
+            colors = [_FILL_COLOR if c is None else c for c in colors]
+
         # construct the bars
-        bars_chars = [
-            unicode_bar(
-                proportion=v,
-                width=width,
-                height=bar_height,
-                fgcolor=colors[i],
-                bgcolor=None,
-            ).pad(
-                below=bar_spacing * (i!=num_bars-1),
+        bars_chars = []
+        for i in range(num_bars):
+            pieces = []
+            if left_width:
+                pieces.append(unicode_bar(
+                    proportion=leftwards[i],
+                    width=left_width,
+                    height=bar_height,
+                    fgcolor=colors[i],
+                    bgcolor=background,
+                    anchor="high",
+                ))
+            if right_width or not pieces:
+                pieces.append(unicode_bar(
+                    proportion=rightwards[i],
+                    width=right_width,
+                    height=bar_height,
+                    fgcolor=colors[i],
+                    bgcolor=background,
+                    anchor="low",
+                ))
+            bar_chars = CharArray.map(
+                lambda xs: np.concatenate(xs, axis=1),
+                pieces,
             )
-            for i, v in enumerate(norm_values)
-        ]
+            bars_chars.append(bar_chars.pad(
+                below=bar_spacing * (i!=num_bars-1),
+                bgcolor=background,
+            ))
         all_chars = CharArray.map(
             lambda xs: np.concatenate(xs, axis=0),
             bars_chars,
         )
         super().__init__(chars=all_chars)
         self.vrange = vscale
+        self.baseline = baseline
         self.num_bars = num_bars
 
     def __repr__(self):
@@ -224,9 +445,16 @@ class histogram(bars):
         the bin with the highest count has a full bar.
     * width : int (default: 22).
         The total width of full bars.
+    * mirror : bool (default: False).
+        Turn the value axis around, so that the bars grow leftwards from the
+        right edge.
     * color : optional ColorLike.
         The color of the filled portion of the bars. Defaults to the terminal's
-        default foreground color.
+        default foreground color, or to white where the bars grow leftwards.
+    * background : optional ColorLike.
+        The color behind the bars. Bars growing leftwards default to a
+        near-black; bars growing rightwards leave the terminal's own
+        background showing unless one is given.
     """
     def __init__(
         self,
@@ -237,7 +465,9 @@ class histogram(bars):
         density: bool = False,
         max_count: number | None = None,
         width: int = 22,
+        mirror: bool = False,
         color: ColorLike | None = None,
+        background: ColorLike | None = None,
     ):
         # prepare data
         data = np.asarray(data)
@@ -263,7 +493,9 @@ class histogram(bars):
             bar_height=1,
             bar_spacing=0,
             vrange=(0, max_count),
+            mirror=mirror,
             color=color,
+            background=background,
         )
         self.bins = bins_
 
@@ -286,38 +518,63 @@ class columns(plot):
     Inputs:
 
     * values : number[n].
-        An array of non-negative values to display.
+        An array of values to display.
     * height : int (default: 10).
-        The total width of full columns.
+        The total height of full columns.
     * column_width: int (default 1).
     * column_spacing: int (default 0).
     * vrange : optional (number, number) | scale.
-        The interval of values the columns measure: a column at the first value
-        or below has zero height and one at the second value or above occupies
-        the whole height. By default the interval runs from zero to the largest
-        value, so that the tallest column or columns fill the height. Measuring
-        from zero rather than from the smallest value is what makes a column's
-        height readable on its own, and a chart of equal values a row of full
-        columns.
+        The interval of values the columns measure: a column at the first
+        value or below has zero height and one at the second value or above
+        occupies the whole height. By default the interval runs from the
+        baseline to the largest value, reaching down to the smallest where
+        that falls below the baseline, so that the tallest column or columns
+        fill the height. Measuring from a baseline rather than from the
+        smallest value is what makes a column's height readable on its own,
+        and a chart of equal values a row of full columns.
 
         A `scale` says how the heights are spaced within the interval, where a
-        plain pair spaces them linearly. An inferred interval still starts at
-        zero, so a `logscale` here needs its own lower end:
+        plain pair spaces them linearly. An inferred interval still takes in
+        the baseline, so a `logscale` here needs its own lower end:
         `vrange=mp.logscale(1, 1000)`.
+    * baseline : number (default: 0).
+        The value the columns are measured from. Where it falls inside the
+        interval the chart diverges: the column for a value below it hangs
+        downwards and the column for a value above it stands upwards.
+    * mirror : bool (default: False).
+        Turn the value axis around, so that the columns hang downwards from
+        the top edge. This reverses whatever interval the chart settled on, so
+        mirroring a descending `vrange` gives an ascending one.
     * color : optional ColorLike.
         The color of the filled portion of the columns. Defaults to the
-        terminal's default foreground color.
+        terminal's default foreground color, or to white where the chart has
+        columns hanging downwards, whose color has to be named for their
+        negatives to be drawn against the background.
     * colors : optional ColorLike[n].
         The colours of the filled portion of each column. Should be an array or
         list of the same length as `values`.
+    * background : optional ColorLike.
+        The color behind the columns, painting the whole rectangle, the
+        columns between them included. A chart with columns hanging
+        downwards defaults to a near-black, because such a column reaches
+        every eighth of a cell only by drawing one cell as a negative, which
+        needs the background named. A chart whose columns all stand upwards
+        leaves the terminal's own background showing unless one is given.
 
     A value that is not a number is left out of an inferred interval, and its
     column has zero height.
 
-    TODO:
-
-    * Make it possible to draw columns downward for values below 0.
-    * Make it possible to align all columns to the top rather than bottom.
+    The baseline sits on the edge between two character cells, so that every
+    column starts where a glyph can start and a short column keeps its true
+    length rather than shifting to a cell it does not reach. Where the
+    interval does not already divide into whole cells that way, the chart
+    widens it to the nearest interval that does: the cells are made as narrow
+    as they can be while still covering the interval, leaving one end exactly
+    where it was asked to be and the other reaching past its end by less than
+    one cell. The interval the chart settled on is its `vrange`. A baseline at
+    an end of the interval divides it into whole cells to begin with, so a
+    chart measured from zero over values on one side of zero covers exactly
+    what it was given.
     """
     def __init__(
         self,
@@ -326,40 +583,76 @@ class columns(plot):
         column_width: int = 1,
         column_spacing: int = 0,
         vrange: tuple[number, number] | scale | None = None,
+        baseline: number = 0,
+        mirror: bool = False,
         color: ColorLike | None = None,
         colors: list[ColorLike | None] | None = None,
+        background: ColorLike | None = None,
     ):
         # standardise inputs
         values = np.asarray(values, dtype=float)
         vscale = _resolve_vrange(vrange, values, "columns", from_zero=True)
+        if mirror:
+            vscale = dataclasses.replace(vscale, lo=vscale.hi, hi=vscale.lo)
         num_cols = len(values)
 
-        # compute the column heights
-        norm_values = vscale(values)
+        # put the baseline on the edge between two cells, and measure every
+        # column from it
+        vscale, lower_height = _align_to_baseline(vscale, baseline, height)
+        upper_height = height - lower_height
+        downwards, upwards = _baseline_reaches(
+            vscale=vscale,
+            values=values,
+            cells_below=lower_height,
+            length=height,
+        )
 
         # determine the colours
         if colors is None:
-            colors = [color for _ in range(len(values))]
-        
-        # construct the columns
-        cols_chars = [
-            unicode_col(
-                proportion=v,
-                height=height,
-                width=column_width,
-                fgcolor=colors[i],
-                bgcolor=None,
-            ).pad(
-                right=column_spacing * (i!=num_cols-1),
+            colors = [color for _ in range(num_cols)]
+        if lower_height:
+            # a column hanging downwards draws one cell as a negative, which
+            # needs a color of its own and a background to draw it against
+            background = _FILL_BACKGROUND if background is None else background
+            colors = [_FILL_COLOR if c is None else c for c in colors]
+
+        # construct the columns, the upper region above the lower one
+        cols_chars = []
+        for i in range(num_cols):
+            pieces = []
+            if upper_height or not lower_height:
+                pieces.append(unicode_col(
+                    proportion=upwards[i],
+                    height=upper_height,
+                    width=column_width,
+                    fgcolor=colors[i],
+                    bgcolor=background,
+                    anchor="low",
+                ))
+            if lower_height:
+                pieces.append(unicode_col(
+                    proportion=downwards[i],
+                    height=lower_height,
+                    width=column_width,
+                    fgcolor=colors[i],
+                    bgcolor=background,
+                    anchor="high",
+                ))
+            col_chars = CharArray.map(
+                lambda xs: np.concatenate(xs, axis=0),
+                pieces,
             )
-            for i, v in enumerate(norm_values)
-        ]
+            cols_chars.append(col_chars.pad(
+                right=column_spacing * (i!=num_cols-1),
+                bgcolor=background,
+            ))
         all_chars = CharArray.map(
             lambda xs: np.concatenate(xs, axis=1),
             cols_chars,
         )
         super().__init__(chars=all_chars)
         self.vrange = vscale
+        self.baseline = baseline
         self.num_cols = num_cols
 
     def __repr__(self):
@@ -401,9 +694,16 @@ class vistogram(columns):
         the bin with the highest count has a full bar.
     * height : int (default: 22).
         The total height of full bars.
+    * mirror : bool (default: False).
+        Turn the value axis around, so that the bars hang downwards from the
+        top edge.
     * color : optional ColorLike.
         The color of the filled portion of the bars. Defaults to the terminal's
-        default foreground color.
+        default foreground color, or to white where the bars hang downwards.
+    * background : optional ColorLike.
+        The color behind the bars. Bars hanging downwards default to a
+        near-black; bars standing upwards leave the terminal's own background
+        showing unless one is given.
     """
     def __init__(
         self,
@@ -414,7 +714,9 @@ class vistogram(columns):
         density: bool = False,
         max_count: None | number = None,
         height: int = 10,
+        mirror: bool = False,
         color: ColorLike | None = None,
+        background: ColorLike | None = None,
     ):
         # prepare data
         data = np.asarray(data)
@@ -440,7 +742,9 @@ class vistogram(columns):
             column_width=1,
             column_spacing=0,
             vrange=(0, max_count),
+            mirror=mirror,
             color=color,
+            background=background,
         )
         self.bins = bins_
 

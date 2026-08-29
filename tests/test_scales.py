@@ -231,6 +231,23 @@ class TestResolveVrange:
         resolved = _resolve_vrange(None, self.VALUES, "test", from_zero=True)
         assert resolved == scale(0.0, 9.0)
 
+    def test_from_zero_keeps_a_lower_value_than_zero(self):
+        """The baseline is taken into the interval rather than made its end,
+        so data reaching below zero keeps its lowest value."""
+        values = np.array([-4.0, 9.0])
+        resolved = _resolve_vrange(None, values, "test", from_zero=True)
+        assert resolved == scale(-4.0, 9.0)
+
+    def test_from_zero_reaches_up_to_zero_over_values_below_it(self):
+        values = np.array([-4.0, -1.0])
+        resolved = _resolve_vrange(None, values, "test", from_zero=True)
+        assert resolved == scale(-4.0, 0.0)
+
+    def test_from_zero_leaves_an_endpoint_the_caller_gave(self):
+        values = np.array([-4.0, 9.0])
+        resolved = _resolve_vrange(scale(0), values, "test", from_zero=True)
+        assert resolved == scale(0.0, 9.0)
+
     def test_an_explicit_interval_covering_nothing_is_an_error(self):
         with pytest.raises(ValueError, match="covers no interval"):
             _resolve_vrange((5, 5), self.VALUES, "test")
