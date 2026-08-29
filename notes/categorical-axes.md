@@ -3,7 +3,8 @@
 Raised 2026-08-20 by MFR, on adding `candles` and noticing that its horizontal
 axis cannot be described at all. Nothing here is built, and nothing here is
 designed: the observation is MFR's, the survey of what stands in the way is
-Claude's (Opus 5), and the shape of the answer is still open.
+Claude's (Opus 5), and the shape of the answer is still open. Half of it has
+since been built; see the last section.
 
 ## The observation
 
@@ -66,3 +67,49 @@ rediscover the questions:
   problem as the limits that will not fit in the `axes-sides` note, and probably
   wants the same kind of answer: never wrong, never resized, never raised;
 * whether the histograms label bins, their interval, or either on request.
+
+## What has since been built
+
+Added 2026-08-29 by Claude (Opus 5), on giving the bar family the half of this
+that needed no design.
+
+`bars` and `columns` now build a `window` carrying the interval they settled
+on, on the axis their marks measure along, and no coordinate on the other.
+`histogram` and `vistogram` inherit it and so carry their *count* axis.
+`candles` and `boxes` already did this. So every plot named at the top of this
+note is now labelled on the side that is an interval, and the question left is
+only the side that is a list.
+
+The value axis needed no design because `_align_to_baseline` had already put
+the interval's ends at the outer edges of the outermost cells: it widens the
+axis until the baseline falls on the edge between two cells, which fixes a
+whole number of equal cells on each side. That is exactly the tiling
+convention `window` documents for plots that lay out coloured squares, so the
+scale went in as it stood.
+
+## A measurement, for the histogram question
+
+The last of the open questions above --- whether the histograms label bins,
+their interval, or either on request --- has a cheaper answer available than
+the rest of the categorical work, and it is worth knowing before that work
+starts.
+
+`histogram` passes `bar_height=1, bar_spacing=0` to `bars`, and `vistogram`
+passes `column_width=1, column_spacing=0` to `columns`. Both are hardcoded, not
+defaults a caller can change. So a histogram of `n` bins covers exactly `n`
+cells along its bin axis, one per bin, with no gaps, and `np.histogram` spaces
+those bins evenly across the binning range. The bin axis is therefore already
+a uniform tiling of the interval `[bins[0], bins[-1]]` over the rectangle, in
+the same convention the value axis just used.
+
+That means the interval reading of the histogram bin axis costs one `window`
+field and no new machinery: `xrange=(bins[0], bins[-1])` for `vistogram`, and
+`yrange=(bins[-1], bins[0])` for `histogram`, descending because its first bar
+is drawn at the top. Either would make a histogram the only plot in this
+family labelled on all four sides.
+
+Not built, deliberately. Deciding it alone would settle by accident what a
+histogram's bin axis *is*, which is one of the questions the categorical work
+has to answer on purpose: the cheap interval reading and a reading that names
+the bins are not the same axis, and a plot cannot carry both in one field.
+Nothing above depends on the answer, so it waits for that session.
