@@ -24,6 +24,8 @@ Basic plot furnishings:
 * [x] Axis labels and titles.
 * [ ] Axes for bar/column charts, histograms, candlesticks, box plots.
       See the `categorical-axes` note and `notes/reference/myplot.py`.
+  * [x] The value axis, which is an interval like any other.
+  * [ ] The axis of names, which is not.
 * [x] Color bars.
 
 Basic plot arrangement:

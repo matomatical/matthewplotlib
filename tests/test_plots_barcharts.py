@@ -698,3 +698,85 @@ class TestBarsAxisWidening:
         baseline goes to an end and the shorter side is left with nothing."""
         assert bars([-1.0, 3.0], width=1).vrange == mp.scale(-1.0, 3.0)
         assert bars([-1.0, 3.0], width=1).chars.codes.shape == (2, 1)
+
+
+class TestBarsValueAxis:
+    """The value axis is a genuine interval, so the chart carries it as a
+    window and `axes` can rule and label the side it runs along. The axis of
+    names carries no coordinate."""
+
+    def test_bars_carry_their_value_range_horizontally(self):
+        chart = bars([1.0, 2.0, 3.0], width=12)
+
+        assert chart.window is not None
+        assert chart.window.xrange == mp.scale(0.0, 3.0)
+        assert chart.window.yrange is None
+
+    def test_columns_carry_their_value_range_vertically(self):
+        chart = columns([1.0, 2.0, 3.0], height=12)
+
+        assert chart.window is not None
+        assert chart.window.yrange == mp.scale(0.0, 3.0)
+        assert chart.window.xrange is None
+
+    def test_the_window_covers_the_whole_rectangle(self):
+        """Including the rows between the bars, which the value axis runs
+        across as much as it runs across the bars themselves."""
+        chart = bars([1.0, 2.0], width=12, bar_height=2, bar_spacing=1)
+
+        assert chart.window is not None
+        assert (chart.window.width, chart.window.height) == (12, 5)
+        assert (chart.width, chart.height) == (12, 5)
+
+    def test_the_axis_it_settled_on_is_the_one_it_carries(self):
+        """A chart that widened its interval to fit whole cells around the
+        baseline reports the widened interval both ways."""
+        chart = bars([-3.0, 10.0], width=30)
+
+        assert chart.window is not None
+        assert chart.window.xrange == chart.vrange
+
+    def test_a_scale_reaches_the_window_as_a_scale(self):
+        chart = columns([1.0, 10.0], height=10, vrange=mp.logscale(1.0, 20.0))
+
+        assert chart.window is not None
+        assert chart.window.yrange == mp.logscale(1.0, 20.0)
+
+    def test_a_mirrored_chart_carries_a_descending_axis(self):
+        """Which is what turns the labels around, the high value ending up at
+        the edge the bars grow out of."""
+        chart = bars([1.0, 3.0], width=12, mirror=True)
+
+        assert chart.window is not None
+        assert chart.window.xrange == mp.scale(3.0, 0.0)
+
+    def test_axes_labels_the_value_axis_and_leaves_the_rest_alone(self):
+        lines = axes(bars([1.0, 3.0], width=10)).chars.to_plain_str()
+
+        assert lines.splitlines() == [
+            "███▎      ",
+            "██████████",
+            "┌────────┐",
+            "0.0    3.0",
+        ]
+
+    def test_a_histogram_carries_its_count_axis(self):
+        """The bins are the axis of names here; the counts are the interval."""
+        chart = mp.histogram([0.0, 0.5, 0.9], bins=2, width=10)
+
+        assert chart.window is not None
+        assert chart.window.xrange == mp.scale(0.0, 2.0)
+        assert chart.window.yrange is None
+
+    def test_a_vistogram_carries_its_count_axis(self):
+        chart = mp.vistogram([0.0, 0.5, 0.9], bins=2, height=10)
+
+        assert chart.window is not None
+        assert chart.window.yrange == mp.scale(0.0, 2.0)
+        assert chart.window.xrange is None
+
+    def test_a_chart_with_no_rectangle_carries_no_window(self):
+        """A window covers at least one cell in each direction, and these
+        degenerate charts have none to cover."""
+        assert bars([1.0, 2.0], width=0).window is None
+        assert columns([1.0, 2.0], height=0).window is None

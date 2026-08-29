@@ -316,6 +316,11 @@ class bars(plot):
     A value that is not a number is left out of an inferred interval, and its
     bar has zero width.
 
+    The chart carries its value range on the horizontal axis and no coordinate
+    on the vertical, since the bars are a list of names rather than a measured
+    axis. So `axes` labels the value axis and leaves the other three sides
+    alone.
+
     The baseline sits on the edge between two character cells, so that every
     bar starts where a glyph can start and a short bar keeps its true length
     rather than shifting to a cell it does not reach. Where the interval does
@@ -403,6 +408,13 @@ class bars(plot):
             bars_chars,
         )
         super().__init__(chars=all_chars)
+        # a chart with no rectangle to draw in covers no interval
+        self.window = window(
+            xrange=vscale,
+            yrange=None,
+            width=all_chars.width,
+            height=all_chars.height,
+        ) if all_chars.width and all_chars.height else None
         self.vrange = vscale
         self.baseline = baseline
         self.num_bars = num_bars
@@ -455,6 +467,10 @@ class histogram(bars):
         The color behind the bars. Bars growing leftwards default to a
         near-black; bars growing rightwards leave the terminal's own
         background showing unless one is given.
+
+    The chart carries its count axis as a horizontal coordinate and no
+    coordinate along the bins, so `axes` labels the counts and leaves the
+    other three sides alone.
     """
     def __init__(
         self,
@@ -564,6 +580,11 @@ class columns(plot):
     A value that is not a number is left out of an inferred interval, and its
     column has zero height.
 
+    The chart carries its value range on the vertical axis and no coordinate
+    on the horizontal, since the columns are a list of names rather than a
+    measured axis. So `axes` labels the value axis and leaves the other three
+    sides alone.
+
     The baseline sits on the edge between two character cells, so that every
     column starts where a glyph can start and a short column keeps its true
     length rather than shifting to a cell it does not reach. Where the
@@ -651,6 +672,13 @@ class columns(plot):
             cols_chars,
         )
         super().__init__(chars=all_chars)
+        # a chart with no rectangle to draw in covers no interval
+        self.window = window(
+            xrange=None,
+            yrange=vscale,
+            width=all_chars.width,
+            height=all_chars.height,
+        ) if all_chars.width and all_chars.height else None
         self.vrange = vscale
         self.baseline = baseline
         self.num_cols = num_cols
@@ -704,6 +732,10 @@ class vistogram(columns):
         The color behind the bars. Bars hanging downwards default to a
         near-black; bars standing upwards leave the terminal's own background
         showing unless one is given.
+
+    The chart carries its count axis as a vertical coordinate and no
+    coordinate along the bins, so `axes` labels the counts and leaves the
+    other three sides alone.
     """
     def __init__(
         self,

@@ -68,6 +68,16 @@ New:
       possible before, covers exactly what it was given.
   * `histogram` and `vistogram` take `mirror` and `background` too, for a
     histogram that hangs from the top or runs to the left.
+* Bar charts, column charts and histograms carry their value axis, so `axes`
+  can rule and label the side the bars measure along.
+  * The other axis carries no coordinate, the bars being a list of names
+    rather than a measured axis, so `axes` leaves the other three sides alone.
+  * The axis carried is the interval the chart settled on, so a chart that
+    widened its interval to fit whole cells around its baseline labels the
+    interval it actually covers. `mirror` gives a descending axis, which puts
+    the high value at the edge the bars grow out of.
+  * A chart with no rectangle to draw in---zero width for `bars`, zero height
+    for `columns`---covers no interval and carries no axis.
 * Recent frame rate tracking for animations.
   * Tracking 2-second sliding window fps, reported as `animate.recent_fps`.
   * Display the recent fps on printed animations: `mp.animate(show_fps=True)`
